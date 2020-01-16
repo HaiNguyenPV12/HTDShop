@@ -24,4 +24,9 @@
     <welcome-file-list>
         <welcome-file>/</welcome-file>
     </welcome-file-list>
+     <ejb-local-ref>
+        <ejb-ref-name>CategoryFacade</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <local>vn.htdshop.sb.CategoryFacadeLocal</local>
+    </ejb-local-ref>
 </web-app>

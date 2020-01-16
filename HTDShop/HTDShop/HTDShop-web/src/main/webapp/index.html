@@ -1,14 +1,35 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-        <title>Index header</title>
-    </head>
-    <body>
-        <div layout:fragment="content">
-            <h1>Hello World!</h1>
-        </div>
-    </body>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Index header</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <h1>Hello World!</h1>
+        <table>
+            <thead>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Detail</th>
+            </thead>
+            <tbody>
+                <tr th:if="${categories eq null or categories.empty}">
+                    <td>No categories</td>
+                </tr>
+                <tr th:each="category : ${categories}">
+                    <td th:text="${category.id}"></td>
+                    <td th:text="${category.name}"></td>
+                    <td th:text="${category.detail}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div layout:fragment="footer">
+        test page footer
+    </div>
+</body>
+
 </html>
