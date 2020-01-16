@@ -23,4 +23,5 @@ public class shopIndexController {
         return "index";
     }
     
+    
 }
