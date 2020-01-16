@@ -22,6 +22,9 @@ public class shopIndexController {
     public String getHome() {
         return "index";
     }
-    
-    
+  
+    @RequestMapping(value = "test", method = RequestMethod.GET)
+    public String getTest() {
+        return "test";
+    }
 }
