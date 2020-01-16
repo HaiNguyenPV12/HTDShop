@@ -8,8 +8,6 @@ package vn.htdshop.controller.shop;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-
 
 /**
  *
@@ -23,5 +21,10 @@ public class shopIndexController {
     public String getHome() {
         return "index";
     }
-    
+
+    @RequestMapping(value = "test", method = RequestMethod.GET)
+    public String getTest() {
+        return "test";
+    }
+
 }
