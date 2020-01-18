@@ -52,17 +52,17 @@
         <local>vn.htdshop.sb.OrderDetailFacadeLocal</local>
     </ejb-local-ref>
     <ejb-local-ref>
-        <ejb-ref-name>PrebuiltFacade</ejb-ref-name>
+        <ejb-ref-name>PreBuiltFacade</ejb-ref-name>
         <ejb-ref-type>Session</ejb-ref-type>
         <local>vn.htdshop.sb.PreBuiltFacadeLocal</local>
     </ejb-local-ref>
     <ejb-local-ref>
-        <ejb-ref-name>PrebuiltImageFacade</ejb-ref-name>
+        <ejb-ref-name>PreBuiltImageFacade</ejb-ref-name>
         <ejb-ref-type>Session</ejb-ref-type>
         <local>vn.htdshop.sb.PreBuiltImageFacadeLocal</local>
     </ejb-local-ref>
     <ejb-local-ref>
-        <ejb-ref-name>PrebuiltRatingFacade</ejb-ref-name>
+        <ejb-ref-name>PreBuiltRatingFacade</ejb-ref-name>
         <ejb-ref-type>Session</ejb-ref-type>
         <local>vn.htdshop.sb.PreBuiltRatingFacadeLocal</local>
     </ejb-local-ref>
