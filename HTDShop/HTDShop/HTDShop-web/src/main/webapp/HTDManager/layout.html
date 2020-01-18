@@ -22,7 +22,7 @@
             <ul class="navbar-nav ml-auto">
                 <!-- Logout button -->
                 <a class="nav-item">
-                    <a class="nav-link btn-light text-dark">
+                    <a class="nav-link btn-light text-dark" th:href="@{/manager/logout}">
                         <i class="fas fa-sign-out-alt mr-2"></i> Sign out
                     </a>
                 </a>
@@ -47,8 +47,8 @@
                         <img th:src="@{/manager_resources/img/user2-160x160.jpg}" class="img-circle elevation-2 mt-2" alt="User Image">
                     </div>
                     <div class="info">
-                        <div class="d-block text-white">Thiên</div>
-                        <small class="text-muted">Administrator</small>
+                        <div class="d-block text-white" th:text="${#session.getAttribute('loggedInStaff').firstName}">???</div>
+                        <small class="text-muted" th:text="${#session.getAttribute('loggedInStaff').role.name}">???</small>
                     </div>
                 </div>
 

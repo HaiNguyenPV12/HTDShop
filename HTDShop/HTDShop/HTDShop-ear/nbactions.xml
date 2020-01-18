@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+        <action>
+            <actionName>CUSTOM-Build and Run</actionName>
+            <displayName>Build and Run</displayName>
+            <preAction>build-with-dependencies</preAction>
+            <goals>
+                <goal>package</goal>
+                
+            </goals>
+            <properties>
+                <netbeans.deploy>true</netbeans.deploy>
+            </properties>
+        </action>
+    </actions>

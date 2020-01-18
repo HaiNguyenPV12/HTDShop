@@ -28,5 +28,16 @@ public class StaffFacade extends AbstractFacade<Staff> implements StaffFacadeLoc
     public StaffFacade() {
         super(Staff.class);
     }
-    
+
+    @Override
+    public Staff checkLogin(String u, String p) {
+        Staff s = em.find(Staff.class, u);
+        if (s != null) {
+            if (s.getPassword().equals(p)) {
+                return s;
+            }
+        }
+        return null;
+    }
+
 }

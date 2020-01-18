@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>HTD Admin | Log in</title>
+    <link rel="icon" th:href="@{/manager_resources/img/logo.png}" />
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" th:href="@{/manager_resources/plugins/fontawesome-free/css/all.min.css}">
+    <!-- Ionicons -->
+    <link rel="stylesheet" th:href="@{/manager_resources/Content/ionicons.min.css}">
+    <!-- icheck bootstrap -->
+    <link rel="stylesheet" th:href="@{/manager_resources/plugins/icheck-bootstrap/icheck-bootstrap.min.css}">
+    <!-- Theme style -->
+    <link rel="stylesheet" th:href="@{/manager_resources/Content/adminlte.min.css}">
+    <!-- Google Font: Source Sans Pro -->
+    <link th:href="@{/manager_resources/Content/font.css}" rel="stylesheet">
+</head>
+
+<body class="hold-transition login-page" style="height:60vh">
+    <div class="login-box">
+        <div class="login-logo">
+            <img th:src="@{/manager_resources/img/logo.png}" alt="AdminLTE Logo" class="img-rounded elevation-1" style="opacity: .8;width:35px">
+            <a>
+                <b>HTD </b>Admin
+            </a>
+        </div>
+        <!-- /.login-logo -->
+        <div class="card">
+            <div class="card-body login-card-body">
+                <p class="login-box-msg">Sign in to start your session</p>
+
+                <form id="frmLogin" th:action="@{/manager/doLogin}" th:object="${staff}" method="post">
+                    <div class="input-group mb-3">
+                        <input id="txtUsername" type="text" class="form-control" placeholder="Username" th:field="*{userName}">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-user"></span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="input-group mb-3">
+                        <input id="txtPassword" type="password" class="form-control" placeholder="Password" th:field="*{password}">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-lock"></span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="icheck-purple">
+                                <input type="checkbox" id="remember">
+                                <label for="remember">
+                                    Remember Me
+                                </label>
+                            </div>
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-4">
+                            <button type="submit" class="btn btn-light btn-block bg-purple">Sign In</button>
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <div class="row">
+                        <p class="alert alert-danger col-12" th:if="${#fields.hasErrors('all')}" th:errors="*{all}">Name Error</p>
+                    </div>
+                </form>
+
+
+                <!-- /.login-card-body -->
+            </div>
+        </div>
+        <!-- /.login-box -->
+
+        <!-- jQuery -->
+        <script th:src="@{/manager_resources/plugins/jquery/jquery.min.js}"></script>
+        <!-- Bootstrap 4 -->
+        <script th:src="@{/manager_resources/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+        <!-- AdminLTE App -->
+        <script th:src="@{/manager_resources/Scripts/adminlte.min.js}"></script>
+
+        <script>
+            // $("#frmLogin").on("submit", function (e) {
+            //     e.preventDefault();
+            //     if ($("#txtUsername").val() == "admin" && $("#txtPassword").val() == "admin") {
+            //         window.location.href = "template.html";
+            //     } else {
+            //         alert("Login failed.");
+            //     }
+            // });
+        </script>
+</body>
+
+</html>
