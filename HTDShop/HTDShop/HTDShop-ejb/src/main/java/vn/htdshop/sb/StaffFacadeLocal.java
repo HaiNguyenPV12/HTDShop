@@ -29,5 +29,7 @@ public interface StaffFacadeLocal {
     List<Staff> findRange(int[] range);
 
     int count();
+
+    Staff checkLogin(String u, String p);
     
 }
