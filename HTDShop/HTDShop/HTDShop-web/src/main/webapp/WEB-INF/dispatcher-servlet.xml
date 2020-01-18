@@ -18,6 +18,8 @@
     <context:annotation-config />
     <!-- Chỉnh lại package ở đây để cho nó tìm controller -->
     <context:component-scan base-package="vn.htdshop" />
+    <mvc:resources mapping="/resources/**" location="/HTDShop/" cache-period="31556926"/>
+    <mvc:resources mapping="/admin_resources/**" location="/HTDManager/" cache-period="31556926"/>
 
     <!-- Custom đường dẫn cho resource -->               
     <mvc:annotation-driven />
