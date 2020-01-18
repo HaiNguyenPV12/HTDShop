@@ -36,6 +36,4 @@ public class shopIndexController {
     public String getTest() {
         return "HTDShop/test";
     }
-    
-
 }
