@@ -32,6 +32,11 @@ public class shopIndexController {
         return "HTDShop/index";
     }
 
+    @RequestMapping(value="build", method=RequestMethod.GET)
+    public String getBuild() {
+        return "HTDShop/build";
+    }
+
     @RequestMapping(value="test", method=RequestMethod.GET)
     public String getTest() {
         return "HTDShop/test";

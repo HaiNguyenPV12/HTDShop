@@ -3,13 +3,18 @@
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDShop/layout}">
 
 <head>
-    <title>HTD Shop</title>
+    <title>Build Your PC</title>
 </head>
 
 <body>
     <div layout:fragment="content">
         <div class="container">
-            <a th:href="@{/build}">go to build page</a>
+            <p>select parts for your Build</p>
+            <p>
+                <button class="btn btn-primary">
+                    <a th:href="@{/}">Back to Home</a>
+                </button>
+            </p>
         </div>
     </div>
 </body>
