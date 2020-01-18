@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import vn.htdshop.sb.CategoryFacadeLocal;
 
+
 /**
  *
  * @author Hai
@@ -30,5 +31,11 @@ public class shopIndexController {
         modelMap.addAttribute("categories", categoryFacade.findAll());
         return "HTDShop/index";
     }
+
+    @RequestMapping(value="test", method=RequestMethod.GET)
+    public String getTest() {
+        return "HTDShop/test";
+    }
+    
 
 }
