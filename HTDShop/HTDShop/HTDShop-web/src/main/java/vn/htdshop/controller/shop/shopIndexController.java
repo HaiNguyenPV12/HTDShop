@@ -28,7 +28,7 @@ public class shopIndexController {
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String getHome(ModelMap modelMap) {
         modelMap.addAttribute("categories", categoryFacade.findAll());
-        return "index";
+        return "HTDShop/index";
     }
 
 }
