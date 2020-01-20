@@ -6,14 +6,16 @@
 package vn.htdshop.controller.shop;
 
 import javax.ejb.EJB;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import vn.htdshop.entity.PreBuilt;
 import vn.htdshop.sb.CategoryFacadeLocal;
-
+import vn.htdshop.sb.PreBuiltFacadeLocal;
 
 /**
  *
@@ -26,19 +28,30 @@ public class shopIndexController {
     @EJB(mappedName = "CategoryFacade")
     CategoryFacadeLocal categoryFacade;
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    public String getHome(ModelMap modelMap) {
-        modelMap.addAttribute("categories", categoryFacade.findAll());
+    @EJB(mappedName = "PreBuiltFacade")
+    PreBuiltFacadeLocal prebuiltFacade;
+
+    @RequestMapping(value = { "", "index" }, method = RequestMethod.GET)
+    public String getHome() {
         return "HTDShop/index";
     }
 
-    @RequestMapping(value="build", method=RequestMethod.GET)
-    public String getBuild() {
+    @RequestMapping(value = "build", method = RequestMethod.GET)
+    public String getBuild(HttpSession session) {
+        if (isBuildStarted(session)) {
+            session.setAttribute("isBuilding", true);
+            session.setAttribute("currentBuild", new PreBuilt());
+        }
+
         return "HTDShop/build";
     }
 
-    @RequestMapping(value="test", method=RequestMethod.GET)
+    @RequestMapping(value = "test", method = RequestMethod.GET)
     public String getTest() {
         return "HTDShop/test";
+    }
+
+    private boolean isBuildStarted(HttpSession session) {
+        return session.getAttribute("isBuilding") == null;
     }
 }
