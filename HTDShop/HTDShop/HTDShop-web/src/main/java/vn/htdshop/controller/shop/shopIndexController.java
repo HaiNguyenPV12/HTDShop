@@ -42,7 +42,6 @@ public class shopIndexController {
             session.setAttribute("isBuilding", true);
             session.setAttribute("currentBuild", new PreBuilt());
         }
-
         return "HTDShop/build";
     }
 
