@@ -1,3 +1,14 @@
+<!-- 
+    + Any src / href attribute that using relative url from web, change it all to th:src and th:href
+    like following code:
+        th:src="@{/url_from_context_path_(not_include_context_path)}"
+        th:href="@{/url_from_context_path_(not_include_context_path)}" 
+
+    + To declare fragments that use for changing content like main content, content's title,... add
+    following attribute in that tag:
+        layout:fragment="fragment_name"
+    (we also use this to declare the fragment that we want to replace)
+-->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
@@ -57,8 +68,7 @@
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                         data-accordion="false">
-                        <!-- Add icons to the links using the .nav-icon class
-                   with font-awesome or any other icon font library -->
+
                         <li class="nav-item">
                             <a href="#" class="nav-link" th:href="@{/manager/product}"
                             th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('product_read')}" th:classappend="${menu eq 'product'}?'active':''">

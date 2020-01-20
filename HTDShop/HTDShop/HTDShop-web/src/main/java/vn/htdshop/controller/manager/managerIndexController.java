@@ -61,6 +61,9 @@ public class managerIndexController {
         }
         // Show error (if exists) after redirect to this page again
         if (model.asMap().containsKey("error")) {
+            // Here is using for staff attribute that declared, for other attribute, please change
+            // "org.springframework.validation.BindingResult.staff" to 
+            // "org.springframework.validation.BindingResult.your_attribute's_name_here"
             model.addAttribute("org.springframework.validation.BindingResult.staff", model.asMap().get("error"));
         }
         // Continue to login page
@@ -69,6 +72,8 @@ public class managerIndexController {
 
     @RequestMapping(value = "doLogin", method = RequestMethod.POST)
     // Add @Valid before @ModelAttribute to validate base on entity annotation
+    // For example: public String postLogin(@Valid @ModelAttribute("staff") Staff staff...){}
+    // Here we just have to check username and password, not all so we check manually
     public String postLogin(@ModelAttribute("staff") Staff staff, Model model, BindingResult error,
             RedirectAttributes redirect, HttpSession session) {
         // Mannually check blank username
@@ -114,7 +119,7 @@ public class managerIndexController {
         // remove session
         session.removeAttribute("loggedInStaff");
         // remove rightlist
-        session.removeAttribute("loggedInStaff");
+        session.removeAttribute("rightList");
         // reidect to login
         return "redirect:/manager/login";
     }
