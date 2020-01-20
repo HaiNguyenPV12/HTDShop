@@ -27,7 +27,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
         <div class="login-logo">
             <img th:src="@{/manager_resources/img/logo.png}" alt="AdminLTE Logo" class="img-rounded elevation-1" style="opacity: .8;width:35px">
             <a>
-                <b>HTD </b>Admin
+                <b>HTD </b>Manager
             </a>
         </div>
         <!-- /.login-logo -->
@@ -37,7 +37,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
                 <form id="frmLogin" th:action="@{/manager/doLogin}" th:object="${staff}" method="post">
                     <div class="input-group mb-3">
-                        <input id="txtUsername" type="text" class="form-control" placeholder="Username" th:field="*{userName}">
+                        <input id="txtUsername" type="text" class="form-control" placeholder="Username" th:field="*{userName}" required>
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-user"></span>
@@ -46,7 +46,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
                         
                     </div>
                     <div class="input-group mb-3">
-                        <input id="txtPassword" type="password" class="form-control" placeholder="Password" th:field="*{password}">
+                        <input id="txtPassword" type="password" class="form-control" placeholder="Password" th:field="*{password}" required>
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-lock"></span>
@@ -67,10 +67,16 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
                         <div class="col-4">
                             <button type="submit" class="btn btn-light btn-block bg-purple">Sign In</button>
                         </div>
+                        <div class="col-12 mt-2" th:if="${#fields.hasErrors('all')}">
+                            <p class="alert alert-danger">
+                                <i class="fas fa-exclamation-circle"></i> <span th:errors="*{all}">Name Error</span>
+                            </p>
+                        </div>
+                        
                         <!-- /.col -->
                     </div>
                     <div class="row">
-                        <p class="alert alert-danger col-12" th:if="${#fields.hasErrors('all')}" th:errors="*{all}">Name Error</p>
+                        
                     </div>
                 </form>
 

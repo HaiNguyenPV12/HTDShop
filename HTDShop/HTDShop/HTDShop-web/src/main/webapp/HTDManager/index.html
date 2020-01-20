@@ -8,7 +8,9 @@
 
 <body>
     <div layout:fragment="content">
-        TEST CONTENT SHOP
+        <div class="col-lg-6">
+            Hi <span class="font-weight-bold" th:text="${#session.getAttribute('loggedInStaff').firstName}"></span>!
+        </div>
     </div>
 </body>
 

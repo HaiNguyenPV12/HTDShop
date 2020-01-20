@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<!--
+    + To use layout, add following attribute in <html> tag: 
+        layout:decorate="~{path_from_java's_webapp_root_folder_and_without_extension}"
+
+    + To change content from layout, add following attribute to correspondly tag:
+        layout:fragment="fragment_name"
+      Declare any unique tag like <title>,... will replace it from layout 
+
+    + Any src / href attribute that using relative url from web, change it all to th:src and th:href
+    like following code:
+        th:src="@{/url_from_context_path_(not_include_context_path)}"
+        th:href="@{/url_from_context_path_(not_include_context_path)}"
+-->
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDManager/layout}">
+
+<head>
+    <title>HTD Manager - Product</title>
+    <!-- Hide default datatable's filter -->
+    <style>
+        .dataTables_filter {
+            float: right !important;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!--
+        
+    -->
+    <span layout:fragment="title">
+        <i class="fas fa-box-open" style="font-size:20px"></i> Product
+        <a class="btn btn-success" th:href="@{/manager/product/add}">
+            <i class="fas fa-plus-square fa-lg mr-2"></i> Add new Product
+        </a>
+    </span>
+
+    <div layout:fragment="breadcrumb">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a th:href="@{/manager}">Home</a></li>
+            <li class="breadcrumb-item active">Product</li>
+        </ol>
+    </div>
+
+    <div layout:fragment="content">
+        <div class="col-lg-12">
+            <div class="card card-purple card-outline">
+                <div class="card-body">
+                    
+                    <table id="tblProduct" class="table table-bordered table-striped table-hover">
+                        <thead class="bg-purple">
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Manufacturer</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Image</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </thead>
+
+                        <tbody>
+                            <!--
+                                + th:if will render it's tag if conditions is reached
+                                Like below, the 
+                                <tr>
+                                    <td colspan="9">No products</td>
+                                </tr>
+                                will be rendered when attribute "products" is null or empty
+                            -->
+                            <tr th:if="${products eq null or products.empty}">
+                                <td colspan="9">No products</td>
+                            </tr>
+                            <!--
+                                + To get data from controller through model, use:
+                                    th:each="child_item_name : ${attribute_from_controller's_name}"
+
+                                + After that, to show data in tags (like td/span/p/...), add following attribute in that tag
+                                    th:text="${child_item_name.child_item's_attribute}"
+                                 All of that tag content will be repace with content from th:text
+
+                                + th:classappend will add class if conditions is reached (using shorthand condition)
+                                We can use multiple condition: 
+                                    th:classappend="${(condition_1)+(condition_2)}""
+
+                                + Thymeleaf may not use intellisense or autocomplete, so we just follow object's class attribute.
+                                For example, to check if the RightDetail's Tag from RoleRights's list from Role of the loggedInStaff
+                                in session contains the 'product_read' or not:
+                                    th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('product_read')}"
+                                For more example, check layout.html in HTDManager section
+
+                            -->
+                            <tr th:each="p : ${products}"
+                                th:classappend="${(p.status==3?'bg-gray':'') + (p.status==2?'bg-info':'')}">
+                                <td th:text="${p.id}">001</td>
+                                <td th:text="${p.name}">Intel Core i5 8400 3.0 GHz</td>
+                                <td th:text="${p.category.name}">CPU</td>
+                                <td th:text="${p.manufacturer}">Intel</td>
+                                <td th:text="${p.price}">5500000</td>
+                                <td th:text="${p.stock}">30</td>
+                                <td>
+                                    <span th:if="${p.productImageCollection.size() <= 0}">No images</span>
+                                    <ul th:each="img : ${p.productImageCollection}">
+                                        <li th:text="${img.imagePath}"></li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <th:block th:if="${p.status==0}">Not selling</th:block>
+                                    <th:block th:if="${p.status==1}">Is selling</th:block>
+                                    <th:block th:if="${p.status==2}">On hold</th:block>
+                                </td>
+                                <td>
+                                    <a class="btn btn-info btn-sm" th:href="@{/manager/product/image(id=${p.id})}"
+                                        data-toggle='tooltip' title="Images">
+                                        <i class="fas fa-images"></i>
+                                    </a>
+                                    <a class="btn btn-warning btn-sm" th:href="@{/manager/product/edit(id=${p.id})}"
+                                        data-toggle='tooltip' title="Edit">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </a>
+                                    <a class="btn btn-danger btn-sm" th:href="@{/manager/product/delete(id=${p.id})}"
+                                        data-toggle='tooltip' title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                        <tfoot class="bg-purple">
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Manufacturer</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Image</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--In case using custom script at pages using layout, add th:inline="none" like below-->
+    <script layout:fragment="script" th:inline="none">
+
+        // Add custom filter for datatable
+        $('#tblProduct tfoot th').each(function () {
+            var title = $(this).text();
+            if (title == "Action" || title == "Image") {
+                // Collum that not using filter
+                $(this).html('');
+            } else if (title == "Status" || title == "Category") {
+                // Collum that using select filter
+                $(this).html('<select class="form-control"><option value="">All</option></select>');
+            } else {
+                // Collum that using text filter
+                $(this).html('<input id="txtSearch' + title + '" type="text" placeholder="Search ' + title + '" class="form-control" style="width:100%" />');
+            }
+
+        });
+        // Setting up table here
+        var table = $('#tblProduct').DataTable({
+            // Move filter from foot to head
+            initComplete: function () {
+                var r = $('#tblProduct tfoot tr');
+                r.find('th').each(function () {
+                    $(this).css('padding', 8);
+                });
+                $('#tblProduct thead').append(r);
+            },
+            "paging": true,
+            "lengthChange": true,
+            "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            "searching": true,
+            "ordering": false,
+            "info": true,
+            "autoWidth": false,
+            // custom collums's width
+            "columns": [
+                { "width": "5%" },
+                { "width": "15%" },
+                { "width": "10%" },
+                { "width": "10%" },
+                { "width": "10%" },
+                { "width": "5%" },
+                { "width": "20%" },
+                { "width": "5%" },
+                { "width": "10%" }
+            ]
+        });
+        // Set up filter action
+        table.columns().every(function () {
+            var thisCol = this;
+            // Set up action listener for text filter
+            $('input', this.footer()).on('keyup change clear', function () {
+                if (thisCol.search() !== this.value) {
+                    thisCol.search(this.value).draw();
+                }
+            });
+            // Set up data for select filter
+            $('select', this.footer()).each(function () {
+                var title = thisCol.header();
+                // Using unique data from table
+                var thisSelect = this;
+                thisCol.data().unique().sort().each(function (d, j) {
+                    $(thisSelect).append("<option value='" + d + "'>" + d + "</option>");
+                });
+                /* Or using customized data
+                if($(title).html()=="Status"){
+                    var thisSelect = this;
+                    $(thisSelect).append("<option value='1'>"+Is selling+"</option>");
+                }*/
+            });
+            // Set up action listener for select filter
+            $('select', this.footer()).on('change', function () {
+                var val = $.fn.dataTable.util.escapeRegex(
+                    $(this).val()
+                );
+                thisCol.search(val ? '^' + val + '$' : '', true, false).draw();
+            });
+        });
+
+        // Activate tooltip
+        // To show tooltip add following attributes: data-toggle="tooltip" title="tooltip_content"
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
+</body>
+
+</html>
