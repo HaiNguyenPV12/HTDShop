@@ -2,7 +2,7 @@
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>HTD Admin | Welcome</title>
     <link rel="icon" th:href="@{/manager_resources/img/logo.png}" />
     <!-- Font Awesome Icons -->
@@ -34,9 +34,9 @@
         <aside class="main-sidebar sidebar-dark-purple elevation-4">
             <!-- Brand Logo -->
             <a th:href="@{/manager}" class="brand-link">
-                <img th:src="@{/manager_resources/img/logo.png}" alt="AdminLTE Logo" class="brand-image img-rounded elevation-3"
-                    style="opacity: .8">
-                <span class="brand-text font-weight-light">HTD Shop Admin</span>
+                <img th:src="@{/manager_resources/img/logo.png}" alt="AdminLTE Logo"
+                    class="brand-image img-rounded elevation-3" style="opacity: .8">
+                <span class="brand-text font-weight-light">HTD Manager</span>
             </a>
 
             <!-- Sidebar -->
@@ -44,7 +44,8 @@
                 <!-- Sidebar user panel (optional) -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
-                        <img th:src="@{/manager_resources/img/user2-160x160.jpg}" class="img-circle elevation-2 mt-2" alt="User Image">
+                        <img th:src="@{/manager_resources/img/user2-160x160.jpg}" class="img-circle elevation-2 mt-2"
+                            alt="User Image">
                     </div>
                     <div class="info">
                         <div class="d-block text-white" th:text="${#session.getAttribute('loggedInStaff').firstName}">???</div>
@@ -59,71 +60,88 @@
                         <!-- Add icons to the links using the .nav-icon class
                    with font-awesome or any other icon font library -->
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="#" class="nav-link" th:href="@{/manager/product}"
+                            th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('product_read')}" th:classappend="${menu eq 'product'}?'active':''">
                                 <i class="nav-icon fas fa-box-open"></i>
                                 <p>Product</p>
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="#" class="nav-link"  th:href="@{/manager/prebuilt}"
+                            th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('prebuilt_read')}"  th:classappend="${menu eq 'prebuilt'}?'active':''">
                                 <i class="nav-icon fas fa-desktop"></i>
                                 <p>Pre-built PC</p>
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="#" class="nav-link" th:href="@{/manager/comment}"
+                            th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('comment_read')}"  th:classappend="${menu eq 'comment'}?'active':''">
                                 <i class="nav-icon fas fa-comments"></i>
                                 <p>Comment</p>
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="#" class="nav-link" th:href="@{/manager/order}"
+                            th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('order_read')}" th:classappend="${menu eq 'order'}?'active':''">
                                 <i class="nav-icon fas fa-receipt"></i>
                                 <p>Order</p>
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="#" class="nav-link" th:href="@{/manager/customer}"
+                            th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('customer_read')}" th:classappend="${menu eq 'customer'}?'active':''">
                                 <i class="nav-icon fas fa-users"></i>
                                 <p>Customer</p>
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="#" class="nav-link" th:href="@{/manager/promotion}"
+                            th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('promotion_read')}" th:classappend="${menu eq 'promotion'}?'active':''">
                                 <i class="nav-icon fas fa-gifts"></i>
                                 <p>Promotion</p>
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="#" class="nav-link" th:href="@{/manager/imageslide}"
+                            th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('imageslide_read')}" th:classappend="${menu eq 'imageslide'}?'active':''">
                                 <i class="nav-icon fas fa-images"></i>
                                 <p>Image Slide</p>
                             </a>
                         </li>
 
-                        <li class="nav-header">ADMINISTRATOR</li>
+                        <li class="nav-header" 
+                        th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('staff_read')} 
+                        or 
+                        ${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('role_read')} 
+                        or
+                        ${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('revenue_read')}">
+                            ADMINISTRATOR
+                        </li>
 
-                        <li class="nav-item">
+                        <li class="nav-item" th:href="@{/manager/staff}"
+                        th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('staff_read')}" th:classappend="${menu eq 'staff'}?'active':''">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-briefcase"></i>
                                 <p>Staff</p>
                             </a>
                         </li>
 
-                        <li class="nav-item">
+                        <li class="nav-item" th:href="@{/manager/role}"
+                        th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('role_read')}" th:classappend="${menu eq 'role'}?'active':''">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-balance-scale"></i>
                                 <p>Role</p>
                             </a>
                         </li>
 
-                        <li class="nav-item">
+                        <li class="nav-item" th:href="@{/manager/revenue}"
+                        th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('revenue_read')}" th:classappend="${menu eq 'revenue'}?'active':''">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-chart-line"></i>
                                 <p>Revenue Report</p>
@@ -145,13 +163,17 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1 class="m-0 text-dark">Welcome to HTD Shop Admin panel.</h1>
+                            <h1 class="m-0 text-dark">
+                                <span layout:fragment="title">Welcome to HTD Manager.</span>
+                            </h1>
                         </div><!-- /.col -->
                         <div class="col-sm-6">
-                            <ol class="breadcrumb float-sm-right">
-                                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                <li class="breadcrumb-item active">Welcome Page</li>
-                            </ol>
+                            <div layout:fragment="breadcrumb">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item">Home</li>
+                                    <li class="breadcrumb-item active">Welcome Page</li>
+                                </ol>
+                            </div>
                         </div><!-- /.col -->
                     </div><!-- /.row -->
                 </div><!-- /.container-fluid -->
@@ -162,22 +184,8 @@
             <div class="content">
                 <div class="container-fluid">
                     <!-- Contain start here -->
-                    <div class="row">
-                        <div class="col-lg-6">
-
-                            <div class="card card-purple card-outline">
-                                <div class="card-header">
-                                    <h5 class="m-0">Featured</h5>
-                                </div>
-                                <div class="card-body">
-                                    <h6 class="card-title">Special title treatment</h6>
-
-                                    <p class="card-text">With supporting text below as a natural lead-in to additional
-                                        content.</p>
-                                    <a href="#" class="btn btn-light bg-purple">Go somewhere</a>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="row" layout:fragment="content">
+                        ???
                         <!-- /.col-md-6 -->
                     </div>
                     <!-- /.row -->
@@ -199,6 +207,20 @@
         </footer>
     </div>
 
+    <!-- jQuery -->
+    <script th:src="@{/manager_resources/plugins/jquery/jquery.min.js}"></script>
+    <script th:src="@{/manager_resources/plugins/popper/umd/popper.min.js}"></script>
+    <!-- Bootstrap 4 -->
+    <script th:src="@{/manager_resources/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+    <script type="text/javascript" th:src="@{/manager_resources/plugins/datatables/jquery.dataTables.js}"></script>
+    <script type="text/javascript" th:src="@{/manager_resources/plugins/datatables-bs4/js/dataTables.bootstrap4.js}"></script>
+    
+    <script layout:fragment="script"></script>
+
+    <!-- AdminLTE App -->
+    <script th:src="@{/manager_resources/Scripts/adminlte.min.js}"></script>
+    
 </body>
 
 </html>
