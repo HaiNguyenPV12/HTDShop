@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<body>
+    <th:block th:fragment="2">
+
+        <form action="" id="frmProductAddCpu" th:action="@{/manager/product/doAddCPU?cate=2}" th:object="${cpu}"
+            method="POST">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card card-purple">
+                        <div class="card-header">
+                            <h3 class="card-title">Basic information</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <label for="name" class="col-sm-3 col-form-label text-right">Name</label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" id="name" placeholder="Product name"
+                                        th:field="*{name}" />
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9" th:if="${#fields.hasErrors('name')}">
+                                    <p class="alert alert-danger">
+                                        <span th:errors="*{name}">Name Error</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                            <label for="manufacturer" class="col-sm-3 col-form-label text-right">Manufacturer</label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" id="manufacturer" placeholder="Manufacturer"
+                                        th:field="*{manufacturer}"/>
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9" th:if="${#fields.hasErrors('manufacturer')}">
+                                    <p class="alert alert-danger">
+                                        <span th:errors="*{manufacturer}">Name Error</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="color" class="col-sm-3 col-form-label text-right">Color</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control" id="color" th:field="*{color}">
+                                        <option value="">None</option>
+                                        <option value="red" class="bg-red font-weight-bold">Red</option>
+                                        <option value="blue" class="bg-blue font-weight-bold">Blue
+                                        </option>
+                                        <option value="green" class="bg-green font-weight-bold">Green
+                                        </option>
+                                        <option value="yellow" class="bg-yellow font-weight-bold">Yellow
+                                        </option>
+                                        <option value="white" class="bg-white font-weight-bold">White
+                                        </option>
+                                        <option value="black" class="bg-dark font-weight-bold">Black
+                                        </option>
+                                        <option value="gray" class="bg-gray font-weight-bold">Gray
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9" th:if="${#fields.hasErrors('color')}">
+                                    <p class="alert alert-danger">
+                                        <span th:errors="*{color}">Name Error</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="price" class="col-sm-3 col-form-label text-right">Price</label>
+                                <div class="col-sm-5">
+                                    <input type="number" class="form-control" id="price" placeholder="Price"
+                                        th:field="*{price}">
+                                </div>
+                                <label for="stock" class="col-sm-2 col-form-label text-right">Stock</label>
+                                <div class="col-sm-2">
+                                    <input type="number" class="form-control" id="stock" placeholder="Stock"
+                                        th:field="*{stock}">
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-5" th:if="${#fields.hasErrors('price')}">
+                                    <p class="alert alert-danger">
+                                        <span th:errors="*{price}">Name Error</span>
+                                    </p>
+                                </div>
+                                <div class="col-sm-2"></div>
+                                <div class="col-sm-2" th:if="${#fields.hasErrors('stock')}">
+                                    <p class="alert alert-danger">
+                                        <span th:errors="*{stock}">Name Error</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="unit" class="col-sm-3 col-form-label text-right">Unit</label>
+                                <div class="col-sm-5">
+                                    <input class="form-control" id="unit" placeholder="Unit" th:field="*{unit}">
+                                </div>
+                                <label for="warrantyPeriod" class="col-sm-2 col-form-label text-right">Warranty
+                                    Period (months)</label>
+                                <div class="col-sm-2">
+                                    <input type="number" class="form-control" id="warrantyPeriod"
+                                        placeholder="Warranty Period" th:field="*{warrantyPeriod}">
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-5" th:if="${#fields.hasErrors('unit')}">
+                                    <p class="alert alert-danger">
+                                        <span th:errors="*{unit}">Name Error</span>
+                                    </p>
+                                </div>
+                                <div class="col-sm-2"></div>
+                                <div class="col-sm-2" th:if="${#fields.hasErrors('warrantyPeriod')}">
+                                    <p class="alert alert-danger">
+                                        <span th:errors="*{warrantyPeriod}">Name Error</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="card card-purple">
+                        <div class="card-header">
+                            <h3 class="card-title">Specific information</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <label for="socket" class="col-sm-3 col-form-label text-right">Socket</label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" id="socket" placeholder="Socket"  th:field="*{socket}">
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9" th:if="${#fields.hasErrors('socket')}">
+                                    <p class="alert alert-danger">
+                                        <span th:errors="*{socket}">Name Error</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="socket" class="col-sm-3 col-form-label text-right">Chipset</label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" id="chipset" placeholder="Chipset"  th:field="*{chipset}">
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9" th:if="${#fields.hasErrors('chipset')}">
+                                    <p class="alert alert-danger">
+                                        <span th:errors="*{chipset}">Name Error</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="tdp" class="col-sm-3 col-form-label text-right">TDP (W)</label>
+                                <div class="col-sm-9">
+                                    <input type="number" class="form-control" id="tdp" placeholder="TDP (W)"  th:field="*{tdp}">
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9" th:if="${#fields.hasErrors('tdp')}">
+                                    <p class="alert alert-danger">
+                                        <span th:errors="*{tdp}">Name Error</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="core" class="col-sm-3 col-form-label text-right">Cores number</label>
+                                <div class="col-sm-3">
+                                    <input type="number" class="form-control" id="core" placeholder="Cores"  th:field="*{core}">
+                                </div>
+
+                                <label for="thread" class="col-sm-3 col-form-label text-right">Threads number</label>
+                                <div class="col-sm-3">
+                                    <input type="number" class="form-control" id="thread" placeholder="Threads"  th:field="*{thread}">
+                                </div>
+
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-3" th:if="${#fields.hasErrors('core')}">
+                                    <p class="alert alert-danger">
+                                        <span th:errors="*{core}">Name Error</span>
+                                    </p>
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-3" th:if="${#fields.hasErrors('thread')}">
+                                    <p class="alert alert-danger">
+                                        <span th:errors="*{thread}">Name Error</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 mb-3" th:if="${#fields.hasErrors('global')}">
+                    <p class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i> <span th:errors="*{global}">Name Error</span>
+                    </p>
+                </div>
+
+                <div class="col-lg-12 text-right mb-3">
+                    <input type="submit" class="btn btn-success" value="Add new CPU"></input>
+                </div>
+            
+            </div>
+        </form>
+        
+    </th:block>
+
+
+    <th:block th:fragment="1">
+        Case
+    </th:block>
+</body>
+
+</html>

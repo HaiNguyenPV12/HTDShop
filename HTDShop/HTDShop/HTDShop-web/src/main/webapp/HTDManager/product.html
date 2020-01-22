@@ -46,25 +46,26 @@
     </div>
 
     <div layout:fragment="content">
-        <div class="col-lg-12">
-            <div class="card card-purple card-outline">
-                <div class="card-body">
-                    
-                    <table id="tblProduct" class="table table-bordered table-striped table-hover">
-                        <thead class="bg-purple">
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Category</th>
-                            <th>Manufacturer</th>
-                            <th>Price</th>
-                            <th>Stock</th>
-                            <th>Image</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </thead>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card card-purple card-outline">
+                    <div class="card-body">
 
-                        <tbody>
-                            <!--
+                        <table id="tblProduct" class="table table-bordered table-striped table-hover">
+                            <thead class="bg-purple">
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Manufacturer</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Image</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </thead>
+
+                            <tbody>
+                                <!--
                                 + th:if will render it's tag if conditions is reached
                                 Like below, the 
                                 <tr>
@@ -72,10 +73,10 @@
                                 </tr>
                                 will be rendered when attribute "products" is null or empty
                             -->
-                            <tr th:if="${products eq null or products.empty}">
-                                <td colspan="9">No products</td>
-                            </tr>
-                            <!--
+                                <tr th:if="${products eq null or products.empty}">
+                                    <td colspan="9">No products</td>
+                                </tr>
+                                <!--
                                 + To get data from controller through model, use:
                                     th:each="child_item_name : ${attribute_from_controller's_name}"
 
@@ -94,54 +95,56 @@
                                 For more example, check layout.html in HTDManager section
 
                             -->
-                            <tr th:each="p : ${products}"
-                                th:classappend="${(p.status==3?'bg-gray':'') + (p.status==2?'bg-info':'')}">
-                                <td th:text="${p.id}">001</td>
-                                <td th:text="${p.name}">Intel Core i5 8400 3.0 GHz</td>
-                                <td th:text="${p.category.name}">CPU</td>
-                                <td th:text="${p.manufacturer}">Intel</td>
-                                <td th:text="${p.price}">5500000</td>
-                                <td th:text="${p.stock}">30</td>
-                                <td>
-                                    <span th:if="${p.productImageCollection.size() <= 0}">No images</span>
-                                    <ul th:each="img : ${p.productImageCollection}">
-                                        <li th:text="${img.imagePath}"></li>
-                                    </ul>
-                                </td>
-                                <td>
-                                    <th:block th:if="${p.status==0}">Not selling</th:block>
-                                    <th:block th:if="${p.status==1}">Is selling</th:block>
-                                    <th:block th:if="${p.status==2}">On hold</th:block>
-                                </td>
-                                <td>
-                                    <a class="btn btn-info btn-sm" th:href="@{/manager/product/image(id=${p.id})}"
-                                        data-toggle='tooltip' title="Images">
-                                        <i class="fas fa-images"></i>
-                                    </a>
-                                    <a class="btn btn-warning btn-sm" th:href="@{/manager/product/edit(id=${p.id})}"
-                                        data-toggle='tooltip' title="Edit">
-                                        <i class="fas fa-pencil-alt"></i>
-                                    </a>
-                                    <a class="btn btn-danger btn-sm" th:href="@{/manager/product/delete(id=${p.id})}"
-                                        data-toggle='tooltip' title="Delete">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                </td>
-                            </tr>
+                                <tr th:each="p : ${products}"
+                                    th:classappend="${(p.status==3?'bg-gray':'') + (p.status==2?'bg-info':'')}">
+                                    <td th:text="${p.id}">001</td>
+                                    <td th:text="${p.name}">Intel Core i5 8400 3.0 GHz</td>
+                                    <td th:text="${p.category.name}">CPU</td>
+                                    <td th:text="${p.manufacturer}">Intel</td>
+                                    <td th:text="${p.price}">5500000</td>
+                                    <td th:text="${p.stock}">30</td>
+                                    <td>
+                                        <span th:if="${p.productImageCollection.size() <= 0}">No images</span>
+                                        <ul th:each="img : ${p.productImageCollection}">
+                                            <li th:text="${img.imagePath}"></li>
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <th:block th:if="${p.status==1}">Is selling</th:block>
+                                        <th:block th:if="${p.status==2}">On hold</th:block>
+                                        <th:block th:if="${p.status==3}">Not selling</th:block>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-info btn-sm" th:href="@{/manager/product/image(id=${p.id})}"
+                                            data-toggle='tooltip' title="Images">
+                                            <i class="fas fa-images"></i>
+                                        </a>
+                                        <a class="btn btn-warning btn-sm" th:href="@{/manager/product/edit(id=${p.id})}"
+                                            data-toggle='tooltip' title="Edit">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </a>
+                                        <a class="btn btn-danger btn-sm"
+                                            th:href="@{/manager/product/delete(id=${p.id})}" data-toggle='tooltip'
+                                            title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
 
-                        </tbody>
-                        <tfoot class="bg-purple">
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Category</th>
-                            <th>Manufacturer</th>
-                            <th>Price</th>
-                            <th>Stock</th>
-                            <th>Image</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tfoot>
-                    </table>
+                            </tbody>
+                            <tfoot class="bg-purple">
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Manufacturer</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Image</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

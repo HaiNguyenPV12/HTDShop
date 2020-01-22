@@ -88,7 +88,6 @@ public class Product implements Serializable {
     @Column(name = "Price")
     private double price;
     @Basic(optional = false)
-    @NotNull
     @Size(min = 1, max = 30)
     @Column(name = "Unit")
     private String unit;
@@ -150,7 +149,6 @@ public class Product implements Serializable {
     @Column(name = "Resolution")
     private String resolution;
     @Basic(optional = false)
-    @NotNull
     @Lob
     @Size(min = 1, max = 2147483647)
     @Column(name = "Description")
