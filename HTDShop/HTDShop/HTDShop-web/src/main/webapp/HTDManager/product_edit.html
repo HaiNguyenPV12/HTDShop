@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDManager/layout}">
+
+<head>
+    <title>HTD Manager - Update product</title>
+</head>
+
+<body>
+    <span layout:fragment="title">
+        <a th:href="@{/manager/product}">
+            <i class="fas fa-box-open" style="font-size:20px"></i> Product
+        </a>
+        > Update product: "<span th:text="${product.name}"></span>"
+    </span>
+
+    <div layout:fragment="breadcrumb">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a th:href="@{/manager}">Home</a></li>
+            <li class="breadcrumb-item active"><a th:href="@{/manager/product}">Product</a></li>
+        </ol>
+    </div>
+
+    <div layout:fragment="content">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card card-purple card-outline">
+                    <div class="card-body">
+                        Category: <span class="font-weight-bold" th:text="${category}"></span>
+                    </div>
+                </div>
+            </div>
+            <!-- 
+            + Use th:with to declare or set variable use in that tag:
+                th:with = "variable_name = variable_value"
+        -->
+        </div>
+        <th:block th:with="curCate=${curCate}">
+            <!-- 
+                + Declare fragment (use this in template page only):
+                    <some_tag th:fragment="fragment_name"> tag's_content </some_tag>
+                + Replace current tag with declared tag: 
+                    <current_tag th:replace="~{/path_to_template_without_extension :: fragment_name}"></current_tag>
+                + But above method will show error if fragment is not exists, to replace with blank when fragment is not exists:
+                    <current_tag th:replace="~{/path_to_template_without_extension :: fragment_name} ?: ~{}"></current_tag>
+
+            -->
+            <th:block th:replace="~{/HTDManager/product_edit_template :: __${curCate}__} ?: ~{}">
+
+            </th:block>
+        </th:block>
+    </div>
+    <script layout:fragment="script" th:inline="none">
+        //Initialize Select2 Elements
+        $('.select2').select2()
+
+        //Initialize Select2 Elements
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        })
+
+    </script>
+</body>
+
+</html>

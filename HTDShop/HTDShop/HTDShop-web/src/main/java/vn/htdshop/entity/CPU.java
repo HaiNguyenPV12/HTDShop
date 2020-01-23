@@ -1,13 +1,12 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+    This is custom CPU entity class for Product.
  */
 package vn.htdshop.entity;
 
-import javax.persistence.Column;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -26,17 +25,27 @@ import org.springframework.format.annotation.NumberFormat;
  */
 @Entity
 public class CPU {
+    // Must have
     @Id
     private Integer id;
-    
+
+    // @NotEmpty: use for String
+    // @NotNull: use for Integer (not int), Double (not double), Float (not
+    // float),...
+    // @Size: length/characters number of this attribute
+    // @DecimalMin: minimum decimal
+    // @DecimalMax: maxumum decimal
+    // @Min: minimum integer/long
+    // @Max: maximum integer/long
+
     @NotEmpty(message = "Name cannot be empty.")
     @Size(min = 3, max = 255, message = "Name must have from 3 - 255 characters.")
     private String name;
-    
+
     @NotEmpty(message = "Manufacturer cannot be empty.")
     @Size(min = 1, max = 100, message = "Manufacturer must have from 1 - 100 characters.")
     private String manufacturer;
-    
+
     @NotEmpty(message = "Color cannot be empty.")
     private String color;
 
@@ -45,10 +54,10 @@ public class CPU {
     @DecimalMin(value = "0.0", message = "Price's minimum is 0.")
     @DecimalMax(value = "100000000.0", message = "Price's maximum is 100,000,000.")
     private Double price;
-    
-    @Size(max = 30, message = "Unit must have from 0 - 30 characters.")
+
+    @Size(max = 30, message = "Unit must have maximum 30 characters.")
     private String unit;
-    
+
     @NotNull(message = "Stock cannot be empty.")
     @Min(value = 0, message = "Stock's minimum is 0.")
     @Max(value = 10000, message = "Stock's maximum is 10,000.")
@@ -80,11 +89,18 @@ public class CPU {
     @Max(value = 1000, message = "Thread's maximum is 1000.")
     private Integer thread;
 
-    public Product toNewProduct(){
+    @Lob
+    @Size(max = 2000000000, message = "Description must have maximum 2.000.000.000 characters.")
+    private String description;
+
+    private Integer status;
+
+    // Custom method to create Product object (for adding)
+    public Product toNewProduct() {
         Product p = new Product();
         Category c = new Category();
         c.setId(2);
-        
+
         p.setId(null);
         p.setName(name);
         p.setCategory(c);
@@ -99,7 +115,59 @@ public class CPU {
         p.setCore(core);
         p.setThread(thread);
         p.setStatus(1);
+        p.setUnit(unit);
+        p.setDescription(description);
         return p;
+    }
+
+    // Custom method to create Product object (for editing)
+    public Product toProduct() {
+        Product p = new Product();
+        Category c = new Category();
+        c.setId(2);
+
+        p.setId(id);
+        p.setName(name);
+        p.setCategory(c);
+        p.setManufacturer(manufacturer);
+        p.setColor(color);
+        p.setPrice(price);
+        p.setStock(stock);
+        p.setWarrantyPeriod(warrantyPeriod);
+        p.setSocket(socket);
+        p.setChipset(chipset);
+        p.setTdp(tdp);
+        p.setCore(core);
+        p.setThread(thread);
+        p.setStatus(status);
+        p.setUnit(unit);
+        p.setDescription(description);
+        return p;
+    }
+
+    // Custom method to create CPU object from Product object (for editing)
+    public boolean fromProduct(Product p) {
+        try {
+            id = p.getId();
+            name = p.getName();
+            manufacturer = p.getManufacturer();
+            color = p.getColor();
+            price = p.getPrice();
+            stock = p.getStock();
+            warrantyPeriod = p.getWarrantyPeriod();
+            socket = p.getSocket();
+            chipset = p.getChipset();
+            tdp = p.getTdp();
+            core = p.getCore();
+            thread = p.getThread();
+            description = p.getDescription();
+            status = p.getStatus();
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     /**
@@ -284,6 +352,32 @@ public class CPU {
         this.thread = thread;
     }
 
-    
-    
+    /**
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * @return the status
+     */
+    public Integer getStatus() {
+        return status;
+    }
+
+    /**
+     * @param status the status to set
+     */
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
 }

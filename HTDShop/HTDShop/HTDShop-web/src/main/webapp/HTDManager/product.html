@@ -111,7 +111,7 @@
                                     </td>
                                     <td>
                                         <th:block th:if="${p.status==1}">Is selling</th:block>
-                                        <th:block th:if="${p.status==2}">On hold</th:block>
+                                        <th:block th:if="${p.status==2}">Upcoming</th:block>
                                         <th:block th:if="${p.status==3}">Not selling</th:block>
                                     </td>
                                     <td>
@@ -149,6 +149,7 @@
             </div>
         </div>
     </div>
+   
     <!--In case using custom script at pages using layout, add th:inline="none" like below-->
     <script layout:fragment="script" th:inline="none">
 

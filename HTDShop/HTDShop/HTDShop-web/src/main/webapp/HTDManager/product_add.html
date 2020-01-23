@@ -4,6 +4,10 @@
 
 <head>
     <title>HTD Manager - Add new product</title>
+    <th:block layout:fragment="css">
+          
+    </th:block>
+    
 </head>
 
 <body>
@@ -26,7 +30,7 @@
             <div class="col-lg-12">
                 <div class="card card-purple card-outline">
                     <div class="card-body">
-                        <select class="form-control" style="width: 100%;" id="category">
+                        <select class="form-control select2" style="width: 100%;" id="category">
                             <!-- 
                             + Specify when "selected" attribute is used by using
                                 th:selected="${condition}"
@@ -78,6 +82,10 @@
             </th:block>
         </th:block>
     </div>
+
+    <th:block layout:fragment="additionalScript">
+       
+    </th:block>
     <script layout:fragment="script" th:inline="none">
         $('#category').on('change', function () {
             var val = $(this).val();
@@ -93,7 +101,13 @@
             });
             */
         });
+        //Initialize Select2 Elements
+        $('.select2').select2()
 
+        //Initialize Select2 Elements
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        })
     </script>
 </body>
 
