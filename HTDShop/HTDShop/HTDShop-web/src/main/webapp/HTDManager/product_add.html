@@ -4,14 +4,18 @@
 
 <head>
     <title>HTD Manager - Add new product</title>
+    <th:block layout:fragment="css">
+          
+    </th:block>
+    
 </head>
 
 <body>
     <span layout:fragment="title">
-        <i class="fas fa-box-open" style="font-size:20px"></i> Product
-        <a class="btn btn-success" th:href="@{/manager/product/add}">
-            <i class="fas fa-plus-square fa-lg mr-2"></i> Add new Product
+        <a th:href="@{/manager/product}">
+            <i class="fas fa-box-open" style="font-size:20px"></i> Product
         </a>
+        > Add new Product
     </span>
 
     <div layout:fragment="breadcrumb">
@@ -22,10 +26,89 @@
     </div>
 
     <div layout:fragment="content">
-        <div class="col-lg-6">
-            New product here
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card card-purple card-outline">
+                    <div class="card-body">
+                        <select class="form-control select2" style="width: 100%;" id="category">
+                            <!-- 
+                            + Specify when "selected" attribute is used by using
+                                th:selected="${condition}"
+                            -->
+                            <option th:selected="${param.cate ==null || param.cate == ''}" disabled>-- Category --
+                            </option>
+                            <!-- 
+                                + Get get parameter data by using:
+                                    param.parameter_name[0]
+                                + Remember to check if that parameter is not null by using:
+                                    param.cate !=null
+                                + Parse integer parameter by using:
+                                    T(Integer).parseInt(value).
+                            -->
+                            <option th:each="cate : ${categories}" th:value="${cate.id}" th:text="${cate.name}"
+                                th:selected="${param.cate != null and T(Integer).parseInt(param.cate[0]) == cate.id}">
+                                CPU
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <!-- 
+            + Use th:with to declare or set variable use in that tag:
+                th:with = "variable_name = variable_value"
+        -->
         </div>
+        <th:block th:if="${param.cate == null}">
+            <div class="card card-purple">
+                <div class="card-body">
+                    <div id="main">
+                        Please choose category...
+                    </div>
+                </div>
+            </div>
+        </th:block>
+        <th:block th:if="${param.cate != null}" th:with="curCate=${param.cate[0]}">
+            <!-- 
+                + Declare fragment (use this in template page only):
+                    <some_tag th:fragment="fragment_name"> tag's_content </some_tag>
+                + Replace current tag with declared tag: 
+                    <current_tag th:replace="~{/path_to_template_without_extension :: fragment_name}"></current_tag>
+                + But above method will show error if fragment is not exists, to replace with blank when fragment is not exists:
+                    <current_tag th:replace="~{/path_to_template_without_extension :: fragment_name} ?: ~{}"></current_tag>
+
+            -->
+            <th:block th:replace="~{/HTDManager/product_add_template :: __${curCate}__} ?: ~{}">
+
+            </th:block>
+        </th:block>
     </div>
+
+    <th:block layout:fragment="additionalScript">
+       
+    </th:block>
+    <script layout:fragment="script" th:inline="none">
+        $('#category').on('change', function () {
+            var val = $(this).val();
+            console.log($(this).val());
+            if (val == "") {
+                window.location.href = "add";
+            } else {
+                window.location.href = "add?cate=" + val;
+            }
+            /*
+            $.post("product-add-" + val+".html", function(result, text,jqXHR){
+                console.log(result);
+            });
+            */
+        });
+        //Initialize Select2 Elements
+        $('.select2').select2()
+
+        //Initialize Select2 Elements
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        })
+    </script>
 </body>
 
 </html>

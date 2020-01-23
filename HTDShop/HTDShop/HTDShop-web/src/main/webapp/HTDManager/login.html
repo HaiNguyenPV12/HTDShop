@@ -37,7 +37,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
                 <form id="frmLogin" th:action="@{/manager/doLogin}" th:object="${staff}" method="post">
                     <div class="input-group mb-3">
-                        <input id="txtUsername" type="text" class="form-control" placeholder="Username" th:field="*{userName}" required>
+                        <input id="txtUsername" type="text" class="form-control" placeholder="Username" th:field="*{userName}" required autofocus>
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-user"></span>
