@@ -163,24 +163,24 @@ public class Product implements Serializable {
     private Category category;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
     private Collection<Promotion> promotionCollection;
-    @OneToMany(mappedBy = "product")
-    private Collection<PreBuilt> preBuiltCollection;
-    @OneToMany(mappedBy = "product1")
-    private Collection<PreBuilt> preBuiltCollection1;
-    @OneToMany(mappedBy = "product2")
-    private Collection<PreBuilt> preBuiltCollection2;
-    @OneToMany(mappedBy = "product3")
-    private Collection<PreBuilt> preBuiltCollection3;
-    @OneToMany(mappedBy = "product4")
-    private Collection<PreBuilt> preBuiltCollection4;
-    @OneToMany(mappedBy = "product5")
-    private Collection<PreBuilt> preBuiltCollection5;
-    @OneToMany(mappedBy = "product6")
-    private Collection<PreBuilt> preBuiltCollection6;
-    @OneToMany(mappedBy = "product7")
-    private Collection<PreBuilt> preBuiltCollection7;
-    @OneToMany(mappedBy = "product8")
-    private Collection<PreBuilt> preBuiltCollection8;
+    @OneToMany(mappedBy = "vga")
+    private Collection<PreBuilt> preBuiltVGACollection;
+    @OneToMany(mappedBy = "cases")
+    private Collection<PreBuilt> preBuiltCaseCollection;
+    @OneToMany(mappedBy = "monitor")
+    private Collection<PreBuilt> preBuiltMonitorCollection;
+    @OneToMany(mappedBy = "psu")
+    private Collection<PreBuilt> preBuiltPSUCollection;
+    @OneToMany(mappedBy = "storage")
+    private Collection<PreBuilt> preBuiltStorageCollection;
+    @OneToMany(mappedBy = "memory")
+    private Collection<PreBuilt> preBuiltMemoryCollection;
+    @OneToMany(mappedBy = "cpucooler")
+    private Collection<PreBuilt> preBuiltCPUCoolerCollection;
+    @OneToMany(mappedBy = "motherboard")
+    private Collection<PreBuilt> preBuiltMotherboardCollection;
+    @OneToMany(mappedBy = "cpu")
+    private Collection<PreBuilt> preBuiltCPUCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
     private Collection<OrderDetail> orderDetailCollection;
 
@@ -465,87 +465,6 @@ public class Product implements Serializable {
     }
 
     @XmlTransient
-    public Collection<PreBuilt> getPreBuiltCollection() {
-        return preBuiltCollection;
-    }
-
-    public void setPreBuiltCollection(Collection<PreBuilt> preBuiltCollection) {
-        this.preBuiltCollection = preBuiltCollection;
-    }
-
-    @XmlTransient
-    public Collection<PreBuilt> getPreBuiltCollection1() {
-        return preBuiltCollection1;
-    }
-
-    public void setPreBuiltCollection1(Collection<PreBuilt> preBuiltCollection1) {
-        this.preBuiltCollection1 = preBuiltCollection1;
-    }
-
-    @XmlTransient
-    public Collection<PreBuilt> getPreBuiltCollection2() {
-        return preBuiltCollection2;
-    }
-
-    public void setPreBuiltCollection2(Collection<PreBuilt> preBuiltCollection2) {
-        this.preBuiltCollection2 = preBuiltCollection2;
-    }
-
-    @XmlTransient
-    public Collection<PreBuilt> getPreBuiltCollection3() {
-        return preBuiltCollection3;
-    }
-
-    public void setPreBuiltCollection3(Collection<PreBuilt> preBuiltCollection3) {
-        this.preBuiltCollection3 = preBuiltCollection3;
-    }
-
-    @XmlTransient
-    public Collection<PreBuilt> getPreBuiltCollection4() {
-        return preBuiltCollection4;
-    }
-
-    public void setPreBuiltCollection4(Collection<PreBuilt> preBuiltCollection4) {
-        this.preBuiltCollection4 = preBuiltCollection4;
-    }
-
-    @XmlTransient
-    public Collection<PreBuilt> getPreBuiltCollection5() {
-        return preBuiltCollection5;
-    }
-
-    public void setPreBuiltCollection5(Collection<PreBuilt> preBuiltCollection5) {
-        this.preBuiltCollection5 = preBuiltCollection5;
-    }
-
-    @XmlTransient
-    public Collection<PreBuilt> getPreBuiltCollection6() {
-        return preBuiltCollection6;
-    }
-
-    public void setPreBuiltCollection6(Collection<PreBuilt> preBuiltCollection6) {
-        this.preBuiltCollection6 = preBuiltCollection6;
-    }
-
-    @XmlTransient
-    public Collection<PreBuilt> getPreBuiltCollection7() {
-        return preBuiltCollection7;
-    }
-
-    public void setPreBuiltCollection7(Collection<PreBuilt> preBuiltCollection7) {
-        this.preBuiltCollection7 = preBuiltCollection7;
-    }
-
-    @XmlTransient
-    public Collection<PreBuilt> getPreBuiltCollection8() {
-        return preBuiltCollection8;
-    }
-
-    public void setPreBuiltCollection8(Collection<PreBuilt> preBuiltCollection8) {
-        this.preBuiltCollection8 = preBuiltCollection8;
-    }
-
-    @XmlTransient
     public Collection<OrderDetail> getOrderDetailCollection() {
         return orderDetailCollection;
     }
@@ -577,6 +496,141 @@ public class Product implements Serializable {
     @Override
     public String toString() {
         return "vn.htdshop.entity.Product[ id=" + id + " ]";
+    }
+
+    /**
+     * @return the preBuiltVGACollection
+     */
+    @XmlTransient
+    public Collection<PreBuilt> getPreBuiltVGACollection() {
+        return preBuiltVGACollection;
+    }
+
+    /**
+     * @param preBuiltVGACollection the preBuiltVGACollection to set
+     */
+    public void setPreBuiltVGACollection(Collection<PreBuilt> preBuiltVGACollection) {
+        this.preBuiltVGACollection = preBuiltVGACollection;
+    }
+
+    /**
+     * @return the preBuiltCaseCollection
+     */
+    @XmlTransient
+    public Collection<PreBuilt> getPreBuiltCaseCollection() {
+        return preBuiltCaseCollection;
+    }
+
+    /**
+     * @param preBuiltCaseCollection the preBuiltCaseCollection to set
+     */
+    public void setPreBuiltCaseCollection(Collection<PreBuilt> preBuiltCaseCollection) {
+        this.preBuiltCaseCollection = preBuiltCaseCollection;
+    }
+
+    /**
+     * @return the preBuiltMonitorCollection
+     */
+    @XmlTransient
+    public Collection<PreBuilt> getPreBuiltMonitorCollection() {
+        return preBuiltMonitorCollection;
+    }
+
+    /**
+     * @param preBuiltMonitorCollection the preBuiltMonitorCollection to set
+     */
+    public void setPreBuiltMonitorCollection(Collection<PreBuilt> preBuiltMonitorCollection) {
+        this.preBuiltMonitorCollection = preBuiltMonitorCollection;
+    }
+
+    /**
+     * @return the preBuiltPSUCollection
+     */
+    @XmlTransient
+    public Collection<PreBuilt> getPreBuiltPSUCollection() {
+        return preBuiltPSUCollection;
+    }
+
+    /**
+     * @param preBuiltPSUCollection the preBuiltPSUCollection to set
+     */
+    public void setPreBuiltPSUCollection(Collection<PreBuilt> preBuiltPSUCollection) {
+        this.preBuiltPSUCollection = preBuiltPSUCollection;
+    }
+
+    /**
+     * @return the preBuiltStorageCollection
+     */
+    @XmlTransient
+    public Collection<PreBuilt> getPreBuiltStorageCollection() {
+        return preBuiltStorageCollection;
+    }
+
+    /**
+     * @param preBuiltStorageCollection the preBuiltStorageCollection to set
+     */
+    public void setPreBuiltStorageCollection(Collection<PreBuilt> preBuiltStorageCollection) {
+        this.preBuiltStorageCollection = preBuiltStorageCollection;
+    }
+
+    /**
+     * @return the preBuiltMemoryCollection
+     */
+    @XmlTransient
+    public Collection<PreBuilt> getPreBuiltMemoryCollection() {
+        return preBuiltMemoryCollection;
+    }
+
+    /**
+     * @param preBuiltMemoryCollection the preBuiltMemoryCollection to set
+     */
+    public void setPreBuiltMemoryCollection(Collection<PreBuilt> preBuiltMemoryCollection) {
+        this.preBuiltMemoryCollection = preBuiltMemoryCollection;
+    }
+
+    /**
+     * @return the preBuiltCPUCoolerCollection
+     */
+    @XmlTransient
+    public Collection<PreBuilt> getPreBuiltCPUCoolerCollection() {
+        return preBuiltCPUCoolerCollection;
+    }
+
+    /**
+     * @param preBuiltCPUCoolerCollection the preBuiltCPUCoolerCollection to set
+     */
+    public void setPreBuiltCPUCoolerCollection(Collection<PreBuilt> preBuiltCPUCoolerCollection) {
+        this.preBuiltCPUCoolerCollection = preBuiltCPUCoolerCollection;
+    }
+
+    /**
+     * @return the preBuiltMotherCollection
+     */
+    @XmlTransient
+    public Collection<PreBuilt> getPreBuiltMotherboardCollection() {
+        return preBuiltMotherboardCollection;
+    }
+
+    /**
+     * @param preBuiltMotherCollection the preBuiltMotherCollection to set
+     */
+    public void setPreBuiltMotherboardCollection(Collection<PreBuilt> preBuiltMotherboardCollection) {
+        this.preBuiltMotherboardCollection = preBuiltMotherboardCollection;
+    }
+
+    /**
+     * @return the preBuiltCPUCollection
+     */
+    @XmlTransient
+    public Collection<PreBuilt> getPreBuiltCPUCollection() {
+        return preBuiltCPUCollection;
+    }
+
+    /**
+     * @param preBuiltCPUCollection the preBuiltCPUCollection to set
+     */
+    public void setPreBuiltCPUCollection(Collection<PreBuilt> preBuiltCPUCollection) {
+        this.preBuiltCPUCollection = preBuiltCPUCollection;
     }
     
 }

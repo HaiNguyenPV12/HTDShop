@@ -71,7 +71,7 @@ public class CPU {
     @NotEmpty(message = "Socket cannot be empty.")
     private String socket;
 
-    @NotEmpty(message = "Chipset cannot be empty.")
+    
     private String chipset;
 
     @NotNull(message = "TDP cannot be empty.")
@@ -93,6 +93,7 @@ public class CPU {
     @Size(max = 2000000000, message = "Description must have maximum 2.000.000.000 characters.")
     private String description;
 
+    @NotNull(message = "Status cannot be empty.")
     private Integer status;
 
     // Custom method to create Product object (for adding)
@@ -114,7 +115,7 @@ public class CPU {
         p.setTdp(tdp);
         p.setCore(core);
         p.setThread(thread);
-        p.setStatus(1);
+        p.setStatus(status);
         p.setUnit(unit);
         p.setDescription(description);
         return p;

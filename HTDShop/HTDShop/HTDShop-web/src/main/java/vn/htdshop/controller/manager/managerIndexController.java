@@ -14,7 +14,6 @@ import javax.ejb.EJB;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -38,11 +37,16 @@ public class managerIndexController {
     StaffFacadeLocal staffFacade;
 
     @RequestMapping(value = { "", "index" }, method = RequestMethod.GET)
-    public String getHome(HttpSession session) {
-        // Check if logged in session is exists 
+    public String getHome(HttpSession session, Model model) {
+        // Check if logged in session is exists
         if (!checkLogin(session)) {
             // If not, return to login page
             return "redirect:/manager/login";
+        }
+        // Check for any alert
+        if (model.asMap().containsKey("goodAlert")) {
+            System.out.println(model.asMap().get("goodAlert"));
+            model.addAttribute("goodAlert", model.asMap().get("goodAlert"));
         }
         // Else, continue to index
         return "HTDManager/index";
@@ -61,8 +65,8 @@ public class managerIndexController {
         }
         // Show error (if exists) after redirect to this page again
         if (model.asMap().containsKey("error")) {
-            // Here is using for staff attribute that declared, for other attribute, please change
-            // "org.springframework.validation.BindingResult.staff" to 
+            // Here is using for staff attribute that is declared, for other attribute, please change
+            // "org.springframework.validation.BindingResult.staff" to
             // "org.springframework.validation.BindingResult.your_attribute's_name_here"
             model.addAttribute("org.springframework.validation.BindingResult.staff", model.asMap().get("error"));
         }
@@ -72,8 +76,10 @@ public class managerIndexController {
 
     @RequestMapping(value = "doLogin", method = RequestMethod.POST)
     // Add @Valid before @ModelAttribute to validate base on entity annotation
-    // For example: public String postLogin(@Valid @ModelAttribute("staff") Staff staff...){}
-    // Here we just have to check username and password, not all so we check manually
+    // For example: public String postLogin(@Valid @ModelAttribute("staff") Staff
+    // staff...){}
+    // Here we just have to check username and password, not all so we check
+    // manually
     public String postLogin(@ModelAttribute("staff") Staff staff, Model model, BindingResult error,
             RedirectAttributes redirect, HttpSession session) {
         // Mannually check blank username
@@ -99,7 +105,7 @@ public class managerIndexController {
                     rightList.add(roleRights.getRightsDetail().getTag());
                 }
                 session.setAttribute("rightList", rightList);
-
+                redirect.addFlashAttribute("goodAlert", "Successfully logged in as \"" + result.getFirstName() + "\".");
                 // Then redirect to index
                 return "redirect:/manager/index";
             }
