@@ -88,8 +88,6 @@ public class Product implements Serializable {
     @Column(name = "Price")
     private double price;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 30)
     @Column(name = "Unit")
     private String unit;
     @Basic(optional = false)
@@ -150,9 +148,8 @@ public class Product implements Serializable {
     @Column(name = "Resolution")
     private String resolution;
     @Basic(optional = false)
-    @NotNull
     @Lob
-    @Size(min = 1, max = 2147483647)
+    @Size(max = 2147483647)
     @Column(name = "Description")
     private String description;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
