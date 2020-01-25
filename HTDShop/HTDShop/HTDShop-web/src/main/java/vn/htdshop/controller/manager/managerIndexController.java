@@ -99,12 +99,12 @@ public class managerIndexController {
                 // If ok, save staff's session
                 session.setAttribute("loggedInStaff", result);
 
-                // And save staff's rightlist for fast right-checking
-                List<String> rightList = new ArrayList<String>();
+                // And save staff's rightsList for fast right-checking
+                List<String> rightsList = new ArrayList<String>();
                 for (RoleRights roleRights : result.getRole().getRoleRightsCollection()) {
-                    rightList.add(roleRights.getRightsDetail().getTag());
+                    rightsList.add(roleRights.getRightsDetail().getTag());
                 }
-                session.setAttribute("rightList", rightList);
+                session.setAttribute("rightsList", rightsList);
                 redirect.addFlashAttribute("goodAlert", "Successfully logged in as \"" + result.getFirstName() + "\".");
                 // Then redirect to index
                 return "redirect:/manager/index";
@@ -124,8 +124,8 @@ public class managerIndexController {
     public String getLogout(HttpSession session) {
         // remove session
         session.removeAttribute("loggedInStaff");
-        // remove rightlist
-        session.removeAttribute("rightList");
+        // remove rightsList
+        session.removeAttribute("rightsList");
         // reidect to login
         return "redirect:/manager/login";
     }

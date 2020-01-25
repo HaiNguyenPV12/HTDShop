@@ -41,7 +41,7 @@ public class managerProductController {
     private final String redirectHome = "redirect:/manager";
     private final String redirectLogin = "redirect:/manager/login";
 
-    List<String> rightList = null;
+    List<String> rightsList = null;
 
     @EJB(mappedName = "StaffFacade")
     StaffFacadeLocal staffFacade;
@@ -66,13 +66,12 @@ public class managerProductController {
             return redirectLogin;
         }
         // Check if staff have appropriate role
-        if (!rightList.contains("product_read")) {
+        if (!rightsList.contains("product_read")) {
             return redirectHome;
         }
 
         // Check for any alert
         if (model.asMap().containsKey("goodAlert")) {
-            System.out.println(model.asMap().get("goodAlert"));
             model.addAttribute("goodAlert", model.asMap().get("goodAlert"));
         }
         if (model.asMap().containsKey("badAlert")) {
@@ -97,7 +96,7 @@ public class managerProductController {
             return redirectLogin;
         }
         // Check if staff have appropriate role
-        if (!rightList.contains("product_add")) {
+        if (!rightsList.contains("product_add")) {
             // If not, redirect to product index
             return redirectProductHome;
         }
@@ -143,7 +142,7 @@ public class managerProductController {
             return redirectLogin;
         }
         // Check if staff have appropriate role
-        if (!rightList.contains("product_add")) {
+        if (!rightsList.contains("product_add")) {
             // If not, redirect to product index
             return redirectProductHome;
         }
@@ -178,7 +177,7 @@ public class managerProductController {
             return redirectLogin;
         }
         // Check if staff have appropriate role
-        if (!rightList.contains("product_edit")) {
+        if (!rightsList.contains("product_edit")) {
             // If not, redirect to product index
             return redirectProductHome;
         }
@@ -244,7 +243,7 @@ public class managerProductController {
             return redirectLogin;
         }
         // Check if staff have appropriate role
-        if (!rightList.contains("product_edit")) {
+        if (!rightsList.contains("product_edit")) {
             // If not, redirect to product index
             return redirectProductHome;
         }
@@ -280,7 +279,7 @@ public class managerProductController {
             return redirectLogin;
         }
         // Check if staff have appropriate role
-        if (!rightList.contains("product_delete")) {
+        if (!rightsList.contains("product_delete")) {
             // If not, redirect to product index
             return redirectProductHome;
         }
@@ -357,9 +356,10 @@ public class managerProductController {
 
     private Boolean checkLogin(HttpSession session) {
         if (session.getAttribute("loggedInStaff") != null) {
-            if (rightList == null || rightList.size() <= 0) {
-                rightList = new ArrayList<>();
-                rightList = (ArrayList<String>) session.getAttribute("rightList");
+            if (rightsList == null || rightsList.size() <= 0) {
+                System.out.println("Get right list.");
+                rightsList = new ArrayList<>();
+                rightsList = (ArrayList<String>) session.getAttribute("rightsList");
             }
             return true;
         }
