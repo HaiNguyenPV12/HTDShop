@@ -51,6 +51,23 @@
         </th:block>
     </div>
     <script layout:fragment="script" th:inline="none">
+        $("#btnUploadImage").on("change", function () {
+            if (this.files && this.files[0]) {
+                $("#uploadimg").html("");
+                for (var i = 0; i < this.files.length; i++) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        imgNum++;
+                        $("#uploadimg").append('<label class="col-sm-1 text-center uploadimg">'
+                            + '<input type="radio" name="uploadradio">'
+                            + '<img src="' + e.target.result + '">'
+                            + '</label>');
+                    }
+                    reader.readAsDataURL(this.files[i]);
+                }
+            }
+        });
         //Initialize Select2 Elements
         $('.select2').select2()
 
