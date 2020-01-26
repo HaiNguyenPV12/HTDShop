@@ -5,9 +5,33 @@
 <head>
     <title>HTD Manager - Add new product</title>
     <th:block layout:fragment="css">
-          
+        <style>
+            /* HIDE RADIO */
+            .uploadimg>[type=radio] {
+                position: absolute;
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+            /* IMAGE STYLES */
+            .uploadimg>img,
+            i {
+                cursor: pointer;
+            }
+
+            /* CHECKED STYLES */
+            .uploadimg>[type=radio]:checked+img {
+                outline: 2px solid #f00;
+            }
+
+            .uploadimg>img {
+                width: 100%;
+                height: 100%;
+            }
+        </style>
     </th:block>
-    
+
 </head>
 
 <body>
@@ -77,16 +101,37 @@
                     <current_tag th:replace="~{/path_to_template_without_extension :: fragment_name} ?: ~{}"></current_tag>
 
             -->
-            <th:block th:replace="~{/HTDManager/product_template :: __${curCate}__} ?: ~{}">
+            <th:block th:replace="~{/HTDManager/product_template :: template} ?: ~{}">
 
             </th:block>
         </th:block>
     </div>
 
     <th:block layout:fragment="additionalScript">
-       
+
     </th:block>
     <script layout:fragment="script" th:inline="none">
+        var imgNum = +0;
+        $("#btnUploadImage").on("change", function () {
+            if (this.files && this.files[0]) {
+                $("#uploadimg").html("");
+                for (var i = 0; i < this.files.length; i++) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        //$('#blah').attr('src', e.target.result);
+                        imgNum++;
+                        $("#uploadimg").append('<label class="col-sm-1 text-center uploadimg">'
+                            + '<input type="radio" name="uploadradio">'
+                            + '<img src="' + e.target.result + '">'
+                            //+ '<i class="font-weight-light text-muted text-small">' + imgNum + '</i>'
+                            + '</label>');
+                    }
+                    reader.readAsDataURL(this.files[i]);
+                }
+                //reader.readAsDataURL(this.files[0]);
+            }
+        });
         $('#category').on('change', function () {
             var val = $(this).val();
             console.log($(this).val());

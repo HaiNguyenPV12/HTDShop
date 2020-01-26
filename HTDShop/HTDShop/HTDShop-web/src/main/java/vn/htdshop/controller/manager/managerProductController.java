@@ -5,25 +5,40 @@
  */
 package vn.htdshop.controller.manager;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
-
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import vn.htdshop.entity.*;
@@ -58,9 +73,17 @@ public class managerProductController {
     @EJB(mappedName = "PromotionFacade")
     PromotionFacadeLocal promotionFacade;
 
+    @Autowired
+    ServletContext context;
+
+    @Autowired
+    private HttpServletRequest request;
+
     // ==== PRODUCT INDEX ==== \\
     @RequestMapping(value = { "", "index" }, method = RequestMethod.GET)
     public String getHome(HttpSession session, Model model) {
+        System.out.println("File(\"/\").getPath(): " + new File("/").getPath());
+        System.out.println("context.getRealPath(\"/\")" + context.getRealPath("/"));
         // Check if logged in session is exists
         if (!checkLogin(session)) {
             return redirectLogin;
@@ -135,7 +158,8 @@ public class managerProductController {
     @RequestMapping(value = "doAddCPU", method = RequestMethod.POST)
     // Adding optional "cate" parameter by using @RequestParam(required = false)
     public String doAddCPU(@Valid @ModelAttribute("product") CPU product, BindingResult error, HttpSession session,
-            Model model, RedirectAttributes redirect) {
+            Model model, @RequestParam(value = "uploadimg", required = false) MultipartFile[] uploadimg,
+            RedirectAttributes redirect) {
         // Check if logged in session is exists
         if (!checkLogin(session)) {
             // If not, redirect to index
@@ -151,15 +175,43 @@ public class managerProductController {
             // Custom method that create Product object from CPU class
             Product p = product.toNewProduct();
             productFacade.create(p);
+            // Process images
+            if (uploadimg != null && uploadimg.length > 0) {
+                File imagePath = new File(System.getProperty("catalina.base") + "\\img\\product");
+                if (!imagePath.exists()) {
+                    imagePath.mkdirs();
+                }
+                try {
+                    for (MultipartFile multipartFile : uploadimg) {
+
+                        String fileName = p.getId() + "_" + Calendar.getInstance().getTimeInMillis() + multipartFile
+                                .getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf("."));
+                        String filePath = System.getProperty("catalina.base") + "\\img\\product\\" + fileName;
+                        File imageFile = new File(filePath);
+                        Files.copy(multipartFile.getInputStream(), Paths.get(filePath));
+                        ProductImage pimg = new ProductImage();
+                        pimg.setMainImage(false);
+                        pimg.setImagePath("product/" + fileName);
+                        pimg.setProduct(p);
+                        productImageFacade.create(pimg);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
             // Pass alert attribute to notify successful process
             redirect.addFlashAttribute("goodAlert", "Successfully added \"" + p.getName() + "\"!");
             return redirectProductHome;
         }
         // Show common error message
-        error.reject("common", "Error adding new product");
-
+        error.reject("common", "Error adding new product.");
+        if (uploadimg != null && uploadimg[0].getSize() > 0) {
+            error.reject("common", "Please choose image again.");
+        }
         // Pass binding result to redirect page (to show errors)
         redirect.addFlashAttribute("error", error);
+        System.out.println(error);
         // Pass current input to redirect page (to keep old input)
         redirect.addFlashAttribute("product", product);
         // Add indicator attribute for sidemenu highlight
@@ -236,7 +288,8 @@ public class managerProductController {
     // ==== PRODUCT EDIT - PROCESS - CPU ==== \\
     @RequestMapping(value = "doEditCPU", method = RequestMethod.POST)
     public String doEditCPU(@Valid @ModelAttribute("product") CPU product, BindingResult error, HttpSession session,
-            Model model, @RequestParam(required = true) Integer id, RedirectAttributes redirect) {
+            Model model, @RequestParam(value = "uploadimg", required = false) MultipartFile[] uploadimg,
+            RedirectAttributes redirect) {
         // Check if logged in session is exists
         if (!checkLogin(session)) {
             // If not, redirect to index
@@ -252,6 +305,43 @@ public class managerProductController {
             // Custom method that create Product object from CPU class
             Product p = product.toProduct();
             productFacade.edit(p);
+            // Check if upload img exists then replace images
+            if (uploadimg != null && uploadimg[0].getSize() > 0) {
+                // Remove image
+                for (ProductImage img : productFacade.find(p.getId()).getProductImageCollection()) {
+                    File deleteFile = new File(System.getProperty("catalina.home") + "/img/" + img.getImagePath());
+                    if (deleteFile.delete()) {
+                        System.out.println("Deleted image: " + deleteFile.getPath());
+                    } else {
+                        System.out.println("Cannot delete image: " + deleteFile.getPath());
+                    }
+                    productImageFacade.remove(img);
+                }
+
+                // Add new image
+                File imagePath = new File(System.getProperty("catalina.base") + "\\img\\product");
+                if (!imagePath.exists()) {
+                    imagePath.mkdirs();
+                }
+                try {
+                    for (MultipartFile multipartFile : uploadimg) {
+
+                        String fileName = p.getId() + "_" + Calendar.getInstance().getTimeInMillis() + multipartFile
+                                .getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf("."));
+                        String filePath = System.getProperty("catalina.base") + "\\img\\product\\" + fileName;
+                        File imageFile = new File(filePath);
+                        Files.copy(multipartFile.getInputStream(), Paths.get(filePath));
+                        ProductImage pimg = new ProductImage();
+                        pimg.setMainImage(false);
+                        pimg.setImagePath("product/" + fileName);
+                        pimg.setProduct(p);
+                        productImageFacade.create(pimg);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
             // Pass alert attribute to notify successful process
             redirect.addFlashAttribute("goodAlert", "Successfully updated \"" + p.getName() + "\"!");
             return redirectProductHome;
@@ -329,8 +419,15 @@ public class managerProductController {
 
                 // First, delete product's images
                 for (ProductImage img : p.getProductImageCollection()) {
+                    File deleteFile = new File(System.getProperty("catalina.home") + "/img/" + img.getImagePath());
+                    if (deleteFile.delete()) {
+                        System.out.println("Deleted image: " + deleteFile.getPath());
+                    } else {
+                        System.out.println("Cannot delete image: " + deleteFile.getPath());
+                    }
                     productImageFacade.remove(img);
                 }
+
                 // Then, delete product's promotion
                 for (Promotion promo : p.getPromotionCollection()) {
                     promotionFacade.remove(promo);

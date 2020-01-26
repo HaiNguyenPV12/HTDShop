@@ -25,10 +25,12 @@ import org.springframework.format.annotation.NumberFormat;
  */
 @Entity
 public class CPU {
+
     // Must have
     @Id
     private Integer id;
 
+    
     // @NotEmpty: use for String
     // @NotNull: use for Integer (not int), Double (not double), Float (not
     // float),...

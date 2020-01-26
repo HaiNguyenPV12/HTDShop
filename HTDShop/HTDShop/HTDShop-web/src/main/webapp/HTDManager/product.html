@@ -105,9 +105,10 @@
                                     <td th:text="${p.stock}">30</td>
                                     <td>
                                         <span th:if="${p.productImageCollection.size() <= 0}">No images</span>
-                                        <ul th:each="img : ${p.productImageCollection}">
-                                            <li th:text="${img.imagePath}"></li>
-                                        </ul>
+                                        <div class="row" th:if="${p.productImageCollection.size() > 0}">
+                                            <img th:each="img : ${p.productImageCollection}"
+                                                th:src="@{/images/__${img.imagePath}__}" class="col-4" />
+                                        </div>
                                     </td>
                                     <td>
                                         <th:block th:if="${p.status==1}">Is selling</th:block>
@@ -124,12 +125,14 @@
                                             <i class="fas fa-pencil-alt"></i>
                                         </a>
                                         <button class="btn btn-danger btn-sm" href="#" data-toggle="tooltip"
-                                            title="Delete" th:if="${p.orderDetailCollection.isEmpty() and p.productCommentCollection.isEmpty() and p.preBuiltCPUCollection.isEmpty() and p.preBuiltCPUCoolerCollection.isEmpty() and p.preBuiltCaseCollection.isEmpty() and p.preBuiltMemoryCollection.isEmpty() and p.preBuiltMonitorCollection.isEmpty() and p.preBuiltMotherboardCollection.isEmpty() and p.preBuiltPSUCollection.isEmpty() and p.preBuiltStorageCollection.isEmpty() and p.preBuiltVGACollection.isEmpty()}"
-                                            th:onclick='confirmDelete([[${p.name}]],[[@{/manager/product/doDelete(id=${p.id})}]])'> 
+                                            title="Delete"
+                                            th:if="${p.orderDetailCollection.isEmpty() and p.productCommentCollection.isEmpty() and p.preBuiltCPUCollection.isEmpty() and p.preBuiltCPUCoolerCollection.isEmpty() and p.preBuiltCaseCollection.isEmpty() and p.preBuiltMemoryCollection.isEmpty() and p.preBuiltMonitorCollection.isEmpty() and p.preBuiltMotherboardCollection.isEmpty() and p.preBuiltPSUCollection.isEmpty() and p.preBuiltStorageCollection.isEmpty() and p.preBuiltVGACollection.isEmpty()}"
+                                            th:onclick='confirmDelete([[${p.name}]],[[@{/manager/product/doDelete(id=${p.id})}]])'>
                                             <i class="fas fa-trash"></i>
                                         </button>
                                         <a class="btn btn-secondary btn-sm"
-                                            th:if="${!p.orderDetailCollection.isEmpty() or !p.productCommentCollection.isEmpty() or !p.preBuiltCPUCollection.isEmpty() or !p.preBuiltCPUCoolerCollection.isEmpty() or !p.preBuiltCaseCollection.isEmpty() or !p.preBuiltMemoryCollection.isEmpty() or !p.preBuiltMonitorCollection.isEmpty() or !p.preBuiltMotherboardCollection.isEmpty() or !p.preBuiltPSUCollection.isEmpty() or !p.preBuiltStorageCollection.isEmpty() or !p.preBuiltVGACollection.isEmpty()}" data-toggle="tooltip" title="Exists in orders/prebuilts or have comments.">
+                                            th:if="${!p.orderDetailCollection.isEmpty() or !p.productCommentCollection.isEmpty() or !p.preBuiltCPUCollection.isEmpty() or !p.preBuiltCPUCoolerCollection.isEmpty() or !p.preBuiltCaseCollection.isEmpty() or !p.preBuiltMemoryCollection.isEmpty() or !p.preBuiltMonitorCollection.isEmpty() or !p.preBuiltMotherboardCollection.isEmpty() or !p.preBuiltPSUCollection.isEmpty() or !p.preBuiltStorageCollection.isEmpty() or !p.preBuiltVGACollection.isEmpty()}"
+                                            data-toggle="tooltip" title="Exists in orders/prebuilts or have comments.">
                                             <i class="fas fa-trash"></i>
                                         </a>
                                     </td>
@@ -153,7 +156,7 @@
             </div>
         </div>
 
-        
+
     </div>
 
     <!--In case using custom script at pages using layout, add th:inline="none" like below-->

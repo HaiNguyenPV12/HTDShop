@@ -16,10 +16,18 @@
     <bean class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping"/>
     
     <context:annotation-config />
-    <!-- Chỉnh lại package ở đây để cho nó tìm controller -->
+    <!-- Configure scan path for spring controllers/propeties -->
     <context:component-scan base-package="vn.htdshop" />
+    <!-- Configure mapping path for resources -->
     <mvc:resources mapping="/resources/**" location="/HTDShop/" cache-period="31556926"/>
     <mvc:resources mapping="/manager_resources/**" location="/HTDManager/" cache-period="31556926"/>
+    <!-- 
+        Use static path for upload-related resources, so when re-deploy, uploaded resouces
+        won't be deleted. 
+        ${catalina.home} will be "glassfish_path/domains/domain_name/"
+        To get path in controller, use:  new File(System.getProperty("catalina.base")).getPath();
+    -->
+    <mvc:resources mapping="/images/**" location="file:/${catalina.home}/img/"/> 
 
     <!-- Custom đường dẫn cho resource -->               
     <mvc:annotation-driven />
