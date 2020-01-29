@@ -129,4 +129,9 @@
         <ejb-ref-type>Session</ejb-ref-type>
         <local>vn.htdshop.sb.CategoryFacadeLocal</local>
     </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ImageSlideFacade</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <local>vn.htdshop.sb.ImageSlideFacadeLocal</local>
+    </ejb-local-ref>
 </web-app>

@@ -78,6 +78,14 @@
     <script layout:fragment="script" th:inline="none">
         $("#btnUploadImage").on("change", function () {
             if (this.files && this.files[0]) {
+                if (this.files.length > 10) {
+                    showModal('Warning', 'You can only upload maximum 10 images.', '#', false, true);
+                    Toast.fire({
+                        type: 'error',
+                        title: 'You can only upload maximum 10 images.'
+                    });
+                    return;
+                }
                 $("#uploadimg").html("");
                 for (var i = 0; i < this.files.length; i++) {
                     var reader = new FileReader();
@@ -89,10 +97,11 @@
                     }
                     reader.readAsDataURL(this.files[i]);
                 }
-            }else{
+            } else {
                 $("#uploadimg").html("");
             }
         });
+        
         //Initialize Select2 Elements
         $('.select2').select2()
 

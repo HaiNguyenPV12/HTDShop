@@ -111,29 +111,32 @@
 
     </th:block>
     <script layout:fragment="script" th:inline="none">
-        var imgNum = +0;
         $("#btnUploadImage").on("change", function () {
             if (this.files && this.files[0]) {
+                if (this.files.length > 10) {
+                    showModal('Warning', 'You can only upload maximum 10 images.', '#', false, true);
+                    Toast.fire({
+                        type: 'error',
+                        title: 'You can only upload maximum 10 images.'
+                    });
+                    return;
+                }
                 $("#uploadimg").html("");
                 for (var i = 0; i < this.files.length; i++) {
                     var reader = new FileReader();
-
                     reader.onload = function (e) {
-                        //$('#blah').attr('src', e.target.result);
-                        imgNum++;
                         $("#uploadimg").append('<label class="col-sm-1 text-center uploadimg">'
                             + '<input type="radio" name="uploadradio">'
                             + '<img src="' + e.target.result + '">'
-                            //+ '<i class="font-weight-light text-muted text-small">' + imgNum + '</i>'
                             + '</label>');
                     }
                     reader.readAsDataURL(this.files[i]);
                 }
-                //reader.readAsDataURL(this.files[0]);
-            }else{
+            } else {
                 $("#uploadimg").html("");
             }
         });
+        
         $('#category').on('change', function () {
             var val = $(this).val();
             console.log($(this).val());

@@ -110,10 +110,11 @@ public class managerProductController {
         // Prepare product model
         Category c = new Category();
         Product p = new Product();
+        
         if (cate != null) {
+            c.setId(cate);
             switch (cate) {
             case 2:
-                c.setId(2);
                 // model.addAttribute("product", new CPU());
                 break;
             case 8:

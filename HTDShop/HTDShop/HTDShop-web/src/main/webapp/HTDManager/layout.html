@@ -63,7 +63,7 @@
                 <!-- Sidebar user panel (optional) -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
-                        <img th:src="@{/manager_resources/img/user2-160x160.jpg}" class="img-circle elevation-2 mt-2"
+                        <img th:src="@{/images/__${#session.getAttribute('loggedInStaff').image}__}" class="img-circle elevation-2 mt-2"
                             alt="User Image">
                     </div>
                     <div class="info">
@@ -226,7 +226,7 @@
         <div class="modal fade" id="modal">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header">
+                    <div class="modal-header" id='modalHeader'>
                         <h4 class="modal-title" id="modalTitle">Confirm deletion</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
@@ -236,7 +236,7 @@
                         <p>One fine body&hellip;</p>
                     </div>
                     <div class="modal-footer justify-content-between">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" id='modalClose'>Cancel</button>
                         <a class="btn btn-danger" id="modalButton">Yes, delete this</a>
                     </div>
                 </div>
@@ -286,6 +286,29 @@
                 type: 'error',
                 title: content
             });
+        }
+
+        // Set up function for modal
+        function showModal(title, content, url, showOK ,danger) {
+            if (danger == true) {
+                $('#modalButton').attr('class', 'btn btn-danger');
+                $('#modalHeader').attr('class', 'modal-header bg-danger');
+            }else{
+                $('#modalButton').attr('class', 'btn btn-success');
+                $('#modalHeader').attr('class', 'modal-header bg-success');
+            }
+            if (showOK == true) {
+                $('#modalButton').attr('style', 'display:inline-block;');
+                $('#modalClose').html('Cancel');
+            }else{
+                $('#modalButton').attr('style', 'display:none;');
+                $('#modalClose').html('Close');
+            }
+            $('#modalTitle').html(title);
+            $('#modalBody').html(content);
+            $('#modalButton').attr('href', url);
+            $('#modalButton').html('Yes');
+            $('#modal').modal('show');
         }
     </script>
     
