@@ -8,7 +8,7 @@
                 Template 
         =========================
     -->
-    <th:block th:fragment="template">
+    <th:block th:fragment="template" th:if="${product != null}">
         <form action="" th:action="@{/manager/product/__${formUrl}__}" th:object="${product}" method="POST"
             enctype="multipart/form-data">
             <div class="row">
@@ -75,6 +75,7 @@
     -->
     <th:block th:fragment="basic">
         <input type="hidden" th:field="*{id}" th:if="${update!=null}">
+        <input type="hidden" th:field="*{category.id}">
         <div class="col-lg-6">
             <div class="card card-purple">
                 <div class="card-header">
@@ -87,7 +88,7 @@
                                 class="text-danger">*</i></label>
                         <div class="col-sm-9">
                             <input class="form-control" id="name" placeholder="Product name" th:field="*{name}"
-                                th:classappend="${(#fields.hasErrors('name')?'is-invalid':'') + (submited != null and !#fields.hasErrors('name')?'is-valid':'')}" />
+                                th:classappend="${(#fields.hasErrors('name')?'is-invalid':'') + (submited != null and !#fields.hasErrors('name')?'is-valid':'')}" required/>
                         </div>
                         <div class="col-sm-3"></div>
                         <div class="col-sm-9" th:if="${#fields.hasErrors('name')}">
@@ -102,7 +103,7 @@
                         <div class="col-sm-9">
                             <input class="form-control" id="manufacturer" placeholder="Manufacturer"
                                     th:field="*{manufacturer}"
-                                    th:classappend="${(#fields.hasErrors('manufacturer')?'is-invalid':'') + (submited != null and !#fields.hasErrors('manufacturer')?'is-valid':'')}"/>
+                                    th:classappend="${(#fields.hasErrors('manufacturer')?'is-invalid':'') + (submited != null and !#fields.hasErrors('manufacturer')?'is-valid':'')}" required/>
                         </div>
                         <div class="col-sm-3"></div>
                         <div class="col-sm-9" th:if="${#fields.hasErrors('manufacturer')}">
@@ -118,7 +119,7 @@
                         <div class="input-group col-sm-9">
                             <input type="number" class="form-control" id="warrantyPeriod"
                                     placeholder="Warranty Period" th:field="*{warrantyPeriod}"
-                                    th:classappend="${(#fields.hasErrors('warrantyPeriod')?'is-invalid':'') + (submited != null and !#fields.hasErrors('warrantyPeriod')?'is-valid':'')}"/>
+                                    th:classappend="${(#fields.hasErrors('warrantyPeriod')?'is-invalid':'') + (submited != null and !#fields.hasErrors('warrantyPeriod')?'is-valid':'')}" required/>
                             <div class="input-group-append">
                                 <span class="input-group-text">months</span>
                             </div>
@@ -135,7 +136,7 @@
                             class="text-danger">*</i></label>
                         <div class="col-sm-4">
                             <select class="form-control select2" id="color" th:field="*{color}"
-                            th:classappend="${(#fields.hasErrors('color')?'is-invalid':'') + (submited != null and !#fields.hasErrors('color')?'is-valid':'')}">
+                            th:classappend="${(#fields.hasErrors('color')?'is-invalid':'') + (submited != null and !#fields.hasErrors('color')?'is-valid':'')}" required>
                                 <option value="" disabled selected>-- Choose color --</option>
                                 <option value="none">None</option>
                                 <option value="red" class="bg-red font-weight-bold">Red</option>
@@ -177,24 +178,24 @@
                         <div class="col-sm-4">
                             <input type="number" class="form-control" id="price" placeholder="Price"
                                     th:field="*{price}"
-                                    th:classappend="${(#fields.hasErrors('price')?'is-invalid':'') + (submited != null and !#fields.hasErrors('price')?'is-valid':'')}"/>
+                                    th:classappend="${(#fields.hasErrors('price')?'is-invalid':'') + (submited != null and !#fields.hasErrors('price')?'is-valid':'')}" required/>
                         </div>
                         <label for="stock" class="col-sm-2 col-form-label text-right">Stock<i
                             class="text-danger">*</i></label>
                         <div class="col-sm-4">
                             <input type="number" class="form-control" id="stock" placeholder="Stock"
                                     th:field="*{stock}"
-                                    th:classappend="${(#fields.hasErrors('stock')?'is-invalid':'') + (submited != null and !#fields.hasErrors('stock')?'is-valid':'')}"/>
+                                    th:classappend="${(#fields.hasErrors('stock')?'is-invalid':'') + (submited != null and !#fields.hasErrors('stock')?'is-valid':'')}" required/>
                         </div>
                         <div class="col-sm-2"></div>
-                        <div class="col-sm-4" th:if="${#fields.hasErrors('price')}">
-                            <ul class="text-danger">
+                        <div class="col-sm-4">
+                            <ul class="text-danger" th:if="${#fields.hasErrors('price')}">
                                 <li th:each="err : ${#fields.errors('price')}" th:text="${err}">Name Error</li>
                             </ul> 
                         </div>
                         <div class="col-sm-2"></div>
-                        <div class="col-sm-4" th:if="${#fields.hasErrors('stock')}">
-                            <ul class="text-danger">
+                        <div class="col-sm-4">
+                            <ul class="text-danger" th:if="${#fields.hasErrors('stock')}">
                                 <li th:each="err : ${#fields.errors('stock')}" th:text="${err}">Name Error</li>
                             </ul> 
                         </div>
@@ -206,7 +207,7 @@
                         <div class="col-sm-9">
                             <div class="custom-control custom-radio">
                                 <input class="custom-control-input" type="radio" value="1" th:field="*{status}"
-                                th:selected="${product.status==1}" id="status1"/>
+                                th:selected="${product.status==1}" id="status1" required/>
                                 <label for="status1" class="custom-control-label">Is selling</label>
                             </div>
                             <div class="custom-control custom-radio">
@@ -271,7 +272,7 @@
                             class="text-danger">*</i></label>
                         <div class="col-sm-9">
                             <input class="form-control" id="socket" placeholder="Socket"  th:field="*{socket}"
-                            th:classappend="${(#fields.hasErrors('socket')?'is-invalid':'') + (submited != null and !#fields.hasErrors('socket')?'is-valid':'')}"/>
+                            th:classappend="${(#fields.hasErrors('socket')?'is-invalid':'') + (submited != null and !#fields.hasErrors('socket')?'is-valid':'')}" required/>
                         </div>
                         <div class="col-sm-3"></div>
                         <div class="col-sm-9" th:if="${#fields.hasErrors('socket')}">
@@ -298,7 +299,7 @@
                             class="text-danger">*</i></label>
                         <div class="input-group col-sm-9">
                             <input type="number" class="form-control" id="tdp" placeholder="TDP (W)"  th:field="*{tdp}"
-                            th:classappend="${(#fields.hasErrors('tdp')?'is-invalid':'') + (submited != null and !#fields.hasErrors('tdp')?'is-valid':'')}"/>
+                            th:classappend="${(#fields.hasErrors('tdp')?'is-invalid':'') + (submited != null and !#fields.hasErrors('tdp')?'is-valid':'')}" required/>
                             <div class="input-group-append">
                                 <span class="input-group-text">W</span>
                             </div>
@@ -315,25 +316,25 @@
                             class="text-danger">*</i></label>
                         <div class="col-sm-3">
                             <input type="number" class="form-control" id="core" placeholder="Cores"  th:field="*{core}"
-                            th:classappend="${(#fields.hasErrors('core')?'is-invalid':'') + (submited != null and !#fields.hasErrors('core')?'is-valid':'')}"/>
+                            th:classappend="${(#fields.hasErrors('core')?'is-invalid':'') + (submited != null and !#fields.hasErrors('core')?'is-valid':'')}" required/>
                         </div>
 
                         <label for="thread" class="col-sm-3 col-form-label text-right">Threads number<i
                             class="text-danger">*</i></label>
                         <div class="col-sm-3">
                             <input type="number" class="form-control" id="thread" placeholder="Threads"  th:field="*{thread}"
-                            th:classappend="${(#fields.hasErrors('thread')?'is-invalid':'') + (submited != null and !#fields.hasErrors('thread')?'is-valid':'')}"/>
+                            th:classappend="${(#fields.hasErrors('thread')?'is-invalid':'') + (submited != null and !#fields.hasErrors('thread')?'is-valid':'')}" required/>
                         </div>
 
                         <div class="col-sm-3"></div>
-                        <div class="col-sm-3" th:if="${#fields.hasErrors('core')}">
-                            <ul class="text-danger">
+                        <div class="col-sm-3">
+                            <ul class="text-danger" th:if="${#fields.hasErrors('core')}">
                                 <li th:each="err : ${#fields.errors('core')}" th:text="${err}">Name Error</li>
                             </ul>
                         </div>
                         <div class="col-sm-3"></div>
-                        <div class="col-sm-3" th:if="${#fields.hasErrors('thread')}">
-                            <ul class="text-danger">
+                        <div class="col-sm-3">
+                            <ul class="text-danger" th:if="${#fields.hasErrors('thread')}">
                                 <li th:each="err : ${#fields.errors('thread')}" th:text="${err}">Name Error</li>
                             </ul>
                         </div>

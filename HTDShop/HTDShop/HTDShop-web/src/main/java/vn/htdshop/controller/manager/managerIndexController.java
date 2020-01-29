@@ -5,22 +5,16 @@
  */
 package vn.htdshop.controller.manager;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Collection;
+
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -40,7 +34,8 @@ import vn.htdshop.sb.*;
 @Controller
 @RequestMapping("manager")
 public class managerIndexController {
-    //String imageValue = "iVBORw0KGgoAAAANSUhEUgAAAB8AAAAiCAIAAAAoKJUdAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEE0AABBNAWeMAeAAAADmSURBVEhL7Y/bDoMwDEP5/59mbex6Ib2ygbRJnAcSu7WBbb+Tp73H097jt9u3I3QLS+3NJAh+lJxDkMlvMGCCIBPeOdEOBu1ph3wv5k/AVeGldtYFCTHAd4lkAu3y/dJIBhQI5MpL2pUBcACkN+1KkRAD6mty/DPAI4geSqbFAzMRpIC52g6sKkP9TbuPWYkFylPI9NCHaGJZQqsq0qn3tR+uTvEVQNXAm3nBWEQxMXYubo+Sc43Jl9annGvU+YTMG9vbR5zLND6wQO34pD3Ag3JEYZxun3J4H+el4CcyNO7hf9v3/QWDAr3PbDmp4gAAAABJRU5ErkJggg==";
+    // String imageValue =
+    // "iVBORw0KGgoAAAANSUhEUgAAAB8AAAAiCAIAAAAoKJUdAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEE0AABBNAWeMAeAAAADmSURBVEhL7Y/bDoMwDEP5/59mbex6Ib2ygbRJnAcSu7WBbb+Tp73H097jt9u3I3QLS+3NJAh+lJxDkMlvMGCCIBPeOdEOBu1ph3wv5k/AVeGldtYFCTHAd4lkAu3y/dJIBhQI5MpL2pUBcACkN+1KkRAD6mty/DPAI4geSqbFAzMRpIC52g6sKkP9TbuPWYkFylPI9NCHaGJZQqsq0qn3tR+uTvEVQNXAm3nBWEQxMXYubo+Sc43Jl9annGvU+YTMG9vbR5zLND6wQO34pD3Ag3JEYZxun3J4H+el4CcyNO7hf9v3/QWDAr3PbDmp4gAAAABJRU5ErkJggg==";
 
     @EJB(mappedName = "StaffFacade")
     StaffFacadeLocal staffFacade;
@@ -62,19 +57,14 @@ public class managerIndexController {
         }
 
         /*
-        try {
-            byte[] imageByte = Base64.getDecoder().decode(imageValue);
-
-            String directory = context.getRealPath("/") + "HTDManager/img/sample.jpg";
-    
-            FileOutputStream fos = new FileOutputStream(directory);
-            fos.write(imageByte);
-            fos.close();
-            System.out.println("saved image.");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-       */
+         * try { byte[] imageByte = Base64.getDecoder().decode(imageValue);
+         * 
+         * String directory = context.getRealPath("/") + "HTDManager/img/sample.jpg";
+         * 
+         * FileOutputStream fos = new FileOutputStream(directory); fos.write(imageByte);
+         * fos.close(); System.out.println("saved image."); } catch (Exception e) {
+         * e.printStackTrace(); }
+         */
 
         // Else, continue to index
         return "HTDManager/index";

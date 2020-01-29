@@ -7,11 +7,7 @@ package vn.htdshop.controller.manager;
 
 import java.io.File;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -20,21 +16,14 @@ import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.DataBinder;
-import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -76,14 +65,9 @@ public class managerProductController {
     @Autowired
     ServletContext context;
 
-    @Autowired
-    private HttpServletRequest request;
-
     // ==== PRODUCT INDEX ==== \\
     @RequestMapping(value = { "", "index" }, method = RequestMethod.GET)
     public String getHome(HttpSession session, Model model) {
-        System.out.println("File(\"/\").getPath(): " + new File("/").getPath());
-        System.out.println("context.getRealPath(\"/\")" + context.getRealPath("/"));
         // Check if logged in session is exists
         if (!checkLogin(session)) {
             return redirectLogin;
@@ -124,12 +108,13 @@ public class managerProductController {
             return redirectProductHome;
         }
         // Prepare product model
-        String category = "";
+        Category c = new Category();
+        Product p = new Product();
         if (cate != null) {
             switch (cate) {
             case 2:
-                category = "CPU";
-                model.addAttribute("product", new CPU());
+                c.setId(2);
+                // model.addAttribute("product", new CPU());
                 break;
             case 8:
 
@@ -138,8 +123,12 @@ public class managerProductController {
                 break;
             }
         }
+        p.setCategory(c);
+        model.addAttribute("product", p);
+
         // Prepare form url for form submit
-        model.addAttribute("formUrl", "doAdd" + category);
+        // model.addAttribute("formUrl", "doAdd" + category);
+        model.addAttribute("formUrl", "doAdd");
         // Show error (if exists) after redirect to this page again
         if (model.asMap().containsKey("error")) {
             model.addAttribute("org.springframework.validation.BindingResult.product", model.asMap().get("error"));
@@ -155,9 +144,9 @@ public class managerProductController {
     }
 
     // ==== PRODUCT ADD - PROCESS - CPU ==== \\
-    @RequestMapping(value = "doAddCPU", method = RequestMethod.POST)
+    @RequestMapping(value = "doAdd", method = RequestMethod.POST)
     // Adding optional "cate" parameter by using @RequestParam(required = false)
-    public String doAddCPU(@Valid @ModelAttribute("product") CPU product, BindingResult error, HttpSession session,
+    public String doAddCPU(@Valid @ModelAttribute("product") Product product, BindingResult error, HttpSession session,
             Model model, @RequestParam(value = "uploadimg", required = false) MultipartFile[] uploadimg,
             RedirectAttributes redirect) {
         // Check if logged in session is exists
@@ -173,35 +162,15 @@ public class managerProductController {
         // If there is no error
         if (!error.hasErrors()) {
             // Custom method that create Product object from CPU class
-            Product p = product.toNewProduct();
-            productFacade.create(p);
+            // Product p = product.toNewProduct();
+            productFacade.create(product);
             // Process images
             if (uploadimg != null && uploadimg.length > 0) {
-                File imagePath = new File(System.getProperty("catalina.base") + "\\img\\product");
-                if (!imagePath.exists()) {
-                    imagePath.mkdirs();
-                }
-                try {
-                    for (MultipartFile multipartFile : uploadimg) {
-
-                        String fileName = p.getId() + "_" + Calendar.getInstance().getTimeInMillis() + multipartFile
-                                .getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf("."));
-                        String filePath = System.getProperty("catalina.base") + "\\img\\product\\" + fileName;
-                        File imageFile = new File(filePath);
-                        Files.copy(multipartFile.getInputStream(), Paths.get(filePath));
-                        ProductImage pimg = new ProductImage();
-                        pimg.setMainImage(false);
-                        pimg.setImagePath("product/" + fileName);
-                        pimg.setProduct(p);
-                        productImageFacade.create(pimg);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                uploadImages(uploadimg, product,false);
             }
 
             // Pass alert attribute to notify successful process
-            redirect.addFlashAttribute("goodAlert", "Successfully added \"" + p.getName() + "\"!");
+            redirect.addFlashAttribute("goodAlert", "Successfully added \"" + product.getName() + "\"!");
             return redirectProductHome;
         }
         // Show common error message
@@ -252,21 +221,21 @@ public class managerProductController {
         // Continue if everything is ok
 
         // Prepare product model
-        String category = "";
         switch (p.getCategory().getId()) {
         case 2:
-            category = "CPU";
-            CPU cpu = new CPU();
-            cpu.fromProduct(p);
-            model.addAttribute("product", cpu);
+            // CPU cpu = new CPU();
+            // cpu.fromProduct(p);
+            // model.addAttribute("product", cpu);
             break;
         case 8:
             break;
         default:
             break;
         }
+        model.addAttribute("product", p);
         // Prepare form url for form submit
-        model.addAttribute("formUrl", "doEdit" + category);
+        // model.addAttribute("formUrl", "doEdit" + category);
+        model.addAttribute("formUrl", "doEdit");
         // Indicator for update form
         model.addAttribute("update", "update");
         // Pass something to show in page
@@ -286,8 +255,8 @@ public class managerProductController {
     }
 
     // ==== PRODUCT EDIT - PROCESS - CPU ==== \\
-    @RequestMapping(value = "doEditCPU", method = RequestMethod.POST)
-    public String doEditCPU(@Valid @ModelAttribute("product") CPU product, BindingResult error, HttpSession session,
+    @RequestMapping(value = "doEdit", method = RequestMethod.POST)
+    public String doEditCPU(@Valid @ModelAttribute("product") Product product, BindingResult error, HttpSession session,
             Model model, @RequestParam(value = "uploadimg", required = false) MultipartFile[] uploadimg,
             RedirectAttributes redirect) {
         // Check if logged in session is exists
@@ -303,47 +272,17 @@ public class managerProductController {
         // If there is no error
         if (!error.hasErrors()) {
             // Custom method that create Product object from CPU class
-            Product p = product.toProduct();
-            productFacade.edit(p);
+            // Product p = product.toProduct();
+            // productFacade.edit(p);
+            productFacade.edit(product);
             // Check if upload img exists then replace images
             if (uploadimg != null && uploadimg[0].getSize() > 0) {
-                // Remove image
-                for (ProductImage img : productFacade.find(p.getId()).getProductImageCollection()) {
-                    File deleteFile = new File(System.getProperty("catalina.home") + "/img/" + img.getImagePath());
-                    if (deleteFile.delete()) {
-                        System.out.println("Deleted image: " + deleteFile.getPath());
-                    } else {
-                        System.out.println("Cannot delete image: " + deleteFile.getPath());
-                    }
-                    productImageFacade.remove(img);
-                }
-
                 // Add new image
-                File imagePath = new File(System.getProperty("catalina.base") + "\\img\\product");
-                if (!imagePath.exists()) {
-                    imagePath.mkdirs();
-                }
-                try {
-                    for (MultipartFile multipartFile : uploadimg) {
-
-                        String fileName = p.getId() + "_" + Calendar.getInstance().getTimeInMillis() + multipartFile
-                                .getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf("."));
-                        String filePath = System.getProperty("catalina.base") + "\\img\\product\\" + fileName;
-                        File imageFile = new File(filePath);
-                        Files.copy(multipartFile.getInputStream(), Paths.get(filePath));
-                        ProductImage pimg = new ProductImage();
-                        pimg.setMainImage(false);
-                        pimg.setImagePath("product/" + fileName);
-                        pimg.setProduct(p);
-                        productImageFacade.create(pimg);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                uploadImages(uploadimg, product, true);
             }
 
             // Pass alert attribute to notify successful process
-            redirect.addFlashAttribute("goodAlert", "Successfully updated \"" + p.getName() + "\"!");
+            redirect.addFlashAttribute("goodAlert", "Successfully updated \"" + product.getName() + "\"!");
             return redirectProductHome;
         }
         // Show common error message
@@ -454,12 +393,62 @@ public class managerProductController {
     private Boolean checkLogin(HttpSession session) {
         if (session.getAttribute("loggedInStaff") != null) {
             if (rightsList == null || rightsList.size() <= 0) {
-                System.out.println("Get right list.");
                 rightsList = new ArrayList<>();
                 rightsList = (ArrayList<String>) session.getAttribute("rightsList");
             }
             return true;
         }
         return false;
+    }
+
+    private Boolean uploadImages(MultipartFile[] uploadimg, Product product, boolean deleteOldImages) {
+        try {
+            // Remove image
+            if (deleteOldImages) {
+                for (ProductImage img : productFacade.find(product.getId()).getProductImageCollection()) {
+                    // First, delete real file.
+                    File deleteFile = new File(System.getProperty("catalina.home") + "/img/" + img.getImagePath());
+                    if (deleteFile.delete()) {
+                        System.out.println("Deleted image: " + deleteFile.getPath());
+                    } else {
+                        System.out.println("Cannot delete image: " + deleteFile.getPath());
+                    }
+                    // Then, delete record in database
+                    productImageFacade.remove(img);
+                }
+            }
+
+            // System.getProperty("catalina.base") : Path_to_glassfish/domains/domain_name/
+            File imagePath = new File(System.getProperty("catalina.base") + "\\img\\product");
+            // Check if path is not exists, create path to it
+            if (!imagePath.exists()) {
+                imagePath.mkdirs();
+            }
+            // With each of file, do following
+
+            for (MultipartFile multipartFile : uploadimg) {
+                // File name: [product id]_[time in milis].[extension]
+                // TODO: check extensions
+                String fileName = product.getId() + "_" + Calendar.getInstance().getTimeInMillis() + multipartFile
+                        .getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf("."));
+                // file path:
+                // Path_to_glassfish/domains/domain_name/img/product/file_name.extension
+                String filePath = System.getProperty("catalina.base") + "\\img\\product\\" + fileName;
+                // Use Files to copy multipartFile's input stream to declared path
+                Files.copy(multipartFile.getInputStream(), Paths.get(filePath));
+
+                // Create image data in database
+                ProductImage pimg = new ProductImage();
+                pimg.setMainImage(false);
+                pimg.setImagePath("product/" + fileName);
+                pimg.setProduct(product);
+                productImageFacade.create(pimg);
+            }
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

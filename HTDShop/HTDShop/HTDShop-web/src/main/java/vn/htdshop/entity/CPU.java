@@ -17,7 +17,7 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import org.springframework.format.annotation.NumberFormat;
+//import org.springframework.format.annotation.NumberFormat;
 
 /**
  *
