@@ -510,12 +510,12 @@ a.button-small:hover::after { width: 100% }
 input {
     background: #eceff8;
     border: 2px solid #eceff8;
-    height: 45px;
+    /* height: 45px; */
     box-shadow: none;
     padding-left: 10px;
     font-size: 14px;
     color: #626262;
-    width: 100%;
+    /* width: 100%; */
 }
 select {
     width: 100%;

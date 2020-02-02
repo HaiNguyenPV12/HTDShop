@@ -38,7 +38,7 @@ public class shopBuildController {
 
     @RequestMapping(value = "cpu", method = RequestMethod.GET)
     public String getCPUList(HttpSession session, Model model) {
-        if (partValues == null || partValues.getPartCategory() != "cpu") {
+        if (partValues == null || !partValues.getPartCategory().equals("cpu")) {
             partValues = new BuildValues();
             partValues.setPartCategory("cpu");
         }

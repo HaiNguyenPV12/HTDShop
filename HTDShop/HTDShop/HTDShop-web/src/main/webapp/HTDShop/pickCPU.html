@@ -16,13 +16,21 @@
                 <h2 class="mx-auto">Pick a CPU</h2>
             </div>
             <form th:action="@{/build/filterCpu}" method="POST" id="pickCPUForm" th:object="${cpuValues}">
-                <input type="hidden" th:field="*{id}" value="1" />
-                <input type="hidden" th:field="*{partCategory}" value="cpu"/>
-                <select th:field="*{manufacturer}">
-                    <option value="amd">AMD</option>
-                    <option value="intel">Intel</option>
-                </select>
-                <input type="submit" value="submit" class="btn btn-primary">
+                <input type="hidden" th:field="*{partCategory}" value="cpu" />
+                <div class="row">
+                    <div class="col-md-3">
+                        <h4 class="mx-auto">
+                            Manufacturer
+                        </h4>
+                        <div class="reset-this">
+                            <input type="radio" name="manufacturer" id="" value="all" th:field=*{manufacturer}> All
+                            <br>
+                            <input type="radio" name="manufacturer" id="" value="amd" th:field=*{manufacturer}> AMD
+                            <br>
+                            <input type="radio" name="manufacturer" id="" value="intel" th:field=*{manufacturer}> Intel
+                        </div>
+                    </div>
+                </div>
             </form>
             <h1>
                 Searching for
@@ -31,11 +39,11 @@
         </div>
     </div>
     <script th:inline="none" layout:fragment="script">
-        // $(document).ready(function () {
-        //     $("#pickCPUForm").change(function (e) {
-        //         $("#pickCPUForm").submit();
-        //     });
-        // });
+        $(document).ready(function () {
+            $("#pickCPUForm").change(function (e) {
+                $("#pickCPUForm").submit();
+            });
+        });
     </script>
 </body>
 
