@@ -33,7 +33,8 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Hai
  */
 @Entity
-@Table(name = "User")
+// Use [User] instead of User to prevent SQL keyword
+@Table(name = "[User]")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u")

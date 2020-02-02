@@ -21,6 +21,8 @@
     <!-- Select2  -->
     <link th:href="@{/manager_resources/plugins/select2/css/select2.min.css}" rel="stylesheet">
     <link th:href="@{/manager_resources/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}" rel="stylesheet">
+    <link th:href="@{/manager_resources/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css}" rel="stylesheet">
+    <link th:href="@{/manager_resources/plugins/toastr/toastr.min.css}" rel="stylesheet">
     <!-- Theme style -->
     <link rel="stylesheet" th:href="@{/manager_resources/Content/adminlte.min.css}">
     <!-- Google Font: Source Sans Pro -->
@@ -61,7 +63,7 @@
                 <!-- Sidebar user panel (optional) -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
-                        <img th:src="@{/manager_resources/img/user2-160x160.jpg}" class="img-circle elevation-2 mt-2"
+                        <img th:src="@{/images/__${#session.getAttribute('loggedInStaff').image}__}" class="img-circle elevation-2 mt-2"
                             alt="User Image">
                     </div>
                     <div class="info">
@@ -221,7 +223,30 @@
             <!-- Default to the left -->
             <span>Copyright &copy; 2020 <a th:href="@{./}"><strong>HTD SHOP</strong></a>.</span>
         </footer>
+        <div class="modal fade" id="modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header" id='modalHeader'>
+                        <h4 class="modal-title" id="modalTitle">Confirm deletion</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="modalBody">
+                        <p>One fine body&hellip;</p>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" id='modalClose'>Cancel</button>
+                        <a class="btn btn-danger" id="modalButton">Yes, delete this</a>
+                    </div>
+                </div>
+            <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
     </div>
+    <div id="goodAlert" style="display:none;" th:if="${goodAlert!=null}" th:text="${goodAlert}">???</div>
+    <div id="badAlert" style="display:none;" th:if="${badAlert!=null}" th:text="${badAlert}"></div>
 
     <!-- jQuery -->
     <script th:src="@{/manager_resources/plugins/jquery/jquery.min.js}"></script>
@@ -232,11 +257,60 @@
     <script type="text/javascript" th:src="@{/manager_resources/plugins/datatables/jquery.dataTables.js}"></script>
     <script type="text/javascript" th:src="@{/manager_resources/plugins/datatables-bs4/js/dataTables.bootstrap4.js}"></script>
     <script th:src="@{/manager_resources/plugins/select2/js/select2.min.js}"></script> 
+    <script th:src="@{/manager_resources/plugins/sweetalert2/sweetalert2.min.js}"></script> 
+    <script th:src="@{/manager_resources/plugins/toastr/toastr.min.js}"></script> 
     <th:block layout:fragment="additionalScript">
         
     </th:block>
     <script layout:fragment="script"></script>
+    <script>
+        // Initialize toast from sweetalert 
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 5000,
+            background: '#fff'
+        });
 
+        if ($("#goodAlert").length != 0) {
+            var content = $("#goodAlert").html();
+            Toast.fire({
+                type: 'success',
+                title: content
+            });
+        }
+        if ($("#badAlert").length != 0) {
+            var content = $("#badAlert").html();
+            Toast.fire({
+                type: 'error',
+                title: content
+            });
+        }
+
+        // Set up function for modal
+        function showModal(title, content, url, showOK ,danger) {
+            if (danger == true) {
+                $('#modalButton').attr('class', 'btn btn-danger');
+                $('#modalHeader').attr('class', 'modal-header bg-danger');
+            }else{
+                $('#modalButton').attr('class', 'btn btn-success');
+                $('#modalHeader').attr('class', 'modal-header bg-success');
+            }
+            if (showOK == true) {
+                $('#modalButton').attr('style', 'display:inline-block;');
+                $('#modalClose').html('Cancel');
+            }else{
+                $('#modalButton').attr('style', 'display:none;');
+                $('#modalClose').html('Close');
+            }
+            $('#modalTitle').html(title);
+            $('#modalBody').html(content);
+            $('#modalButton').attr('href', url);
+            $('#modalButton').html('Yes');
+            $('#modal').modal('show');
+        }
+    </script>
     
     <!-- AdminLTE App -->
     <script th:src="@{/manager_resources/Scripts/adminlte.min.js}"></script>

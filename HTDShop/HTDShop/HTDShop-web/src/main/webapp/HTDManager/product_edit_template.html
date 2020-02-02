@@ -209,8 +209,8 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="socket" class="col-sm-3 col-form-label text-right">Chipset<i
-                                        class="text-danger">*</i></label>
+                                    <label for="chipset" class="col-sm-3 col-form-label text-right">Chipset<i
+                                        class="text-danger"></i></label>
                                     <div class="col-sm-9">
                                         <input class="form-control" id="chipset" placeholder="Chipset"  th:field="*{chipset}"
                                         th:classappend="${(#fields.hasErrors('chipset')?'is-invalid':'') + (submited != null and !#fields.hasErrors('chipset')?'is-valid':'')}"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.1" 
-    xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+         xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>/WEB-INF/applicationContext.xml</param-value>
@@ -13,6 +13,11 @@
         <servlet-name>dispatcher</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <load-on-startup>2</load-on-startup>
+        <multipart-config>
+            <max-file-size>20848820</max-file-size>
+            <max-request-size>418018841</max-request-size>
+            <file-size-threshold>1048576</file-size-threshold>
+        </multipart-config>
     </servlet>
     <servlet-mapping>
         <servlet-name>dispatcher</servlet-name>
@@ -26,6 +31,9 @@
     <welcome-file-list>
         <welcome-file>/</welcome-file>
     </welcome-file-list>
+    
+    
+    
     <ejb-local-ref>
         <ejb-ref-name>CategoryFacade</ejb-ref-name>
         <ejb-ref-type>Session</ejb-ref-type>
@@ -120,5 +128,10 @@
         <ejb-ref-name>UserFacade</ejb-ref-name>
         <ejb-ref-type>Session</ejb-ref-type>
         <local>vn.htdshop.sb.CategoryFacadeLocal</local>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ImageSlideFacade</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <local>vn.htdshop.sb.ImageSlideFacadeLocal</local>
     </ejb-local-ref>
 </web-app>
