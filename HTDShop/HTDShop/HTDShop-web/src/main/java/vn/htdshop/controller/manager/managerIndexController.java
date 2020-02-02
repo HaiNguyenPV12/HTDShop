@@ -6,15 +6,15 @@
 package vn.htdshop.controller.manager;
 
 import java.util.ArrayList;
-import java.util.Collection;
+
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
 
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -34,16 +34,38 @@ import vn.htdshop.sb.*;
 @Controller
 @RequestMapping("manager")
 public class managerIndexController {
+    // String imageValue =
+    // "iVBORw0KGgoAAAANSUhEUgAAAB8AAAAiCAIAAAAoKJUdAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEE0AABBNAWeMAeAAAADmSURBVEhL7Y/bDoMwDEP5/59mbex6Ib2ygbRJnAcSu7WBbb+Tp73H097jt9u3I3QLS+3NJAh+lJxDkMlvMGCCIBPeOdEOBu1ph3wv5k/AVeGldtYFCTHAd4lkAu3y/dJIBhQI5MpL2pUBcACkN+1KkRAD6mty/DPAI4geSqbFAzMRpIC52g6sKkP9TbuPWYkFylPI9NCHaGJZQqsq0qn3tR+uTvEVQNXAm3nBWEQxMXYubo+Sc43Jl9annGvU+YTMG9vbR5zLND6wQO34pD3Ag3JEYZxun3J4H+el4CcyNO7hf9v3/QWDAr3PbDmp4gAAAABJRU5ErkJggg==";
+
     @EJB(mappedName = "StaffFacade")
     StaffFacadeLocal staffFacade;
 
+    @Autowired
+    ServletContext context;
+
     @RequestMapping(value = { "", "index" }, method = RequestMethod.GET)
-    public String getHome(HttpSession session) {
-        // Check if logged in session is exists 
+    public String getHome(HttpSession session, Model model, HttpServletRequest request) {
+        // Check if logged in session is exists
         if (!checkLogin(session)) {
             // If not, return to login page
             return "redirect:/manager/login";
         }
+        // Check for any alert
+        if (model.asMap().containsKey("goodAlert")) {
+            System.out.println(model.asMap().get("goodAlert"));
+            model.addAttribute("goodAlert", model.asMap().get("goodAlert"));
+        }
+
+        /*
+         * try { byte[] imageByte = Base64.getDecoder().decode(imageValue);
+         * 
+         * String directory = context.getRealPath("/") + "HTDManager/img/sample.jpg";
+         * 
+         * FileOutputStream fos = new FileOutputStream(directory); fos.write(imageByte);
+         * fos.close(); System.out.println("saved image."); } catch (Exception e) {
+         * e.printStackTrace(); }
+         */
+
         // Else, continue to index
         return "HTDManager/index";
     }
@@ -61,8 +83,9 @@ public class managerIndexController {
         }
         // Show error (if exists) after redirect to this page again
         if (model.asMap().containsKey("error")) {
-            // Here is using for staff attribute that declared, for other attribute, please change
-            // "org.springframework.validation.BindingResult.staff" to 
+            // Here is using for staff attribute that is declared, for other attribute,
+            // please change
+            // "org.springframework.validation.BindingResult.staff" to
             // "org.springframework.validation.BindingResult.your_attribute's_name_here"
             model.addAttribute("org.springframework.validation.BindingResult.staff", model.asMap().get("error"));
         }
@@ -72,8 +95,10 @@ public class managerIndexController {
 
     @RequestMapping(value = "doLogin", method = RequestMethod.POST)
     // Add @Valid before @ModelAttribute to validate base on entity annotation
-    // For example: public String postLogin(@Valid @ModelAttribute("staff") Staff staff...){}
-    // Here we just have to check username and password, not all so we check manually
+    // For example: public String postLogin(@Valid @ModelAttribute("staff") Staff
+    // staff...){}
+    // Here we just have to check username and password, not all so we check
+    // manually
     public String postLogin(@ModelAttribute("staff") Staff staff, Model model, BindingResult error,
             RedirectAttributes redirect, HttpSession session) {
         // Mannually check blank username
@@ -93,13 +118,13 @@ public class managerIndexController {
                 // If ok, save staff's session
                 session.setAttribute("loggedInStaff", result);
 
-                // And save staff's rightlist for fast right-checking
-                List<String> rightList = new ArrayList<String>();
+                // And save staff's rightsList for fast right-checking
+                List<String> rightsList = new ArrayList<String>();
                 for (RoleRights roleRights : result.getRole().getRoleRightsCollection()) {
-                    rightList.add(roleRights.getRightsDetail().getTag());
+                    rightsList.add(roleRights.getRightsDetail().getTag());
                 }
-                session.setAttribute("rightList", rightList);
-
+                session.setAttribute("rightsList", rightsList);
+                redirect.addFlashAttribute("goodAlert", "Successfully logged in as \"" + result.getFirstName() + "\".");
                 // Then redirect to index
                 return "redirect:/manager/index";
             }
@@ -118,8 +143,8 @@ public class managerIndexController {
     public String getLogout(HttpSession session) {
         // remove session
         session.removeAttribute("loggedInStaff");
-        // remove rightlist
-        session.removeAttribute("rightList");
+        // remove rightsList
+        session.removeAttribute("rightsList");
         // reidect to login
         return "redirect:/manager/login";
     }

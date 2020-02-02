@@ -21,11 +21,16 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-
+import org.hibernate.validator.constraints.NotEmpty;
 /**
  *
  * @author Hai
@@ -68,55 +73,80 @@ public class Product implements Serializable {
     @Basic(optional = false)
     @Column(name = "Id")
     private Integer id;
+
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
     @Column(name = "Name")
+    @NotEmpty(message = "Name cannot be empty.")
+    @Size(min = 3, max = 255, message = "Name must have from 3 - 255 characters.")
     private String name;
+
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 100)
     @Column(name = "Manufacturer")
+    @NotEmpty(message = "Manufacturer cannot be empty.")
+    @Size(min = 1, max = 100, message = "Manufacturer must have from 1 - 100 characters.")
     private String manufacturer;
+
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
+    @NotEmpty(message = "Color cannot be empty.")
     @Column(name = "Color")
     private String color;
+
     @Basic(optional = false)
-    @NotNull
     @Column(name = "Price")
-    private double price;
+    @NotNull(message = "Price cannot be empty.")
+    @Digits(fraction = 2, integer = 10, message = "Must be number.")
+    @DecimalMin(value = "0.0", message = "Price's minimum is 0.")
+    @DecimalMax(value = "100000000.0", message = "Price's maximum is 100,000,000.")
+    private Double price;
+
     @Basic(optional = false)
     @Column(name = "Unit")
+    @Size(max = 30, message = "Unit must have maximum 30 characters.")
     private String unit;
+
     @Basic(optional = false)
-    @NotNull
     @Column(name = "Stock")
-    private int stock;
+    @NotNull(message = "Stock cannot be empty.")
+    @Min(value = 0, message = "Stock's minimum is 0.")
+    @Max(value = 10000, message = "Stock's maximum is 10,000.")
+    private Integer stock;
+
+
     @Basic(optional = false)
-    @NotNull
     @Column(name = "WarrantyPeriod")
+    @NotNull(message = "Warranty period cannot be empty.")
+    @Min(value = 0, message = "Warranty preriod's minimum is 0.")
+    @Max(value = 120, message = "Warranty preriod's maximum is 120.")
     private int warrantyPeriod;
+
+
     @Basic(optional = false)
-    @NotNull
+    @NotNull(message = "Status cannot be empty.")
     @Column(name = "Status")
     private int status;
+
     @Lob
     @Size(max = 2147483647)
     @Column(name = "Socket")
     private String socket;
+
     @Size(max = 100)
     @Column(name = "Chipset")
     private String chipset;
+
     @Size(max = 100)
     @Column(name = "MemoryType")
     private String memoryType;
+
     @Size(max = 100)
     @Column(name = "FormFactor")
     private String formFactor;
+
     @Column(name = "TDP")
+    @Min(value = 0, message = "TDP's minimum is 0.")
+    @Max(value = 10000, message = "TDP's maximum is 10000.")
     private Integer tdp;
+
     @Size(max = 100)
     @Column(name = "Interface")
     private String interface1;
@@ -125,10 +155,17 @@ public class Product implements Serializable {
     @Size(max = 100)
     @Column(name = "Series")
     private String series;
+
     @Column(name = "Thread")
+    @Min(value = 0, message = "Thread's minimum is 1.")
+    @Max(value = 1000, message = "Thread's maximum is 1000.")
     private Integer thread;
+
     @Column(name = "Core")
+    @Min(value = 0, message = "Core's minimum is 1.")
+    @Max(value = 1000, message = "Core's maximum is 1000.")
     private Integer core;
+
     @Column(name = "MemorySlot")
     private Integer memorySlot;
     @Size(max = 100)
@@ -147,11 +184,13 @@ public class Product implements Serializable {
     @Size(max = 50)
     @Column(name = "Resolution")
     private String resolution;
+
     @Basic(optional = false)
     @Lob
-    @Size(max = 2147483647)
+    @Size(max = 2000000000, message = "Description must have maximum 2.000.000.000 characters.")
     @Column(name = "Description")
     private String description;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
     private Collection<ProductComment> productCommentCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
@@ -163,24 +202,24 @@ public class Product implements Serializable {
     private Category category;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
     private Collection<Promotion> promotionCollection;
-    @OneToMany(mappedBy = "product")
-    private Collection<PreBuilt> preBuiltCollection;
-    @OneToMany(mappedBy = "product1")
-    private Collection<PreBuilt> preBuiltCollection1;
-    @OneToMany(mappedBy = "product2")
-    private Collection<PreBuilt> preBuiltCollection2;
-    @OneToMany(mappedBy = "product3")
-    private Collection<PreBuilt> preBuiltCollection3;
-    @OneToMany(mappedBy = "product4")
-    private Collection<PreBuilt> preBuiltCollection4;
-    @OneToMany(mappedBy = "product5")
-    private Collection<PreBuilt> preBuiltCollection5;
-    @OneToMany(mappedBy = "product6")
-    private Collection<PreBuilt> preBuiltCollection6;
-    @OneToMany(mappedBy = "product7")
-    private Collection<PreBuilt> preBuiltCollection7;
-    @OneToMany(mappedBy = "product8")
-    private Collection<PreBuilt> preBuiltCollection8;
+    @OneToMany(mappedBy = "vga")
+    private Collection<PreBuilt> preBuiltVGACollection;
+    @OneToMany(mappedBy = "cases")
+    private Collection<PreBuilt> preBuiltCaseCollection;
+    @OneToMany(mappedBy = "monitor")
+    private Collection<PreBuilt> preBuiltMonitorCollection;
+    @OneToMany(mappedBy = "psu")
+    private Collection<PreBuilt> preBuiltPSUCollection;
+    @OneToMany(mappedBy = "storage")
+    private Collection<PreBuilt> preBuiltStorageCollection;
+    @OneToMany(mappedBy = "memory")
+    private Collection<PreBuilt> preBuiltMemoryCollection;
+    @OneToMany(mappedBy = "cpucooler")
+    private Collection<PreBuilt> preBuiltCPUCoolerCollection;
+    @OneToMany(mappedBy = "motherboard")
+    private Collection<PreBuilt> preBuiltMotherboardCollection;
+    @OneToMany(mappedBy = "cpu")
+    private Collection<PreBuilt> preBuiltCPUCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
     private Collection<OrderDetail> orderDetailCollection;
 
@@ -191,7 +230,7 @@ public class Product implements Serializable {
         this.id = id;
     }
 
-    public Product(Integer id, String name, String manufacturer, String color, double price, String unit, int stock, int warrantyPeriod, int status, String description) {
+    public Product(Integer id, String name, String manufacturer, String color, Double price, String unit, Integer stock, int warrantyPeriod, int status, String description) {
         this.id = id;
         this.name = name;
         this.manufacturer = manufacturer;
@@ -236,11 +275,11 @@ public class Product implements Serializable {
         this.color = color;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
@@ -252,11 +291,11 @@ public class Product implements Serializable {
         this.unit = unit;
     }
 
-    public int getStock() {
+    public Integer getStock() {
         return stock;
     }
 
-    public void setStock(int stock) {
+    public void setStock(Integer stock) {
         this.stock = stock;
     }
 
@@ -465,87 +504,6 @@ public class Product implements Serializable {
     }
 
     @XmlTransient
-    public Collection<PreBuilt> getPreBuiltCollection() {
-        return preBuiltCollection;
-    }
-
-    public void setPreBuiltCollection(Collection<PreBuilt> preBuiltCollection) {
-        this.preBuiltCollection = preBuiltCollection;
-    }
-
-    @XmlTransient
-    public Collection<PreBuilt> getPreBuiltCollection1() {
-        return preBuiltCollection1;
-    }
-
-    public void setPreBuiltCollection1(Collection<PreBuilt> preBuiltCollection1) {
-        this.preBuiltCollection1 = preBuiltCollection1;
-    }
-
-    @XmlTransient
-    public Collection<PreBuilt> getPreBuiltCollection2() {
-        return preBuiltCollection2;
-    }
-
-    public void setPreBuiltCollection2(Collection<PreBuilt> preBuiltCollection2) {
-        this.preBuiltCollection2 = preBuiltCollection2;
-    }
-
-    @XmlTransient
-    public Collection<PreBuilt> getPreBuiltCollection3() {
-        return preBuiltCollection3;
-    }
-
-    public void setPreBuiltCollection3(Collection<PreBuilt> preBuiltCollection3) {
-        this.preBuiltCollection3 = preBuiltCollection3;
-    }
-
-    @XmlTransient
-    public Collection<PreBuilt> getPreBuiltCollection4() {
-        return preBuiltCollection4;
-    }
-
-    public void setPreBuiltCollection4(Collection<PreBuilt> preBuiltCollection4) {
-        this.preBuiltCollection4 = preBuiltCollection4;
-    }
-
-    @XmlTransient
-    public Collection<PreBuilt> getPreBuiltCollection5() {
-        return preBuiltCollection5;
-    }
-
-    public void setPreBuiltCollection5(Collection<PreBuilt> preBuiltCollection5) {
-        this.preBuiltCollection5 = preBuiltCollection5;
-    }
-
-    @XmlTransient
-    public Collection<PreBuilt> getPreBuiltCollection6() {
-        return preBuiltCollection6;
-    }
-
-    public void setPreBuiltCollection6(Collection<PreBuilt> preBuiltCollection6) {
-        this.preBuiltCollection6 = preBuiltCollection6;
-    }
-
-    @XmlTransient
-    public Collection<PreBuilt> getPreBuiltCollection7() {
-        return preBuiltCollection7;
-    }
-
-    public void setPreBuiltCollection7(Collection<PreBuilt> preBuiltCollection7) {
-        this.preBuiltCollection7 = preBuiltCollection7;
-    }
-
-    @XmlTransient
-    public Collection<PreBuilt> getPreBuiltCollection8() {
-        return preBuiltCollection8;
-    }
-
-    public void setPreBuiltCollection8(Collection<PreBuilt> preBuiltCollection8) {
-        this.preBuiltCollection8 = preBuiltCollection8;
-    }
-
-    @XmlTransient
     public Collection<OrderDetail> getOrderDetailCollection() {
         return orderDetailCollection;
     }
@@ -577,6 +535,141 @@ public class Product implements Serializable {
     @Override
     public String toString() {
         return "vn.htdshop.entity.Product[ id=" + id + " ]";
+    }
+
+    /**
+     * @return the preBuiltVGACollection
+     */
+    @XmlTransient
+    public Collection<PreBuilt> getPreBuiltVGACollection() {
+        return preBuiltVGACollection;
+    }
+
+    /**
+     * @param preBuiltVGACollection the preBuiltVGACollection to set
+     */
+    public void setPreBuiltVGACollection(Collection<PreBuilt> preBuiltVGACollection) {
+        this.preBuiltVGACollection = preBuiltVGACollection;
+    }
+
+    /**
+     * @return the preBuiltCaseCollection
+     */
+    @XmlTransient
+    public Collection<PreBuilt> getPreBuiltCaseCollection() {
+        return preBuiltCaseCollection;
+    }
+
+    /**
+     * @param preBuiltCaseCollection the preBuiltCaseCollection to set
+     */
+    public void setPreBuiltCaseCollection(Collection<PreBuilt> preBuiltCaseCollection) {
+        this.preBuiltCaseCollection = preBuiltCaseCollection;
+    }
+
+    /**
+     * @return the preBuiltMonitorCollection
+     */
+    @XmlTransient
+    public Collection<PreBuilt> getPreBuiltMonitorCollection() {
+        return preBuiltMonitorCollection;
+    }
+
+    /**
+     * @param preBuiltMonitorCollection the preBuiltMonitorCollection to set
+     */
+    public void setPreBuiltMonitorCollection(Collection<PreBuilt> preBuiltMonitorCollection) {
+        this.preBuiltMonitorCollection = preBuiltMonitorCollection;
+    }
+
+    /**
+     * @return the preBuiltPSUCollection
+     */
+    @XmlTransient
+    public Collection<PreBuilt> getPreBuiltPSUCollection() {
+        return preBuiltPSUCollection;
+    }
+
+    /**
+     * @param preBuiltPSUCollection the preBuiltPSUCollection to set
+     */
+    public void setPreBuiltPSUCollection(Collection<PreBuilt> preBuiltPSUCollection) {
+        this.preBuiltPSUCollection = preBuiltPSUCollection;
+    }
+
+    /**
+     * @return the preBuiltStorageCollection
+     */
+    @XmlTransient
+    public Collection<PreBuilt> getPreBuiltStorageCollection() {
+        return preBuiltStorageCollection;
+    }
+
+    /**
+     * @param preBuiltStorageCollection the preBuiltStorageCollection to set
+     */
+    public void setPreBuiltStorageCollection(Collection<PreBuilt> preBuiltStorageCollection) {
+        this.preBuiltStorageCollection = preBuiltStorageCollection;
+    }
+
+    /**
+     * @return the preBuiltMemoryCollection
+     */
+    @XmlTransient
+    public Collection<PreBuilt> getPreBuiltMemoryCollection() {
+        return preBuiltMemoryCollection;
+    }
+
+    /**
+     * @param preBuiltMemoryCollection the preBuiltMemoryCollection to set
+     */
+    public void setPreBuiltMemoryCollection(Collection<PreBuilt> preBuiltMemoryCollection) {
+        this.preBuiltMemoryCollection = preBuiltMemoryCollection;
+    }
+
+    /**
+     * @return the preBuiltCPUCoolerCollection
+     */
+    @XmlTransient
+    public Collection<PreBuilt> getPreBuiltCPUCoolerCollection() {
+        return preBuiltCPUCoolerCollection;
+    }
+
+    /**
+     * @param preBuiltCPUCoolerCollection the preBuiltCPUCoolerCollection to set
+     */
+    public void setPreBuiltCPUCoolerCollection(Collection<PreBuilt> preBuiltCPUCoolerCollection) {
+        this.preBuiltCPUCoolerCollection = preBuiltCPUCoolerCollection;
+    }
+
+    /**
+     * @return the preBuiltMotherCollection
+     */
+    @XmlTransient
+    public Collection<PreBuilt> getPreBuiltMotherboardCollection() {
+        return preBuiltMotherboardCollection;
+    }
+
+    /**
+     * @param preBuiltMotherCollection the preBuiltMotherCollection to set
+     */
+    public void setPreBuiltMotherboardCollection(Collection<PreBuilt> preBuiltMotherboardCollection) {
+        this.preBuiltMotherboardCollection = preBuiltMotherboardCollection;
+    }
+
+    /**
+     * @return the preBuiltCPUCollection
+     */
+    @XmlTransient
+    public Collection<PreBuilt> getPreBuiltCPUCollection() {
+        return preBuiltCPUCollection;
+    }
+
+    /**
+     * @param preBuiltCPUCollection the preBuiltCPUCollection to set
+     */
+    public void setPreBuiltCPUCollection(Collection<PreBuilt> preBuiltCPUCollection) {
+        this.preBuiltCPUCollection = preBuiltCPUCollection;
     }
     
 }

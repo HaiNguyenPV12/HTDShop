@@ -69,31 +69,31 @@ public class PreBuilt implements Serializable {
     private Collection<PreBuiltImage> preBuiltImageCollection;
     @JoinColumn(name = "VGAId", referencedColumnName = "Id")
     @ManyToOne
-    private Product product;
+    private Product vga;
     @JoinColumn(name = "CaseId", referencedColumnName = "Id")
     @ManyToOne
-    private Product product1;
+    private Product cases;
     @JoinColumn(name = "MonitorId", referencedColumnName = "Id")
     @ManyToOne
-    private Product product2;
+    private Product monitor;
     @JoinColumn(name = "PSUId", referencedColumnName = "Id")
     @ManyToOne
-    private Product product3;
+    private Product psu;
     @JoinColumn(name = "StorageId", referencedColumnName = "Id")
     @ManyToOne
-    private Product product4;
+    private Product storage;
     @JoinColumn(name = "MemoryId", referencedColumnName = "Id")
     @ManyToOne
-    private Product product5;
+    private Product memory;
     @JoinColumn(name = "CPUCoolerId", referencedColumnName = "Id")
     @ManyToOne
-    private Product product6;
+    private Product cpucooler;
     @JoinColumn(name = "MotherBoardId", referencedColumnName = "Id")
     @ManyToOne
-    private Product product7;
+    private Product motherboard;
     @JoinColumn(name = "CPUId", referencedColumnName = "Id")
     @ManyToOne
-    private Product product8;
+    private Product cpu;
     @JoinColumn(name = "StaffUserName", referencedColumnName = "UserName")
     @ManyToOne(optional = false)
     private Staff staff;
@@ -158,77 +158,7 @@ public class PreBuilt implements Serializable {
         this.preBuiltImageCollection = preBuiltImageCollection;
     }
 
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    public Product getProduct1() {
-        return product1;
-    }
-
-    public void setProduct1(Product product1) {
-        this.product1 = product1;
-    }
-
-    public Product getProduct2() {
-        return product2;
-    }
-
-    public void setProduct2(Product product2) {
-        this.product2 = product2;
-    }
-
-    public Product getProduct3() {
-        return product3;
-    }
-
-    public void setProduct3(Product product3) {
-        this.product3 = product3;
-    }
-
-    public Product getProduct4() {
-        return product4;
-    }
-
-    public void setProduct4(Product product4) {
-        this.product4 = product4;
-    }
-
-    public Product getProduct5() {
-        return product5;
-    }
-
-    public void setProduct5(Product product5) {
-        this.product5 = product5;
-    }
-
-    public Product getProduct6() {
-        return product6;
-    }
-
-    public void setProduct6(Product product6) {
-        this.product6 = product6;
-    }
-
-    public Product getProduct7() {
-        return product7;
-    }
-
-    public void setProduct7(Product product7) {
-        this.product7 = product7;
-    }
-
-    public Product getProduct8() {
-        return product8;
-    }
-
-    public void setProduct8(Product product8) {
-        this.product8 = product8;
-    }
+    
 
     public Staff getStaff() {
         return staff;
@@ -278,6 +208,132 @@ public class PreBuilt implements Serializable {
     @Override
     public String toString() {
         return "vn.htdshop.entity.PreBuilt[ id=" + id + " ]";
+    }
+
+    /**
+     * @return the vga
+     */
+    public Product getVga() {
+        return vga;
+    }
+
+    /**
+     * @param vga the vga to set
+     */
+    public void setVga(Product vga) {
+        this.vga = vga;
+    }
+
+    /**
+     * @return the cases
+     */
+    public Product getCases() {
+        return cases;
+    }
+
+    /**
+     * @param cases the cases to set
+     */
+    public void setCases(Product cases) {
+        this.cases = cases;
+    }
+
+    /**
+     * @return the monitor
+     */
+    public Product getMonitor() {
+        return monitor;
+    }
+
+    /**
+     * @param monitor the monitor to set
+     */
+    public void setMonitor(Product monitor) {
+        this.monitor = monitor;
+    }
+
+    /**
+     * @return the psu
+     */
+    public Product getPsu() {
+        return psu;
+    }
+
+    /**
+     * @param psu the psu to set
+     */
+    public void setPsu(Product psu) {
+        this.psu = psu;
+    }
+
+    /**
+     * @return the storage
+     */
+    public Product getStorage() {
+        return storage;
+    }
+
+    /**
+     * @param storage the storage to set
+     */
+    public void setStorage(Product storage) {
+        this.storage = storage;
+    }
+
+    /**
+     * @return the memory
+     */
+    public Product getMemory() {
+        return memory;
+    }
+
+    /**
+     * @param memory the memory to set
+     */
+    public void setMemory(Product memory) {
+        this.memory = memory;
+    }
+
+    /**
+     * @return the cpucooler
+     */
+    public Product getCpucooler() {
+        return cpucooler;
+    }
+
+    /**
+     * @param cpucooler the cpucooler to set
+     */
+    public void setCpucooler(Product cpucooler) {
+        this.cpucooler = cpucooler;
+    }
+
+    /**
+     * @return the motherboard
+     */
+    public Product getMotherboard() {
+        return motherboard;
+    }
+
+    /**
+     * @param motherboard the motherboard to set
+     */
+    public void setMotherboard(Product motherboard) {
+        this.motherboard = motherboard;
+    }
+
+    /**
+     * @return the cpu
+     */
+    public Product getCpu() {
+        return cpu;
+    }
+
+    /**
+     * @param cpu the cpu to set
+     */
+    public void setCpu(Product cpu) {
+        this.cpu = cpu;
     }
     
 }

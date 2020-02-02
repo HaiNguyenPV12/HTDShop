@@ -32,7 +32,8 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Hai
  */
 @Entity
-@Table(name = "Order")
+// Use [Order] instead of Order to prevent SQL keyword
+@Table(name = "[Order]")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Order1.findAll", query = "SELECT o FROM Order1 o")

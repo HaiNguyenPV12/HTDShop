@@ -4,6 +4,31 @@
 
 <head>
     <title>HTD Manager - Update product</title>
+    <style>
+        /* HIDE RADIO */
+        .uploadimg>[type=radio] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        /* IMAGE STYLES */
+        .uploadimg>img,
+        i {
+            cursor: pointer;
+        }
+
+        /* CHECKED STYLES */
+        .uploadimg>[type=radio]:checked+img {
+            outline: 2px solid #f00;
+        }
+
+        .uploadimg>img {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
 </head>
 
 <body>
@@ -45,12 +70,38 @@
                     <current_tag th:replace="~{/path_to_template_without_extension :: fragment_name} ?: ~{}"></current_tag>
 
             -->
-            <th:block th:replace="~{/HTDManager/product_edit_template :: __${curCate}__} ?: ~{}">
+            <th:block th:replace="~{/HTDManager/product_template :: template} ?: ~{}" th:if="${product != null}">
 
             </th:block>
         </th:block>
     </div>
     <script layout:fragment="script" th:inline="none">
+        $("#btnUploadImage").on("change", function () {
+            if (this.files && this.files[0]) {
+                if (this.files.length > 10) {
+                    showModal('Warning', 'You can only upload maximum 10 images.', '#', false, true);
+                    Toast.fire({
+                        type: 'error',
+                        title: 'You can only upload maximum 10 images.'
+                    });
+                    return;
+                }
+                $("#uploadimg").html("");
+                for (var i = 0; i < this.files.length; i++) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $("#uploadimg").append('<label class="col-sm-1 text-center uploadimg">'
+                            + '<input type="radio" name="uploadradio">'
+                            + '<img src="' + e.target.result + '">'
+                            + '</label>');
+                    }
+                    reader.readAsDataURL(this.files[i]);
+                }
+            } else {
+                $("#uploadimg").html("");
+            }
+        });
+        
         //Initialize Select2 Elements
         $('.select2').select2()
 

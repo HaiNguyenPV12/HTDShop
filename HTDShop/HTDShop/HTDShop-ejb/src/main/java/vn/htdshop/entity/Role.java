@@ -28,7 +28,8 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Hai
  */
 @Entity
-@Table(name = "Role")
+// Use [Role] instead of Role to prevent SQL keyword
+@Table(name = "[Role]")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Role.findAll", query = "SELECT r FROM Role r")
