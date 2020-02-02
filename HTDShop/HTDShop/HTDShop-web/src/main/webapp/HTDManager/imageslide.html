@@ -73,25 +73,7 @@
                                 <tr th:if="${imageslides eq null or imageslides.empty}">
                                     <td colspan="6">No image slides</td>
                                 </tr>
-                                <!--
-                                + To get data from controller through model, use:
-                                    th:each="child_item_name : ${attribute_from_controller's_name}"
-
-                                + After that, to show data in tags (like td/span/p/...), add following attribute in that tag
-                                    th:text="${child_item_name.child_item's_attribute}"
-                                 All of that tag content will be repace with content from th:text
-
-                                + th:classappend will add class if conditions is reached (using shorthand condition)
-                                We can use multiple condition: 
-                                    th:classappend="${(condition_1)+(condition_2)}""
-
-                                + Thymeleaf may not use intellisense or autocomplete, so we just follow object's class attribute.
-                                For example, to check if the RightDetail's Tag from RoleRights's list from Role of the loggedInStaff
-                                in session contains the 'product_read' or not:
-                                    th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('product_read')}"
-                                For more example, check layout.html in HTDManager section
-
-                            -->
+                                
                                 <tr th:each="i : ${imageslides}" th:classappend="${i.status==false?'bg-gray':''}">
                                     <td>
                                         <img th:src="@{/images/__${i.image}__}" />
@@ -150,7 +132,6 @@
 
     <!--In case using custom script at pages using layout, add th:inline="none" like below-->
     <script layout:fragment="script" th:inline="none">
-
         function confirmDelete(title, url) {
             showModal('Confirm deletion',
                 'Are you sure to delete "' + title + '" ?',

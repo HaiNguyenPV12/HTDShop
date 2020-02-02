@@ -37,6 +37,13 @@
 
         <!-- Header -->
         <nav class="main-header navbar navbar-expand navbar-purple navbar-dark">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#" data-toggle="tooltip" title="Toggle side menu">
+                        <i class="fas fa-bars"></i>
+                    </a>
+                </li>
+            </ul>
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
                 <!-- Logout button -->
@@ -250,6 +257,7 @@
 
     <!-- jQuery -->
     <script th:src="@{/manager_resources/plugins/jquery/jquery.min.js}"></script>
+    <script th:src="@{/manager_resources/plugins/jquery/jquery.cookie.js}"></script>
     <script th:src="@{/manager_resources/plugins/popper/umd/popper.min.js}"></script>
     <!-- Bootstrap 4 -->
     <script th:src="@{/manager_resources/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
@@ -288,19 +296,21 @@
             });
         }
 
+
+
         // Set up function for modal
-        function showModal(title, content, url, showOK ,danger) {
+        function showModal(title, content, url, showOK, danger) {
             if (danger == true) {
                 $('#modalButton').attr('class', 'btn btn-danger');
                 $('#modalHeader').attr('class', 'modal-header bg-danger');
-            }else{
+            } else {
                 $('#modalButton').attr('class', 'btn btn-success');
                 $('#modalHeader').attr('class', 'modal-header bg-success');
             }
             if (showOK == true) {
                 $('#modalButton').attr('style', 'display:inline-block;');
                 $('#modalClose').html('Cancel');
-            }else{
+            } else {
                 $('#modalButton').attr('style', 'display:none;');
                 $('#modalClose').html('Close');
             }
@@ -310,6 +320,24 @@
             $('#modalButton').html('Yes');
             $('#modal').modal('show');
         }
+
+        $(document).ready(function () {
+            // Load menu state (body's class)
+            if ($.cookie('sideMenuCollapse') != null) {
+                $('body').addClass('sidebar-collapse'); 
+            } 
+            // Save menu state, first wait for effect and then save the lastest class
+            $('[data-widget="pushmenu"]').on('click', function () {
+                setTimeout(function () {
+                    if ($('body').hasClass('sidebar-collapse')) {
+                        $.cookie('sideMenuCollapse', 'sideMenuCollapse');
+                    }else{
+                        $.removeCookie('sideMenuCollapse');
+                    }
+                    
+                }, 100);
+            });
+        });
     </script>
     
     <!-- AdminLTE App -->
