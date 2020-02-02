@@ -36,23 +36,8 @@ public class shopIndexController {
         return "HTDShop/index";
     }
 
-    @RequestMapping(value = "build", method = RequestMethod.GET)
-    public String getBuild(HttpSession session) {
-        if (isBuildStarted(session)) {
-            session.setAttribute("isBuilding", true);
-            session.setAttribute("currentBuild", new PreBuilt());
-        }
-
-        //TODO handle build all in session.
-        return "HTDShop/build";
-    }
-
     @RequestMapping(value = "test", method = RequestMethod.GET)
     public String getTest() {
         return "HTDShop/test";
-    }
-
-    private boolean isBuildStarted(HttpSession session) {
-        return session.getAttribute("isBuilding") == null;
     }
 }

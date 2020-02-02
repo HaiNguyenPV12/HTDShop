@@ -2,6 +2,7 @@ package vn.htdshop.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.validation.constraints.Size;
 
 /**
  * BuildValues
@@ -12,6 +13,9 @@ public class BuildValues {
     @Id
     private Integer id;
 
+    private String partCategory;
+
+    @Size(max = 30)
     private String manufacturer;
 
     public BuildValues(int id, String manufacturer) {
@@ -36,5 +40,13 @@ public class BuildValues {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getPartCategory() {
+        return partCategory;
+    }
+
+    public void setPartCategory(String partCategory) {
+        this.partCategory = partCategory;
     }
 }

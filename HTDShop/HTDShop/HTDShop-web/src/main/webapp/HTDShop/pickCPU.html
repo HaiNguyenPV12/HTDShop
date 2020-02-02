@@ -16,7 +16,8 @@
                 <h2 class="mx-auto">Pick a CPU</h2>
             </div>
             <form th:action="@{/build/filterCpu}" method="POST" id="pickCPUForm" th:object="${cpuValues}">
-                <input type="hidden" th:field="*{id}" value="1"/>
+                <input type="hidden" th:field="*{id}" value="1" />
+                <input type="hidden" th:field="*{partCategory}" value="cpu"/>
                 <select th:field="*{manufacturer}">
                     <option value="amd">AMD</option>
                     <option value="intel">Intel</option>
