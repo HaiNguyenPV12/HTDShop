@@ -15,6 +15,7 @@
             <div class="row">
                 <h2 class="mx-auto">Pick a CPU</h2>
             </div>
+            <!-- START OF FILTER FORM -->
             <form th:action="@{/build/filterCpu}" method="POST" id="pickCPUForm" th:object="${cpuValues}">
                 <input type="hidden" th:field="*{partCategory}" value="cpu" />
                 <div class="row">
@@ -22,12 +23,22 @@
                         <h4 class="mx-auto">
                             Manufacturer
                         </h4>
-                        <div class="reset-this">
+                        <div>
                             <input type="radio" name="manufacturer" id="" value="all" th:field=*{manufacturer}> All
                             <br>
                             <input type="radio" name="manufacturer" id="" value="amd" th:field=*{manufacturer}> AMD
                             <br>
                             <input type="radio" name="manufacturer" id="" value="intel" th:field=*{manufacturer}> Intel
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <h4 class="mx-auto">
+                            Socket
+                        </h4>
+                        <div>
+                            <select name="socket" id="" th:field=*{socket}>
+                                <option value="">LGA 1155</option>
+                            </select>
                         </div>
                     </div>
                 </div>
