@@ -79,7 +79,7 @@
         $("#btnUploadImage").on("change", function () {
             if (this.files && this.files[0]) {
                 if (this.files.length > 10) {
-                    showModal('Warning', 'You can only upload maximum 10 images.', '#', false, true);
+                    //showModal('Warning', 'You can only upload maximum 10 images.', '#', false, true);
                     Toast.fire({
                         type: 'error',
                         title: 'You can only upload maximum 10 images.'

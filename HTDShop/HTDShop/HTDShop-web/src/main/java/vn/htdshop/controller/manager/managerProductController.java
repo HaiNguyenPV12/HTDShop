@@ -8,6 +8,7 @@ package vn.htdshop.controller.manager;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -110,19 +111,9 @@ public class managerProductController {
         // Prepare product model
         Category c = new Category();
         Product p = new Product();
-        
+
         if (cate != null) {
             c.setId(cate);
-            switch (cate) {
-            case 2:
-                // model.addAttribute("product", new CPU());
-                break;
-            case 8:
-
-                break;
-            default:
-                break;
-            }
         }
         p.setCategory(c);
         model.addAttribute("product", p);
@@ -144,10 +135,9 @@ public class managerProductController {
         return "HTDManager/product_add";
     }
 
-    // ==== PRODUCT ADD - PROCESS - CPU ==== \\
+    // ==== PRODUCT ADD - PROCESS ==== \\
     @RequestMapping(value = "doAdd", method = RequestMethod.POST)
-    // Adding optional "cate" parameter by using @RequestParam(required = false)
-    public String doAddCPU(@Valid @ModelAttribute("product") Product product, BindingResult error, HttpSession session,
+    public String doAdd(@Valid @ModelAttribute("product") Product product, BindingResult error, HttpSession session,
             Model model, @RequestParam(value = "uploadimg", required = false) MultipartFile[] uploadimg,
             RedirectAttributes redirect) {
         // Check if logged in session is exists
@@ -167,7 +157,7 @@ public class managerProductController {
             productFacade.create(product);
             // Process images
             if (uploadimg != null && uploadimg.length > 0) {
-                uploadImages(uploadimg, product,false);
+                uploadImages(uploadimg, product, false);
             }
 
             // Pass alert attribute to notify successful process
@@ -187,7 +177,7 @@ public class managerProductController {
         // Add indicator attribute for sidemenu highlight
         model.asMap().put("menu", "product");
         // Redirect to add page
-        return "redirect:/manager/product/add?cate=2";
+        return "redirect:/manager/product/add?cate=" + product.getCategory().getId();
     }
 
     // ==== PRODUCT EDIT - VIEW ==== \\
@@ -222,17 +212,6 @@ public class managerProductController {
         // Continue if everything is ok
 
         // Prepare product model
-        switch (p.getCategory().getId()) {
-        case 2:
-            // CPU cpu = new CPU();
-            // cpu.fromProduct(p);
-            // model.addAttribute("product", cpu);
-            break;
-        case 8:
-            break;
-        default:
-            break;
-        }
         model.addAttribute("product", p);
         // Prepare form url for form submit
         // model.addAttribute("formUrl", "doEdit" + category);
@@ -420,30 +399,37 @@ public class managerProductController {
             }
 
             // System.getProperty("catalina.base") : Path_to_glassfish/domains/domain_name/
-            File imagePath = new File(System.getProperty("catalina.base") + "\\img\\product");
+            // Initialize folder path
+            String folderPath = System.getProperty("catalina.base") + "/img/product/" + product.getId();
+            File checkPath = new File(folderPath);
             // Check if path is not exists, create path to it
-            if (!imagePath.exists()) {
-                imagePath.mkdirs();
+            if (!checkPath.exists()) {
+                checkPath.mkdirs();
             }
             // With each of file, do following
-
+            int count = 0;
             for (MultipartFile multipartFile : uploadimg) {
-                // File name: [product id]_[time in milis].[extension]
+                // File name: [count].[extension]
                 // TODO: check extensions
-                String fileName = product.getId() + "_" + Calendar.getInstance().getTimeInMillis() + multipartFile
-                        .getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf("."));
+                String fileName = count + multipartFile.getOriginalFilename()
+                        .substring(multipartFile.getOriginalFilename().lastIndexOf("."));
                 // file path:
-                // Path_to_glassfish/domains/domain_name/img/product/file_name.extension
-                String filePath = System.getProperty("catalina.base") + "\\img\\product\\" + fileName;
+                // Path_to_glassfish/domains/domain_name/img/product/product_id/count.extension
+                String filePath = folderPath + "/" + fileName;
                 // Use Files to copy multipartFile's input stream to declared path
-                Files.copy(multipartFile.getInputStream(), Paths.get(filePath));
+                Files.copy(multipartFile.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
 
                 // Create image data in database
                 ProductImage pimg = new ProductImage();
-                pimg.setMainImage(false);
-                pimg.setImagePath("product/" + fileName);
+                if (count == 0) {
+                    pimg.setMainImage(true);
+                } else {
+                    pimg.setMainImage(false);
+                }
+                pimg.setImagePath("product/" + product.getId() + "/" + fileName);
                 pimg.setProduct(product);
                 productImageFacade.create(pimg);
+                count++;
             }
 
             return true;

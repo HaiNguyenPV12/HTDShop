@@ -6,8 +6,10 @@
 package vn.htdshop.controller.manager;
 
 import java.io.File;
+import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -89,10 +91,159 @@ public class managerImageSlideController {
         }
 
         // Pass image slide list to session
-        model.asMap().put("imageslides", imageSlideFacade.findAll().stream().sorted(Comparator.comparing(ImageSlide::getStatus,Comparator.reverseOrder())).collect(Collectors.toList()));
+        model.asMap().put("imageslides",
+                imageSlideFacade.findAll().stream()
+                        .sorted(Comparator.comparing(ImageSlide::getStatus, Comparator.reverseOrder())
+                                .thenComparing(ImageSlide::getOrder, Comparator.nullsLast(Comparator.naturalOrder())))
+                        .collect(Collectors.toList()));
         // Add indicator attribute for sidemenu highlight
         model.asMap().put("menu", "imageslide");
         return "HTDManager/imageslide";
+    }
+
+    // ==== IMAGE SLIDE ADD - VIEW ==== \\
+    @RequestMapping(value = "add", method = RequestMethod.GET)
+    public String viewAdd(HttpSession session, Model model) {
+        // Check if logged in session is exists
+        if (!checkLogin(session)) {
+            // If not, redirect to index
+            return redirectLogin;
+        }
+        // Check if staff have appropriate role
+        if (!rightsList.contains("product_add")) {
+            // If not, redirect to product index
+            return redirectImageSlideHome;
+        }
+        // Prepare model
+        ImageSlide imageSlide = new ImageSlide();
+        imageSlide.setStatus(true);
+        model.addAttribute("imageSlide", imageSlide);
+
+        // Prepare form url for form submit
+        model.addAttribute("formUrl", "doAdd");
+        // Show error (if exists) after redirect to this page again
+        if (model.asMap().containsKey("error")) {
+            model.addAttribute("org.springframework.validation.BindingResult.imageSlide", model.asMap().get("error"));
+            model.addAttribute("submited", "submited");
+        }
+
+        model.asMap().put("imageslides", imageSlideFacade.findAll().stream().filter(is -> is.getStatus() == true)
+                .sorted(Comparator.comparing(ImageSlide::getOrder, Comparator.nullsLast(Comparator.naturalOrder())))
+                .collect(Collectors.toList()));
+
+        // Add indicator attribute for sidemenu highlight
+        model.asMap().put("menu", "imageslide");
+        // Continue to login page
+        return "HTDManager/imageslide_template";
+    }
+
+    // ==== IMAGE SLIDE ADD - PROCESS ==== \\
+    @RequestMapping(value = "doAdd", method = RequestMethod.POST)
+    public String doAdd(@Valid @ModelAttribute("imageSlide") ImageSlide imageSlide, BindingResult error,
+            HttpSession session, Model model,
+            @RequestParam(value = "uploadimg", required = false) MultipartFile uploadimg, RedirectAttributes redirect) {
+        // Check if logged in session is exists
+        if (!checkLogin(session)) {
+            // If not, redirect to index
+            return redirectLogin;
+        }
+        // Check if staff have appropriate role
+        if (!rightsList.contains("imageslide_add")) {
+            return redirectImageSlideHome;
+        }
+        // Check if image exists
+        if (uploadimg == null || uploadimg.getSize() <= 0 || uploadimg.isEmpty()) {
+            error.reject("common", "Please choose image.");
+        }
+
+        // If there is no error
+        if (!error.hasErrors()) {
+            int order = imageSlide.getOrder();
+            imageSlide.setOrder(null);
+            // Insert into database
+            imageSlideFacade.create(imageSlide);
+            // Process images
+            if (uploadimg != null) {
+                uploadImage(uploadimg, imageSlide, false);
+            }
+            // Process order
+            reorder(imageSlide.getId(), order, false);
+
+            // Pass alert attribute to notify successful process
+            redirect.addFlashAttribute("goodAlert", "Successfully added \"" + imageSlide.getTitle() + "\"!");
+            return redirectImageSlideHome;
+        }
+        // Show common error message
+        error.reject("common", "Error adding new product.");
+
+        // Pass binding result to redirect page (to show errors)
+        redirect.addFlashAttribute("error", error);
+        System.out.println(error);
+        // Pass current input to redirect page (to keep old input)
+        redirect.addFlashAttribute("imageslide", imageSlide);
+
+        // Redirect to add page
+        return "redirect:/manager/imageslide/add";
+    }
+
+    // ==== IMAGE SLIDE ACTIVATE - PROCESS ==== \\
+    @RequestMapping(value = "doActivate", method = RequestMethod.GET)
+    public String doActivate(Model model, HttpSession session, @RequestParam(value = "id") Integer id,
+            RedirectAttributes redirect) {
+        // Check if logged in session is exists
+        if (!checkLogin(session)) {
+            // If not, redirect to index
+            return redirectLogin;
+        }
+        // Check if staff have appropriate role
+        if (!rightsList.contains("imageslide_edit")) {
+            return redirectImageSlideHome;
+        }
+        ImageSlide imageSlide = imageSlideFacade.find(id);
+        imageSlide.setStatus(true);
+        imageSlideFacade.edit(imageSlide);
+        redirect.addFlashAttribute("goodAlert", "Successfully activated \"" + imageSlide.getTitle() + "\"!");
+        return redirectImageSlideHome;
+    }
+
+    // ==== IMAGE SLIDE DE-ACTIVATE - PROCESS ==== \\
+    @RequestMapping(value = "doDeactivate", method = RequestMethod.GET)
+    public String doDeactivate(Model model, HttpSession session, @RequestParam(value = "id") Integer id,
+            RedirectAttributes redirect) {
+        // Check if logged in session is exists
+        if (!checkLogin(session)) {
+            // If not, redirect to index
+            return redirectLogin;
+        }
+        // Check if staff have appropriate role
+        if (!rightsList.contains("imageslide_edit")) {
+            return redirectImageSlideHome;
+        }
+
+        reorder(id, 0, true);
+
+        redirect.addFlashAttribute("goodAlert",
+                "Successfully de-activated \"" + imageSlideFacade.find(id).getTitle() + "\"!");
+        return redirectImageSlideHome;
+    }
+
+    // ==== IMAGE SLIDE RE-ORDER - PROCESS ==== \\
+    @RequestMapping(value = "doReorder", method = RequestMethod.GET)
+    public String doReorder(Model model, HttpSession session, @RequestParam(value = "id") Integer id,
+            @RequestParam(value = "order") Integer order, RedirectAttributes redirect) {
+        // Check if logged in session is exists
+        if (!checkLogin(session)) {
+            // If not, redirect to index
+            return redirectLogin;
+        }
+        // Check if staff have appropriate role
+        if (!rightsList.contains("imageslide_edit")) {
+            return redirectImageSlideHome;
+        }
+
+        reorder(id, order, false);
+
+        return redirectImageSlideHome;
     }
 
     private Boolean checkLogin(HttpSession session) {
@@ -106,49 +257,88 @@ public class managerImageSlideController {
         return false;
     }
 
-    private Boolean uploadImages(MultipartFile[] uploadimg, Product product, boolean deleteOldImages) {
+    private void reorder(int id, int order, boolean disable) {
+        ImageSlide curImageSlide = imageSlideFacade.find(id);
+        int curOrder = curImageSlide.getOrder() == null ? 0 : curImageSlide.getOrder();
+
+        if (order == 0) {
+            List<ImageSlide> minusList1 = imageSlideFacade.findAll().stream().filter(is -> is.getOrder() != null)
+                    .filter(is -> is.getOrder() >= curOrder).collect(Collectors.toList());
+            for (ImageSlide imageSlide : minusList1) {
+                imageSlide.setOrder(imageSlide.getOrder() - 1);
+                imageSlideFacade.edit(imageSlide);
+            }
+        } else if (imageSlideFacade.findAll().stream().filter(is -> is.getOrder() != null)
+                .filter(is -> is.getOrder() == order).collect(Collectors.toList()).size() <= 0) {
+            // do nothing
+        } else if (curOrder == 0) {
+            List<ImageSlide> plusList1 = imageSlideFacade.findAll().stream().filter(is -> is.getOrder() != null)
+                    .filter(is -> is.getOrder() >= order).collect(Collectors.toList());
+            for (ImageSlide imageSlide : plusList1) {
+                imageSlide.setOrder(imageSlide.getOrder() + 1);
+                imageSlideFacade.edit(imageSlide);
+            }
+        } else if (order < curOrder) {
+            List<ImageSlide> plusList2 = imageSlideFacade.findAll().stream().filter(is -> is.getOrder() != null)
+                    .filter(is -> is.getOrder() >= order).filter(is -> is.getOrder() < curOrder)
+                    .collect(Collectors.toList());
+            for (ImageSlide imageSlide : plusList2) {
+                imageSlide.setOrder(imageSlide.getOrder() + 1);
+                imageSlideFacade.edit(imageSlide);
+            }
+        } else if (order > curOrder) {
+            List<ImageSlide> minusList2 = imageSlideFacade.findAll().stream().filter(is -> is.getOrder() != null)
+                    .filter(is -> is.getOrder() <= order).filter(is -> is.getOrder() > curOrder)
+                    .collect(Collectors.toList());
+            for (ImageSlide imageSlide : minusList2) {
+                imageSlide.setOrder(imageSlide.getOrder() - 1);
+                imageSlideFacade.edit(imageSlide);
+            }
+        }
+
+        if (order == 0) {
+            curImageSlide.setOrder(null);
+        } else {
+            curImageSlide.setOrder(order);
+        }
+        if (disable) {
+            curImageSlide.setStatus(false);
+        }
+        imageSlideFacade.edit(curImageSlide);
+    }
+
+    private Boolean uploadImage(MultipartFile uploadimg, ImageSlide imageSlide, boolean deleteOldImages) {
         try {
             // Remove image
             if (deleteOldImages) {
-                for (ProductImage img : productFacade.find(product.getId()).getProductImageCollection()) {
-                    // First, delete real file.
-                    File deleteFile = new File(System.getProperty("catalina.home") + "/img/" + img.getImagePath());
-                    if (deleteFile.delete()) {
-                        System.out.println("Deleted image: " + deleteFile.getPath());
-                    } else {
-                        System.out.println("Cannot delete image: " + deleteFile.getPath());
-                    }
-                    // Then, delete record in database
-                    productImageFacade.remove(img);
+                // First, delete real file.
+                File deleteFile = new File(System.getProperty("catalina.home") + "/img/" + imageSlide.getImage());
+                if (deleteFile.delete()) {
+                    System.out.println("Deleted image: " + deleteFile.getPath());
+                } else {
+                    System.out.println("Cannot delete image: " + deleteFile.getPath());
                 }
             }
 
             // System.getProperty("catalina.base") : Path_to_glassfish/domains/domain_name/
-            File imagePath = new File(System.getProperty("catalina.base") + "\\img\\product");
+            File imagePath = new File(System.getProperty("catalina.base") + "/img/imageslide");
             // Check if path is not exists, create path to it
             if (!imagePath.exists()) {
                 imagePath.mkdirs();
             }
-            // With each of file, do following
 
-            for (MultipartFile multipartFile : uploadimg) {
-                // File name: [product id]_[time in milis].[extension]
-                // TODO: check extensions
-                String fileName = product.getId() + "_" + Calendar.getInstance().getTimeInMillis() + multipartFile
-                        .getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf("."));
-                // file path:
-                // Path_to_glassfish/domains/domain_name/img/product/file_name.extension
-                String filePath = System.getProperty("catalina.base") + "\\img\\product\\" + fileName;
-                // Use Files to copy multipartFile's input stream to declared path
-                Files.copy(multipartFile.getInputStream(), Paths.get(filePath));
+            // File name: [image slide id].[extension]
+            // TODO: check extensions
+            String fileName = imageSlide.getId()
+                    + uploadimg.getOriginalFilename().substring(uploadimg.getOriginalFilename().lastIndexOf("."));
+            // Path_to_glassfish/domains/domain_name/img/imageslide/file_name.extension
+            String filePath = System.getProperty("catalina.base") + "/img/imageslide/" + fileName;
+            // Use Files to copy multipartFile's input stream to declared path
+            Files.copy(uploadimg.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
 
-                // Create image data in database
-                ProductImage pimg = new ProductImage();
-                pimg.setMainImage(false);
-                pimg.setImagePath("product/" + fileName);
-                pimg.setProduct(product);
-                productImageFacade.create(pimg);
-            }
+            // Save image path
+            imageSlide.setImage("imageslide/" + fileName);
+            imageSlideFacade.edit(imageSlide);
 
             return true;
         } catch (Exception e) {
