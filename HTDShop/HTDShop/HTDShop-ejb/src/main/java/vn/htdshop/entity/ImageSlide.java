@@ -42,7 +42,6 @@ public class ImageSlide implements Serializable {
     private Integer id;
     @Basic(optional = false)
     @Lob
-    @Size(min = 1, max = 2147483647)
     @Column(name = "Image")
     private String image;
     @Column(name = "[Order]")

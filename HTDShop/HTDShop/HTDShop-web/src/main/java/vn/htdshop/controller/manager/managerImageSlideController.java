@@ -109,7 +109,7 @@ public class managerImageSlideController {
 
     // ==== IMAGE SLIDE ADD - VIEW ==== \\
     @RequestMapping(value = "add", method = RequestMethod.GET)
-    public String viewAdd(HttpSession session, Model model) {
+    public String viewAdd(Model model) {
         if (!checkLoginWithRole("imageslide_add")) {
             return redirectImageSlideHome;
         }
@@ -137,8 +137,7 @@ public class managerImageSlideController {
     }
 
     // ==== IMAGE SLIDE ADD - PROCESS ==== \\
-    @RequestMapping(value = "doAdd", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE
-            + "; charset=utf-8")
+    @RequestMapping(value = "doAdd", method = RequestMethod.POST)
     public String doAdd(@Valid @ModelAttribute("imageSlide") ImageSlide imageSlide, BindingResult error,
             HttpSession session, Model model,
             @RequestParam(value = "uploadimg", required = false) MultipartFile uploadimg, RedirectAttributes redirect) {
@@ -146,10 +145,10 @@ public class managerImageSlideController {
             return redirectImageSlideHome;
         }
         // Check if image exists
-        if (uploadimg == null || uploadimg.getSize() <= 0 || uploadimg.isEmpty()) {
-            error.reject("common", "Please choose image.");
+        String contentType = uploadimg.getContentType().substring(0, uploadimg.getContentType().lastIndexOf("/"));
+        if (uploadimg.getSize() <= 0 || uploadimg.isEmpty() || !contentType.equals("image")) {
+            error.reject("common", "Please choose valid image.");
         }
-
         // If there is no error
         if (!error.hasErrors()) {
             int order = imageSlide.getOrder();
@@ -178,6 +177,121 @@ public class managerImageSlideController {
 
         // Redirect to add page
         return "redirect:/manager/imageslide/add";
+    }
+
+    // ==== IMAGE SLIDE EDIT - VIEW ==== \\
+    @RequestMapping(value = "edit", method = RequestMethod.GET)
+    public String viewEdit(Model model, @RequestParam(value = "id") Integer id) {
+        if (!checkLoginWithRole("imageslide_edit")) {
+            return redirectImageSlideHome;
+        }
+        // Prepare model
+        ImageSlide imageSlide = imageSlideFacade.find(id);
+        model.addAttribute("imageSlide", imageSlide);
+
+        // Prepare form url for form submit
+        model.addAttribute("formUrl", "doEdit");
+        // Show error (if exists) after redirect to this page again
+        if (model.asMap().containsKey("error")) {
+            model.addAttribute("org.springframework.validation.BindingResult.imageSlide", model.asMap().get("error"));
+            model.addAttribute("submited", "submited");
+        }
+
+        model.asMap().put("imageslides", imageSlideFacade.findAll().stream().filter(is -> is.getStatus() == true)
+                .sorted(Comparator.comparing(ImageSlide::getOrder, Comparator.nullsLast(Comparator.naturalOrder())))
+                .collect(Collectors.toList()));
+
+        // Add edit identifier for form
+        model.asMap().put("update", "update");
+        // Add indicator attribute for sidemenu highlight
+        model.asMap().put("menu", "imageslide");
+        // Continue to login page
+        return "HTDManager/imageslide_template";
+    }
+
+    // ==== IMAGE SLIDE EDIT - PROCESS ==== \\
+    @RequestMapping(value = "doEdit", method = RequestMethod.POST)
+    public String doEdit(@Valid @ModelAttribute("imageSlide") ImageSlide imageSlide, BindingResult error,
+            HttpSession session, Model model,
+            @RequestParam(value = "uploadimg", required = false) MultipartFile uploadimg, RedirectAttributes redirect) {
+        if (!checkLoginWithRole("imageslide_edit")) {
+            return redirectImageSlideHome;
+        }
+        String contentType = uploadimg.getContentType().substring(0, uploadimg.getContentType().lastIndexOf("/"));
+        if (!uploadimg.isEmpty() && !contentType.equals("image")) {
+            error.reject("common", "Please choose valid image.");
+        }
+        // If there is no error
+        if (!error.hasErrors()) {
+            // Process order
+            reorder(imageSlide.getId(), imageSlide.getOrder(), false);
+            if (imageSlide.getOrder() == 0) {
+                imageSlide.setOrder(null);
+            }
+            // Update in database
+            imageSlideFacade.edit(imageSlide);
+
+            // Process images
+            if (!uploadimg.isEmpty() && uploadimg.getSize() > 0) {
+                uploadImage(uploadimg, imageSlide, true);
+            }
+
+            // Pass alert attribute to notify successful process
+            redirect.addFlashAttribute("goodAlert", "Successfully updated \"" + imageSlide.getTitle() + "\"!");
+            return redirectImageSlideHome;
+        }
+        if (uploadimg == null || uploadimg.getSize() <= 0 || uploadimg.isEmpty()) {
+            error.reject("common", "Please choose image again.");
+        }
+        // Show common error message
+        error.reject("common", "Error updating this product.");
+
+        // Pass binding result to redirect page (to show errors)
+        redirect.addFlashAttribute("error", error);
+        System.out.println(error);
+        // Pass current input to redirect page (to keep old input)
+        redirect.addFlashAttribute("imageslide", imageSlide);
+
+        // Redirect to add page
+        return "redirect:/manager/imageslide/edit?id=" + imageSlide.getId();
+    }
+
+    // ==== PRODUCT DELETE - PROCESS ==== \\
+    @RequestMapping(value = "doDelete", method = RequestMethod.GET)
+    public String doDelete(HttpSession session, Model model, @RequestParam(required = true) Integer id,
+            RedirectAttributes redirect) {
+        if (!checkLoginWithRole("imageslide_delete")) {
+            return redirectImageSlideHome;
+        }
+
+        // Initialize product object
+        ImageSlide imageSlide = imageSlideFacade.find(id);
+        // If product is not null
+        if (imageSlide != null) {
+            // If not, then start to delete
+            // First, delete product's images
+            File deleteFile = new File(System.getProperty("catalina.home") + "/img/" + imageSlide.getImage());
+            if (deleteFile.delete()) {
+                System.out.println("Deleted image: " + deleteFile.getPath());
+            } else {
+                System.out.println("Cannot delete image: " + deleteFile.getPath());
+            }
+
+            // Then, reorder and disable
+            reorder(id, 0, true);
+
+            // Finally, delete image slide
+            imageSlideFacade.remove(imageSlide);
+
+            // And pass alert attribute
+            redirect.addFlashAttribute("goodAlert", "Successfully deleted \"" + imageSlide.getTitle() + "\"!");
+
+        } else {
+            // In case product is not found
+            redirect.addFlashAttribute("badAlert", "This id is not exists!");
+        }
+
+        return redirectImageSlideHome;
     }
 
     // ==== IMAGE SLIDE ACTIVATE - PROCESS ==== \\
@@ -222,6 +336,104 @@ public class managerImageSlideController {
         return redirectImageSlideHome;
     }
 
+    private void reorder(int id, int order, boolean disable) {
+        ImageSlide curImageSlide = imageSlideFacade.find(id);
+        int curOrder = curImageSlide.getOrder() == null ? 0 : curImageSlide.getOrder();
+        if (order != curOrder) {
+            if (order == 0) {
+                List<ImageSlide> minusList1 = imageSlideFacade.findAll().stream().filter(is -> is.getOrder() != null)
+                        .filter(is -> is.getOrder() >= curOrder).collect(Collectors.toList());
+                for (ImageSlide imageSlide : minusList1) {
+                    imageSlide.setOrder(imageSlide.getOrder() - 1);
+                    imageSlideFacade.edit(imageSlide);
+                }
+            } else if (imageSlideFacade.findAll().stream().filter(is -> is.getOrder() != null)
+                    .filter(is -> is.getOrder() == order).collect(Collectors.toList()).size() <= 0) {
+                // do nothing
+            } else if (curOrder == 0) {
+                List<ImageSlide> plusList1 = imageSlideFacade.findAll().stream().filter(is -> is.getOrder() != null)
+                        .filter(is -> is.getOrder() >= order).collect(Collectors.toList());
+                for (ImageSlide imageSlide : plusList1) {
+                    imageSlide.setOrder(imageSlide.getOrder() + 1);
+                    imageSlideFacade.edit(imageSlide);
+                }
+            } else if (order < curOrder) {
+                List<ImageSlide> plusList2 = imageSlideFacade.findAll().stream().filter(is -> is.getOrder() != null)
+                        .filter(is -> is.getOrder() >= order).filter(is -> is.getOrder() < curOrder)
+                        .collect(Collectors.toList());
+                for (ImageSlide imageSlide : plusList2) {
+                    imageSlide.setOrder(imageSlide.getOrder() + 1);
+                    imageSlideFacade.edit(imageSlide);
+                }
+            } else if (order > curOrder) {
+                List<ImageSlide> minusList2 = imageSlideFacade.findAll().stream().filter(is -> is.getOrder() != null)
+                        .filter(is -> is.getOrder() <= order).filter(is -> is.getOrder() > curOrder)
+                        .collect(Collectors.toList());
+                for (ImageSlide imageSlide : minusList2) {
+                    imageSlide.setOrder(imageSlide.getOrder() - 1);
+                    imageSlideFacade.edit(imageSlide);
+                }
+            }
+        }
+
+        if (order == 0) {
+            curImageSlide.setOrder(null);
+        } else {
+            curImageSlide.setOrder(order);
+        }
+
+        if (disable) {
+            curImageSlide.setStatus(false);
+        }
+        imageSlideFacade.edit(curImageSlide);
+    }
+
+    private Boolean uploadImage(MultipartFile uploadimg, ImageSlide imageSlide, boolean deleteOldImage) {
+        try {
+            if (uploadimg.isEmpty() || uploadimg.getSize() == 0) {
+                return false;
+            }
+            String contentType = uploadimg.getContentType().substring(0, uploadimg.getContentType().lastIndexOf("/"));
+            if (!contentType.equals("image")) {
+                return false;
+            }
+            // Remove image
+            if (deleteOldImage) {
+                // First, delete real file.
+                File deleteFile = new File(System.getProperty("catalina.home") + "/img/" + imageSlide.getImage());
+                if (deleteFile.delete()) {
+                    System.out.println("Deleted image: " + deleteFile.getPath());
+                } else {
+                    System.out.println("Cannot delete image: " + deleteFile.getPath());
+                }
+            }
+
+            // System.getProperty("catalina.base") : Path_to_glassfish/domains/domain_name/
+            File imagePath = new File(System.getProperty("catalina.base") + "/img/imageslide");
+            // Check if path is not exists, create path to it
+            if (!imagePath.exists()) {
+                imagePath.mkdirs();
+            }
+
+            // File name: [image slide id].[extension]
+            String fileName = imageSlide.getId()
+                    + uploadimg.getOriginalFilename().substring(uploadimg.getOriginalFilename().lastIndexOf("."));
+            // Path_to_glassfish/domains/domain_name/img/imageslide/file_name.extension
+            String filePath = System.getProperty("catalina.base") + "/img/imageslide/" + fileName;
+            // Use Files to copy multipartFile's input stream to declared path
+            Files.copy(uploadimg.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
+
+            // Save image path
+            imageSlide.setImage("imageslide/" + fileName);
+            imageSlideFacade.edit(imageSlide);
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     private Boolean checkLogin() {
         if (session.getAttribute("loggedInStaff") != null) {
             if (rightsList == null || rightsList.size() <= 0) {
@@ -254,95 +466,5 @@ public class managerImageSlideController {
             return true;
         }
         return false;
-    }
-
-    private void reorder(int id, int order, boolean disable) {
-        ImageSlide curImageSlide = imageSlideFacade.find(id);
-        int curOrder = curImageSlide.getOrder() == null ? 0 : curImageSlide.getOrder();
-
-        if (order == 0) {
-            List<ImageSlide> minusList1 = imageSlideFacade.findAll().stream().filter(is -> is.getOrder() != null)
-                    .filter(is -> is.getOrder() >= curOrder).collect(Collectors.toList());
-            for (ImageSlide imageSlide : minusList1) {
-                imageSlide.setOrder(imageSlide.getOrder() - 1);
-                imageSlideFacade.edit(imageSlide);
-            }
-        } else if (imageSlideFacade.findAll().stream().filter(is -> is.getOrder() != null)
-                .filter(is -> is.getOrder() == order).collect(Collectors.toList()).size() <= 0) {
-            // do nothing
-        } else if (curOrder == 0) {
-            List<ImageSlide> plusList1 = imageSlideFacade.findAll().stream().filter(is -> is.getOrder() != null)
-                    .filter(is -> is.getOrder() >= order).collect(Collectors.toList());
-            for (ImageSlide imageSlide : plusList1) {
-                imageSlide.setOrder(imageSlide.getOrder() + 1);
-                imageSlideFacade.edit(imageSlide);
-            }
-        } else if (order < curOrder) {
-            List<ImageSlide> plusList2 = imageSlideFacade.findAll().stream().filter(is -> is.getOrder() != null)
-                    .filter(is -> is.getOrder() >= order).filter(is -> is.getOrder() < curOrder)
-                    .collect(Collectors.toList());
-            for (ImageSlide imageSlide : plusList2) {
-                imageSlide.setOrder(imageSlide.getOrder() + 1);
-                imageSlideFacade.edit(imageSlide);
-            }
-        } else if (order > curOrder) {
-            List<ImageSlide> minusList2 = imageSlideFacade.findAll().stream().filter(is -> is.getOrder() != null)
-                    .filter(is -> is.getOrder() <= order).filter(is -> is.getOrder() > curOrder)
-                    .collect(Collectors.toList());
-            for (ImageSlide imageSlide : minusList2) {
-                imageSlide.setOrder(imageSlide.getOrder() - 1);
-                imageSlideFacade.edit(imageSlide);
-            }
-        }
-
-        if (order == 0) {
-            curImageSlide.setOrder(null);
-        } else {
-            curImageSlide.setOrder(order);
-        }
-        if (disable) {
-            curImageSlide.setStatus(false);
-        }
-        imageSlideFacade.edit(curImageSlide);
-    }
-
-    private Boolean uploadImage(MultipartFile uploadimg, ImageSlide imageSlide, boolean deleteOldImages) {
-        try {
-            // Remove image
-            if (deleteOldImages) {
-                // First, delete real file.
-                File deleteFile = new File(System.getProperty("catalina.home") + "/img/" + imageSlide.getImage());
-                if (deleteFile.delete()) {
-                    System.out.println("Deleted image: " + deleteFile.getPath());
-                } else {
-                    System.out.println("Cannot delete image: " + deleteFile.getPath());
-                }
-            }
-
-            // System.getProperty("catalina.base") : Path_to_glassfish/domains/domain_name/
-            File imagePath = new File(System.getProperty("catalina.base") + "/img/imageslide");
-            // Check if path is not exists, create path to it
-            if (!imagePath.exists()) {
-                imagePath.mkdirs();
-            }
-
-            // File name: [image slide id].[extension]
-            // TODO: check extensions
-            String fileName = imageSlide.getId()
-                    + uploadimg.getOriginalFilename().substring(uploadimg.getOriginalFilename().lastIndexOf("."));
-            // Path_to_glassfish/domains/domain_name/img/imageslide/file_name.extension
-            String filePath = System.getProperty("catalina.base") + "/img/imageslide/" + fileName;
-            // Use Files to copy multipartFile's input stream to declared path
-            Files.copy(uploadimg.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
-
-            // Save image path
-            imageSlide.setImage("imageslide/" + fileName);
-            imageSlideFacade.edit(imageSlide);
-
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
     }
 }

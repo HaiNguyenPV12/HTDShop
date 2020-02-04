@@ -106,7 +106,7 @@ public class managerProductController {
     public String viewAdd(HttpSession session, Model model, @RequestParam(required = false) Integer cate) {
 
         if (!checkLoginWithRole("product_add")) {
-            return redirectHome;
+            return redirectProductHome;
         }
         // Prepare product model
         Category c = new Category();
@@ -141,8 +141,17 @@ public class managerProductController {
             Model model, @RequestParam(value = "uploadimg", required = false) MultipartFile[] uploadimg,
             RedirectAttributes redirect) {
         if (!checkLoginWithRole("product_add")) {
-            return redirectHome;
+            return redirectProductHome;
         }
+        for (MultipartFile multipartFile : uploadimg) {
+            String contentType = multipartFile.getContentType().substring(0,
+                    multipartFile.getContentType().lastIndexOf("/"));
+            if (!multipartFile.isEmpty() && !contentType.equals("image")) {
+                error.reject("common", "Please choose valid image.");
+                break;
+            }
+        }
+
         // If there is no error
         if (!error.hasErrors()) {
             // Custom method that create Product object from CPU class
@@ -178,7 +187,7 @@ public class managerProductController {
     @RequestMapping(value = "edit", method = RequestMethod.GET)
     public String viewEdit(HttpSession session, Model model, @RequestParam(required = true) Integer id) {
         if (!checkLoginWithRole("product_edit")) {
-            return redirectHome;
+            return redirectProductHome;
         }
 
         // Initialize object for checking
@@ -227,7 +236,16 @@ public class managerProductController {
             Model model, @RequestParam(value = "uploadimg", required = false) MultipartFile[] uploadimg,
             RedirectAttributes redirect) {
         if (!checkLoginWithRole("product_edit")) {
-            return redirectHome;
+            return redirectProductHome;
+        }
+
+        for (MultipartFile multipartFile : uploadimg) {
+            String contentType = multipartFile.getContentType().substring(0,
+                    multipartFile.getContentType().lastIndexOf("/"));
+            if (!multipartFile.isEmpty() && !contentType.equals("image")) {
+                error.reject("common", "Please choose valid image.");
+                break;
+            }
         }
         // If there is no error
         if (!error.hasErrors()) {
@@ -260,7 +278,7 @@ public class managerProductController {
     public String doDelete(HttpSession session, Model model, @RequestParam(required = true) Integer id,
             RedirectAttributes redirect) {
         if (!checkLoginWithRole("product_delete")) {
-            return redirectHome;
+            return redirectProductHome;
         }
 
         // Initialize product object

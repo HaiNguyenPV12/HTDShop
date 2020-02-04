@@ -18,6 +18,8 @@
             .uploadimg>img,
             i {
                 cursor: pointer;
+                max-height: 300px;
+                width: auto;
             }
 
             /* CHECKED STYLES */
@@ -25,10 +27,7 @@
                 outline: 2px solid #f00;
             }
 
-            .uploadimg>img {
-                width: 100%;
-                height: 100%;
-            }
+            .uploadimg>img {}
         </style>
     </th:block>
 
@@ -53,6 +52,7 @@
     <div layout:fragment="content">
         <form action="" th:action="@{/manager/imageslide/__${formUrl}__}" th:object="${imageSlide}" method="POST"
             enctype="multipart/form-data">
+            <input type="hidden" th:field="*{image}" />
             <div class="row">
                 <div class="col-lg-12 mb-3" th:if="${#fields.hasErrors('global')}">
                     <p class="alert alert-danger">
@@ -68,13 +68,20 @@
                                 Images
                                 <div class="file btn btn-info" style="position:relative;overflow:hidden;">
                                     <i class="fas fa-file-upload"></i> 
-                                    <input type="file" style="position: absolute;font-size:50px;opacity: 0;right: 0;top: 0;cursor: pointer;" id="btnUploadImage" name="uploadimg" accept="image/*">
+                                    <input type="file" style="position: absolute;font-size:50px;opacity: 0;right: 0;top: 0;cursor: pointer;" id="btnUploadImage" name="uploadimg" accept="image/*" multiple="false"/>
                                 </div>
                                 
                             </h3>
                         </div>
                         <div class="card-body row" id="uploadimg">
-                            <!-- Upload image will be shown herer -->
+                            <!-- Upload image will be shown here -->
+                            <th:block th:if="${update!=null}">
+                                <div class="col-sm-3"></div> 
+                                <label class="col-sm-6 text-center uploadimg">
+                                    <input type="radio" name="uploadradio">
+                                    <img th:src="@{/images/__${imageSlide.image}__}"/>
+                                </label>
+                            </th:block>
                         </div>
                         
                     </div>
@@ -121,15 +128,15 @@
                                 <label for="link" class="col-sm-3 col-form-label text-right">Order<i
                                     class="text-danger">*</i></label>
                                 <div class="col-sm-9">
-                                    <select th:field="*{order}" class="form-control">
+                                    <select id="order" th:field="*{order}" class="form-control" th:disabled="${imageSlide.status==false}">
                                         <option disabled value="">-- Order --</option>
                                         <option value="0" selected="selected">Automatically
                                         </option>
-                                        <option value="1" th:selected="${imageSlide.order==1}">1</option>
+                                        <option value="1" th:selected="${imageSlide.order==1 && imageSlide.status==true}">1</option>
                                         <option th:value="${o.order}" th:text="${o.order}+' : '+${o.title}"
                                             th:each="o:${imageslides.?[order!=null and order ge 2]}"
-                                            th:selected="${imageSlide.order==o.order}">1</option>
-                                        <option
+                                            th:selected="${imageSlide.order==o.order && imageSlide.status==true}">1</option>
+                                        <option 
                                             th:with="lastImageSlide=${imageslides.?[order!=null][#lists.size(imageslides.?[order!=null]) - 1]}" 
                                             th:if="${!imageslides.?[order!=null].empty}"
                                             th:value="${lastImageSlide.order}+1">To the last</option>
@@ -168,13 +175,13 @@
                                     class="text-danger">*</i></label>
                                 <div class="col-sm-9">
                                     <div class="custom-control custom-radio">
-                                        <input class="custom-control-input" type="radio" value="1" th:field="*{status}"
-                                        th:selected="${imageslide.status==true}" id="status1" required/>
+                                        <input class="custom-control-input" type="radio" value="true" th:field="*{status}"
+                                        th:selected="${imageSlide.status==true}" id="status1" required/>
                                         <label for="status1" class="custom-control-label">Enabled</label>
                                     </div>
                                     <div class="custom-control custom-radio">
-                                        <input class="custom-control-input" type="radio" value="2" th:field="*{status}"
-                                        th:selected="${imageslide.status==false}" id="status2"/>
+                                        <input class="custom-control-input" type="radio" value="false" th:field="*{status}"
+                                        th:selected="${imageSlide.status==false}" id="status2"/>
                                         <label for="status2" class="custom-control-label">Disabled</label>
                                     </div>
                                 </div>
@@ -222,7 +229,19 @@
                 $("#uploadimg").html("");
             }
         });
+        $("input[name='status']").on("change", function () {
+            console.log($(this).val());
+            if ($(this).val() == 'false') {
+                $("#order").val('0');
+                $("#order").prop('disabled', true);
+            } else {
+                $("#order").removeAttr('disabled');
+            }
+        });
 
+        $(document).ready(function () {
+
+        });
     </script>
 </body>
 
