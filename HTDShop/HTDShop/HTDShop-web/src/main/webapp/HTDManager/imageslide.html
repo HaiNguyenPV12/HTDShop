@@ -67,8 +67,13 @@
                                 </tr>
 
                                 <tr th:each="i : ${imageslides}" th:classappend="${i.status==false?'bg-danger':''}">
-                                    <td>
-                                        <img th:src="@{/images/__${i.image}__}" style="width: 100%;" />
+                                    <td style="text-align: center;">
+                                        <a href="" th:onclick='showModal([[${i.title}]],
+                                        &apos;<img src=[[@{/images/__${i.image}__}]] style=&quot;;width: 100%;&quot; />&apos;
+                                        ,null,false,false)'>
+                                            <img th:src="@{/images/__${i.image}__}"
+                                                style="width: 100%;max-width:150px;" />
+                                        </a>
                                     </td>
                                     <td>
                                         <!-- <i class="text-muted" th:if="${i.order == null and i.status==false}">Automatically</i> -->
@@ -85,7 +90,7 @@
                                                 <option
                                                     th:if="${!#lists.isEmpty(imageslides.?[order!=null]) and i.order==null}"
                                                     th:value="${lastImageSlide.order}+1">Last</option>
-                                            </th:block> 
+                                            </th:block>
                                         </select>
                                     </td>
                                     <td th:text="${i.title}"></td>

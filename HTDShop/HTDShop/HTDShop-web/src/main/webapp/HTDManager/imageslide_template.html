@@ -67,7 +67,7 @@
                             <h3 class="card-title">
                                 Images
                                 <div class="file btn btn-info" style="position:relative;overflow:hidden;">
-                                    <i class="fas fa-plus-square"></i> 
+                                    <i class="fas fa-file-upload"></i> 
                                     <input type="file" style="position: absolute;font-size:50px;opacity: 0;right: 0;top: 0;cursor: pointer;" id="btnUploadImage" name="uploadimg" accept="image/*">
                                 </div>
                                 
@@ -118,7 +118,7 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="link" class="col-sm-3 col-form-label text-right">Link<i
+                                <label for="link" class="col-sm-3 col-form-label text-right">Order<i
                                     class="text-danger">*</i></label>
                                 <div class="col-sm-9">
                                     <select th:field="*{order}" class="form-control">
@@ -211,7 +211,7 @@
                 for (var i = 0; i < this.files.length; i++) {
                     var reader = new FileReader();
                     reader.onload = function (e) {
-                        $("#uploadimg").append('<label class="col-sm-1 text-center uploadimg">'
+                        $("#uploadimg").append('<div class="col-sm-3"></div><label class="col-sm-6 text-center uploadimg">'
                             + '<input type="radio" name="uploadradio">'
                             + '<img src="' + e.target.result + '">'
                             + '</label>');

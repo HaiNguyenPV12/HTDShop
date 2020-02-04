@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
@@ -17,10 +18,13 @@ import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletContext;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -66,15 +70,17 @@ public class managerProductController {
     @Autowired
     ServletContext context;
 
+    @Autowired
+    HttpSession session;
+
+    @Autowired
+    HttpServletRequest request;
+
     // ==== PRODUCT INDEX ==== \\
     @RequestMapping(value = { "", "index" }, method = RequestMethod.GET)
     public String getHome(HttpSession session, Model model) {
-        // Check if logged in session is exists
-        if (!checkLogin(session)) {
-            return redirectLogin;
-        }
-        // Check if staff have appropriate role
-        if (!rightsList.contains("product_read")) {
+        // Check login with role
+        if (!checkLoginWithRole("product_read")) {
             return redirectHome;
         }
 
@@ -98,15 +104,9 @@ public class managerProductController {
     @RequestMapping(value = "add", method = RequestMethod.GET)
     // Adding optional "cate" parameter by using @RequestParam(required = false)
     public String viewAdd(HttpSession session, Model model, @RequestParam(required = false) Integer cate) {
-        // Check if logged in session is exists
-        if (!checkLogin(session)) {
-            // If not, redirect to index
-            return redirectLogin;
-        }
-        // Check if staff have appropriate role
-        if (!rightsList.contains("product_add")) {
-            // If not, redirect to product index
-            return redirectProductHome;
+
+        if (!checkLoginWithRole("product_add")) {
+            return redirectHome;
         }
         // Prepare product model
         Category c = new Category();
@@ -140,21 +140,15 @@ public class managerProductController {
     public String doAdd(@Valid @ModelAttribute("product") Product product, BindingResult error, HttpSession session,
             Model model, @RequestParam(value = "uploadimg", required = false) MultipartFile[] uploadimg,
             RedirectAttributes redirect) {
-        // Check if logged in session is exists
-        if (!checkLogin(session)) {
-            // If not, redirect to index
-            return redirectLogin;
-        }
-        // Check if staff have appropriate role
-        if (!rightsList.contains("product_add")) {
-            // If not, redirect to product index
-            return redirectProductHome;
+        if (!checkLoginWithRole("product_add")) {
+            return redirectHome;
         }
         // If there is no error
         if (!error.hasErrors()) {
             // Custom method that create Product object from CPU class
             // Product p = product.toNewProduct();
             productFacade.create(product);
+
             // Process images
             if (uploadimg != null && uploadimg.length > 0) {
                 uploadImages(uploadimg, product, false);
@@ -183,15 +177,8 @@ public class managerProductController {
     // ==== PRODUCT EDIT - VIEW ==== \\
     @RequestMapping(value = "edit", method = RequestMethod.GET)
     public String viewEdit(HttpSession session, Model model, @RequestParam(required = true) Integer id) {
-        // Check if logged in session is exists
-        if (!checkLogin(session)) {
-            // If not, redirect to index
-            return redirectLogin;
-        }
-        // Check if staff have appropriate role
-        if (!rightsList.contains("product_edit")) {
-            // If not, redirect to product index
-            return redirectProductHome;
+        if (!checkLoginWithRole("product_edit")) {
+            return redirectHome;
         }
 
         // Initialize object for checking
@@ -234,26 +221,16 @@ public class managerProductController {
         return "HTDManager/product_edit";
     }
 
-    // ==== PRODUCT EDIT - PROCESS - CPU ==== \\
+    // ==== PRODUCT EDIT - PROCESS ==== \\
     @RequestMapping(value = "doEdit", method = RequestMethod.POST)
     public String doEditCPU(@Valid @ModelAttribute("product") Product product, BindingResult error, HttpSession session,
             Model model, @RequestParam(value = "uploadimg", required = false) MultipartFile[] uploadimg,
             RedirectAttributes redirect) {
-        // Check if logged in session is exists
-        if (!checkLogin(session)) {
-            // If not, redirect to index
-            return redirectLogin;
-        }
-        // Check if staff have appropriate role
-        if (!rightsList.contains("product_edit")) {
-            // If not, redirect to product index
-            return redirectProductHome;
+        if (!checkLoginWithRole("product_edit")) {
+            return redirectHome;
         }
         // If there is no error
         if (!error.hasErrors()) {
-            // Custom method that create Product object from CPU class
-            // Product p = product.toProduct();
-            // productFacade.edit(p);
             productFacade.edit(product);
             // Check if upload img exists then replace images
             if (uploadimg != null && uploadimg[0].getSize() > 0) {
@@ -282,15 +259,8 @@ public class managerProductController {
     @RequestMapping(value = "doDelete", method = RequestMethod.GET)
     public String doDelete(HttpSession session, Model model, @RequestParam(required = true) Integer id,
             RedirectAttributes redirect) {
-        // Check if logged in session is exists
-        if (!checkLogin(session)) {
-            // If not, redirect to index
-            return redirectLogin;
-        }
-        // Check if staff have appropriate role
-        if (!rightsList.contains("product_delete")) {
-            // If not, redirect to product index
-            return redirectProductHome;
+        if (!checkLoginWithRole("product_delete")) {
+            return redirectHome;
         }
 
         // Initialize product object
@@ -370,12 +340,35 @@ public class managerProductController {
         return redirectProductHome;
     }
 
-    private Boolean checkLogin(HttpSession session) {
+    private Boolean checkLogin() {
         if (session.getAttribute("loggedInStaff") != null) {
             if (rightsList == null || rightsList.size() <= 0) {
                 rightsList = new ArrayList<>();
                 rightsList = (ArrayList<String>) session.getAttribute("rightsList");
             }
+            return true;
+        } else {
+            String cookie = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("loggedInStaff"))
+                    .findFirst().map(Cookie::getValue).orElse(null);
+            if (cookie != null) {
+                Staff staff = staffFacade.find(cookie);
+                if (staff != null) {
+                    session.setAttribute("loggedInStaff", staff);
+                    List<String> rightsList = new ArrayList<String>();
+                    for (RoleRights roleRights : staff.getRole().getRoleRightsCollection()) {
+                        rightsList.add(roleRights.getRightsDetail().getTag());
+                    }
+                    this.rightsList = rightsList;
+                    session.setAttribute("rightsList", rightsList);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private Boolean checkLoginWithRole(String role) {
+        if (checkLogin() && rightsList.contains(role)) {
             return true;
         }
         return false;

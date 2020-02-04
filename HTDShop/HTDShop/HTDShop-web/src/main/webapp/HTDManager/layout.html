@@ -9,6 +9,7 @@
         layout:fragment="fragment_name"
     (we also use this to declare the fragment that we want to replace)
 -->
+<?xml version='1.0' encoding='UTF-8' ?> 
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
@@ -23,8 +24,13 @@
     <link th:href="@{/manager_resources/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}" rel="stylesheet">
     <link th:href="@{/manager_resources/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css}" rel="stylesheet">
     <link th:href="@{/manager_resources/plugins/toastr/toastr.min.css}" rel="stylesheet">
+
+    
     <!-- Theme style -->
     <link rel="stylesheet" th:href="@{/manager_resources/Content/adminlte.min.css}">
+    <th:block layout:fragment="additionalCss">
+
+    </th:block>
     <!-- Google Font: Source Sans Pro -->
     <link th:href="@{/manager_resources/Content/font.css}" rel="stylesheet">
     <th:block layout:fragment="css">
@@ -141,11 +147,11 @@
                         </li>
 
                         <li class="nav-header" 
-                        th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('staff_read')} 
+                        th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('staff_read')
                         or 
-                        ${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('role_read')} 
+                        #session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('role_read')
                         or
-                        ${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('revenue_read')}">
+                        #session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('revenue_read')}">
                             ADMINISTRATOR
                         </li>
 
@@ -267,6 +273,7 @@
     <script th:src="@{/manager_resources/plugins/select2/js/select2.min.js}"></script> 
     <script th:src="@{/manager_resources/plugins/sweetalert2/sweetalert2.min.js}"></script> 
     <script th:src="@{/manager_resources/plugins/toastr/toastr.min.js}"></script> 
+    
     <th:block layout:fragment="additionalScript">
         
     </th:block>

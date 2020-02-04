@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
@@ -18,10 +19,13 @@ import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletContext;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -70,15 +74,17 @@ public class managerImageSlideController {
     @Autowired
     ServletContext context;
 
-    // ==== PRODUCT INDEX ==== \\
+    @Autowired
+    HttpSession session;
+
+    @Autowired
+    HttpServletRequest request;
+
+    // ==== IMAGE SLIDE INDEX ==== \\
     @RequestMapping(value = { "", "index" }, method = RequestMethod.GET)
     public String getHome(HttpSession session, Model model) {
-        // Check if logged in session is exists
-        if (!checkLogin(session)) {
-            return redirectLogin;
-        }
-        // Check if staff have appropriate role
-        if (!rightsList.contains("imageslide_read")) {
+        // Check login session with role
+        if (!checkLoginWithRole("imageslide_read")) {
             return redirectHome;
         }
 
@@ -104,14 +110,7 @@ public class managerImageSlideController {
     // ==== IMAGE SLIDE ADD - VIEW ==== \\
     @RequestMapping(value = "add", method = RequestMethod.GET)
     public String viewAdd(HttpSession session, Model model) {
-        // Check if logged in session is exists
-        if (!checkLogin(session)) {
-            // If not, redirect to index
-            return redirectLogin;
-        }
-        // Check if staff have appropriate role
-        if (!rightsList.contains("product_add")) {
-            // If not, redirect to product index
+        if (!checkLoginWithRole("imageslide_add")) {
             return redirectImageSlideHome;
         }
         // Prepare model
@@ -138,17 +137,12 @@ public class managerImageSlideController {
     }
 
     // ==== IMAGE SLIDE ADD - PROCESS ==== \\
-    @RequestMapping(value = "doAdd", method = RequestMethod.POST)
+    @RequestMapping(value = "doAdd", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE
+            + "; charset=utf-8")
     public String doAdd(@Valid @ModelAttribute("imageSlide") ImageSlide imageSlide, BindingResult error,
             HttpSession session, Model model,
             @RequestParam(value = "uploadimg", required = false) MultipartFile uploadimg, RedirectAttributes redirect) {
-        // Check if logged in session is exists
-        if (!checkLogin(session)) {
-            // If not, redirect to index
-            return redirectLogin;
-        }
-        // Check if staff have appropriate role
-        if (!rightsList.contains("imageslide_add")) {
+        if (!checkLoginWithRole("imageslide_add")) {
             return redirectImageSlideHome;
         }
         // Check if image exists
@@ -190,13 +184,7 @@ public class managerImageSlideController {
     @RequestMapping(value = "doActivate", method = RequestMethod.GET)
     public String doActivate(Model model, HttpSession session, @RequestParam(value = "id") Integer id,
             RedirectAttributes redirect) {
-        // Check if logged in session is exists
-        if (!checkLogin(session)) {
-            // If not, redirect to index
-            return redirectLogin;
-        }
-        // Check if staff have appropriate role
-        if (!rightsList.contains("imageslide_edit")) {
+        if (!checkLoginWithRole("imageslide_edit")) {
             return redirectImageSlideHome;
         }
         ImageSlide imageSlide = imageSlideFacade.find(id);
@@ -210,13 +198,7 @@ public class managerImageSlideController {
     @RequestMapping(value = "doDeactivate", method = RequestMethod.GET)
     public String doDeactivate(Model model, HttpSession session, @RequestParam(value = "id") Integer id,
             RedirectAttributes redirect) {
-        // Check if logged in session is exists
-        if (!checkLogin(session)) {
-            // If not, redirect to index
-            return redirectLogin;
-        }
-        // Check if staff have appropriate role
-        if (!rightsList.contains("imageslide_edit")) {
+        if (!checkLoginWithRole("imageslide_edit")) {
             return redirectImageSlideHome;
         }
 
@@ -231,13 +213,7 @@ public class managerImageSlideController {
     @RequestMapping(value = "doReorder", method = RequestMethod.GET)
     public String doReorder(Model model, HttpSession session, @RequestParam(value = "id") Integer id,
             @RequestParam(value = "order") Integer order, RedirectAttributes redirect) {
-        // Check if logged in session is exists
-        if (!checkLogin(session)) {
-            // If not, redirect to index
-            return redirectLogin;
-        }
-        // Check if staff have appropriate role
-        if (!rightsList.contains("imageslide_edit")) {
+        if (!checkLoginWithRole("imageslide_edit")) {
             return redirectImageSlideHome;
         }
 
@@ -246,12 +222,35 @@ public class managerImageSlideController {
         return redirectImageSlideHome;
     }
 
-    private Boolean checkLogin(HttpSession session) {
+    private Boolean checkLogin() {
         if (session.getAttribute("loggedInStaff") != null) {
             if (rightsList == null || rightsList.size() <= 0) {
                 rightsList = new ArrayList<>();
                 rightsList = (ArrayList<String>) session.getAttribute("rightsList");
             }
+            return true;
+        } else {
+            String cookie = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("loggedInStaff"))
+                    .findFirst().map(Cookie::getValue).orElse(null);
+            if (cookie != null) {
+                Staff staff = staffFacade.find(cookie);
+                if (staff != null) {
+                    session.setAttribute("loggedInStaff", staff);
+                    List<String> rightsList = new ArrayList<String>();
+                    for (RoleRights roleRights : staff.getRole().getRoleRightsCollection()) {
+                        rightsList.add(roleRights.getRightsDetail().getTag());
+                    }
+                    this.rightsList = rightsList;
+                    session.setAttribute("rightsList", rightsList);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private Boolean checkLoginWithRole(String role) {
+        if (checkLogin() && rightsList.contains(role)) {
             return true;
         }
         return false;
