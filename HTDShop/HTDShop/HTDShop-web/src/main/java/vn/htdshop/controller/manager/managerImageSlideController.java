@@ -6,14 +6,10 @@
 package vn.htdshop.controller.manager;
 
 import java.io.File;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,7 +22,6 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -50,7 +45,6 @@ public class managerImageSlideController {
 
     private final String redirectImageSlideHome = "redirect:/manager/imageslide";
     private final String redirectHome = "redirect:/manager";
-    private final String redirectLogin = "redirect:/manager/login";
 
     @EJB(mappedName = "StaffFacade")
     StaffFacadeLocal staffFacade;

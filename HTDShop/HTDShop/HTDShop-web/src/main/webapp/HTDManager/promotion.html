@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDManager/layout}">
+
+<head>
+    <title>HTD Manager - Promotion</title>
+    <!-- Hide default datatable's filter -->
+    <style>
+        .dataTables_filter {
+            float: right !important;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <span layout:fragment="title">
+        <i class="fas fa-images" style="font-size:20px"></i> Promotion
+        <a class="btn btn-success" th:href="@{/manager/promotion/add}">
+            <i class="fas fa-plus-square fa-lg mr-2"></i> Add new Promotion
+        </a>
+    </span>
+
+    <div layout:fragment="breadcrumb">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a th:href="@{/manager}">Home</a></li>
+            <li class="breadcrumb-item active">Promotion</li>
+        </ol>
+    </div>
+
+    <div layout:fragment="content">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card card-purple card-outline">
+                    <div class="card-body">
+
+                        <table id="tblPromotion" class="table table-bordered table-striped table-hover">
+                            <thead class="bg-purple">
+                                <th>Name</th>
+                                <th>Detail</th>
+                                <th>Conditions</th>
+                                <th>Date</th>
+                                <th>Image</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${promotions eq null or promotions.empty}">
+                                    <td colspan="2">No promotions</td>
+                                </tr>
+
+                                <tr th:each="p : ${promotions}" th:classappend="${p.isDisabled?'bg-danger':''}">
+                                    <td>
+                                        <th:block th:text="${p.name}"></th:block><br />
+                                        <i class="text-muted" th:text="${p.target==0?'[All]':'[Member]'}"></i>
+                                    </td>
+                                    <td th:text="${p.detail}"></td>
+                                    <td>
+                                        <ul>
+                                            <li th:each="promo: ${p.promotionCollection}">
+                                                Discount
+                                                <th:block th:if="${promo.exactSaleOff!=null}"
+                                                    th:text="${promo.exactSaleOff+' VND'}"></th:block>
+                                                <th:block th:if="${promo.exactSaleOff==null}">[[${promo.percentage +
+                                                    '%'}]] [[${promo.maxSaleOff!=null?'(Max: '+promo.maxSaleOff+'
+                                                    VND)':''}]]</th:block>
+                                                for
+                                                <th:block th:if="${promo.category!=null}" th:text="${promo.category.name}"></th:block><th:block th:if="${promo.product!=null}" th:text="${promo.product.name}"></th:block><th:block th:if="${promo.preBuiltTarget!=null}" th:text="${promo.preBuiltTarget==0?'All pre-built PC':'HTD pre-built PC'}"></th:block>
+                                                <th:block th:if="${promo.limitedQuantity!=null}" th:text="${'|Limited: '+promo.limitedQuantity+'|'}"></th:block><th:block th:if="${promo.minQuantity!=null}" th:text="${'|Min: '+promo.minQuantity+'|'}"></th:block><th:block th:if="${promo.maxQuantity!=null}" th:text="${'|Max: '+promo.maxQuantity+'|'}"></th:block>
+                                                <th:block th:if="${promo.quantityLeft!=null}" th:text="${'|Left: '+promo.quantityLeft+'|'}"></th:block>
+
+                                            </li>
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <th:block th:if="${p.isAlways}">Always</th:block>
+                                        <th:block th:if="${!p.isAlways}">
+                                            From: <span th:text="${p.startDate}"></span><br />
+                                            To: <span th:text="${p.endDate}"></span><br />
+                                        </th:block>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <a th:onclick='showModal([[${p.name}]],
+                                        &apos;&lt;img src=[[@{/images/__${p.image}__}]] style=&quot;;width: 100%;&quot; /&gt;&apos;
+                                        ,null,false,false)'>
+                                            <img th:src="@{/images/__${p.image}__}"
+                                                style="width: 100%;max-width:150px;cursor:pointer;" />
+                                        </a>
+                                    </td>
+                                    <td th:text="${p.isDisabled?'Disabled':'Enabled'}"></td>
+                                    <td class="text-center">
+                                        <a class="btn btn-warning btn-sm"
+                                            th:href="@{/manager/promotion/edit(id=${p.id})}" data-toggle='tooltip'
+                                            title="Edit">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </a>
+                                        <a class="btn btn-danger btn-sm" href="#" data-toggle="tooltip" title="Delete"
+                                            th:onclick='confirmDelete([[${p.name}]],[[@{/manager/promotion/doDelete(id=${p.id})}]])'>
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                            <tfoot class="bg-purple">
+                                <th>Name</th>
+                                <th>Detail</th>
+                                <th>Conditions</th>
+                                <th>Date</th>
+                                <th>Image</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script layout:fragment="script" th:inline="none">
+        function confirmDelete(title, url) {
+            showModal('Confirm deletion',
+                'Are you sure to delete "' + title + '" ?',
+                url,
+                true,
+                true);
+        }
+
+        // Add custom filter for datatable
+        $('#tblPromotion tfoot th').each(function () {
+            var title = $(this).text();
+            if (title == "Action") {
+                // Collum that not using filter
+                $(this).html('');
+            } else if (title == "Status") {
+                // Collum that using select filter
+                $(this).html('<select class="form-control"><option value="">All</option></select>');
+            } else {
+                // Collum that using text filter
+                $(this).html('<input id="txtSearch' + title + '" type="text" placeholder="Search ' + title + '" class="form-control" style="width:100%" />');
+            }
+
+        });
+        // Setting up table here
+        var table = $('#tblPromotion').DataTable({
+            // Move filter from foot to head
+            initComplete: function () {
+                var r = $('#tblPromotion tfoot tr');
+                r.find('th').each(function () {
+                    $(this).css('padding', 8);
+                });
+                $('#tblPromotion thead').append(r);
+                $('div.dataTables_length').addClass('form-inline');
+            },
+            "paging": true,
+            "lengthChange": true,
+            "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            "searching": true,
+            "ordering": false,
+            "info": true,
+            "autoWidth": false,
+            // custom collums's width
+            "columns": [
+                { "width": "10%" },
+                { "width": "15%" },
+                { "width": "30%" },
+                { "width": "15%" },
+                { "width": "15%" },
+                { "width": "5%" },
+                { "width": "10%" }
+            ]
+        });
+        // Set up filter action
+        table.columns().every(function () {
+            var thisCol = this;
+            // Set up action listener for text filter
+            $('input', this.footer()).on('keyup change clear', function () {
+                if (thisCol.search() !== this.value) {
+                    thisCol.search(this.value).draw();
+                }
+            });
+            // Set up data for select filter
+            $('select', this.footer()).each(function () {
+                var title = thisCol.header();
+                // Using unique data from table
+                var thisSelect = this;
+                thisCol.data().unique().sort().each(function (d, j) {
+                    $(thisSelect).append("<option value='" + d + "'>" + d + "</option>");
+                });
+            });
+            // Set up action listener for select filter
+            $('select', this.footer()).on('change', function () {
+                var val = $.fn.dataTable.util.escapeRegex(
+                    $(this).val()
+                );
+                thisCol.search(val ? '^' + val + '$' : '', true, false).draw();
+            });
+
+        });
+
+        // Activate tooltip
+        // To show tooltip add following attributes: data-toggle="tooltip" title="tooltip_content"
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+</body>
+
+</html>

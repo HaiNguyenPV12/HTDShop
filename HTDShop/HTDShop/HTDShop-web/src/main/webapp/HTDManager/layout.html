@@ -9,7 +9,7 @@
         layout:fragment="fragment_name"
     (we also use this to declare the fragment that we want to replace)
 -->
-<?xml version='1.0' encoding='UTF-8' ?> 
+<?xml version='1.0' encoding='UTF-8' ?>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
@@ -25,7 +25,7 @@
     <link th:href="@{/manager_resources/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css}" rel="stylesheet">
     <link th:href="@{/manager_resources/plugins/toastr/toastr.min.css}" rel="stylesheet">
 
-    
+
     <!-- Theme style -->
     <link rel="stylesheet" th:href="@{/manager_resources/Content/adminlte.min.css}">
     <th:block layout:fragment="additionalCss">
@@ -90,57 +90,50 @@
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                         data-accordion="false">
 
-                        <li class="nav-item">
-                            <a href="#" class="nav-link" th:href="@{/manager/product}"
-                            th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('product_read')}" th:classappend="${menu eq 'product'}?'active':''">
+                        <li class="nav-item" th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('product_read')}">
+                            <a href="#" class="nav-link" th:href="@{/manager/product}" th:classappend="${menu eq 'product'}?'active':''">
                                 <i class="nav-icon fas fa-box-open"></i>
                                 <p>Product</p>
                             </a>
                         </li>
 
-                        <li class="nav-item">
-                            <a href="#" class="nav-link"  th:href="@{/manager/prebuilt}"
-                            th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('prebuilt_read')}"  th:classappend="${menu eq 'prebuilt'}?'active':''">
+                        <li class="nav-item" th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('prebuilt_read')}">
+                            <a href="#" class="nav-link"  th:href="@{/manager/prebuilt}" th:classappend="${menu eq 'prebuilt'}?'active':''">
                                 <i class="nav-icon fas fa-desktop"></i>
                                 <p>Pre-built PC</p>
                             </a>
                         </li>
 
-                        <li class="nav-item">
-                            <a href="#" class="nav-link" th:href="@{/manager/comment}"
-                            th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('comment_read')}"  th:classappend="${menu eq 'comment'}?'active':''">
+                        <li class="nav-item" th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('comment_read')}">
+                            <a href="#" class="nav-link" th:href="@{/manager/comment}" th:classappend="${menu eq 'comment'}?'active':''">
                                 <i class="nav-icon fas fa-comments"></i>
                                 <p>Comment</p>
                             </a>
                         </li>
 
-                        <li class="nav-item">
-                            <a href="#" class="nav-link" th:href="@{/manager/order}"
-                            th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('order_read')}" th:classappend="${menu eq 'order'}?'active':''">
+                        <li class="nav-item" th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('order_read')}">
+                            <a href="#" class="nav-link" th:href="@{/manager/order}" th:classappend="${menu eq 'order'}?'active':''">
                                 <i class="nav-icon fas fa-receipt"></i>
                                 <p>Order</p>
                             </a>
                         </li>
 
-                        <li class="nav-item">
-                            <a href="#" class="nav-link" th:href="@{/manager/customer}"
-                            th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('customer_read')}" th:classappend="${menu eq 'customer'}?'active':''">
+                        <li class="nav-item" th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('customer_read')}">
+                            <a href="#" class="nav-link" th:href="@{/manager/customer}" th:classappend="${menu eq 'customer'}?'active':''">
                                 <i class="nav-icon fas fa-users"></i>
                                 <p>Customer</p>
                             </a>
                         </li>
 
-                        <li class="nav-item">
-                            <a href="#" class="nav-link" th:href="@{/manager/promotion}"
-                            th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('promotion_read')}" th:classappend="${menu eq 'promotion'}?'active':''">
+                        <li class="nav-item" th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('promotion_read')}">
+                            <a href="#" class="nav-link" th:href="@{/manager/promotion}" th:classappend="${menu eq 'promotion'}?'active':''">
                                 <i class="nav-icon fas fa-gifts"></i>
                                 <p>Promotion</p>
                             </a>
                         </li>
                         
-                        <li class="nav-item">
-                            <a href="#" class="nav-link" th:href="@{/manager/imageslide}"
-                            th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('imageslide_read')}" th:classappend="${menu eq 'imageslide'}?'active':''">
+                        <li class="nav-item" th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('imageslide_read')}" >
+                            <a href="#" class="nav-link" th:href="@{/manager/imageslide}" th:classappend="${menu eq 'imageslide'}?'active':''">
                                 <i class="nav-icon fas fa-images"></i>
                                 <p>Image Slide</p>
                             </a>
@@ -152,24 +145,24 @@
                         </li>
                         
                         <li class="nav-item" 
-                        th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('staff_read')}" th:classappend="${menu eq 'staff'}?'active':''">
-                            <a href="#" class="nav-link" th:href="@{/manager/staff}">
+                        th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('staff_read')}" >
+                            <a href="#" class="nav-link" th:href="@{/manager/staff}" th:classappend="${menu eq 'staff'}?'active':''">
                                 <i class="nav-icon fas fa-briefcase"></i>
                                 <p>Staff</p>
                             </a>
                         </li>
 
                         <li class="nav-item"
-                        th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('role_read')}" th:classappend="${menu eq 'role'}?'active':''">
-                            <a href="#" class="nav-link" th:href="@{/manager/role}">
+                        th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('role_read')}" >
+                            <a href="#" class="nav-link" th:href="@{/manager/role}" th:classappend="${menu eq 'role'}?'active':''">
                                 <i class="nav-icon fas fa-balance-scale"></i>
                                 <p>Role</p>
                             </a>
                         </li>
 
                         <li class="nav-item" 
-                        th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('revenue_read')}" th:classappend="${menu eq 'revenue'}?'active':''">
-                            <a href="#" class="nav-link" th:href="@{/manager/revenue}">
+                        th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('revenue_read')}" >
+                            <a href="#" class="nav-link" th:href="@{/manager/revenue}" th:classappend="${menu eq 'revenue'}?'active':''">
                                 <i class="nav-icon fas fa-chart-line"></i>
                                 <p>Revenue Report</p>
                             </a>
@@ -327,17 +320,17 @@
         $(document).ready(function () {
             // Load menu state (body's class)
             if ($.cookie('sideMenuCollapse') != null) {
-                $('body').addClass('sidebar-collapse'); 
-            } 
+                $('body').addClass('sidebar-collapse');
+            }
             // Save menu state, first wait for effect and then save the lastest class
             $('[data-widget="pushmenu"]').on('click', function () {
                 setTimeout(function () {
                     if ($('body').hasClass('sidebar-collapse')) {
                         $.cookie('sideMenuCollapse', 'sideMenuCollapse');
-                    }else{
+                    } else {
                         $.removeCookie('sideMenuCollapse');
                     }
-                    
+
                 }, 100);
             });
         });

@@ -23,8 +23,6 @@ public class ErrorController {
         if (cookie != null || session.getAttribute("loggedInStaff") != null) {
             errorPage.addObject("hasStaff", "hasStaff");
         }
-        String errorMsg = "";
-        int httpErrorCode = getErrorCode(httpRequest);
 
         // switch (httpErrorCode) {
         // case 400: {
@@ -47,9 +45,5 @@ public class ErrorController {
         errorPage.addObject("errorCode", httpRequest.getAttribute("javax.servlet.error.status_code"));
         errorPage.addObject("errorMsg", httpRequest.getAttribute("javax.servlet.error.message"));
         return errorPage;
-    }
-
-    private int getErrorCode(HttpServletRequest httpRequest) {
-        return (Integer) httpRequest.getAttribute("javax.servlet.error.status_code");
     }
 }

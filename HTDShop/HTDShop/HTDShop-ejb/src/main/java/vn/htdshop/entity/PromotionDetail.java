@@ -40,7 +40,7 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "PromotionDetail.findByName", query = "SELECT p FROM PromotionDetail p WHERE p.name = :name")
     , @NamedQuery(name = "PromotionDetail.findByImage", query = "SELECT p FROM PromotionDetail p WHERE p.image = :image")
     , @NamedQuery(name = "PromotionDetail.findByTarget", query = "SELECT p FROM PromotionDetail p WHERE p.target = :target")
-    , @NamedQuery(name = "PromotionDetail.findByStarDate", query = "SELECT p FROM PromotionDetail p WHERE p.starDate = :starDate")
+    , @NamedQuery(name = "PromotionDetail.findByStartDate", query = "SELECT p FROM PromotionDetail p WHERE p.startDate = :startDate")
     , @NamedQuery(name = "PromotionDetail.findByEndDate", query = "SELECT p FROM PromotionDetail p WHERE p.endDate = :endDate")
     , @NamedQuery(name = "PromotionDetail.findByIsAlways", query = "SELECT p FROM PromotionDetail p WHERE p.isAlways = :isAlways")
     , @NamedQuery(name = "PromotionDetail.findByIsDisabled", query = "SELECT p FROM PromotionDetail p WHERE p.isDisabled = :isDisabled")})
@@ -72,9 +72,9 @@ public class PromotionDetail implements Serializable {
     @NotNull
     @Column(name = "Target")
     private int target;
-    @Column(name = "StarDate")
+    @Column(name = "StartDate")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date starDate;
+    private Date startDate;
     @Column(name = "EndDate")
     @Temporal(TemporalType.TIMESTAMP)
     private Date endDate;
@@ -146,12 +146,12 @@ public class PromotionDetail implements Serializable {
         this.target = target;
     }
 
-    public Date getStarDate() {
-        return starDate;
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public void setStarDate(Date starDate) {
-        this.starDate = starDate;
+    public void setStartDate(Date starDate) {
+        this.startDate = starDate;
     }
 
     public Date getEndDate() {

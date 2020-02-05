@@ -5,12 +5,9 @@
  */
 package vn.htdshop.controller.manager;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import javax.ejb.EJB;
-import javax.servlet.ServletContext;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -116,7 +113,7 @@ public class managerIndexController {
                     Cookie cookie = new Cookie("loggedInStaff", staff.getUserName());
                     response.addCookie(cookie);
                 }
-               
+
                 redirect.addFlashAttribute("goodAlert", "Successfully logged in as \"" + result.getFirstName() + "\".");
                 // Then redirect to index
                 return "redirect:/manager/index";
