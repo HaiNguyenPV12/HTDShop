@@ -13,6 +13,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,22 +52,8 @@ public class managerImageSlideController {
     private final String redirectHome = "redirect:/manager";
     private final String redirectLogin = "redirect:/manager/login";
 
-    List<String> rightsList = null;
-
     @EJB(mappedName = "StaffFacade")
     StaffFacadeLocal staffFacade;
-
-    @EJB(mappedName = "ProductFacade")
-    ProductFacadeLocal productFacade;
-
-    @EJB(mappedName = "CategoryFacade")
-    CategoryFacadeLocal categoryFacade;
-
-    @EJB(mappedName = "ProductImageFacade")
-    ProductImageFacadeLocal productImageFacade;
-
-    @EJB(mappedName = "PromotionFacade")
-    PromotionFacadeLocal promotionFacade;
 
     @EJB(mappedName = "ImageSlideFacade")
     ImageSlideFacadeLocal imageSlideFacade;
@@ -167,7 +154,7 @@ public class managerImageSlideController {
             return redirectImageSlideHome;
         }
         // Show common error message
-        error.reject("common", "Error adding new product.");
+        error.reject("common", "Error adding new image slide.");
 
         // Pass binding result to redirect page (to show errors)
         redirect.addFlashAttribute("error", error);
@@ -244,7 +231,7 @@ public class managerImageSlideController {
             error.reject("common", "Please choose image again.");
         }
         // Show common error message
-        error.reject("common", "Error updating this product.");
+        error.reject("common", "Error updating this image slide.");
 
         // Pass binding result to redirect page (to show errors)
         redirect.addFlashAttribute("error", error);
@@ -256,7 +243,7 @@ public class managerImageSlideController {
         return "redirect:/manager/imageslide/edit?id=" + imageSlide.getId();
     }
 
-    // ==== PRODUCT DELETE - PROCESS ==== \\
+    // ==== IMAGE SLIDE DELETE - PROCESS ==== \\
     @RequestMapping(value = "doDelete", method = RequestMethod.GET)
     public String doDelete(HttpSession session, Model model, @RequestParam(required = true) Integer id,
             RedirectAttributes redirect) {
@@ -264,12 +251,12 @@ public class managerImageSlideController {
             return redirectImageSlideHome;
         }
 
-        // Initialize product object
+        // Initialize object
         ImageSlide imageSlide = imageSlideFacade.find(id);
-        // If product is not null
+        // If onject is not null
         if (imageSlide != null) {
             // If not, then start to delete
-            // First, delete product's images
+            // First, delete image
             File deleteFile = new File(System.getProperty("catalina.home") + "/img/" + imageSlide.getImage());
             if (deleteFile.delete()) {
                 System.out.println("Deleted image: " + deleteFile.getPath());
@@ -436,10 +423,6 @@ public class managerImageSlideController {
 
     private Boolean checkLogin() {
         if (session.getAttribute("loggedInStaff") != null) {
-            if (rightsList == null || rightsList.size() <= 0) {
-                rightsList = new ArrayList<>();
-                rightsList = (ArrayList<String>) session.getAttribute("rightsList");
-            }
             return true;
         } else {
             String cookie = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("loggedInStaff"))
@@ -448,12 +431,6 @@ public class managerImageSlideController {
                 Staff staff = staffFacade.find(cookie);
                 if (staff != null) {
                     session.setAttribute("loggedInStaff", staff);
-                    List<String> rightsList = new ArrayList<String>();
-                    for (RoleRights roleRights : staff.getRole().getRoleRightsCollection()) {
-                        rightsList.add(roleRights.getRightsDetail().getTag());
-                    }
-                    this.rightsList = rightsList;
-                    session.setAttribute("rightsList", rightsList);
                     return true;
                 }
             }
@@ -462,8 +439,13 @@ public class managerImageSlideController {
     }
 
     private Boolean checkLoginWithRole(String role) {
-        if (checkLogin() && rightsList.contains(role)) {
-            return true;
+        if (checkLogin()) {
+            String user = ((Staff) session.getAttribute("loggedInStaff")).getUserName();
+            for (RoleRights roleRight : staffFacade.find(user).getRole().getRoleRightsCollection()) {
+                if (roleRight.getRightsDetail().getTag().equals(role)) {
+                    return true;
+                }
+            }
         }
         return false;
     }

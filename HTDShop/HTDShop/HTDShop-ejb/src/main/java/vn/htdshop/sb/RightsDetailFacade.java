@@ -8,6 +8,9 @@ package vn.htdshop.sb;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+
 import vn.htdshop.entity.RightsDetail;
 
 /**
@@ -27,6 +30,16 @@ public class RightsDetailFacade extends AbstractFacade<RightsDetail> implements 
 
     public RightsDetailFacade() {
         super(RightsDetail.class);
+    }
+
+    @Override
+    public RightsDetail findByTag(String tag) {
+        TypedQuery q = em.createNamedQuery("RightsDetail.findByTag", RightsDetail.class);
+        q.setParameter("tag", tag);
+        if (q.getSingleResult()==null) {
+            return null;
+        }
+        return (RightsDetail) q.getSingleResult();
     }
     
 }

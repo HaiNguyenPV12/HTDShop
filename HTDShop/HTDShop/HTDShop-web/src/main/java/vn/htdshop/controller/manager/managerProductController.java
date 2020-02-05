@@ -12,6 +12,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,8 +50,6 @@ public class managerProductController {
     private final String redirectProductHome = "redirect:/manager/product";
     private final String redirectHome = "redirect:/manager";
     private final String redirectLogin = "redirect:/manager/login";
-
-    List<String> rightsList = null;
 
     @EJB(mappedName = "StaffFacade")
     StaffFacadeLocal staffFacade;
@@ -360,10 +359,6 @@ public class managerProductController {
 
     private Boolean checkLogin() {
         if (session.getAttribute("loggedInStaff") != null) {
-            if (rightsList == null || rightsList.size() <= 0) {
-                rightsList = new ArrayList<>();
-                rightsList = (ArrayList<String>) session.getAttribute("rightsList");
-            }
             return true;
         } else {
             String cookie = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("loggedInStaff"))
@@ -372,12 +367,6 @@ public class managerProductController {
                 Staff staff = staffFacade.find(cookie);
                 if (staff != null) {
                     session.setAttribute("loggedInStaff", staff);
-                    List<String> rightsList = new ArrayList<String>();
-                    for (RoleRights roleRights : staff.getRole().getRoleRightsCollection()) {
-                        rightsList.add(roleRights.getRightsDetail().getTag());
-                    }
-                    this.rightsList = rightsList;
-                    session.setAttribute("rightsList", rightsList);
                     return true;
                 }
             }
@@ -386,8 +375,13 @@ public class managerProductController {
     }
 
     private Boolean checkLoginWithRole(String role) {
-        if (checkLogin() && rightsList.contains(role)) {
-            return true;
+        if (checkLogin()) {
+            String user = ((Staff) session.getAttribute("loggedInStaff")).getUserName();
+            for (RoleRights roleRight : staffFacade.find(user).getRole().getRoleRightsCollection()) {
+                if (roleRight.getRightsDetail().getTag().equals(role)) {
+                    return true;
+                }
+            }
         }
         return false;
     }

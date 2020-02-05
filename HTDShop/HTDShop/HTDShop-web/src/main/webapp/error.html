@@ -9,12 +9,12 @@
 
 <body>
     <div class="error-page">
-        <h2 class="headline text-warning"> 404</h2>
+        <h2 class="headline text-warning"> [[${errorCode}]]</h2>
 
         <div class="error-content">
-            <h3><i class="fas fa-exclamation-triangle text-warning"></i> Oops! Page not found.</h3>
+            <h3><i class="fas fa-exclamation-triangle text-warning"></i> Oops! Sorry.</h3>
             <p>
-                We could not find the page you were looking for.
+                We could not find the page you were looking for. Or there are errors on this page.
                 Meanwhile, you may <a th:href="@{/}">return to home</a>
                 <th:block th:if="${hasStaff!=null}">or <a th:href="@{/manager}">return to manager</a></th:block>.
             </p> 
