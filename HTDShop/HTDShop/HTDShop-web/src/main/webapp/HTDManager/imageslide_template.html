@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDManager/layout}">
+
+<head>
+    <title>HTD Manager - Image Slide</title>
+    <th:block layout:fragment="css">
+        <style>
+            /* HIDE RADIO */
+            .uploadimg>[type=radio] {
+                position: absolute;
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+            /* IMAGE STYLES */
+            .uploadimg>img,
+            i {
+                cursor: pointer;
+                max-height: 300px;
+                width: auto;
+            }
+
+            /* CHECKED STYLES */
+            .uploadimg>[type=radio]:checked+img {
+                outline: 2px solid #f00;
+            }
+
+            .uploadimg>img {}
+        </style>
+    </th:block>
+
+</head>
+
+<body>
+
+    <span layout:fragment="title">
+        <a th:href="@{/manager/imageslide}">
+            <i class="fas fa-images" style="font-size:20px"></i> Image Slide
+        </a>
+        >
+        <th:block th:if="${update==null}">Add new Image Slide</th:block>
+        <th:block th:if="${update!=null}">Edit Image Slide: "<th:block th:text="${imageSlide.title}"></th:block>"</th:block>
+    </span>
+
+    <div layout:fragment="breadcrumb">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a th:href="@{/manager}">Home</a></li>
+            <li class="breadcrumb-item active"><a th:href="@{/manager/imageslide}">Image Slide</a></li>
+        </ol>
+    </div>
+    
+    <div layout:fragment="content">
+        <form action="" th:action="@{/manager/imageslide/__${formUrl}__}" th:object="${imageSlide}" method="POST"
+            enctype="multipart/form-data">
+            <input type="hidden" th:field="*{image}" />
+            <div class="row">
+                <div class="col-lg-12 mb-3" th:if="${#fields.hasErrors('global')}">
+                    <p class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i> 
+                        <span th:errors="*{global}">Name Error</span>
+                    </p>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="card card-purple">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                Images
+                                <div class="file btn btn-info" style="position:relative;overflow:hidden;">
+                                    <i class="fas fa-file-upload"></i> 
+                                    <input type="file" style="position: absolute;font-size:50px;opacity: 0;right: 0;top: 0;cursor: pointer;" id="btnUploadImage" name="uploadimg" accept="image/*"/>
+                                </div>
+                                
+                            </h3>
+                        </div>
+                        <div class="card-body row" id="uploadimg">
+                            <!-- Upload image will be shown here -->
+                            <th:block th:if="${update!=null}">
+                                <div class="col-sm-3"></div> 
+                                <label class="col-sm-6 text-center uploadimg">
+                                    <input type="radio" name="uploadradio">
+                                    <img th:src="@{/images/__${imageSlide.image}__}"/>
+                                </label>
+                            </th:block>
+                        </div>
+                        
+                    </div>
+                </div>
+                <input type="hidden" th:field="*{id}" th:if="${update!=null}"/>
+                <input type="hidden" th:field="*{status}" th:if="${update==null}" value="true"/>
+                <div class="col-lg-6">
+                    <div class="card card-purple">
+                        <div class="card-header">
+                            <h3 class="card-title">Information</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <label for="title" class="col-sm-3 col-form-label text-right">Title<i
+                                        class="text-danger">*</i></label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" id="title" placeholder="Title" th:field="*{title}"
+                                        th:classappend="${(#fields.hasErrors('title')?'is-invalid':'') + (submited != null and !#fields.hasErrors('title')?'is-valid':'')}" required/>
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9" th:if="${#fields.hasErrors('title')}">
+                                    <ul class="text-danger">
+                                        <li th:each="err : ${#fields.errors('title')}" th:text="${err}">Name Error</li>
+                                    </ul> 
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="description" class="col-sm-3 col-form-label text-right">Description<i
+                                    class="text-danger">*</i></label>
+                                <div class="col-sm-9">
+                                    <textarea class="form-control" id="description" placeholder="Description"
+                                            th:field="*{description}"
+                                            th:classappend="${(#fields.hasErrors('description')?'is-invalid':'') + (submited != null and !#fields.hasErrors('description')?'is-valid':'')}" required>
+                                    </textarea>
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9" th:if="${#fields.hasErrors('description')}">
+                                    <ul class="text-danger">
+                                        <li th:each="err : ${#fields.errors('description')}" th:text="${err}">Name Error</li>
+                                    </ul> 
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="link" class="col-sm-3 col-form-label text-right">Order<i
+                                    class="text-danger">*</i></label>
+                                <div class="col-sm-9">
+                                    <select id="order" th:field="*{order}" class="form-control" th:disabled="${imageSlide.status==false}">
+                                        <option disabled value="">-- Order --</option>
+                                        <option value="0" selected="selected">Automatically
+                                        </option>
+                                        <option value="1" th:selected="${imageSlide.order==1 && imageSlide.status==true}">1</option>
+                                        <option th:value="${o.order}" th:text="${o.order}+' : '+${o.title}"
+                                            th:each="o:${imageslides.?[order!=null and order ge 2]}"
+                                            th:selected="${imageSlide.order==o.order && imageSlide.status==true}">1</option>
+                                        <option 
+                                            th:with="lastImageSlide=${imageslides.?[order!=null][#lists.size(imageslides.?[order!=null]) - 1]}" 
+                                            th:if="${!imageslides.?[order!=null].empty}"
+                                            th:value="${lastImageSlide.order}+1">To the last</option>
+                                    </select>
+                                    
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9" th:if="${#fields.hasErrors('order')}">
+                                    <ul class="text-danger">
+                                        <li th:each="err : ${#fields.errors('order')}" th:text="${err}">Name Error</li>
+                                    </ul> 
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="link" class="col-sm-3 col-form-label text-right">Link<i
+                                    class="text-danger">*</i></label>
+                                <div class="input-group col-sm-9">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">https://localhost:8080/HTDShop-web/</span>
+                                    </div>
+                                    <input class="form-control" id="link"
+                                            placeholder="Link" th:field="*{link}"
+                                            th:classappend="${(#fields.hasErrors('link')?'is-invalid':'') + (submited != null and !#fields.hasErrors('link')?'is-valid':'')}" required/>
+                                    
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9" th:if="${#fields.hasErrors('link')}">
+                                    <ul class="text-danger">
+                                        <li th:each="err : ${#fields.errors('link')}" th:text="${err}">Name Error</li>
+                                    </ul> 
+                                </div>
+                            </div>
+                            
+                            <div class="form-group row" th:if="${update!=null}">
+                                <label for="status" class="col-sm-3 col-form-label text-right">Status<i
+                                    class="text-danger">*</i></label>
+                                <div class="col-sm-9">
+                                    <div class="custom-control custom-radio">
+                                        <input class="custom-control-input" type="radio" value="true" th:field="*{status}"
+                                        th:selected="${imageSlide.status==true}" id="status1" required/>
+                                        <label for="status1" class="custom-control-label">Enabled</label>
+                                    </div>
+                                    <div class="custom-control custom-radio">
+                                        <input class="custom-control-input" type="radio" value="false" th:field="*{status}"
+                                        th:selected="${imageSlide.status==false}" id="status2"/>
+                                        <label for="status2" class="custom-control-label">Disabled</label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9" th:if="${#fields.hasErrors('status')}">
+                                    <ul class="text-danger">
+                                        <li th:each="err : ${#fields.errors('status')}" th:text="${err}">Name Error</li>
+                                    </ul> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Submit button -->
+                <div class="col-lg-12 text-right mb-3">
+                    <input type="submit" class="btn btn-success" value="Add this slide" th:if="${update==null}"></input>
+                    <input type="submit" class="btn btn-success" value="Update this slide" th:if="${update!=null}"></input>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <script layout:fragment="script" th:inline="none">
+        $("#btnUploadImage").on("change", function () {
+            if (this.files && this.files[0]) {
+                if (this.files.length > 1) {
+                    Toast.fire({
+                        type: 'error',
+                        title: 'You can upload only 1 image.'
+                    });
+                    return;
+                }
+                $("#uploadimg").html("");
+                for (var i = 0; i < this.files.length; i++) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $("#uploadimg").append('<div class="col-sm-3"></div><label class="col-sm-6 text-center uploadimg">'
+                            + '<input type="radio" name="uploadradio">'
+                            + '<img src="' + e.target.result + '">'
+                            + '</label>');
+                    }
+                    reader.readAsDataURL(this.files[i]);
+                }
+            } else {
+                $("#uploadimg").html("");
+            }
+        });
+        $("input[name='status']").on("change", function () {
+            console.log($(this).val());
+            if ($(this).val() == 'false') {
+                $("#order").val('0');
+                $("#order").prop('disabled', true);
+            } else {
+                $("#order").removeAttr('disabled');
+            }
+        });
+
+        $(document).ready(function () {
+
+        });
+    </script>
+</body>
+
+</html>

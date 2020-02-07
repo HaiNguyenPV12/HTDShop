@@ -30,4 +30,5 @@ public interface RoleFacadeLocal {
 
     int count();
     
+    Role findByName(String name);
 }

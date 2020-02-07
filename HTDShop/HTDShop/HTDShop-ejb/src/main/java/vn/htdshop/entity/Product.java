@@ -45,7 +45,6 @@ import org.hibernate.validator.constraints.NotEmpty;
     , @NamedQuery(name = "Product.findByManufacturer", query = "SELECT p FROM Product p WHERE p.manufacturer = :manufacturer")
     , @NamedQuery(name = "Product.findByColor", query = "SELECT p FROM Product p WHERE p.color = :color")
     , @NamedQuery(name = "Product.findByPrice", query = "SELECT p FROM Product p WHERE p.price = :price")
-    , @NamedQuery(name = "Product.findByUnit", query = "SELECT p FROM Product p WHERE p.unit = :unit")
     , @NamedQuery(name = "Product.findByStock", query = "SELECT p FROM Product p WHERE p.stock = :stock")
     , @NamedQuery(name = "Product.findByWarrantyPeriod", query = "SELECT p FROM Product p WHERE p.warrantyPeriod = :warrantyPeriod")
     , @NamedQuery(name = "Product.findByStatus", query = "SELECT p FROM Product p WHERE p.status = :status")
@@ -98,11 +97,6 @@ public class Product implements Serializable {
     @DecimalMin(value = "0.0", message = "Price's minimum is 0.")
     @DecimalMax(value = "100000000.0", message = "Price's maximum is 100,000,000.")
     private Double price;
-
-    @Basic(optional = false)
-    @Column(name = "Unit")
-    @Size(max = 30, message = "Unit must have maximum 30 characters.")
-    private String unit;
 
     @Basic(optional = false)
     @Column(name = "Stock")
@@ -230,13 +224,12 @@ public class Product implements Serializable {
         this.id = id;
     }
 
-    public Product(Integer id, String name, String manufacturer, String color, Double price, String unit, Integer stock, int warrantyPeriod, int status, String description) {
+    public Product(Integer id, String name, String manufacturer, String color, Double price, Integer stock, int warrantyPeriod, int status, String description) {
         this.id = id;
         this.name = name;
         this.manufacturer = manufacturer;
         this.color = color;
         this.price = price;
-        this.unit = unit;
         this.stock = stock;
         this.warrantyPeriod = warrantyPeriod;
         this.status = status;
@@ -281,14 +274,6 @@ public class Product implements Serializable {
 
     public void setPrice(Double price) {
         this.price = price;
-    }
-
-    public String getUnit() {
-        return unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
     }
 
     public Integer getStock() {

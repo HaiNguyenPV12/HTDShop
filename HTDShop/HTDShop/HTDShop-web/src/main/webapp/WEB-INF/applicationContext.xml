@@ -34,6 +34,7 @@
     <bean class="org.thymeleaf.spring4.view.ThymeleafViewResolver">
         <property name="templateEngine" ref="templateEngine" />
         <property name="characterEncoding" value="UTF-8"/>
+        <property name="contentType" value="text/html; charset=UTF-8" />
     </bean>
            
     <bean id="templateEngine"
@@ -45,6 +46,7 @@
                 <bean class="nz.net.ultraq.thymeleaf.LayoutDialect"/>
             </set>
         </property>
+        
     </bean>
 
 </beans>

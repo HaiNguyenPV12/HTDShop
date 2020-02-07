@@ -1,0 +1,30 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <link rel="stylesheet" th:href="@{/manager_resources/plugins/fontawesome-free/css/all.min.css}">
+    <link rel="stylesheet" th:href="@{/manager_resources/Content/adminlte.min.css}">
+    <link th:href="@{/manager_resources/Content/font.css}" rel="stylesheet">
+</head>
+
+<body>
+    <div class="error-page">
+        <h2 class="headline text-warning"> [[${errorCode}]]</h2>
+
+        <div class="error-content">
+            <h3><i class="fas fa-exclamation-triangle text-warning"></i> Oops! Sorry.</h3>
+            <p>
+                We could not find the page you were looking for. Or there are errors on this page.
+                Meanwhile, you may <a th:href="@{/}">return to home</a>
+                <th:block th:if="${hasStaff!=null}">or <a th:href="@{/manager}">return to manager</a></th:block>.
+            </p> 
+            <pre th:if="${hasStaff!=null}">
+                Code: [[${errorCode}]] <br/>
+                Message: [[${errorMsg}]]
+            </pre>
+        </div>
+        <!-- /.error-content -->
+    </div>
+</body>
+
+</html>

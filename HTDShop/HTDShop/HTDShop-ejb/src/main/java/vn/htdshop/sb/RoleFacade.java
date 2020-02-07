@@ -5,9 +5,14 @@
  */
 package vn.htdshop.sb;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+
 import vn.htdshop.entity.Role;
 
 /**
@@ -28,5 +33,15 @@ public class RoleFacade extends AbstractFacade<Role> implements RoleFacadeLocal 
     public RoleFacade() {
         super(Role.class);
     }
-    
+
+    @Override
+    public Role findByName(String name) {
+        Query q = em.createNamedQuery("Role.findByName");
+        q.setParameter("name", name);
+        if (q.getResultList().size() <= 0) {
+            return null;
+        }
+        return (Role) q.getSingleResult();
+    }
+
 }

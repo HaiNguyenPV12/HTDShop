@@ -118,7 +118,7 @@ public class CPU {
         p.setCore(core);
         p.setThread(thread);
         p.setStatus(status);
-        p.setUnit(unit);
+
         p.setDescription(description);
         return p;
     }
@@ -143,7 +143,6 @@ public class CPU {
         p.setCore(core);
         p.setThread(thread);
         p.setStatus(status);
-        p.setUnit(unit);
         p.setDescription(description);
         return p;
     }
