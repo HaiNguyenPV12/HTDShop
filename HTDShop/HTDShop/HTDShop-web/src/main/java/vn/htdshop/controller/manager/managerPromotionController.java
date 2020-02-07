@@ -208,15 +208,24 @@ public class managerPromotionController {
 
         // If there is no error
         if (!error.hasErrors()) {
-            // // Insert into database
-            // promotionDetailFacade.create(promotion);
+            // Insert into database
+            promotionDetailFacade.create(promotion);
 
-            // // Insert promotions
-            // // Pass alert attribute to notify successful process
-            // redirect.addFlashAttribute("goodAlert", "Successfully added \"" +
-            // promotion.getName() + "\"!");
-            // return redirectPromotionHome;
+            // Insert image
+            uploadImage(uploadimg, promotion, false);
+
+            // Insert conditions
+            for (Promotion p : conditions) {
+                p.setPromotionDetail(promotion);
+                promotionFacade.create(p);
+            }
+
+            // Pass alert attribute to notify successful process
+            redirect.addFlashAttribute("goodAlert", "Successfully added \"" + promotion.getName() + "\"!");
+            return redirectPromotionHome;
         }
+        // Show error for image
+        error.reject("common", "Please choose image again.");
         // Show common error message
         error.reject("common", "Error adding new promotion.");
 
