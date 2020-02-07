@@ -32,7 +32,12 @@ public abstract class AbstractFacade<T> {
     }
 
     public void edit(T entity) {
-        getEntityManager().merge(entity);
+        try {
+            getEntityManager().merge(entity);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
     }
 
     public void remove(T entity) {

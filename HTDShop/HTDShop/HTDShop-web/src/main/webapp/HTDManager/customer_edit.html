@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDManager/layout}">
+
+<head>
+    <title>HTD Manager - Role</title>
+    <th:block layout:fragment="additionalCss">
+        <link th:href="@{/manager_resources/plugins/icheck-bootstrap/icheck-bootstrap.min.css}" rel="stylesheet">
+    </th:block>
+
+</head>
+
+<body>
+
+    <span layout:fragment="title">
+        <a th:href="@{/manager/role}">
+            <i class="fas fa-balance-scale" style="font-size:20px"></i> Customer
+        </a>
+        >
+    </span>
+
+    <div layout:fragment="breadcrumb">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a th:href="@{/manager}">Home</a></li>
+            <li class="breadcrumb-item active"><a th:href="@{/manager/role}">Customer</a></li>
+        </ol>
+    </div>
+
+    <div layout:fragment="content">
+        <form action="" th:action="@{/manager/customer/__${formUrl}__}" th:object="${customer}" method="POST"
+            enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-lg-12 mb-3" th:if="${#fields.hasErrors('global')}">
+                    <p class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i> 
+                        <span th:errors="*{global}">Name Error</span>
+                    </p>
+                </div>
+
+                <input type="hidden" th:field="*{id}" th:if="${update!=null}"/> 
+                <div class="col-lg-6">
+                    <div class="card card-purple">
+                        <div class="card-header">
+                            <h3 class="card-title">Customer Information</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <label for="firstName" class="col-sm-3 col-form-label text-right">First Name<i
+                                        class="text-danger">*</i></label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" id="firstName" placeholder="First Name" th:field="*{firstName}"
+                                        th:classappend="${(#fields.hasErrors('firstName')?'is-invalid':'') + (submited != null and !#fields.hasErrors('firstName')?'is-valid':'')}" required/>
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9" th:if="${#fields.hasErrors('firstName')}">
+                                    <ul class="text-danger">
+                                        <li th:each="err : ${#fields.errors('firstName')}" th:text="${err}">Name Error</li>
+                                    </ul> 
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="lastName" class="col-sm-3 col-form-label text-right">Last Name<i
+                                        class="text-danger">*</i></label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" id="lastName" placeholder="Last Name" th:field="*{lastName}"
+                                        th:classappend="${(#fields.hasErrors('lastName')?'is-invalid':'') + (submited != null and !#fields.hasErrors('lastName')?'is-valid':'')}" required/>
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9" th:if="${#fields.hasErrors('lastName')}">
+                                    <ul class="text-danger">
+                                        <li th:each="err : ${#fields.errors('lastName')}" th:text="${err}">Name Error</li>
+                                    </ul> 
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="email" class="col-sm-3 col-form-label text-right">Email<i
+                                        class="text-danger">*</i></label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" id="email" placeholder="Email" th:field="*{email}"
+                                        th:classappend="${(#fields.hasErrors('email')?'is-invalid':'') + (submited != null and !#fields.hasErrors('email')?'is-valid':'')}" required/>
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9" th:if="${#fields.hasErrors('email')}">
+                                    <ul class="text-danger">
+                                        <li th:each="err : ${#fields.errors('email')}" th:text="${err}">Name Error</li>
+                                    </ul> 
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="phone" class="col-sm-3 col-form-label text-right">Phone<i
+                                        class="text-danger">*</i></label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" id="phone" placeholder="Phone" th:field="*{phone}"
+                                        th:classappend="${(#fields.hasErrors('phone')?'is-invalid':'') + (submited != null and !#fields.hasErrors('phone')?'is-valid':'')}" required/>
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9" th:if="${#fields.hasErrors('phone')}">
+                                    <ul class="text-danger">
+                                        <li th:each="err : ${#fields.errors('phone')}" th:text="${err}">Name Error</li>
+                                    </ul> 
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="address" class="col-sm-3 col-form-label text-right">Address<i
+                                        class="text-danger">*</i></label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" id="address" placeholder="Name" th:field="*{address}"
+                                        th:classappend="${(#fields.hasErrors('address')?'is-invalid':'') + (submited != null and !#fields.hasErrors('address')?'is-valid':'')}" required/>
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9" th:if="${#fields.hasErrors('address')}">
+                                    <ul class="text-danger">
+                                        <li th:each="err : ${#fields.errors('address')}" th:text="${err}">Name Error</li>
+                                    </ul> 
+                                </div>
+                            </div>          
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6" th:if="${!customer.userCollection.isEmpty()}" th:each = "u : ${customer.userCollection}">
+                    <div class="card card-purple">
+                        <div class="card-header">
+                            <h3 class="card-title">User Information</h3>
+                        </div>
+                        <div class="form-group row">
+                            <label for="password" class="col-sm-3 col-form-label text-right">Password<i
+                                    class="text-danger">*</i></label>
+                            <div class="col-sm-9">
+                                <input class="form-control" id="password" placeholder="Name" th:field="${u.password}"
+                                    th:classappend="${(#fields.hasErrors('password')?'is-invalid':'') + (submited != null and !#fields.hasErrors('password')?'is-valid':'')}" required/>
+                            </div>
+                            <div class="col-sm-3"></div>
+                            <div class="col-sm-9" th:if="${#fields.hasErrors('password')}">
+                                <ul class="text-danger">
+                                    <li th:each="err : ${#fields.errors('password')}" th:text="${err}">Name Error</li>
+                                </ul> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Submit button -->
+                <div class="col-lg-12 text-right mb-3">
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <script layout:fragment="script" th:inline="none">
+
+
+        $(document).ready(function () {
+
+        });
+    </script>
+</body>
+
+</html>

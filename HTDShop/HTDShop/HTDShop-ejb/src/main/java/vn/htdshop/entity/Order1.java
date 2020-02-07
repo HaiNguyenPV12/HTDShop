@@ -78,7 +78,6 @@ public class Order1 implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date orderDate;
     @Basic(optional = false)
-    @NotNull
     @Column(name = "CancelledDate")
     @Temporal(TemporalType.TIMESTAMP)
     private Date cancelledDate;

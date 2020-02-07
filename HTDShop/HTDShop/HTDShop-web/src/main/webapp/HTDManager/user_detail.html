@@ -32,13 +32,13 @@
         
     -->
     <span layout:fragment="title">
-        <i class="fas fa-box-open" style="font-size:20px"></i> Order Detail       
+        <i class="fas fa-box-open" style="font-size:20px"></i> User Detail        
     </span>
 
     <div layout:fragment="breadcrumb">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a th:href="@{/manager}">Home</a></li>
-            <li class="breadcrumb-item active">Order Details</li>
+            <li class="breadcrumb-item active">Order</li>
         </ol>
     </div>
 
@@ -51,23 +51,34 @@
                         <table id="tblProduct" class="table table-bordered table-striped table-hover">
                             <thead class="bg-purple">
                                 <th>ID</th>
-                                <th>Product Name</th>
-                                <th>Quantity</th>
-                                <th>Price</th>
+                                <th>Password</th>
+                                <th>Gender</th>
+                                <th>Birthday</th>
+                                <th>Point</th>
+                                <th>Action</th>
                             </thead>
                             <tbody>                             
-                                <tr th:each = "o : ${order.orderDetailCollection}">
-                                    <td th:text="${o.id}">001</td>
-                                    <td th:text="${o.product.name}">Intel Core i5 8400 3.0 GHz</td>
-                                    <td th:text="${o.quantity}">CPU</td>
-                                    <td th:text="${o.price}">Intel</td>
+                                <tr th:each="c : ${customer.userCollection}">
+                                    <td th:text="${c.id}">001</td>
+                                    <td th:text="${c.password}">Intel Core i5 8400 3.0 GHz</td>
+                                    <td th:text="${c.gender==true?'Male':'Female'}">Intel</td>   
+                                    <td th:text="${#dates.format(c.birthday,'dd-MM-yyyy')}">Intel</td>                   
+                                    <td th:text="${c.point}">Intel</td>   
+                                    <td>     
+                                        <a class="btn btn-warning btn-sm" th:href="@{/manager/customer/edit(id=${c.id})}"
+                                        data-toggle='tooltip' title="Edit">
+                                        <i class="fas fa-pencil-alt"></i>
+                                        </a>                                                        
+                                    </td>
                                 </tr>
                             </tbody>
                             <tfoot class="bg-purple">
                                 <th>ID</th>
-                                <th>Product Name</th>
-                                <th>Quantity</th>
-                                <th>Price</th>
+                                <th>Password</th>
+                                <th>Gender</th>
+                                <th>Birthday</th>
+                                <th>Point</th>
+                                <th>Action</th>
                             </tfoot>
                         </table>
                     </div>
