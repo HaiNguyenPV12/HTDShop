@@ -17,7 +17,7 @@
 <body>
 
     <span layout:fragment="title">
-        <i class="fas fa-images" style="font-size:20px"></i> Promotion
+        <i class="fas fa-gifts" style="font-size:20px"></i> Promotion
         <a class="btn btn-success" th:href="@{/manager/promotion/add}">
             <i class="fas fa-plus-square fa-lg mr-2"></i> Add new Promotion
         </a>
@@ -124,6 +124,7 @@
     </div>
 
     <script layout:fragment="script" th:inline="none">
+
         function confirmDelete(title, url) {
             showModal('Confirm deletion',
                 'Are you sure to delete "' + title + '" ?',

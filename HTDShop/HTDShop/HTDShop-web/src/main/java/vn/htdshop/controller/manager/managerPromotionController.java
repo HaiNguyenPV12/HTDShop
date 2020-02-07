@@ -5,6 +5,10 @@
  */
 package vn.htdshop.controller.manager;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,6 +30,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import vn.htdshop.entity.*;
@@ -106,6 +111,9 @@ public class managerPromotionController {
         PromotionDetail p = new PromotionDetail();
 
         // Check if old input exists
+        if (model.asMap().containsKey("conditions")) {
+            p.setPromotionCollection((Collection<Promotion>) model.asMap().get("conditions"));
+        }
         model.addAttribute("promotion", p);
 
         // Prepare form url for form submit
@@ -116,6 +124,11 @@ public class managerPromotionController {
             model.addAttribute("submited", "submited");
         }
 
+        // Product list
+        model.addAttribute("productList", productFacade.findAll());
+        // Category list
+        model.addAttribute("categoryList", categoryFacade.findAll());
+
         // Add indicator attribute for sidemenu highlight
         model.asMap().put("menu", "promotion");
         // Continue to login page
@@ -125,24 +138,84 @@ public class managerPromotionController {
     // ==== PROMOTION ADD - PROCESS ==== \\
     @RequestMapping(value = "doAdd", method = RequestMethod.POST)
     public String doAdd(@Valid @ModelAttribute("promotion") PromotionDetail promotion, BindingResult error,
-            HttpSession session, Model model, RedirectAttributes redirect) {
+            HttpSession session, Model model,
+            @RequestParam(value = "uploadimg", required = false) MultipartFile uploadimg,
+            @RequestParam(value = "conCount", required = false) Integer[] conCount,
+            @RequestParam(value = "conCategory", required = false) Integer[] conCategory,
+            @RequestParam(value = "conProduct", required = false) Integer[] conProduct,
+            @RequestParam(value = "conPreBuilt", required = false) Integer[] conPreBuilt,
+            @RequestParam(value = "conLimit", required = false) Integer[] conLimit,
+            @RequestParam(value = "conMin", required = false) Integer[] conMin,
+            @RequestParam(value = "conMax", required = false) Integer[] conMax,
+            @RequestParam(value = "conPercentage", required = false) Double[] conPercentage,
+            @RequestParam(value = "conMaxSale", required = false) Double[] conMaxSale,
+            @RequestParam(value = "conExact", required = false) Double[] conExact, RedirectAttributes redirect) {
         if (!checkLoginWithRole("promotion_add")) {
             return redirectPromotionHome;
         }
-        // Check name exists
+        // Check image extension
+        String contentType = uploadimg.getContentType().substring(0, uploadimg.getContentType().lastIndexOf("/"));
+        if (!contentType.equals("image")) {
+            error.reject("common", "Please choose valid extension.");
+        }
+        // Create promotion collection (for keeping input after redirect)
+        Collection<Promotion> conditions = new ArrayList<>();
+        if (conCount != null && conCount.length > 0) {
 
-        // Check right exists
+            if (conCount.length > 1) {
+                for (int i = 0; i < conCount.length; i++) {
+                    Promotion p = new Promotion();
+                    p.setCategory(conCategory[i] != null ? categoryFacade.find(conCategory[i]) : null);
+                    p.setProduct(conProduct[i] != null ? productFacade.find(conProduct[i]) : null);
+                    p.setPreBuiltTarget(conPreBuilt[i]);
+                    p.setLimitedQuantity(conLimit[i]);
+                    p.setMinQuantity(conMin[i]);
+                    p.setMaxQuantity(conMax[i]);
+                    p.setPercentage(conPercentage[i]);
+                    p.setMaxSaleOff(conMaxSale[i]);
+                    p.setExactSaleOff(conExact[i]);
+                    conditions.add(p);
+                    System.out.println("cate:" + conCategory[i] + "|product:" + conProduct[i] + "|prebuilt:"
+                            + conPreBuilt[i] + "|limit:" + conLimit[i] + "|min:" + conMin[i] + "|max:" + conMax[i]
+                            + "|percentage:" + conPercentage[i] + "|maxSale:" + conMaxSale[i] + "|exact:"
+                            + conExact[i]);
+                }
+            } else {
+                Promotion p = new Promotion();
+                p.setCategory(conCategory.length > 0 ? categoryFacade.find(conCategory[0]) : null);
+                p.setProduct(conProduct.length > 0 ? productFacade.find(conProduct[0]) : null);
+                p.setPreBuiltTarget(conPreBuilt.length > 0 ? conPreBuilt[0] : null);
+                p.setLimitedQuantity(conLimit.length > 0 ? conLimit[0] : null);
+                p.setMinQuantity(conMin.length > 0 ? conMin[0] : null);
+                p.setMaxQuantity(conMax.length > 0 ? conMax[0] : null);
+                p.setPercentage(conPercentage.length > 0 ? conPercentage[0] : null);
+                p.setMaxSaleOff(conMaxSale.length > 0 ? conMaxSale[0] : null);
+                p.setExactSaleOff(conExact.length > 0 ? conExact[0] : null);
+                conditions.add(p);
+                System.out.println("cate:" + (conCategory.length > 0 ? conCategory[0] : "null") + "|product:"
+                        + (conProduct.length > 0 ? conProduct[0] : "null") + "|prebuilt:"
+                        + (conPreBuilt.length > 0 ? conPreBuilt[0] : "null") + "|limit:"
+                        + (conLimit.length > 0 ? conLimit[0] : "null") + "|min:" + (conMin.length > 0 ? conMin : "null")
+                        + "|max:" + (conMax.length > 0 ? conMax[0] : "null") + "|percentage:"
+                        + (conPercentage.length > 0 ? conPercentage[0] : "null") + "|maxSale:"
+                        + (conMaxSale.length > 0 ? conMaxSale[0] : "null") + "|exact:"
+                        + (conExact.length > 0 ? conExact[0] : "null"));
+            }
+
+        } else {
+            error.reject("common", "Please add condition(s).");
+        }
 
         // If there is no error
         if (!error.hasErrors()) {
-            // Insert into database
-            promotionDetailFacade.create(promotion);
+            // // Insert into database
+            // promotionDetailFacade.create(promotion);
 
-            // Insert promotions
-
-            // Pass alert attribute to notify successful process
-            redirect.addFlashAttribute("goodAlert", "Successfully added \"" + promotion.getName() + "\"!");
-            return redirectPromotionHome;
+            // // Insert promotions
+            // // Pass alert attribute to notify successful process
+            // redirect.addFlashAttribute("goodAlert", "Successfully added \"" +
+            // promotion.getName() + "\"!");
+            // return redirectPromotionHome;
         }
         // Show common error message
         error.reject("common", "Error adding new promotion.");
@@ -150,6 +223,7 @@ public class managerPromotionController {
         // Pass binding result to redirect page (to show errors)
         redirect.addFlashAttribute("error", error);
         // Pass current input to redirect page (to keep old input)
+        redirect.addFlashAttribute("conditions", conditions);
         redirect.addFlashAttribute("promotion", promotion);
 
         // Redirect to add page
@@ -174,6 +248,10 @@ public class managerPromotionController {
             model.addAttribute("org.springframework.validation.BindingResult.promotion", model.asMap().get("error"));
             model.addAttribute("submited", "submited");
         }
+        // Product list
+        model.addAttribute("productList", productFacade.findAll());
+        // Category list
+        model.addAttribute("categoryList", categoryFacade.findAll());
 
         // Add edit identifier for form
         model.asMap().put("update", "update");
@@ -192,21 +270,17 @@ public class managerPromotionController {
         }
 
         // Check name exists
-
         // If there is no error
-        if (!error.hasErrors()) {
-            // Update in database
-            promotionDetailFacade.edit(promotion);
-
-            // Remove promotions
-
-            // Insert promotions
-
-            // Pass alert attribute to notify successful process
-            redirect.addFlashAttribute("goodAlert", "Successfully updated \"" + promotion.getName() + "\"!");
-            return redirectPromotionHome;
-        }
-
+        // if (!error.hasErrors()) {
+        // // Update in database
+        // promotionDetailFacade.edit(promotion);
+        // // Remove promotions
+        // // Insert promotions
+        // // Pass alert attribute to notify successful process
+        // redirect.addFlashAttribute("goodAlert", "Successfully updated \"" +
+        // promotion.getName() + "\"!");
+        // return redirectPromotionHome;
+        // }
         // Show common error message
         error.reject("common", "Error updating this promotion.");
         // Pass binding result to redirect page (to show errors)
@@ -250,6 +324,52 @@ public class managerPromotionController {
         }
 
         return redirectPromotionHome;
+    }
+
+    private Boolean uploadImage(MultipartFile uploadimg, PromotionDetail promotionDetail, boolean deleteOldImage) {
+        try {
+            if (uploadimg.isEmpty() || uploadimg.getSize() == 0) {
+                return false;
+            }
+            String contentType = uploadimg.getContentType().substring(0, uploadimg.getContentType().lastIndexOf("/"));
+            if (!contentType.equals("image")) {
+                return false;
+            }
+            // Remove image
+            if (deleteOldImage) {
+                // First, delete real file.
+                File deleteFile = new File(System.getProperty("catalina.home") + "/img/" + promotionDetail.getImage());
+                if (deleteFile.delete()) {
+                    System.out.println("Deleted image: " + deleteFile.getPath());
+                } else {
+                    System.out.println("Cannot delete image: " + deleteFile.getPath());
+                }
+            }
+
+            // System.getProperty("catalina.base") : Path_to_glassfish/domains/domain_name/
+            File imagePath = new File(System.getProperty("catalina.base") + "/img/promotion");
+            // Check if path is not exists, create path to it
+            if (!imagePath.exists()) {
+                imagePath.mkdirs();
+            }
+
+            // File name: [image slide id].[extension]
+            String fileName = promotionDetail.getId()
+                    + uploadimg.getOriginalFilename().substring(uploadimg.getOriginalFilename().lastIndexOf("."));
+            // Path_to_glassfish/domains/domain_name/img/imageslide/file_name.extension
+            String filePath = System.getProperty("catalina.base") + "/img/promotion/" + fileName;
+            // Use Files to copy multipartFile's input stream to declared path
+            Files.copy(uploadimg.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
+
+            // Save image path
+            promotionDetail.setImage("promotion/" + fileName);
+            promotionDetailFacade.edit(promotionDetail);
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     private Boolean checkLogin() {

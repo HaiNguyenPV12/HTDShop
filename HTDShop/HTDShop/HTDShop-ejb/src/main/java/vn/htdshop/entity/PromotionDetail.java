@@ -26,6 +26,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *
@@ -73,10 +74,12 @@ public class PromotionDetail implements Serializable {
     @Column(name = "Target")
     private int target;
     @Column(name = "StartDate")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat (pattern="dd/MM/yyyy")
     private Date startDate;
     @Column(name = "EndDate")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat (pattern="dd/MM/yyyy")
     private Date endDate;
     @Basic(optional = false)
     @NotNull
