@@ -30,7 +30,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("build")
 public class shopBuildController {
 
-    @EJB(name = "ProductFacade")
+    @EJB(mappedName = "ProductFacade")
     ProductFacadeLocal productFacade;
 
     PreBuilt preBuilt;
@@ -39,13 +39,18 @@ public class shopBuildController {
 
     List<Product> buildProductList = null;
 
+    @PostConstruct
+    public void init() {
+        buildProductList = productFacade.findAll();
+    }
+
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String getBuild(HttpSession session) {
         if (isBuildStarted(session)) {
             session.setAttribute("isBuilding", true);
             session.setAttribute("currentBuild", new PreBuilt());
         }
-        buildProductList = productFacade.findAll();
+
         for (String socket : cpuSockets()) {
             System.out.println(socket);
         }
