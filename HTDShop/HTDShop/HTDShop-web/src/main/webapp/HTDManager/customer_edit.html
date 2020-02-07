@@ -117,7 +117,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6" th:if="${!customer.userCollection.isEmpty()}" th:each = "u : ${customer.userCollection}">
+                <div class="col-lg-6" th:if="${!customer.user==null}">
                     <div class="card card-purple">
                         <div class="card-header">
                             <h3 class="card-title">User Information</h3>
@@ -126,7 +126,7 @@
                             <label for="password" class="col-sm-3 col-form-label text-right">Password<i
                                     class="text-danger">*</i></label>
                             <div class="col-sm-9">
-                                <input class="form-control" id="password" placeholder="Name" th:field="${u.password}"
+                                <input class="form-control" id="password" placeholder="Name" th:field="*{user.password}"
                                     th:classappend="${(#fields.hasErrors('password')?'is-invalid':'') + (submited != null and !#fields.hasErrors('password')?'is-valid':'')}" required/>
                             </div>
                             <div class="col-sm-3"></div>

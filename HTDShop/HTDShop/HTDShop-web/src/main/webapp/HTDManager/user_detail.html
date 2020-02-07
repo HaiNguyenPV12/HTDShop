@@ -58,14 +58,14 @@
                                 <th>Action</th>
                             </thead>
                             <tbody>                             
-                                <tr th:each="c : ${customer.userCollection}">
-                                    <td th:text="${c.id}">001</td>
-                                    <td th:text="${c.password}">Intel Core i5 8400 3.0 GHz</td>
-                                    <td th:text="${c.gender==true?'Male':'Female'}">Intel</td>   
-                                    <td th:text="${#dates.format(c.birthday,'dd-MM-yyyy')}">Intel</td>                   
-                                    <td th:text="${c.point}">Intel</td>   
+                                <tr>
+                                    <td th:text="${customer.user.id}">001</td>
+                                    <td th:text="${customer.user.password}">Intel Core i5 8400 3.0 GHz</td>
+                                    <td th:text="${customer.user.gender==true?'Male':'Female'}">Intel</td>   
+                                    <td th:text="${#dates.format(customer.user.birthday,'dd-MM-yyyy')}">Intel</td>                   
+                                    <td th:text="${customer.user.point}">Intel</td>   
                                     <td>     
-                                        <a class="btn btn-warning btn-sm" th:href="@{/manager/customer/edit(id=${c.id})}"
+                                        <a class="btn btn-warning btn-sm" th:href="@{/manager/customer/edit(id=${customer.user.id})}"
                                         data-toggle='tooltip' title="Edit">
                                         <i class="fas fa-pencil-alt"></i>
                                         </a>                                                        
