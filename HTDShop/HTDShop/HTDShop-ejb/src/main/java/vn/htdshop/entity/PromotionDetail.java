@@ -65,7 +65,6 @@ public class PromotionDetail implements Serializable {
     @Column(name = "Detail")
     private String detail;
     @Basic(optional = false)
-    @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "Image")
     private String image;

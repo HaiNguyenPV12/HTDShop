@@ -11,9 +11,9 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Hai
+ * @author Thien
  */
 @Entity
 @Table(name = "Customer")
@@ -42,8 +42,8 @@ public class Customer implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @NotNull
     @Column(name = "Id")
     private Integer id;
     @Basic(optional = false)
@@ -75,8 +75,9 @@ public class Customer implements Serializable {
     private String address;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "customer")
     private Collection<Order1> order1Collection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customer")
-    private Collection<User> userCollection;
+    @JoinColumn(name = "UserId", referencedColumnName = "Id")
+    @ManyToOne
+    private User user;
 
     public Customer() {
     }
@@ -93,6 +94,16 @@ public class Customer implements Serializable {
         this.phone = phone;
         this.address = address;
     }
+    
+     @XmlTransient
+    public Collection<Order1> getOrder1Collection() {
+        return order1Collection;
+    }
+
+    public void setOrder1Collection(Collection<Order1> order1Collection) {
+        this.order1Collection = order1Collection;
+    }
+
 
     public Integer getId() {
         return id;
@@ -142,22 +153,12 @@ public class Customer implements Serializable {
         this.address = address;
     }
 
-    @XmlTransient
-    public Collection<Order1> getOrder1Collection() {
-        return order1Collection;
+    public User getUser() {
+        return user;
     }
 
-    public void setOrder1Collection(Collection<Order1> order1Collection) {
-        this.order1Collection = order1Collection;
-    }
-
-    @XmlTransient
-    public Collection<User> getUserCollection() {
-        return userCollection;
-    }
-
-    public void setUserCollection(Collection<User> userCollection) {
-        this.userCollection = userCollection;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override

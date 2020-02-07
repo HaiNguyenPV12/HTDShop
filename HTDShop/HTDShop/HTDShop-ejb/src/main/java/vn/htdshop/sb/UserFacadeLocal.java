@@ -11,7 +11,7 @@ import vn.htdshop.entity.User;
 
 /**
  *
- * @author Hai
+ * @author Thien
  */
 @Local
 public interface UserFacadeLocal {
