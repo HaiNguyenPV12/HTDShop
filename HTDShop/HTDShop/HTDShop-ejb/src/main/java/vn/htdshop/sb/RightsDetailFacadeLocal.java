@@ -29,5 +29,7 @@ public interface RightsDetailFacadeLocal {
     List<RightsDetail> findRange(int[] range);
 
     int count();
+
+    RightsDetail findByTag(String tag);
     
 }

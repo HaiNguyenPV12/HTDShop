@@ -44,6 +44,8 @@ public class Promotion implements Serializable {
     @Basic(optional = false)
     @Column(name = "Id")
     private Integer id;
+    @Column(name = "PreBuiltTarget")
+    private Integer preBuiltTarget;
     @Column(name = "LimitedQuantity")
     private Integer limitedQuantity;
     @Column(name = "MinQuantity")
@@ -187,6 +189,20 @@ public class Promotion implements Serializable {
     @Override
     public String toString() {
         return "vn.htdshop.entity.Promotion[ id=" + id + " ]";
+    }
+
+    /**
+     * @return the preBuiltTarget
+     */
+    public Integer getPreBuiltTarget() {
+        return preBuiltTarget;
+    }
+
+    /**
+     * @param preBuiltTarget the preBuiltTarget to set
+     */
+    public void setPreBuiltTarget(Integer preBuiltTarget) {
+        this.preBuiltTarget = preBuiltTarget;
     }
     
 }

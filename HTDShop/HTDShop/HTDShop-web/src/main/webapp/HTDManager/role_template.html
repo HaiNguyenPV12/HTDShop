@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDManager/layout}">
+
+<head>
+    <title>HTD Manager - Role</title>
+    <th:block layout:fragment="additionalCss">
+        <link th:href="@{/manager_resources/plugins/icheck-bootstrap/icheck-bootstrap.min.css}" rel="stylesheet">
+    </th:block>
+
+</head>
+
+<body>
+
+    <span layout:fragment="title">
+        <a th:href="@{/manager/role}">
+            <i class="fas fa-balance-scale" style="font-size:20px"></i> Role
+        </a>
+        >
+        <th:block th:if="${update==null}">Add new Role</th:block>
+        <th:block th:if="${update!=null}">Edit Role: "<th:block th:text="${role.name}"></th:block>"</th:block>
+    </span>
+
+    <div layout:fragment="breadcrumb">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a th:href="@{/manager}">Home</a></li>
+            <li class="breadcrumb-item active"><a th:href="@{/manager/role}">Role</a></li>
+        </ol>
+    </div>
+
+    <div layout:fragment="content">
+        <form action="" th:action="@{/manager/role/__${formUrl}__}" th:object="${role}" method="POST"
+            enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-lg-12 mb-3" th:if="${#fields.hasErrors('global')}">
+                    <p class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i> 
+                        <span th:errors="*{global}">Name Error</span>
+                    </p>
+                </div>
+
+                
+                <input type="hidden" th:field="*{id}" th:if="${update!=null}"/> 
+                <div class="col-lg-4">
+                    <div class="card card-purple">
+                        <div class="card-header">
+                            <h3 class="card-title">Information</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <label for="name" class="col-sm-3 col-form-label text-right">Name<i
+                                        class="text-danger">*</i></label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" id="name" placeholder="Name" th:field="*{name}"
+                                        th:classappend="${(#fields.hasErrors('name')?'is-invalid':'') + (submited != null and !#fields.hasErrors('name')?'is-valid':'')}" required/>
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9" th:if="${#fields.hasErrors('name')}">
+                                    <ul class="text-danger">
+                                        <li th:each="err : ${#fields.errors('name')}" th:text="${err}">Name Error</li>
+                                    </ul> 
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="card card-purple">
+                        <div class="card-header">
+                            <h3 class="card-title">Rights</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row"> 
+                                <th:block th:each="rn : ${rightsNames}">
+                                    <div class="col-sm-6 border rounded-sm border-secondary form-group">
+                                        <div class="row">
+                                            <label class="col-sm-3" th:text="${#strings.capitalize(rn)}"></label>:
+                                            <span class="col-sm-8" th:with="actions=${new String[]{'read','add', 'edit', 'delete'}}">
+                                                <div class="d-flex"> 
+                                                    <th:block th:each="action : ${actions}" th:with="right=${rn+'_'+action}" >
+                                                        <div class="icheck-primary mr-auto" th:if="${!right.equals('revenue_edit') and !right.equals('revenue_add') and !right.equals('revenue_delete')}"> 
+                                                            <input th:id="${right}" type="checkbox" name="rights" th:if="${role.roleRightsCollection == null}" th:value="${right}"/>
+                                                            <input th:id="${right}" type="checkbox" name="rights" th:if="${role.roleRightsCollection != null}" th:checked="${role.roleRightsCollection.![rightsDetail.tag].contains(right)}" th:value="${right}"/>
+                                                            <label th:for="${right}" th:title="${#strings.capitalize(rn) + ': ' + action}">
+                                                                <i th:if="${action eq 'read'}" class="fas fa-eye"></i>
+                                                                <i th:if="${action.equals('add')}"class="text-success fas fa-plus"></i> 
+                                                                <i th:if="${action.equals('edit')}" class="text-warning fas fa-pen"></i>
+                                                                <i th:if="${action eq 'delete'}" class="text-danger fas fa-trash"></i>
+                                                            </label>
+                                                        </div>
+                                                    </th:block>
+                                                </div>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                </th:block>
+                                <div class="col-sm-6 border rounded-sm border-secondary form-group">
+                                    <div class="row">
+                                        <label class="col-sm-3">Other</label>:
+                                        <span class="col-sm-8">
+                                            <div class="d-flex"> 
+                                                <div class="icheck-primary mr-auto"> 
+                                                    <input id="order_ship" type="checkbox" name="rights" th:if="${role.roleRightsCollection == null}" value="order_ship"/>
+                                                    <input id="order_ship" type="checkbox" name="rights" th:if="${role.roleRightsCollection != null}" th:checked="${role.roleRightsCollection.![rightsDetail.tag].contains('order_ship')}" value="order_ship"/>
+                                                    <label for="order_ship" title="Change order's shipping status">
+                                                        <i class="text-warning fas fa-shipping-fast"></i>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Submit button -->
+                <div class="col-lg-12 text-right mb-3"> 
+                    <input type="submit" class="btn btn-success" value="Add this role" th:if="${update==null}"></input>
+                    <input type="submit" class="btn btn-success" value="Update this role" th:if="${update!=null}"></input>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <script layout:fragment="script" th:inline="none">
+
+
+        $(document).ready(function () {
+
+        });
+    </script>
+</body>
+
+</html>

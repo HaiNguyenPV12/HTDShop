@@ -5,12 +5,9 @@
  */
 package vn.htdshop.controller.manager;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import javax.ejb.EJB;
-import javax.servlet.ServletContext;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -116,12 +113,7 @@ public class managerIndexController {
                     Cookie cookie = new Cookie("loggedInStaff", staff.getUserName());
                     response.addCookie(cookie);
                 }
-                // And save staff's rightsList for fast right-checking
-                List<String> rightsList = new ArrayList<String>();
-                for (RoleRights roleRights : result.getRole().getRoleRightsCollection()) {
-                    rightsList.add(roleRights.getRightsDetail().getTag());
-                }
-                session.setAttribute("rightsList", rightsList);
+
                 redirect.addFlashAttribute("goodAlert", "Successfully logged in as \"" + result.getFirstName() + "\".");
                 // Then redirect to index
                 return "redirect:/manager/index";
@@ -141,8 +133,6 @@ public class managerIndexController {
     public String getLogout(HttpSession session, HttpServletResponse response) {
         // remove session
         session.removeAttribute("loggedInStaff");
-        // remove rightsList
-        session.removeAttribute("rightsList");
         // remove cookie
         Cookie cookie = new Cookie("loggedInStaff", null);
         cookie.setMaxAge(0);
@@ -161,11 +151,6 @@ public class managerIndexController {
                 Staff staff = staffFacade.find(cookie);
                 if (staff != null) {
                     session.setAttribute("loggedInStaff", staff);
-                    List<String> rightsList = new ArrayList<String>();
-                    for (RoleRights roleRights : staff.getRole().getRoleRightsCollection()) {
-                        rightsList.add(roleRights.getRightsDetail().getTag());
-                    }
-                    session.setAttribute("rightsList", rightsList);
                     return true;
                 }
             }
