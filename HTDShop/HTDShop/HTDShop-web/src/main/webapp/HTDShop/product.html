@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDShop/layout}">
+
+<head>
+    <title>HTD Shop - [[${product.name}]]</title>
+    <th:block layout:fragment="additionalCss">
+        <link rel="stylesheet" th:href="@{/resources/Content/fontawesome-free/css/all.min.css}">
+    </th:block>
+    <style>
+        .product-details-small {
+            max-height: 30em;
+            overflow-y: hidden;
+            overflow-y: auto;
+        }
+
+        .product-details-large {
+            max-height: 30em;
+        }
+    </style>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="product-details ptb-100 pb-90">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 col-lg-7 col-12">
+                        <div class="product-details-img-content">
+                            <div class="product-details-tab mr-35 product-details-tab2">
+                                <div class="product-details-small nav mr-10 product-details-2" role=tablist>
+                                    <a class="active mb-10" th:if="${product.productImageCollection.isEmpty()}"
+                                        href="#pro-details1" data-toggle="tab" role="tab" aria-selected="true">
+                                        <img th:src="@{/images/noimage.png}" alt="">
+                                    </a>
+                                    <a class="mb-10" th:each="img,it : ${product.productImageCollection}"
+                                        th:classappend="${it.index==0?'active':''}"
+                                        th:href="${'#pro-details'+(it.index+1)}" data-toggle="tab" role="tab"
+                                        th:aria-selected="${it.index==0?'true':'false'}">
+                                        <img th:src="@{/images/__${img.imagePath}__}" alt=""
+                                            th:onerror="'this.onerror=null;this.src=&quot;'+@{/images/noimage.png}+'&quot;'">
+                                    </a>
+                                    <!-- <a class="mb-10" href="#pro-details2" data-toggle="tab" role="tab"
+                                        aria-selected="true">
+                                        <img src="assets/img/product-details/s6.jpg" alt="">
+                                    </a>
+                                    <a class="mb-10" href="#pro-details3" data-toggle="tab" role="tab"
+                                        aria-selected="true">
+                                        <img src="assets/img/product-details/s7.jpg" alt="">
+                                    </a>
+                                    <a class="mb-10" href="#pro-details4" data-toggle="tab" role="tab"
+                                        aria-selected="true">
+                                        <img src="assets/img/product-details/s8.jpg" alt="">
+                                    </a> -->
+                                </div>
+                                <div class="product-details-large tab-content">
+                                    <div class="tab-pane active show fade"
+                                        th:if="${product.productImageCollection.isEmpty()}" id="pro-details1"
+                                        role="tabpanel">
+                                        <div class="easyzoom">
+                                            <img th:src="@{/images/noimage.png}" alt="">
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" th:each="img,it : ${product.productImageCollection}"
+                                        th:classappend="${it.index==0?'active show':''}"
+                                        th:id="${'pro-details'+(it.index+1)}" role="tabpanel">
+                                        <div style="display:inline-block;position: relative;">
+                                            <a>
+                                                <img th:src="@{/images/__${img.imagePath}__}" alt=""
+                                                    th:onerror="'this.onerror=null;this.src=&quot;'+@{/images/noimage.png}+'&quot;'"
+                                                    style="width: 100%;">
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="tab-pane fade" id="pro-details2" role="tabpanel">
+                                        <div class="easyzoom easyzoom--overlay  is-ready">
+                                            <a href="assets/img/product-details/bl2.jpg">
+                                                <img src="assets/img/product-details/l6-details-2.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="pro-details3" role="tabpanel">
+                                        <div class="easyzoom easyzoom--overlay  is-ready">
+                                            <a href="assets/img/product-details/bl3.jpg">
+                                                <img src="assets/img/product-details/l7-details-2.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="pro-details4" role="tabpanel">
+                                        <div class="easyzoom easyzoom--overlay  is-ready">
+                                            <a href="assets/img/product-details/bl4.jpg">
+                                                <img src="assets/img/product-details/l8-details-2.jpg" alt="">
+                                            </a>
+                                        </div>
+                                    </div> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-lg-5 col-12">
+                        <div class="product-details-content">
+                            <h3>[[${product.name}]]</h3>
+                            <div class="rating-number">
+                                <span>
+                                    <th:block
+                                        th:text="${product.orderDetailCollection.?[order1.orderStatus==4].size()}">
+                                    </th:block> sold
+                                </span>
+                                <div class="quick-view-number">
+
+                                </div>
+                            </div>
+                            <div class="details-price">
+                                <th:block th:if="${discountPrice!=null}">
+                                    <span th:if="${product.status == 1 || product.status == 2}">
+                                        <i class="text-muted">
+                                            <del
+                                                th:text="${'$'+#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}"></del>
+                                        </i>
+                                        <th:block
+                                            th:text="${'$'+#numbers.formatDecimal(discountPrice , 0, 'POINT', 0, 'COMMA')}">
+                                        </th:block>
+                                    </span>
+                                </th:block>
+                                <th:block th:if="${discountPrice==null}">
+                                    <span th:if="${product.status == 1 || product.status == 2}"
+                                        th:text="${'$'+#numbers.formatDecimal(product.price , 0, 'POINT', 0, 'COMMA')}"></span>
+                                </th:block>
+                                <span th:if="${product.status==3}">Unavailable</span>
+                            </div>
+                            <div class="alert alert-warning"
+                                th:if="${(product.status == 1 || product.status == 2) && (product.promotionCollection.size() > 0 || product.category.promotionCollection.size() > 0)}">
+                                <strong class="">Promotion</strong>
+                                <ul style="list-style: disc !important;">
+                                    <li
+                                        th:each="promo : ${product.promotionCollection.?[promotionDetail.isDisabled==false].?[promotionDetail.isAlways==true or promotionDetail.endDate.after(#dates.createNow())]}">
+                                        <i class="fas fa-gift fa-lg"></i>
+                                        <th:block th:text="${'&quot;' + promo.promotionDetail.name + '&quot;:'}">
+                                        </th:block>
+                                        <th:block th:text="${' ' + product.name + ' '}">
+                                        </th:block>
+                                        <strong
+                                            th:text="${' discount ' + (promo.percentage != null ? (promo.percentage + '%') : ('$' + #numbers.formatDecimal(promo.exactSaleOff , 0, 'POINT', 0, 'COMMA')))}">
+                                        </strong>
+                                        <th:block
+                                            th:text="${promo.maxSaleOff != null ? ('(Max $' + #numbers.formatDecimal(promo.maxSaleOff , 0, 'POINT', 0, 'COMMA') + ')') : ''}">
+                                        </th:block>
+                                        <br>
+                                        <i>
+                                            <th:block
+                                                th:text="${promo.minQuantity != null ? ('Minimum quantity to get discount: ' + promo.minQuantity + '.') : ''}">
+                                            </th:block>
+                                            <th:block
+                                                th:text="${promo.maxQuantity != null ? ('Maximum quantity to have discount: ' + promo.maxQuantity + '.' ) : ''}">
+                                            </th:block>
+                                            <th:block
+                                                th:text="${promo.limitedQuantity != null ? ('Discount quantity left: ' + promo.quantityLeft + '.' ) : ''}">
+                                            </th:block>
+                                            <th:block
+                                                th:text="${promo.promotionDetail.isAlways == true ? 'Discount last permanently.' : ('Discount last from ' + #dates.format(promo.promotionDetail.startDate,'dd/MM/yyyy') + ' to ' + #dates.format(promo.promotionDetail.endDate,'dd/MM/yyyy') )}">
+                                            </th:block>
+                                        </i>
+                                    </li>
+                                    <li
+                                        th:each="promo : ${product.category.promotionCollection.?[promotionDetail.isDisabled==false].?[promotionDetail.isAlways==true or promotionDetail.endDate.after(#dates.createNow())]}">
+                                        <i class="fas fa-gift fa-lg"></i>
+                                        <th:block th:text="${'&quot;' + promo.promotionDetail.name + '&quot;:'}">
+                                        </th:block>
+                                        <th:block th:text="${' All ' + product.category.name + ' '}">
+                                        </th:block>
+                                        <strong
+                                            th:text="${' discount ' + (promo.percentage != null ? (promo.percentage + '%') : ('$' + #numbers.formatDecimal(promo.exactSaleOff , 0, 'POINT', 0, 'COMMA')))}">
+                                        </strong>
+                                        <th:block
+                                            th:text="${promo.maxSaleOff != null ? ('(Max $' + #numbers.formatDecimal(promo.maxSaleOff , 0, 'POINT', 0, 'COMMA') + ')') : ''}">
+                                        </th:block>
+                                        <br>
+                                        <i>
+                                            <th:block
+                                                th:text="${promo.minQuantity != null ? ('Minimum quantity to get discount: ' + promo.minQuantity + '.') : ''}">
+                                            </th:block>
+                                            <th:block
+                                                th:text="${promo.maxQuantity != null ? ('Maximum quantity to have discount: ' + promo.maxQuantity + '.' ) : ''}">
+                                            </th:block>
+                                            <th:block
+                                                th:text="${promo.limitedQuantity != null ? ('Discount quantity left: ' + promo.quantityLeft + '.' ) : ''}">
+                                            </th:block>
+                                            <th:block
+                                                th:text="${promo.promotionDetail.isAlways == true ? 'Discount last permanently.' : ('Discount last from ' + #dates.format(promo.promotionDetail.startDate,'dd/MM/yyyy') + ' to ' + #dates.format(promo.promotionDetail.endDate,'dd/MM/yyyy') )}">
+                                            </th:block>
+                                        </i>
+                                    </li>
+                                </ul>
+
+                            </div>
+                            <p>Quick detail here</p>
+                            <div class="quick-view-select">
+                                <!-- <div class="select-option-part">
+                                    <label>Size*</label>
+                                    <select class="select">
+                                        <option value="">- Please Select -</option>
+                                        <option value="">xl</option>
+                                        <option value="">ml</option>
+                                        <option value="">m</option>
+                                        <option value="">sl</option>
+                                    </select>
+                                </div> -->
+                            </div>
+                            <div class="quickview-plus-minus" th:if="${product.status==1}">
+                                <div class="cart-plus-minus">
+                                    <input type="text" value="1" name="qtybutton" class="cart-plus-minus-box">
+                                </div>
+                                <div class="mt-3">
+                                    &ThickSpace;/ [[${product.stock}]]
+                                </div>
+                                <div class="quickview-btn-cart">
+                                    <a class="btn-hover-black" href="#">add to cart</a>
+                                </div>
+                            </div>
+                            <div class="product-details-cati-tag mt-35">
+                                <ul>
+                                    <li class="categories-title">Categories :</li>
+                                    <li><a href="#">[[${product.category.name}]]</a></li>
+                                </ul>
+                            </div>
+
+                            <!-- <div class="product-share">
+                                <ul>
+                                    <li class="categories-title">Share :</li>
+                                    <li>
+                                        <a href="#">
+                                            <i class="icofont icofont-social-facebook"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            <i class="icofont icofont-social-twitter"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            <i class="icofont icofont-social-pinterest"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            <i class="icofont icofont-social-flikr"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="product-description-review-area pb-90">
+            <div class="container">
+                <div class="product-description-review text-center">
+                    <div class="description-review-title nav" role=tablist>
+                        <a class="active" href="#pro-dec" data-toggle="tab" role="tab" aria-selected="true">
+                            Description
+                        </a>
+                        <a href="#pro-review" data-toggle="tab" role="tab" aria-selected="false">
+                            Comments (<th:block
+                                th:text="${product.productCommentCollection.size() + product.productCommentReplyCollection.size()}">
+                            </th:block>)
+                        </a>
+                    </div>
+                    <div class="description-review-text tab-content">
+                        <div class="tab-pane active show fade" id="pro-dec" role="tabpanel">
+                            <p th:utext="${product.description}"></p>
+                        </div>
+                        <div class="tab-pane fade overflow-auto" id="pro-review" role="tabpanel" style="height: 30em;">
+                            <div class="row" th:each="cm : ${product.productCommentCollection}">
+
+                            </div>
+                            <!-- <a href="#">Be the first to write your review!</a> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- product area start -->
+    </div>
+
+</body>
+
+</html>

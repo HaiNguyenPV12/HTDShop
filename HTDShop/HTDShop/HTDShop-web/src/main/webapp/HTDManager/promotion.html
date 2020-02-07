@@ -77,8 +77,8 @@
                                     <td>
                                         <th:block th:if="${p.isAlways}">Always</th:block>
                                         <th:block th:if="${!p.isAlways}">
-                                            From: <span th:text="${p.startDate}"></span><br />
-                                            To: <span th:text="${p.endDate}"></span><br />
+                                            From: <span th:text="${#dates.format(p.startDate,'dd/MM/yyyy')}"></span><br />
+                                            To: <span th:text="${#dates.format(p.endDate,'dd/MM/yyyy')}"></span><br />
                                         </th:block>
                                     </td>
                                     <td style="text-align: center;">

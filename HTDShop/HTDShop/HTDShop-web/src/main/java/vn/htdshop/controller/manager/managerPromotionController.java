@@ -169,6 +169,9 @@ public class managerPromotionController {
                     p.setProduct(conProduct[i] != null ? productFacade.find(conProduct[i]) : null);
                     p.setPreBuiltTarget(conPreBuilt[i]);
                     p.setLimitedQuantity(conLimit[i]);
+                    if (conLimit[i] != null) {
+                        p.setQuantityLeft(conLimit[i]);
+                    }
                     p.setMinQuantity(conMin[i]);
                     p.setMaxQuantity(conMax[i]);
                     p.setPercentage(conPercentage[i]);
@@ -186,6 +189,9 @@ public class managerPromotionController {
                 p.setProduct(conProduct.length > 0 ? productFacade.find(conProduct[0]) : null);
                 p.setPreBuiltTarget(conPreBuilt.length > 0 ? conPreBuilt[0] : null);
                 p.setLimitedQuantity(conLimit.length > 0 ? conLimit[0] : null);
+                if (conLimit.length > 0) {
+                    p.setQuantityLeft(conLimit[0]);
+                }
                 p.setMinQuantity(conMin.length > 0 ? conMin[0] : null);
                 p.setMaxQuantity(conMax.length > 0 ? conMax[0] : null);
                 p.setPercentage(conPercentage.length > 0 ? conPercentage[0] : null);
@@ -315,6 +321,9 @@ public class managerPromotionController {
                     p.setProduct(conProduct[i] != null ? productFacade.find(conProduct[i]) : null);
                     p.setPreBuiltTarget(conPreBuilt[i]);
                     p.setLimitedQuantity(conLimit[i]);
+                    if (conLimit[i] != null) {
+                        p.setQuantityLeft(conLimit[i]);
+                    }
                     p.setMinQuantity(conMin[i]);
                     p.setMaxQuantity(conMax[i]);
                     p.setPercentage(conPercentage[i]);
@@ -328,6 +337,9 @@ public class managerPromotionController {
                 p.setProduct(conProduct.length > 0 ? productFacade.find(conProduct[0]) : null);
                 p.setPreBuiltTarget(conPreBuilt.length > 0 ? conPreBuilt[0] : null);
                 p.setLimitedQuantity(conLimit.length > 0 ? conLimit[0] : null);
+                if (conLimit.length > 0) {
+                    p.setQuantityLeft(conLimit[0]);
+                }
                 p.setMinQuantity(conMin.length > 0 ? conMin[0] : null);
                 p.setMaxQuantity(conMax.length > 0 ? conMax[0] : null);
                 p.setPercentage(conPercentage.length > 0 ? conPercentage[0] : null);
