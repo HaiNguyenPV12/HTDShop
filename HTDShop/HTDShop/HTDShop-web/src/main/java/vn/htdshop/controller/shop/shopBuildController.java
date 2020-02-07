@@ -30,10 +30,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("build")
 public class shopBuildController {
 
+    boolean isFilteringCPU = false;
+
     @EJB(mappedName = "ProductFacade")
     ProductFacadeLocal productFacade;
 
-    PreBuilt preBuilt;
+    PreBuilt preBuilt; // current build.
 
     BuildValues partValues;
 
@@ -49,10 +51,7 @@ public class shopBuildController {
         if (isBuildStarted(session)) {
             session.setAttribute("isBuilding", true);
             session.setAttribute("currentBuild", new PreBuilt());
-        }
-
-        for (String socket : cpuSockets()) {
-            System.out.println(socket);
+            preBuilt = new PreBuilt();
         }
         // TODO handle build all in session.
         return "HTDShop/build";
@@ -64,14 +63,22 @@ public class shopBuildController {
             partValues = new BuildValues();
             partValues.setPartCategory("cpu");
         }
+        model.addAttribute("cpuSocketList", cpuSockets());
+        model.addAttribute("cpuManufacturerList", cpuManufacturers());
+        model.addAttribute("cpuSeriesList", cpuSeries());
         model.addAttribute("cpuValues", partValues);
-
+        model.addAttribute("filteredCPU", filterCPU());
         return "HTDShop/pickCPU";
     }
 
     @RequestMapping(value = "filterCpu", method = RequestMethod.POST)
     public String requestMethodName(@ModelAttribute("cpuValues") BuildValues cpuValues, BindingResult error,
             RedirectAttributes redirect) {
+        if (!cpuValues.getManufacturer().equals("all")) {
+            isFilteringCPU = true;
+        } else {
+            isFilteringCPU = false;
+        }
         partValues = cpuValues;
         return "redirect:/build/cpu";
     }
@@ -82,11 +89,48 @@ public class shopBuildController {
 
     private List<String> cpuSockets() {
         // TODO check if motherboard is picked.
+        // TODO check filtered manufacturer
         List<String> sockets = new ArrayList<>();
-        sockets = buildProductList.stream().filter(p -> p.getCategory().getId() == 1).map(s -> s.getSocket())
+        sockets = buildProductList.stream().filter(p -> p.getCategory().getId() == 1).map(s -> s.getSocket()).distinct()
                 .collect(Collectors.toList());
         // SELECT DISTINCT
-        sockets = sockets.stream().distinct().collect(Collectors.toList());
+        // sockets = sockets.stream().distinct().collect(Collectors.toList());
         return sockets;
+    }
+
+    private List<String> cpuManufacturers() {
+        // TODO check if motherboard is picked.
+
+        if (preBuilt == null || !isFilteringCPU) {
+            partValues.setManufacturer("all");
+        }
+        List<String> manufacturers = new ArrayList<>();
+        manufacturers = buildProductList.stream().filter(p -> p.getCategory().getId() == 1)
+                .map(s -> s.getManufacturer()).distinct().collect(Collectors.toList());
+        return manufacturers;
+    }
+
+    private List<String> cpuSeries() {
+        List<String> series = new ArrayList<>();
+        series = buildProductList.stream().filter(p -> p.getCategory().getId() == 1).map(s -> s.getSeries()).distinct()
+                .collect(Collectors.toList());
+        return series;
+    }
+
+    private List<Product> filterCPU() {
+        List<Product> cpus = new ArrayList<>();
+        if (partValues == null) {
+            return buildProductList.stream().filter(p -> p.getCategory().getId() == 1).collect(Collectors.toList());
+        }
+        cpus = buildProductList.stream().filter(p -> p.getCategory().getId() == 1).collect(Collectors.toList());
+        // filter by manufacturers
+        if (!partValues.getManufacturer().equals("all")) {
+            cpus = cpus.stream().filter(m -> m.getManufacturer().equals(partValues.getManufacturer()))
+                    .collect(Collectors.toList());
+        }
+        // filter by socket
+        // filter by series
+        // filter by core&threads
+        return cpus;
     }
 }

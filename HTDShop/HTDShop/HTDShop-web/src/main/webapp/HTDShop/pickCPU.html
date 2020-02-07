@@ -7,6 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>CPU Picker</title>
+    <style>
+        .dataTables_filter {
+            float: right !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -20,33 +25,149 @@
                 <input type="hidden" th:field="*{partCategory}" value="cpu" />
                 <div class="row">
                     <div class="col-md-3">
-                        <h4 class="mx-auto">
-                            Manufacturer
-                        </h4>
+                        <div class="pb-2">
+                            <h4 class="mx-auto">
+                                Manufacturer
+                            </h4>
+                            <div>
+                                <input type="radio" name="manufacturer" id="" value="all" th:field=*{manufacturer}> All
+                                <br>
+                                <th:block th:each="m : ${cpuManufacturerList}">
+                                    <input type="radio" name="manufacturer" th:field=*{manufacturer}
+                                        th:value="${m}">[[${m}]]
+                                    <br>
+                                </th:block>
+                            </div>
+                        </div>
                         <div>
-                            <input type="radio" name="manufacturer" id="" value="all" th:field=*{manufacturer}> All
-                            <br>
-                            <input type="radio" name="manufacturer" id="" value="amd" th:field=*{manufacturer}> AMD
-                            <br>
-                            <input type="radio" name="manufacturer" id="" value="intel" th:field=*{manufacturer}> Intel
+                            <h4 class="mx-auto">Price</h4>
+                            <div class="row">
+                                <div class="col-md-3">From:</div>
+                                <div class="col-md-9 pb-1">
+                                    <input type="number" name="priceMin" max="99999" min="0" th:field=*{priceMin}
+                                        value="0" style="width: 100%;">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">To:</div>
+                                <div class="col-md-9">
+                                    <input type="number" name="priceMax" max="99999" min="0" th:field=*{priceMax}
+                                        value="10000" style="width: 100%;">
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <h4 class="mx-auto">
-                            Socket
-                        </h4>
+                        <div class="pb-2">
+                            <h4 class="mx-auto">
+                                Socket
+                            </h4>
+                            <div>
+                                <select name="socket" id="" th:field=*{socket}>
+                                    <option th:each="s : ${cpuSocketList}" th:value="${s}" th:text="${s}"></option>
+                                </select>
+                            </div>
+                        </div>
                         <div>
-                            <select name="socket" id="" th:field=*{socket}>
-                                <option value="">LGA 1155</option>
-                            </select>
+                            <div class="row pb-1">
+                                <div class="col-md-3">Core:</div>
+                                <div class="col-md-9">
+                                    <input type="number" name="core" max="200" min="0" th:field=*{core} value="0"
+                                        style="width: 100%;">
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="row pb-1">
+                                <div class="col-md-3">Thread:</div>
+                                <div class="col-md-9">
+                                    <input type="number" name="thread" max="200" min="0" th:field=*{thread} value="0"
+                                        style="width: 100%;">
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="row pb-1">
+                                <div class="col-md-3">TDP:</div>
+                                <div class="col-md-7">
+                                    <input type="number" name="tdp" max="2000" min="0" th:field=*{tdp} value="0"
+                                        style="width: 100%;">
+                                </div>
+                                <div class="col-md-1">
+                                    (W)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div>
+                            <h4 class="mx-auto">Series</h4>
+                            <th:block th:each="s : ${cpuSeriesList}">
+                                <input type="checkbox" name="series" th:field=*{series} th:value="${s}">[[${s}]]
+                                <br>
+                            </th:block>
                         </div>
                     </div>
                 </div>
             </form>
-            <h1>
+
+            <table id="filteredCPUTable" class="table table-striped" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Core Count</th>
+                        <th>TDP</th>
+                        <th>Status</th>
+                        <th>Price</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="c : ${filteredCPU}">
+                        <td>
+                            <a href="" th:href=@{/} th:text=${c.name}></a>
+                        </td>
+                        <td>
+                            <th:block th:text="${c.core}" />
+                        </td>
+                        <td>
+                            <th:block th:text="${c.tdp}" />
+                        </td>
+                        <td>
+                            <th:block th:text="${c.status}" />
+                        </td>
+                        <td>
+                            <th:block th:text="${c.price}" />
+                        </td>
+                        <td>
+                            <button class="btn btn-primary">test</button>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>Name</th>
+                        <th>Core Count</th>
+                        <th>TDP</th>
+                        <th>Status</th>
+                        <th>Price</th>
+                        <th></th>
+                    </tr>
+                </tfoot>
+            </table>
+            <h2>
                 Searching for
-                <th:block th:text="${cpuValues.manufacturer}" />
-            </h1>
+                <th:block th:text="${cpuValues.manufacturer}" /> <br>
+                Price from
+                <th:block th:text="${cpuValues.priceMin}" /> to
+                <th:block th:text="${cpuValues.priceMax}" /> <br>
+                Socket
+                <th:block th:text="${cpuValues.socket}" /> <br>
+                <th:block th:text="${cpuValues.core}" /> Cores <br>
+                <th:block th:text="${cpuValues.thread}" /> <br>
+                <th:block th:text="${cpuValues.tdp}" />W TDP
+                <th:block th:text="${cpuValues.series}" /> family
+            </h2>
         </div>
     </div>
     <script th:inline="none" layout:fragment="script">
@@ -54,6 +175,13 @@
             $("#pickCPUForm").change(function (e) {
                 $("#pickCPUForm").submit();
             });
+        });
+
+        $('#filteredCPUTable').DataTable({
+            initComplete: function () {
+                $('div.dataTables_length').addClass('form-inline');
+                $('div.dataTables_length').addClass('mt-4');
+            }
         });
     </script>
 </body>
