@@ -1,5 +1,11 @@
 package vn.htdshop.controller.shop;
 
+import java.io.Console;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.servlet.http.HttpSession;
 
@@ -12,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import vn.htdshop.entity.BuildValues;
 import vn.htdshop.entity.PreBuilt;
+import vn.htdshop.entity.Product;
+import vn.htdshop.sb.ProductFacadeLocal;
+
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
@@ -21,9 +30,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("build")
 public class shopBuildController {
 
+    @EJB(name = "ProductFacade")
+    ProductFacadeLocal productFacade;
+
     PreBuilt preBuilt;
 
     BuildValues partValues;
+
+    List<Product> buildProductList = null;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String getBuild(HttpSession session) {
@@ -31,7 +45,10 @@ public class shopBuildController {
             session.setAttribute("isBuilding", true);
             session.setAttribute("currentBuild", new PreBuilt());
         }
-
+        buildProductList = productFacade.findAll();
+        for (String socket : cpuSockets()) {
+            System.out.println(socket);
+        }
         // TODO handle build all in session.
         return "HTDShop/build";
     }
@@ -43,6 +60,7 @@ public class shopBuildController {
             partValues.setPartCategory("cpu");
         }
         model.addAttribute("cpuValues", partValues);
+
         return "HTDShop/pickCPU";
     }
 
@@ -57,4 +75,13 @@ public class shopBuildController {
         return session.getAttribute("isBuilding") == null;
     }
 
+    private List<String> cpuSockets() {
+        // TODO check if motherboard is picked.
+        List<String> sockets = new ArrayList<>();
+        sockets = buildProductList.stream().filter(p -> p.getCategory().getId() == 1).map(s -> s.getSocket())
+                .collect(Collectors.toList());
+        // SELECT DISTINCT
+        sockets = sockets.stream().distinct().collect(Collectors.toList());
+        return sockets;
+    }
 }
