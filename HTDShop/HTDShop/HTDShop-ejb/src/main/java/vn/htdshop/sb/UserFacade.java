@@ -12,7 +12,7 @@ import vn.htdshop.entity.User;
 
 /**
  *
- * @author Hai
+ * @author Thien
  */
 @Stateless
 public class UserFacade extends AbstractFacade<User> implements UserFacadeLocal {

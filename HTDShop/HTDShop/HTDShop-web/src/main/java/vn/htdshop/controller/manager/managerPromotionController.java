@@ -209,6 +209,11 @@ public class managerPromotionController {
         // If there is no error
         if (!error.hasErrors()) {
             // Insert into database
+            promotion.setIsDisabled(false);
+            if (promotion.getIsAlways()) {
+                promotion.setStartDate(null);
+                promotion.setEndDate(null);
+            }
             promotionDetailFacade.create(promotion);
 
             // Insert image
@@ -247,7 +252,11 @@ public class managerPromotionController {
         }
         // Prepare model
         PromotionDetail p = promotionDetailFacade.find(id);
+
         // Check if old input exists
+        if (model.asMap().containsKey("conditions")) {
+            p.setPromotionCollection((Collection<Promotion>) model.asMap().get("conditions"));
+        }
         model.addAttribute("promotion", p);
 
         // Prepare form url for form submit
@@ -273,23 +282,91 @@ public class managerPromotionController {
     // ==== PROMOTION EDIT - PROCESS ==== \\
     @RequestMapping(value = "doEdit", method = RequestMethod.POST)
     public String doEdit(@Valid @ModelAttribute("promotion") PromotionDetail promotion, BindingResult error,
-            HttpSession session, RedirectAttributes redirect) {
+            HttpSession session, @RequestParam(value = "uploadimg", required = false) MultipartFile uploadimg,
+            @RequestParam(value = "conCount", required = false) Integer[] conCount,
+            @RequestParam(value = "conCategory", required = false) Integer[] conCategory,
+            @RequestParam(value = "conProduct", required = false) Integer[] conProduct,
+            @RequestParam(value = "conPreBuilt", required = false) Integer[] conPreBuilt,
+            @RequestParam(value = "conLimit", required = false) Integer[] conLimit,
+            @RequestParam(value = "conMin", required = false) Integer[] conMin,
+            @RequestParam(value = "conMax", required = false) Integer[] conMax,
+            @RequestParam(value = "conPercentage", required = false) Double[] conPercentage,
+            @RequestParam(value = "conMaxSale", required = false) Double[] conMaxSale,
+            @RequestParam(value = "conExact", required = false) Double[] conExact, RedirectAttributes redirect) {
         if (!checkLoginWithRole("promotion_edit")) {
             return redirectPromotionHome;
         }
+        // Check image extension if image exists
+        if (!uploadimg.isEmpty() && uploadimg.getSize() > 0) {
+            String contentType = uploadimg.getContentType().substring(0, uploadimg.getContentType().lastIndexOf("/"));
+            if (!contentType.equals("image")) {
+                error.reject("common", "Please choose valid extension.");
+            }
+        }
 
+        // Create promotion collection (for keeping input after redirect)
+        Collection<Promotion> conditions = new ArrayList<>();
+        if (conCount != null && conCount.length > 0) {
+
+            if (conCount.length > 1) {
+                for (int i = 0; i < conCount.length; i++) {
+                    Promotion p = new Promotion();
+                    p.setCategory(conCategory[i] != null ? categoryFacade.find(conCategory[i]) : null);
+                    p.setProduct(conProduct[i] != null ? productFacade.find(conProduct[i]) : null);
+                    p.setPreBuiltTarget(conPreBuilt[i]);
+                    p.setLimitedQuantity(conLimit[i]);
+                    p.setMinQuantity(conMin[i]);
+                    p.setMaxQuantity(conMax[i]);
+                    p.setPercentage(conPercentage[i]);
+                    p.setMaxSaleOff(conMaxSale[i]);
+                    p.setExactSaleOff(conExact[i]);
+                    conditions.add(p);
+                }
+            } else {
+                Promotion p = new Promotion();
+                p.setCategory(conCategory.length > 0 ? categoryFacade.find(conCategory[0]) : null);
+                p.setProduct(conProduct.length > 0 ? productFacade.find(conProduct[0]) : null);
+                p.setPreBuiltTarget(conPreBuilt.length > 0 ? conPreBuilt[0] : null);
+                p.setLimitedQuantity(conLimit.length > 0 ? conLimit[0] : null);
+                p.setMinQuantity(conMin.length > 0 ? conMin[0] : null);
+                p.setMaxQuantity(conMax.length > 0 ? conMax[0] : null);
+                p.setPercentage(conPercentage.length > 0 ? conPercentage[0] : null);
+                p.setMaxSaleOff(conMaxSale.length > 0 ? conMaxSale[0] : null);
+                p.setExactSaleOff(conExact.length > 0 ? conExact[0] : null);
+                conditions.add(p);
+            }
+
+        } else {
+            error.reject("common", "Please add condition(s).");
+        }
         // Check name exists
         // If there is no error
-        // if (!error.hasErrors()) {
-        // // Update in database
-        // promotionDetailFacade.edit(promotion);
-        // // Remove promotions
-        // // Insert promotions
-        // // Pass alert attribute to notify successful process
-        // redirect.addFlashAttribute("goodAlert", "Successfully updated \"" +
-        // promotion.getName() + "\"!");
-        // return redirectPromotionHome;
-        // }
+        if (!error.hasErrors()) {
+            // Update in database
+            promotionDetailFacade.edit(promotion);
+
+            // Replace image if exists
+            if (!uploadimg.isEmpty() && uploadimg.getSize() > 0) {
+                uploadImage(uploadimg, promotion, true);
+            }
+
+            // Remove promotions
+            for (Promotion p : promotionDetailFacade.find(promotion.getId()).getPromotionCollection()) {
+                promotionFacade.remove(p);
+            }
+            // Insert promotions
+            for (Promotion p : conditions) {
+                p.setPromotionDetail(promotion);
+                promotionFacade.create(p);
+            }
+
+            // Pass alert attribute to notify successful process
+            redirect.addFlashAttribute("goodAlert", "Successfully updated \"" + promotion.getName() + "\"!");
+            return redirectPromotionHome;
+        }
+        if (!uploadimg.isEmpty() && uploadimg.getSize() > 0) {
+            error.reject("common", "Please choose image again.");
+        }
         // Show common error message
         error.reject("common", "Error updating this promotion.");
         // Pass binding result to redirect page (to show errors)
@@ -313,12 +390,17 @@ public class managerPromotionController {
         PromotionDetail promotion = promotionDetailFacade.find(id);
         // If object is not null
         if (promotion != null) {
-            // Then check if this exists in staff
-
-            // If not, then start to delete
             // First, delete promotion
             for (Promotion p : promotion.getPromotionCollection()) {
                 promotionFacade.remove(p);
+            }
+
+            // Then delete real image
+            File deleteFile = new File(System.getProperty("catalina.home") + "/img/" + promotion.getImage());
+            if (deleteFile.delete()) {
+                System.out.println("Deleted image: " + deleteFile.getPath());
+            } else {
+                System.out.println("Cannot delete image: " + deleteFile.getPath());
             }
 
             // Finally, delete promotion detail
