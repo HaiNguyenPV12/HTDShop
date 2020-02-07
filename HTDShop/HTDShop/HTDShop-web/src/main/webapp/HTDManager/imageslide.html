@@ -17,7 +17,7 @@
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDManager/layout}">
 
 <head>
-    <title>HTD Manager - Slide</title>
+    <title>HTD Manager - Image Slide</title>
     <!-- Hide default datatable's filter -->
     <style>
         .dataTables_filter {
@@ -62,43 +62,36 @@
                                 <th>Action</th>
                             </thead>
                             <tbody>
-                                <!--
-                                + th:if will render it's tag if conditions is reached
-                                Like below, the 
-                                <tr>
-                                    <td colspan="9">No products</td>
-                                </tr>
-                                will be rendered when attribute "products" is null or empty
-                            -->
                                 <tr th:if="${imageslides eq null or imageslides.empty}">
                                     <td colspan="6">No image slides</td>
                                 </tr>
-                                <!--
-                                + To get data from controller through model, use:
-                                    th:each="child_item_name : ${attribute_from_controller's_name}"
 
-                                + After that, to show data in tags (like td/span/p/...), add following attribute in that tag
-                                    th:text="${child_item_name.child_item's_attribute}"
-                                 All of that tag content will be repace with content from th:text
-
-                                + th:classappend will add class if conditions is reached (using shorthand condition)
-                                We can use multiple condition: 
-                                    th:classappend="${(condition_1)+(condition_2)}""
-
-                                + Thymeleaf may not use intellisense or autocomplete, so we just follow object's class attribute.
-                                For example, to check if the RightDetail's Tag from RoleRights's list from Role of the loggedInStaff
-                                in session contains the 'product_read' or not:
-                                    th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('product_read')}"
-                                For more example, check layout.html in HTDManager section
-
-                            -->
-                                <tr th:each="i : ${imageslides}" th:classappend="${i.status==false?'bg-gray':''}">
-                                    <td>
-                                        <img th:src="@{/images/__${i.image}__}" />
+                                <tr th:each="i : ${imageslides}" th:classappend="${i.status==false?'bg-danger':''}">
+                                    <td style="text-align: center;">
+                                        <a th:onclick='showModal([[${i.title}]],
+                                        &apos;&lt;img src=[[@{/images/__${i.image}__}]] style=&quot;;width: 100%;&quot; /&gt;&apos;
+                                        ,null,false,false)'>
+                                            <img th:src="@{/images/__${i.image}__}"
+                                                style="width: 100%;max-width:150px;cursor:pointer;" />
+                                        </a>
                                     </td>
                                     <td>
-                                        <i class="text-muted" th:if="${i.order == null}">Automatically</i>
-                                        <th:block th:text="${i.order}"></th:block>
+                                        <!-- <i class="text-muted" th:if="${i.order == null and i.status==false}">Automatically</i> -->
+                                        <select name="order" th:id="${i.id}" th:if="${i.status==true}">
+                                            <option selected="selected" disabled>-- Order --</option>
+                                            <option value="0" th:selected="${i.order==null}">Automatically
+                                            </option>
+                                            <option value="1" th:selected="${i.order==1}">1</option>
+                                            <option th:value="${o.order}" th:text="${o.order}"
+                                                th:each="o:${imageslides.?[order!=null and order>=2]}"
+                                                th:selected="${i.order==o.order}">1</option>
+                                            <th:block th:if="${!imageslides.?[order!=null].empty}"
+                                                th:with="lastImageSlide=${imageslides.?[order!=null][#lists.size(imageslides.?[order!=null]) - 1]},firstImageSlide=${imageslides.?[order!=null][0]}">
+                                                <option
+                                                    th:if="${!#lists.isEmpty(imageslides.?[order!=null]) and i.order==null}"
+                                                    th:value="${lastImageSlide.order}+1">Last</option>
+                                            </th:block>
+                                        </select>
                                     </td>
                                     <td th:text="${i.title}"></td>
                                     <td th:text="${i.description}"></td>
@@ -113,19 +106,21 @@
                                             title="Edit">
                                             <i class="fas fa-pencil-alt"></i>
                                         </a>
-                                        <a class="btn btn-danger btn-sm" href="#" data-toggle="tooltip" title="De-activate"
-                                            th:if="${i.status==true}">
+                                        <a class="btn btn-danger btn-sm" href="#" data-toggle="tooltip"
+                                            title="De-activate" th:if="${i.status==true}"
+                                            th:href="@{/manager/imageslide/doDeactivate(id=${i.id})}">
                                             <i class="fas fa-stop-circle"></i>
                                         </a>
                                         <a class="btn btn-danger btn-sm" href="#" data-toggle="tooltip" title="Activate"
-                                            th:if="${i.status==false}">
+                                            th:if="${i.status==false}"
+                                            th:href="@{/manager/imageslide/doActivate(id=${i.id})}">
                                             <i class="fas fa-play-circle"></i>
                                         </a>
                                         <a class="btn btn-danger btn-sm" href="#" data-toggle="tooltip" title="Delete"
-                                            th:onclick='confirmDelete([[${i.title}]],[[@{/manager/product/doDelete(id=${i.id})}]])'>
+                                            th:onclick='confirmDelete([[${i.title}]],[[@{/manager/imageslide/doDelete(id=${i.id})}]])'>
                                             <i class="fas fa-trash"></i>
                                         </a>
-                                       
+
                                     </td>
                                 </tr>
 
@@ -150,7 +145,6 @@
 
     <!--In case using custom script at pages using layout, add th:inline="none" like below-->
     <script layout:fragment="script" th:inline="none">
-
         function confirmDelete(title, url) {
             showModal('Confirm deletion',
                 'Are you sure to delete "' + title + '" ?',
@@ -158,10 +152,18 @@
                 true,
                 true);
         }
+
+        $("select[name='order']").each(function (i) {
+            var curId = $(this).attr("id");
+            $(this).on("change", function () {
+                window.location.href = "imageslide/doReorder?id=" + curId + "&order=" + $(this).val();
+            });
+        });
+
         // Add custom filter for datatable
         $('#tblImageSlide tfoot th').each(function () {
             var title = $(this).text();
-            if (title == "Action" || title == "Image" || title == "Link" || title == "Description") {
+            if (title == "Action" || title == "Image" || title == "Link" || title == "Description" || title == "Order") {
                 // Collum that not using filter
                 $(this).html('');
             } else if (title == "Status") {

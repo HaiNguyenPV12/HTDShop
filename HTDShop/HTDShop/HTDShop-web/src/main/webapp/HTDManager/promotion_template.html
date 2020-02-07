@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDManager/layout}">
+
+<head>
+    <title>HTD Manager - Promotion</title>
+    <th:block layout:fragment="additionalCss">
+        <link th:href="@{/manager_resources/plugins/icheck-bootstrap/icheck-bootstrap.min.css}" rel="stylesheet">
+        <link th:href="@{/manager_resources/plugins/daterangepicker/daterangepicker.css}" rel="stylesheet">
+    </th:block>
+    <th:block layout:fragment="css">
+        <style>
+            /* HIDE RADIO */
+            .uploadimg>[type=radio] {
+                position: absolute;
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+            /* IMAGE STYLES */
+            .uploadimg>img,
+            i {
+                cursor: pointer;
+                max-height: 300px;
+                width: auto;
+            }
+
+            /* CHECKED STYLES */
+            .uploadimg>[type=radio]:checked+img {
+                outline: 2px solid #f00;
+            }
+
+            .uploadimg>img {}
+
+            .hoverable:hover {
+                background-color: lightgray;
+            }
+        </style>
+    </th:block>
+</head>
+
+<body>
+
+    <span layout:fragment="title">
+        <a th:href="@{/manager/promotion}">
+            <i class="fas fa-gifts" style="font-size:20px"></i> Promotion
+        </a>
+        >
+        <th:block th:if="${update==null}">Add new Promotion</th:block>
+        <th:block th:if="${update!=null}">Edit Promotion: "<th:block th:text="${promotion.name}"></th:block>"</th:block>
+    </span>
+
+    <div layout:fragment="breadcrumb">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a th:href="@{/manager}">Home</a></li>
+            <li class="breadcrumb-item active"><a th:href="@{/manager/promotion}">Promotion</a></li>
+        </ol>
+    </div>
+
+    <div layout:fragment="content">
+        <form action="" th:action="@{/manager/promotion/__${formUrl}__}" th:object="${promotion}" method="POST"
+            enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-lg-12 mb-3" th:if="${#fields.hasErrors('global')}">
+                    <p class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i> 
+                        <span th:errors="*{global}">Name Error</span>
+                    </p>
+                </div>
+
+                
+                <input type="hidden" th:field="*{id}" th:if="${update!=null}"/> 
+                <input type="hidden" th:field="*{isDisabled}" th:if="${update==null}" value="false"/> 
+                <input id="startDate" type="hidden" th:field="*{startDate}" /> 
+                <input id="endDate" type="hidden" th:field="*{endDate}" /> 
+
+                <div class="col-lg-5">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- Information -->
+                            <div class="card card-purple">
+                                <div class="card-header">
+                                    <h3 class="card-title">Information</h3>
+                                </div>
+                                <div class="card-body">
+                                    <!-- Name -->
+                                    <div class="form-group row">
+                                        <label for="name" class="col-sm-3 col-form-label text-right">Name<i
+                                                class="text-danger">*</i></label>
+                                        <div class="col-sm-9">
+                                            <input class="form-control" id="name" placeholder="Name" th:field="*{name}"
+                                                th:classappend="${(#fields.hasErrors('name')?'is-invalid':'') + (submited != null and !#fields.hasErrors('name')?'is-valid':'')}" required/>
+                                        </div>
+                                        <div class="col-sm-3"></div>
+                                        <div class="col-sm-9" th:if="${#fields.hasErrors('name')}">
+                                            <ul class="text-danger">
+                                                <li th:each="err : ${#fields.errors('name')}" th:text="${err}">Name Error</li>
+                                            </ul> 
+                                        </div>
+                                    </div>
+                                    <!-- Name - End -->
+
+                                    <!-- Detail -->
+                                    <div class="form-group row">
+                                        <label for="detail" class="col-sm-3 col-form-label text-right">Detail<i
+                                                class="text-danger">*</i></label>
+                                        <div class="col-sm-9">
+                                            <textarea class="form-control" id="detail" placeholder="Detail" th:field="*{detail}"
+                                                th:classappend="${(#fields.hasErrors('detail')?'is-invalid':'') + (submited != null and !#fields.hasErrors('detail')?'is-valid':'')}" required></textarea>
+                                        </div>
+                                        <div class="col-sm-3"></div>
+                                        <div class="col-sm-9" th:if="${#fields.hasErrors('detail')}">
+                                            <ul class="text-danger">
+                                                <li th:each="err : ${#fields.errors('detail')}" th:text="${err}">Name Error</li>
+                                            </ul> 
+                                        </div>
+                                    </div>
+                                    <!-- Detail - End -->
+
+                                    <!-- Target -->
+                                    <div class="form-group row">
+                                        <label for="target" class="col-sm-3 col-form-label text-right">Target<i
+                                                class="text-danger">*</i></label>
+                                        <div class="col-sm-9">
+                                            <div class="d-flex"> 
+                                                <div class="icheck-primary mr-auto"> 
+                                                    <input id="target0" type="radio" th:field="*{target}" value="0"/>
+                                                    <label for="target0">
+                                                        All
+                                                    </label>
+                                                </div>
+                                                <div class="icheck-primary mr-auto"> 
+                                                    <input id="target1" type="radio" th:field="*{target}" value="1"/>
+                                                    <label for="target1">
+                                                        Member only
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3"></div>
+                                        <div class="col-sm-9" th:if="${#fields.hasErrors('target')}">
+                                            <ul class="text-danger">
+                                                <li th:each="err : ${#fields.errors('target')}" th:text="${err}">Name Error</li>
+                                            </ul> 
+                                        </div>
+                                    </div>
+                                    <!-- Detail - End -->
+
+                                    <!-- Date -->
+                                    <div class="form-group row">
+                                        <label for="date" class="col-sm-3 col-form-label text-right">Date<i
+                                                class="text-danger">*</i></label>
+                                        <div class="col-sm-9">
+                                            <div class="d-flex">
+                                                <div class="icheck-primary mr-auto"> 
+                                                    <input id="alway" type="radio" th:field="*{isAlways}" value="true"/>
+                                                    <label for="alway">
+                                                        Alway
+                                                    </label>
+                                                </div>
+                                                <div class="icheck-primary mr-auto"> 
+                                                    <input id="limit" type="radio" th:field="*{isAlways}" value="false"/>
+                                                    <label for="limit">
+                                                        Limit
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3"></div>
+                                        <div id="dateGroup" class="col-sm-9" th:style="${promotion.isAlways==true?'display:none':'display:flex'}">
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">
+                                                        <i class="far fa-calendar-alt"></i>
+                                                    </span>
+                                                </div>
+                                                <input type="text" class="form-control float-right" id="date" name="date" >
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3"></div>
+                                        <div class="col-sm-9" th:if="${#fields.hasErrors('isAlways')}">
+                                            <ul class="text-danger">
+                                                <li th:each="err : ${#fields.errors('isAlways')}" th:text="${err}">Name Error</li>
+                                            </ul> 
+                                        </div>
+                                    </div>
+                                    <!-- Date - End -->
+                                </div>
+                            </div>
+                            <!-- Information - End -->
+                        </div>
+                        <!-- Image -->
+                        <div class="col-lg-12">
+                            <div class="card card-purple">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        Image
+                                        <div class="file btn btn-info" style="position:relative;overflow:hidden;">
+                                            <i class="fas fa-file-upload"></i> 
+                                            <input type="file" style="position: absolute;font-size:50px;opacity: 0;right: 0;top: 0;cursor: pointer;" id="btnUploadImage" name="uploadimg" accept="image/*" th:required = "${update==null}"/>
+                                        </div>
+                                        
+                                    </h3>
+                                </div>
+                                <div class="card-body row" id="uploadimg">
+                                    <!-- Upload image will be shown here -->
+                                    <th:block th:if="${update!=null}">
+                                        <label class="col-sm-12 text-center uploadimg">
+                                            <input type="radio" name="uploadradio"> 
+                                            <img th:src="@{/images/__${promotion.image}__}"/>
+                                        </label>
+                                    </th:block>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Image - End -->
+                    </div>
+                    <!-- div class="row" - End -->
+                </div>
+                <!-- div class="col-lg-4" - End -->
+
+                <!-- Condition -->
+                <div class="col-lg-7">
+                    <div class="card card-purple">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                Conditions
+                                <a class="file btn btn-info" style="cursor: pointer;" id="btnAddCondition">
+                                    <i class="fas fa-plus"></i> 
+                                </a>
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row" id="conditions"> 
+                                <div class="col-sm-12 border rounded-sm border-secondary row hoverable" th:if="${!promotion.promotionCollection.isEmpty()}" th:each="p : ${promotion.promotionCollection}">
+                                    <div class="col-sm-10">
+                                        <input type="hidden" name="conCount" value="1"/>
+                                        <input type="hidden" name="conCategory" th:value="${p.category!=null?p.category.id:''}"/>
+                                        <input type="hidden" name="conProduct" th:value="${p.product!=null?p.product.id:''}"/>
+                                        <input type="hidden" name="conPreBuilt" th:value="${p.preBuiltTarget!=null?p.preBuiltTarget:''}"/>
+                                        <input type="hidden" name="conLimit" th:value="${p.limitedQuantity}"/>
+                                        <input type="hidden" name="conMin" th:value="${p.minQuantity}"/>
+                                        <input type="hidden" name="conMax" th:value="${p.maxQuantity}"/>
+                                        <input type="hidden" name="conPercentage" th:value="${p.percentage}"/>
+                                        <input type="hidden" name="conMaxSale" th:value="${p.maxSaleOff}"/>
+                                        <input type="hidden" name="conExact" th:value="${p.exactSaleOff}"/>
+                                        <strong>Applied to:</strong>
+                                        [[${p.category!=null?p.category.name:''}]]
+                                        [[${p.product!=null?p.product.name:''}]]
+                                        <th:block th:if="${p.preBuiltTarget!=null}">[[${p.preBuiltTarget==0?"All pre-built PC":"HTD&apos;s exclusive PC"}]]</th:block> 
+                                        <strong>Discount:</strong>
+                                        [[${p.percentage!=null?p.percentage+'%':''}]]
+                                        [[${p.exactSaleOff!=null?p.exactSaleOff+' VND':''}]]
+                                        [[${p.maxSaleOff!=null?'(Max: '+p.maxSaleOff+' VND)':''}]]
+                                        [[${p.limitedQuantity!=null?'|Limit: '+p.limitedQuantity+'|':''}]]
+                                        [[${p.minQuantity!=null?'|Min: '+p.minQuantity+'|':''}]]
+                                        [[${p.maxQuantity!=null?'|Max: '+p.maxQuantity+'|':''}]]
+                                    </div>
+                                    <div class="col-sm-2 text-right">
+                                        <a type="button" class="btn btn-warning btn-sm" onclick="showCondition(true, this)"> <i class="fas fa-pencil-alt" ></i></a>
+                                        <a type="button" class="btn btn-danger btn-sm" onclick="$(this).parent().parent().remove();"> <i class="fas fa-trash"></i></a>
+                                    </div> 
+                                </div>
+                                <div class="col-sm-12 border rounded-sm border-secondary row hoverable">
+                                    <div class="col-sm-10">
+                                        <input type='hidden' name='conCount' value='1'/>
+                                        <input type="hidden" name="conCategory" value="2"/>
+                                        <input type="hidden" name="conProduct" value=""/>
+                                        <input type="hidden" name="conPreBuilt" value=""/>
+                                        <input type="hidden" name="conLimit" value="50"/>
+                                        <input type="hidden" name="conMin" value=""/>
+                                        <input type="hidden" name="conMax" value=""/>
+                                        <input type="hidden" name="conPercentage" value="10"/>
+                                        <input type="hidden" name="conMaxSale" value="1000000"/>
+                                        <input type="hidden" name="conExact" value=""/>
+                                        <strong>Applied to:</strong> Motherboard <strong>Discount:</strong>10% (Max:1000000) |Limit:50|
+                                    </div>
+                                    <div class="col-sm-2 text-right">
+                                        <a type="button" class="btn btn-warning btn-sm" onclick="showCondition(true, this)"> <i class="fas fa-pencil-alt" ></i></a>
+                                        <a type="button" class="btn btn-danger btn-sm" onclick="$(this).parent().parent().remove();"> <i class="fas fa-trash"></i></a>
+                                    </div> 
+                                </div> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Condition - End -->
+
+                <!-- Submit button -->
+                <div class="col-lg-12 text-right mb-3"> 
+                    <input type="submit" class="btn btn-success" value="Add this promotion" th:if="${update==null}"></input>
+                    <input type="submit" class="btn btn-success" value="Update this promotion" th:if="${update!=null}"></input>
+                </div>
+            </div>
+        </form>
+
+        <div class="modal fade" id="conModal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Condition</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="modalBody">
+                        <!-- Condition target -->
+                        <div class="form-group row">
+                            <label for="conTarget" class="col-sm-3 col-form-label text-right">Condition Target<i
+                                    class="text-danger">*</i></label>
+                            <div class="col-sm-9">
+                                <div class="d-flex">
+                                    <div class="icheck-primary mr-auto"> 
+                                        <input id="conCategoryForm" name="conTargetForm" type="radio" value="category" checked/>
+                                        <label for="conCategoryForm">
+                                            Category
+                                        </label>
+                                    </div>
+                                    <div class="icheck-primary mr-auto"> 
+                                        <input id="conProductForm" type="radio" name="conTargetForm" value="product"/>
+                                        <label for="conProductForm">
+                                            Product
+                                        </label>
+                                    </div>
+                                    <div class="icheck-primary mr-auto"> 
+                                        <input id="conPreBuiltForm" type="radio" name="conTargetForm" value="prebuilt"/>
+                                        <label for="conPreBuiltForm">
+                                            Pre-built
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3"></div>
+                            <div class="col-sm-9">
+                                <select id="conCategoryVal" class="form-control">
+                                    <option th:each="cate : ${categoryList}" th:value="${cate.id}" th:text="${cate.name}"></option>
+                                </select>
+                                <select id="conProductVal" class="form-control" style="display:none">
+                                    <option th:each="p : ${productList}" th:value="${p.id}" th:text="${p.name}"></option>
+                                </select>
+                                <select id="conPreBuiltVal" class="form-control" style="display:none">
+                                    <option value="0">All pre-built PC</option>
+                                    <option value="1">HTD's exclusive PC</option>
+                                </select>
+                            </div> 
+                        </div>
+                        <!-- Condition target - End -->
+
+                        <!-- Discount type -->
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Discount Type<i
+                                    class="text-danger">*</i></label>
+                            <div class="col-sm-3">
+                                <div class="">
+                                    <div class="icheck-primary mr-auto"> 
+                                        <input id="conPercentageForm" name="conDiscountTypeForm" type="radio" value="percentage" checked/>
+                                        <label for="conPercentageForm">
+                                            Percentage
+                                        </label>
+                                    </div>
+                                    <div class="icheck-primary mr-auto"> 
+                                        <input id="conExactForm" type="radio" name="conDiscountTypeForm" value="exact"/>
+                                        <label for="conExactForm">
+                                            Exact amount
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="row">
+                                    <div class="col-sm-12" id="conPercentageContainer">
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" id="conPercentageVal" min="0" max="100">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">
+                                                    %
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12" id="conMaxSaleContainer">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    Max discount
+                                                </span>
+                                            </div>
+                                            <input type="number" class="form-control" id="conMaxSaleVal" min="0">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">
+                                                    VND
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12" id="conExactContainer" style="display:none">
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" id="conExactVal" min="0">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">
+                                                    VND
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3"></div> 
+                            <div class="col-sm-9 text-danger" id="conDiscountTypeError"></div> 
+                        </div>
+                        <!-- Discount type - End -->
+
+                        <!-- Quantity -->
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Condition quantity</label>
+                            <div class="col-sm-4">
+                                <div class="icheck-primary mr-auto"> 
+                                    <input id="conLimitForm" type="checkbox" />
+                                    <label for="conLimitForm">
+                                        Limited quantity
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="number" class="form-control" id="conLimitVal" min="0" disabled>
+                            </div>
+                            <div class="col-sm-3"></div> 
+                            <div class="col-sm-9 text-danger" id="conLimitError"></div>
+
+                            <div class="col-sm-3"></div>
+                            <div class="col-sm-4">
+                                <div class="icheck-primary mr-auto"> 
+                                    <input id="conMinForm" type="checkbox" />
+                                    <label for="conMinForm">
+                                        Min quantity to get discount
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="number" class="form-control" id="conMinVal" min="0" disabled>
+                            </div>
+                            <div class="col-sm-3"></div> 
+                            <div class="col-sm-9 text-danger" id="conMinError"></div>
+
+                            <div class="col-sm-3"></div>
+                            <div class="col-sm-4">
+                                <div class="icheck-primary mr-auto"> 
+                                    <input id="conMaxForm" type="checkbox"/>
+                                    <label for="conMaxForm">
+                                        Max quantity to get discount
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="number" class="form-control" id="conMaxVal" min="0" disabled>
+                            </div>
+                            <div class="col-sm-3"></div> 
+                            <div class="col-sm-9 text-danger" id="conMaxError"></div>
+                            
+                        </div>
+                        <!-- Quantity - End -->
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button class="btn btn-success" id="conModalConfirm">Done</button>
+                    </div>
+                </div>
+            <!-- /.modal-content -->
+            </div> 
+            <!-- /.modal-dialog -->
+        </div>
+    </div>
+
+    <th:block layout:fragment="additionalScript">
+        <script th:src="@{/manager_resources/plugins/moment/moment.min.js}"></script> 
+        <script th:src="@{/manager_resources/plugins/daterangepicker/daterangepicker.js}"></script> 
+    </th:block>
+    <script layout:fragment="script" th:inline="none">
+        // Condition proccess
+        $("#btnAddCondition").on("click", function () {
+            showCondition(false, null);
+        });
+
+        function showCondition(update, button) {
+            $("#conModalConfirm").off("click");
+            $("#conCategoryForm").click();
+            $("#conCategoryVal").val($("#conCategoryVal option:first").val());
+            $("#conProductVal").val($("#conProductVal option:first").val());
+            $("#conTargetVal").val($("#conTargetVal option:first").val());
+            $("#conPercentageForm").click();
+            $("#conPercentageVal").val("");
+            $("#conMaxSaleVal").val("");
+            $("#conExactVal").val("");
+            if ($("#conMaxForm").is(":checked")) {
+                $("#conMaxForm").trigger("click");
+            }
+            $("#conMaxVal").val("");
+            $("#conMaxVal").attr("disabled", "");
+            if ($("#conMinForm").is(":checked")) {
+                $("#conMinForm").trigger("click");
+            }
+            $("#conMinVal").val("");
+            $("#conMinVal").attr("disabled", "");
+            if ($("#conLimitForm").is(":checked")) {
+                $("#conLimitForm").trigger("click");
+            }
+            $("#conLimitVal").val("");
+            $("#conLimitVal").attr("disabled", "");
+
+            if (update == false) {
+                $("#conModalConfirm").on("click", function () { saveCondition(false, null) });
+                $('#conModal').modal('show');
+            } else {
+                var curCon = $(button).parent().parent();
+                if (curCon.find("input[name='conCategory']").val() != "") {
+                    $("#conCategoryForm").click();
+                    $("#conCategoryVal").val(curCon.find("input[name='conCategory']").val());
+                }
+                if (curCon.find("input[name='conProduct']").val() != "") {
+                    $("#conProductForm").click();
+                    $("#conProductVal").val(curCon.find("input[name='conProduct']").val());
+                }
+                if (curCon.find("input[name='conPreBuilt']").val() != "") {
+                    $("#conPreBuiltForm").click();
+                    $("#conPreBuiltVal").val(curCon.find("input[name='conPreBuilt']").val());
+                }
+                if (curCon.find("input[name='conPercentage']").val() != "") {
+                    $("#conPercentageForm").click();
+                    $("#conPercentageVal").val(curCon.find("input[name='conPercentage']").val());
+                    if (curCon.find("input[name='conMaxSale']").val() != "") {
+                        $("#conMaxSaleVal").val(curCon.find("input[name='conMaxSale']").val());
+                    }
+                }
+                if (curCon.find("input[name='conExact']").val() != "") {
+                    $("#conExactForm").click();
+                    $("#conExactVal").val(curCon.find("input[name='conExact']").val());
+                }
+                if (curCon.find("input[name='conLimit']").val() != "") {
+                    $("#conLimitForm").attr("checked", "");
+                    $("#conLimitVal").removeAttr("disabled");
+                    $("#conLimitVal").val(curCon.find("input[name='conLimit']").val());
+                }
+                if (curCon.find("input[name='conMin']").val() != "") {
+                    $("#conMinForm").attr("checked", "");
+                    $("#conMinVal").removeAttr("disabled");
+                    $("#conMinVal").val(curCon.find("input[name='conMin']").val());
+                }
+                if (curCon.find("input[name='conMax']").val() != "") {
+                    $("#conMaxForm").attr("checked", "");
+                    $("#conMaxVal").removeAttr("disabled");
+                    $("#conMaxVal").val(curCon.find("input[name='conMax']").val());
+                }
+                $("#conModalConfirm").on("click", function () { saveCondition(true, button) });
+                $('#conModal').modal('show');
+            }
+        }
+
+        function saveCondition(update, button) {
+            if (validateCondition()) {
+                var string = "<div class='col-sm-10'>";
+                var conCategory = "", conCategoryText = "", conProduct = "", conProductText = "", conPreBuilt = "", conPreBuiltText = "", conLimit = +0; conMin = +0; conMax = +0; conPercentage = +0; conMaxSale = +0; conExact = +0;
+                if ($("input[name='conTargetForm']:checked").val() == "category") {
+                    conCategory = $("#conCategoryVal").val();
+                    conCategoryText = $("#conCategoryVal option:selected").html();
+                }
+                if ($("input[name='conTargetForm']:checked").val() == "product") {
+                    conProduct = $("#conProductVal").val();
+                    conProductText = $("#conProductVal option:selected").html();
+                }
+                if ($("input[name='conTargetForm']:checked").val() == "prebuilt") {
+                    conPreBuilt = $("#conPreBuiltVal").val();
+                    conPreBuiltText = $("#conPreBuiltVal option:selected").html();
+                }
+                if ($("input[name='conDiscountTypeForm']:checked").val() == "percentage") {
+                    conPercentage = $("#conPercentageVal").val();
+                    conMaxSale = $("#conMaxSaleVal").val();
+                    if (conMaxSale == "") {
+                        conMaxSale = +0;
+                    }
+                }
+                if ($("input[name='conDiscountTypeForm']:checked").val() == "exact") {
+                    conExact = $("#conExactVal").val();
+                }
+
+                if ($("#conLimitForm").is(":checked")) {
+                    conLimit = $("#conLimitVal").val();
+                }
+                if ($("#conMaxForm").is(":checked")) {
+                    conMax = $("#conMaxVal").val();
+                }
+                if ($("#conMinForm").is(":checked")) {
+                    conMin = $("#conMinVal").val();
+                }
+
+                string += "<input type='hidden' name='conCount' value='1'/>";
+                string += "<input type='hidden' name='conCategory' " + (conCategory != "" ? ("value='" + conCategory + "'") : "") + "/>";
+                string += "<input type='hidden' name='conProduct' " + (conProduct != "" ? ("value='" + conProduct + "'") : "") + "/>";
+                string += "<input type='hidden' name='conPreBuilt' " + (conPreBuilt != "" ? ("value='" + conPreBuilt + "'") : "") + "/>";
+                string += "<input type='hidden' name='conLimit' " + (conLimit > 0 ? ("value='" + conLimit + "'") : "") + "/>";
+                string += "<input type='hidden' name='conMin' " + (conMin > 0 ? ("value='" + conMin + "'") : "") + "/>";
+                string += "<input type='hidden' name='conMax' " + (conMax > 0 ? ("value='" + conMax + "'") : "") + "/>";
+                string += "<input type='hidden' name='conPercentage' " + (conPercentage > 0 ? ("value='" + conPercentage + "'") : "") + "/>";
+                string += "<input type='hidden' name='conMaxSale' " + (conMaxSale > 0 ? ("value='" + conMaxSale + "'") : "") + "/>";
+                string += "<input type='hidden' name='conExact' " + (conExact > 0 ? ("value='" + conExact + "'") : "") + "/>";
+
+                string += "<strong>Applied to:</strong> " + conCategoryText + conProductText + conPreBuiltText + " ";
+                string += "<strong>Discount:</strong> " + (conPercentage > 0 ? (conPercentage + "%") : (conExact + " VND")) + " ";
+                if (conPercentage > 0 && conMaxSale > 0) {
+                    string += "(Max discount: " + conMaxSale + ") ";
+                }
+                if (conLimit > 0) {
+                    string += "|Limit: " + conLimit + "| ";
+                }
+                if (conMin > 0) {
+                    string += "|MinQuan: " + conMin + "| ";
+                }
+                if (conMax > 0) {
+                    string += "|MaxQuan: " + conMax + "| ";
+                }
+                string += '</div><div class="col-sm-2 text-right">'
+                    + '<a type="button" class="btn btn-warning btn-sm" onclick="showCondition(true, this)"> <i class="fas fa-pencil-alt" ></i></a> '
+                    + '<a type="button" class="btn btn-danger btn-sm" onclick="$(this).parent().parent().remove();"> <i class="fas fa-trash"></i></a>'
+                    + '</div>';
+
+                if (update == false) {
+                    $("#conditions").append("<div class='col-sm-12 border rounded-sm border-secondary row'>" + string + "</div>");
+                } else {
+                    $(button).parent().parent().html(string);
+                }
+
+                $('#conModal').modal('hide');
+            }
+        }
+
+        function validateCondition() {
+            var valid = true;
+
+            $("#conDiscountTypeError").html("");
+            $("#conMinError").html("");
+            $("#conMaxError").html("");
+            $("#conLimitError").html("");
+
+            if ($("input[name='conDiscountTypeForm']:checked").val() == "percentage") {
+                if ($("#conPercentageVal").val() == "") {
+                    $("#conDiscountTypeError").html("Please enter percentage value.");
+                    valid = false;
+                }
+            } else {
+                if ($("#conExactVal").val() == "") {
+                    $("#conDiscountTypeError").html("Please enter exact value.");
+                    valid = false;
+                }
+            }
+
+            if ($("#conMinForm").is(":checked")) {
+                if ($("#conMinVal").val() == "") {
+                    $("#conMinError").html("Please enter min value");
+                    valid = false;
+                }
+            }
+
+            if ($("#conMaxForm").is(":checked")) {
+                if ($("#conMaxVal").val() == "") {
+                    $("#conMaxError").html("Please enter min value");
+                    valid = false;
+                }
+            }
+
+            if ($("#conLimitForm").is(":checked")) {
+                if ($("#conLimitVal").val() == "") {
+                    $("#conLimitError").html("Please enter min value");
+                    valid = false;
+                }
+            }
+            return valid;
+        }
+
+        $("input[name='conTargetForm']").on("change", function () {
+            if ($(this).val() == "category") {
+                $("#conCategoryVal").css("display", "block");
+                $("#conProductVal").css("display", "none");
+                $("#conPreBuiltVal").css("display", "none");
+            } else if ($(this).val() == "product") {
+                $("#conCategoryVal").css("display", "none");
+                $("#conProductVal").css("display", "block");
+                $("#conPreBuiltVal").css("display", "none");
+            } else {
+                $("#conCategoryVal").css("display", "none");
+                $("#conProductVal").css("display", "none");
+                $("#conPreBuiltVal").css("display", "block");
+            }
+        });
+
+        $("input[name='conDiscountTypeForm']").on("change", function () {
+            if ($(this).val() == "exact") {
+                $("#conExactContainer").css("display", "flex");
+                $("#conPercentageContainer").css("display", "none");
+                $("#conMaxSaleContainer").css("display", "none");
+            } else {
+                $("#conExactContainer").css("display", "none");
+                $("#conPercentageContainer").css("display", "flex");
+                $("#conMaxSaleContainer").css("display", "flex");
+            }
+        });
+
+        $("#conMaxForm").on("change", function () {
+            if (!$(this).is(':checked')) {
+                $("#conMaxVal").prop("disabled", true);
+            } else {
+                $("#conMaxVal").removeAttr("disabled");
+            }
+        });
+
+        $("#conMinForm").on("change", function () {
+            if (!$(this).is(':checked')) {
+                $("#conMinVal").prop("disabled", true);
+            } else {
+                $("#conMinVal").removeAttr("disabled");
+            }
+        });
+
+        $("#conLimitForm").on("change", function () {
+            if (!$(this).is(':checked')) {
+                $("#conLimitVal").prop("disabled", true);
+            } else {
+                $("#conLimitVal").removeAttr("disabled");
+            }
+        });
+
+
+        if ($("#startDate").val() == "") {
+            $("#startDate").val(moment().format("DD/MM/YYYY"));
+        }
+        if ($("#endDate").val() == "") {
+            $("#endDate").val(moment().format("DD/MM/YYYY"));
+        }
+
+        $("input[name='isAlways']").on("change", function () {
+            console.log($(this).val());
+            if ($(this).val() == 'true') {
+                //$("#date").val('');
+                $("#dateGroup").css('display', 'none');
+            } else {
+                $("#dateGroup").css('display', 'flex');
+            }
+        });
+
+
+        $("#btnUploadImage").on("change", function () {
+            if (this.files && this.files[0]) {
+                if (this.files.length > 1) {
+                    Toast.fire({
+                        type: 'error',
+                        title: 'You can upload only 1 image.'
+                    });
+                    return;
+                }
+                $("#uploadimg").html("");
+                for (var i = 0; i < this.files.length; i++) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $("#uploadimg").append('<label class="col-sm-12 text-center uploadimg">'
+                            + '<input type="radio" name="uploadradio">'
+                            + '<img src="' + e.target.result + '">'
+                            + '</label>');
+                    }
+                    reader.readAsDataURL(this.files[i]);
+                }
+            } else {
+                $("#uploadimg").html("");
+            }
+        });
+        $(document).ready(function () {
+            $('#date').daterangepicker({
+                "startDate": $("#startDate").val() == "" ? moment() : $("#startDate").val(),
+                "endDate": $("#endDate").val() == "" ? moment() : $("#endDate").val(),
+                locale: {
+                    format: 'DD/MM/YYYY'
+                }
+            }, function (start, end, label) {
+                $("#startDate").val(start.format('DD/MM/YYYY'));
+                $("#endDate").val(end.format('DD/MM/YYYY'));
+                console.log("A new date selection was made: " + start.format('DD/MM/YYYY') + ' to ' + end.format('DD/MM/YYYY'));
+            });
+        });
+    </script>
+</body>
+
+</html>

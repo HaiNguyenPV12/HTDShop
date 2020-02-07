@@ -5,13 +5,12 @@
  */
 package vn.htdshop.controller.manager;
 
-import java.util.ArrayList;
-
-import java.util.List;
+import java.util.Arrays;
 
 import javax.ejb.EJB;
-import javax.servlet.ServletContext;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +21,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import vn.htdshop.entity.*;
@@ -34,19 +34,20 @@ import vn.htdshop.sb.*;
 @Controller
 @RequestMapping("manager")
 public class managerIndexController {
-    // String imageValue =
-    // "iVBORw0KGgoAAAANSUhEUgAAAB8AAAAiCAIAAAAoKJUdAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEE0AABBNAWeMAeAAAADmSURBVEhL7Y/bDoMwDEP5/59mbex6Ib2ygbRJnAcSu7WBbb+Tp73H097jt9u3I3QLS+3NJAh+lJxDkMlvMGCCIBPeOdEOBu1ph3wv5k/AVeGldtYFCTHAd4lkAu3y/dJIBhQI5MpL2pUBcACkN+1KkRAD6mty/DPAI4geSqbFAzMRpIC52g6sKkP9TbuPWYkFylPI9NCHaGJZQqsq0qn3tR+uTvEVQNXAm3nBWEQxMXYubo+Sc43Jl9annGvU+YTMG9vbR5zLND6wQO34pD3Ag3JEYZxun3J4H+el4CcyNO7hf9v3/QWDAr3PbDmp4gAAAABJRU5ErkJggg==";
 
     @EJB(mappedName = "StaffFacade")
     StaffFacadeLocal staffFacade;
 
     @Autowired
-    ServletContext context;
+    HttpSession session;
+
+    @Autowired
+    HttpServletRequest request;
 
     @RequestMapping(value = { "", "index" }, method = RequestMethod.GET)
     public String getHome(HttpSession session, Model model, HttpServletRequest request) {
         // Check if logged in session is exists
-        if (!checkLogin(session)) {
+        if (!checkLogin()) {
             // If not, return to login page
             return "redirect:/manager/login";
         }
@@ -56,16 +57,6 @@ public class managerIndexController {
             model.addAttribute("goodAlert", model.asMap().get("goodAlert"));
         }
 
-        /*
-         * try { byte[] imageByte = Base64.getDecoder().decode(imageValue);
-         * 
-         * String directory = context.getRealPath("/") + "HTDManager/img/sample.jpg";
-         * 
-         * FileOutputStream fos = new FileOutputStream(directory); fos.write(imageByte);
-         * fos.close(); System.out.println("saved image."); } catch (Exception e) {
-         * e.printStackTrace(); }
-         */
-
         // Else, continue to index
         return "HTDManager/index";
     }
@@ -73,7 +64,7 @@ public class managerIndexController {
     @RequestMapping(value = "login", method = RequestMethod.GET)
     public String getLogin(@ModelAttribute("staff") Staff staff, Model model, ModelMap modelMap, HttpSession session) {
         // Check if logged in session is exists
-        if (checkLogin(session)) {
+        if (checkLogin()) {
             // If yes, redirect to index
             return "redirect:/manager";
         }
@@ -99,8 +90,9 @@ public class managerIndexController {
     // staff...){}
     // Here we just have to check username and password, not all so we check
     // manually
-    public String postLogin(@ModelAttribute("staff") Staff staff, Model model, BindingResult error,
-            RedirectAttributes redirect, HttpSession session) {
+    public String postLogin(@ModelAttribute("staff") Staff staff,
+            @RequestParam(value = "remember", required = false) String remember, Model model, BindingResult error,
+            RedirectAttributes redirect, HttpSession session, HttpServletResponse response) {
         // Mannually check blank username
         if (staff.getUserName().isEmpty()) {
             error.rejectValue("userName", "staff", "Username cannot be blank.");
@@ -117,13 +109,11 @@ public class managerIndexController {
             if (result != null) {
                 // If ok, save staff's session
                 session.setAttribute("loggedInStaff", result);
-
-                // And save staff's rightsList for fast right-checking
-                List<String> rightsList = new ArrayList<String>();
-                for (RoleRights roleRights : result.getRole().getRoleRightsCollection()) {
-                    rightsList.add(roleRights.getRightsDetail().getTag());
+                if (remember != null) {
+                    Cookie cookie = new Cookie("loggedInStaff", staff.getUserName());
+                    response.addCookie(cookie);
                 }
-                session.setAttribute("rightsList", rightsList);
+
                 redirect.addFlashAttribute("goodAlert", "Successfully logged in as \"" + result.getFirstName() + "\".");
                 // Then redirect to index
                 return "redirect:/manager/index";
@@ -140,16 +130,31 @@ public class managerIndexController {
     }
 
     @RequestMapping(value = "logout", method = RequestMethod.GET)
-    public String getLogout(HttpSession session) {
+    public String getLogout(HttpSession session, HttpServletResponse response) {
         // remove session
         session.removeAttribute("loggedInStaff");
-        // remove rightsList
-        session.removeAttribute("rightsList");
-        // reidect to login
+        // remove cookie
+        Cookie cookie = new Cookie("loggedInStaff", null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        // redirect to login
         return "redirect:/manager/login";
     }
 
-    private Boolean checkLogin(HttpSession session) {
-        return session.getAttribute("loggedInStaff") != null;
+    private Boolean checkLogin() {
+        if (session.getAttribute("loggedInStaff") != null) {
+            return true;
+        } else {
+            String cookie = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("loggedInStaff"))
+                    .findFirst().map(Cookie::getValue).orElse(null);
+            if (cookie != null) {
+                Staff staff = staffFacade.find(cookie);
+                if (staff != null) {
+                    session.setAttribute("loggedInStaff", staff);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

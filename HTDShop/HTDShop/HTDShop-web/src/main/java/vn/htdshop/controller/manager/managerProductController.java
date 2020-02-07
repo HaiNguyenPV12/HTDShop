@@ -8,14 +8,15 @@ package vn.htdshop.controller.manager;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Calendar;
+import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletContext;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -43,9 +44,6 @@ public class managerProductController {
 
     private final String redirectProductHome = "redirect:/manager/product";
     private final String redirectHome = "redirect:/manager";
-    private final String redirectLogin = "redirect:/manager/login";
-
-    List<String> rightsList = null;
 
     @EJB(mappedName = "StaffFacade")
     StaffFacadeLocal staffFacade;
@@ -65,15 +63,17 @@ public class managerProductController {
     @Autowired
     ServletContext context;
 
+    @Autowired
+    HttpSession session;
+
+    @Autowired
+    HttpServletRequest request;
+
     // ==== PRODUCT INDEX ==== \\
     @RequestMapping(value = { "", "index" }, method = RequestMethod.GET)
     public String getHome(HttpSession session, Model model) {
-        // Check if logged in session is exists
-        if (!checkLogin(session)) {
-            return redirectLogin;
-        }
-        // Check if staff have appropriate role
-        if (!rightsList.contains("product_read")) {
+        // Check login with role
+        if (!checkLoginWithRole("product_read")) {
             return redirectHome;
         }
 
@@ -97,32 +97,16 @@ public class managerProductController {
     @RequestMapping(value = "add", method = RequestMethod.GET)
     // Adding optional "cate" parameter by using @RequestParam(required = false)
     public String viewAdd(HttpSession session, Model model, @RequestParam(required = false) Integer cate) {
-        // Check if logged in session is exists
-        if (!checkLogin(session)) {
-            // If not, redirect to index
-            return redirectLogin;
-        }
-        // Check if staff have appropriate role
-        if (!rightsList.contains("product_add")) {
-            // If not, redirect to product index
+
+        if (!checkLoginWithRole("product_add")) {
             return redirectProductHome;
         }
         // Prepare product model
         Category c = new Category();
         Product p = new Product();
-        
+
         if (cate != null) {
             c.setId(cate);
-            switch (cate) {
-            case 2:
-                // model.addAttribute("product", new CPU());
-                break;
-            case 8:
-
-                break;
-            default:
-                break;
-            }
         }
         p.setCategory(c);
         model.addAttribute("product", p);
@@ -144,30 +128,32 @@ public class managerProductController {
         return "HTDManager/product_add";
     }
 
-    // ==== PRODUCT ADD - PROCESS - CPU ==== \\
+    // ==== PRODUCT ADD - PROCESS ==== \\
     @RequestMapping(value = "doAdd", method = RequestMethod.POST)
-    // Adding optional "cate" parameter by using @RequestParam(required = false)
-    public String doAddCPU(@Valid @ModelAttribute("product") Product product, BindingResult error, HttpSession session,
+    public String doAdd(@Valid @ModelAttribute("product") Product product, BindingResult error, HttpSession session,
             Model model, @RequestParam(value = "uploadimg", required = false) MultipartFile[] uploadimg,
             RedirectAttributes redirect) {
-        // Check if logged in session is exists
-        if (!checkLogin(session)) {
-            // If not, redirect to index
-            return redirectLogin;
-        }
-        // Check if staff have appropriate role
-        if (!rightsList.contains("product_add")) {
-            // If not, redirect to product index
+        if (!checkLoginWithRole("product_add")) {
             return redirectProductHome;
         }
+        for (MultipartFile multipartFile : uploadimg) {
+            String contentType = multipartFile.getContentType().substring(0,
+                    multipartFile.getContentType().lastIndexOf("/"));
+            if (!multipartFile.isEmpty() && !contentType.equals("image")) {
+                error.reject("common", "Please choose valid image.");
+                break;
+            }
+        }
+
         // If there is no error
         if (!error.hasErrors()) {
             // Custom method that create Product object from CPU class
             // Product p = product.toNewProduct();
             productFacade.create(product);
+
             // Process images
             if (uploadimg != null && uploadimg.length > 0) {
-                uploadImages(uploadimg, product,false);
+                uploadImages(uploadimg, product, false);
             }
 
             // Pass alert attribute to notify successful process
@@ -187,20 +173,13 @@ public class managerProductController {
         // Add indicator attribute for sidemenu highlight
         model.asMap().put("menu", "product");
         // Redirect to add page
-        return "redirect:/manager/product/add?cate=2";
+        return "redirect:/manager/product/add?cate=" + product.getCategory().getId();
     }
 
     // ==== PRODUCT EDIT - VIEW ==== \\
     @RequestMapping(value = "edit", method = RequestMethod.GET)
     public String viewEdit(HttpSession session, Model model, @RequestParam(required = true) Integer id) {
-        // Check if logged in session is exists
-        if (!checkLogin(session)) {
-            // If not, redirect to index
-            return redirectLogin;
-        }
-        // Check if staff have appropriate role
-        if (!rightsList.contains("product_edit")) {
-            // If not, redirect to product index
+        if (!checkLoginWithRole("product_edit")) {
             return redirectProductHome;
         }
 
@@ -222,17 +201,6 @@ public class managerProductController {
         // Continue if everything is ok
 
         // Prepare product model
-        switch (p.getCategory().getId()) {
-        case 2:
-            // CPU cpu = new CPU();
-            // cpu.fromProduct(p);
-            // model.addAttribute("product", cpu);
-            break;
-        case 8:
-            break;
-        default:
-            break;
-        }
         model.addAttribute("product", p);
         // Prepare form url for form submit
         // model.addAttribute("formUrl", "doEdit" + category);
@@ -255,26 +223,25 @@ public class managerProductController {
         return "HTDManager/product_edit";
     }
 
-    // ==== PRODUCT EDIT - PROCESS - CPU ==== \\
+    // ==== PRODUCT EDIT - PROCESS ==== \\
     @RequestMapping(value = "doEdit", method = RequestMethod.POST)
     public String doEditCPU(@Valid @ModelAttribute("product") Product product, BindingResult error, HttpSession session,
             Model model, @RequestParam(value = "uploadimg", required = false) MultipartFile[] uploadimg,
             RedirectAttributes redirect) {
-        // Check if logged in session is exists
-        if (!checkLogin(session)) {
-            // If not, redirect to index
-            return redirectLogin;
-        }
-        // Check if staff have appropriate role
-        if (!rightsList.contains("product_edit")) {
-            // If not, redirect to product index
+        if (!checkLoginWithRole("product_edit")) {
             return redirectProductHome;
+        }
+
+        for (MultipartFile multipartFile : uploadimg) {
+            String contentType = multipartFile.getContentType().substring(0,
+                    multipartFile.getContentType().lastIndexOf("/"));
+            if (!multipartFile.isEmpty() && !contentType.equals("image")) {
+                error.reject("common", "Please choose valid image.");
+                break;
+            }
         }
         // If there is no error
         if (!error.hasErrors()) {
-            // Custom method that create Product object from CPU class
-            // Product p = product.toProduct();
-            // productFacade.edit(p);
             productFacade.edit(product);
             // Check if upload img exists then replace images
             if (uploadimg != null && uploadimg[0].getSize() > 0) {
@@ -303,14 +270,7 @@ public class managerProductController {
     @RequestMapping(value = "doDelete", method = RequestMethod.GET)
     public String doDelete(HttpSession session, Model model, @RequestParam(required = true) Integer id,
             RedirectAttributes redirect) {
-        // Check if logged in session is exists
-        if (!checkLogin(session)) {
-            // If not, redirect to index
-            return redirectLogin;
-        }
-        // Check if staff have appropriate role
-        if (!rightsList.contains("product_delete")) {
-            // If not, redirect to product index
+        if (!checkLoginWithRole("product_delete")) {
             return redirectProductHome;
         }
 
@@ -391,13 +351,31 @@ public class managerProductController {
         return redirectProductHome;
     }
 
-    private Boolean checkLogin(HttpSession session) {
+    private Boolean checkLogin() {
         if (session.getAttribute("loggedInStaff") != null) {
-            if (rightsList == null || rightsList.size() <= 0) {
-                rightsList = new ArrayList<>();
-                rightsList = (ArrayList<String>) session.getAttribute("rightsList");
-            }
             return true;
+        } else {
+            String cookie = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("loggedInStaff"))
+                    .findFirst().map(Cookie::getValue).orElse(null);
+            if (cookie != null) {
+                Staff staff = staffFacade.find(cookie);
+                if (staff != null) {
+                    session.setAttribute("loggedInStaff", staff);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private Boolean checkLoginWithRole(String role) {
+        if (checkLogin()) {
+            String user = ((Staff) session.getAttribute("loggedInStaff")).getUserName();
+            for (RoleRights roleRight : staffFacade.find(user).getRole().getRoleRightsCollection()) {
+                if (roleRight.getRightsDetail().getTag().equals(role)) {
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -420,30 +398,37 @@ public class managerProductController {
             }
 
             // System.getProperty("catalina.base") : Path_to_glassfish/domains/domain_name/
-            File imagePath = new File(System.getProperty("catalina.base") + "\\img\\product");
+            // Initialize folder path
+            String folderPath = System.getProperty("catalina.base") + "/img/product/" + product.getId();
+            File checkPath = new File(folderPath);
             // Check if path is not exists, create path to it
-            if (!imagePath.exists()) {
-                imagePath.mkdirs();
+            if (!checkPath.exists()) {
+                checkPath.mkdirs();
             }
             // With each of file, do following
-
+            int count = 0;
             for (MultipartFile multipartFile : uploadimg) {
-                // File name: [product id]_[time in milis].[extension]
+                // File name: [count].[extension]
                 // TODO: check extensions
-                String fileName = product.getId() + "_" + Calendar.getInstance().getTimeInMillis() + multipartFile
-                        .getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf("."));
+                String fileName = count + multipartFile.getOriginalFilename()
+                        .substring(multipartFile.getOriginalFilename().lastIndexOf("."));
                 // file path:
-                // Path_to_glassfish/domains/domain_name/img/product/file_name.extension
-                String filePath = System.getProperty("catalina.base") + "\\img\\product\\" + fileName;
+                // Path_to_glassfish/domains/domain_name/img/product/product_id/count.extension
+                String filePath = folderPath + "/" + fileName;
                 // Use Files to copy multipartFile's input stream to declared path
-                Files.copy(multipartFile.getInputStream(), Paths.get(filePath));
+                Files.copy(multipartFile.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
 
                 // Create image data in database
                 ProductImage pimg = new ProductImage();
-                pimg.setMainImage(false);
-                pimg.setImagePath("product/" + fileName);
+                if (count == 0) {
+                    pimg.setMainImage(true);
+                } else {
+                    pimg.setMainImage(false);
+                }
+                pimg.setImagePath("product/" + product.getId() + "/" + fileName);
                 pimg.setProduct(product);
                 productImageFacade.create(pimg);
+                count++;
             }
 
             return true;

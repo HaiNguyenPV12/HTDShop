@@ -53,6 +53,8 @@
                 <th:block th:replace="this :: basic"></th:block>
                 <!-- Start specific info part -->
                 <th:block th:replace="this :: __${curCate}__"></th:block>
+                <!-- Description part -->
+                <th:block th:replace="this :: description"></th:block>
                 <!-- Submit button -->
                 <th:block th:replace="this :: submit"></th:block>
             </div>
@@ -131,47 +133,7 @@
                             </ul> 
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label for="color" class="col-sm-2 col-form-label text-right">Color<i
-                            class="text-danger">*</i></label>
-                        <div class="col-sm-4">
-                            <select class="form-control select2" id="color" th:field="*{color}"
-                            th:classappend="${(#fields.hasErrors('color')?'is-invalid':'') + (submited != null and !#fields.hasErrors('color')?'is-valid':'')}" required>
-                                <option value="" disabled selected>-- Choose color --</option>
-                                <option value="none">None</option>
-                                <option value="red" class="bg-red font-weight-bold">Red</option>
-                                <option value="blue" class="bg-blue font-weight-bold">Blue
-                                </option>
-                                <option value="green" class="bg-green font-weight-bold">Green
-                                </option>
-                                <option value="yellow" class="bg-yellow font-weight-bold">Yellow
-                                </option>
-                                <option value="white" class="bg-white font-weight-bold">White
-                                </option>
-                                <option value="black" class="bg-dark font-weight-bold">Black
-                                </option>
-                                <option value="gray" class="bg-gray font-weight-bold">Gray
-                                </option>
-                            </select>
-                        </div>
-                        <label for="unit" class="col-sm-2 col-form-label text-right">Unit</label>
-                        <div class="col-sm-4">
-                            <input class="form-control" id="unit" placeholder="Unit" th:field="*{unit}"
-                            th:classappend="${(#fields.hasErrors('unit')?'is-invalid':'') + (submited != null and !#fields.hasErrors('unit')?'is-valid':'')}" />
-                        </div>
-                        <div class="col-sm-2"></div>
-                        <div class="col-sm-4" th:if="${#fields.hasErrors('color')}">
-                            <ul class="text-danger">
-                                <li th:each="err : ${#fields.errors('color')}" th:text="${err}">Name Error</li>
-                            </ul> 
-                        </div>
-                        <div class="col-sm-2"></div>
-                        <div class="col-sm-4" th:if="${#fields.hasErrors('unit')}">
-                            <ul class="text-danger">
-                                <li th:each="err : ${#fields.errors('unit')}" th:text="${err}">Name Error</li>
-                            </ul> 
-                        </div>
-                    </div>
+                    
                     <div class="form-group row">
                         <label for="price" class="col-sm-2 col-form-label text-right">Price<i
                             class="text-danger">*</i></label>
@@ -200,15 +162,39 @@
                             </ul> 
                         </div>
                     </div>
-                    
+
                     <div class="form-group row">
-                        <label for="status" class="col-sm-3 col-form-label text-right">Status<i
+                        <label for="color" class="col-sm-2 col-form-label text-right">Color<i
                             class="text-danger">*</i></label>
-                        <div class="col-sm-9">
+                        <div class="col-sm-4">
+                            <select class="form-control select2" id="color" th:field="*{color}"
+                            th:classappend="${(#fields.hasErrors('color')?'is-invalid':'') + (submited != null and !#fields.hasErrors('color')?'is-valid':'')}" required>
+                                <option value="" disabled selected>-- Choose color --</option>
+                                <option value="None">None</option>
+                                <option value="Red" class="bg-red font-weight-bold">Red</option>
+                                <option value="Blue" class="bg-blue font-weight-bold">Blue
+                                </option>
+                                <option value="Green" class="bg-green font-weight-bold">Green
+                                </option>
+                                <option value="Yellow" class="bg-yellow font-weight-bold">Yellow
+                                </option>
+                                <option value="White" class="bg-white font-weight-bold">White
+                                </option>
+                                <option value="Black" class="bg-dark font-weight-bold">Black
+                                </option>
+                                <option value="Gray" class="bg-gray font-weight-bold">Gray
+                                </option>
+                                <option value="Silver" class="bg-gray font-weight-bold">Gray
+                                </option>
+                            </select>
+                        </div>
+                        <label for="status" class="col-sm-2 col-form-label text-right">Status<i
+                            class="text-danger">*</i></label>
+                        <div class="col-sm-4">
                             <div class="custom-control custom-radio">
                                 <input class="custom-control-input" type="radio" value="1" th:field="*{status}"
                                 th:selected="${product.status==1}" id="status1" required/>
-                                <label for="status1" class="custom-control-label">Is selling</label>
+                                <label for="status1" class="custom-control-label">Selling</label>
                             </div>
                             <div class="custom-control custom-radio">
                                 <input class="custom-control-input" type="radio" value="2" th:field="*{status}"
@@ -218,16 +204,24 @@
                             <div class="custom-control custom-radio" th:if="${update!=null}">
                                 <input class="custom-control-input" type="radio" value="3" th:field="*{status}"
                                 th:selected="${product.status==3}" id="status3"/>
-                                <label for="status3" class="custom-control-label">Not available</label>
+                                <label for="status3" class="custom-control-label">Not selling</label>
                             </div>
                         </div>
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-9" th:if="${#fields.hasErrors('status')}">
+
+                        <div class="col-sm-2"></div>
+                        <div class="col-sm-4" th:if="${#fields.hasErrors('color')}">
+                            <ul class="text-danger">
+                                <li th:each="err : ${#fields.errors('color')}" th:text="${err}">Name Error</li>
+                            </ul> 
+                        </div>
+                        <div class="col-sm-2"></div>
+                        <div class="col-sm-4" th:if="${#fields.hasErrors('status')}">
                             <ul class="text-danger">
                                 <li th:each="err : ${#fields.errors('status')}" th:text="${err}">Name Error</li>
                             </ul> 
                         </div>
                     </div>
+                    
                 </div>
             </div>
         </div>
@@ -235,6 +229,31 @@
     <!-- 
         =========================
                 Basic - END
+        =========================
+    -->
+
+
+    <!-- 
+        =========================
+                Description 
+        =========================
+    -->
+    <th:block th:fragment="description">
+        <div class="col-lg-12">
+            <div class="card card-purple">
+                <div class="card-header">
+                    <h3 class="card-title">More detail</h3>
+                </div>
+                <div class="card-body">
+                    <textarea class="textarea" placeholder="Place some text here"
+                          style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" th:field="*{description}"></textarea>
+                </div> 
+            </div>
+        </div>
+    </th:block>
+    <!-- 
+        =========================
+            Description - END
         =========================
     -->
     
