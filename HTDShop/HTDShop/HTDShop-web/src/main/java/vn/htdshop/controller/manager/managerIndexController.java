@@ -44,7 +44,7 @@ public class managerIndexController {
     @Autowired
     HttpServletRequest request;
 
-    @RequestMapping(value = { "", "index" }, method = RequestMethod.GET)
+    @RequestMapping(value = {"", "index"}, method = RequestMethod.GET)
     public String getHome(HttpSession session, Model model, HttpServletRequest request) {
         // Check if logged in session is exists
         if (!checkLogin()) {
@@ -69,9 +69,7 @@ public class managerIndexController {
             return "redirect:/manager";
         }
         // Prepare staff model if not exists (for postLogin process)
-        if (!model.containsAttribute("staff")) {
-            model.addAttribute("staff", new Staff());
-        }
+        model.addAttribute("staff", new Staff());
         // Show error (if exists) after redirect to this page again
         if (model.asMap().containsKey("error")) {
             // Here is using for staff attribute that is declared, for other attribute,
@@ -94,7 +92,7 @@ public class managerIndexController {
             @RequestParam(value = "remember", required = false) String remember, Model model, BindingResult error,
             RedirectAttributes redirect, HttpSession session, HttpServletResponse response) {
         // Mannually check blank username
-        if (staff.getUsername().isEmpty()) {
+        if (staff.getUsername() == null || staff.getUsername().isEmpty()) {
             error.rejectValue("username", "staff", "Username cannot be blank.");
         }
         // Mannually check blank password

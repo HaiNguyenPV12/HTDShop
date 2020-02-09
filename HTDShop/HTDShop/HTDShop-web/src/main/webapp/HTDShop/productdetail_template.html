@@ -65,7 +65,7 @@
             <th:block th:text="${product.memoryType}"></th:block>
         </li>
         <li th:if="${product.memoryModules != null}"><strong>Modules:</strong>
-            <th:block th:text="${product.memoryModules + ' x '+ (product.memory/product.memoryModules)}"></th:block>
+            <th:block th:text="${product.memoryModules + ' x '+ (product.memory/product.memoryModules) + ' GB'}"></th:block>
         </li>
     </ul>
 </th:block>
@@ -85,7 +85,7 @@
             <th:block th:text="${product.storageType}"></th:block>
         </li>
         <li th:if="${product.memory != null}"><strong>Capacity:</strong>
-            <th:block th:text="${product.memory + ' GB'}"></th:block>
+            <th:block th:text="${product.memory lt 1000? (product.memory + ' GB') : (product.memory/1000 + ' TB')}"></th:block>
         </li>
         <li th:if="${product.interface1 != null}"><strong>Interface:</strong>
             <th:block th:text="${product.interface1}"></th:block>

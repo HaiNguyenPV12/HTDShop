@@ -653,16 +653,16 @@
                 </div>
                 <div class="card-body">
                     <div class="form-group row">
-                        <label for="formFactor" class="col-sm-3 col-form-label text-right">Form Factor<i
+                        <label for="formFactor" class="col-sm-3 col-form-label text-right">PSU Form Factor<i
                             class="text-danger">*</i></label>
                         <div class="col-sm-9">
-                            <input class="form-control" id="formFactor" placeholder="Form Factor"  th:field="*{formFactor}"
-                            th:classappend="${(#fields.hasErrors('formFactor')?'is-invalid':'') + (submited != null and !#fields.hasErrors('formFactor')?'is-valid':'')}"/>
+                            <input class="form-control" id="pSUformFactor" placeholder="PSU Form Factor"  th:field="*{pSUformFactor}"
+                            th:classappend="${(#fields.hasErrors('pSUformFactor')?'is-invalid':'') + (submited != null and !#fields.hasErrors('pSUformFactor')?'is-valid':'')}"/>
                         </div>
                         <div class="col-sm-3"></div>
-                        <div class="col-sm-9" th:if="${#fields.hasErrors('formFactor')}">
+                        <div class="col-sm-9" th:if="${#fields.hasErrors('pSUformFactor')}">
                             <ul class="text-danger">
-                                <li th:each="err : ${#fields.errors('formFactor')}" th:text="${err}">Name Error</li>
+                                <li th:each="err : ${#fields.errors('pSUformFactor')}" th:text="${err}">Name Error</li>
                             </ul>
                         </div>
                     </div>

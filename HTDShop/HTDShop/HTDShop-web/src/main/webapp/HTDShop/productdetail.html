@@ -116,6 +116,13 @@
         .img-circle {
             border-radius: 50%;
         }
+
+        .tab-pane{
+            text-align: left;
+        }
+        .tab-pane li{
+            list-style: square;
+        }
     </style>
 </head>
 
@@ -127,17 +134,20 @@
                     <div class="col-md-12 col-lg-7 col-12">
                         <div class="product-details-img-content">
                             <div class="product-details-tab mr-35 product-details-tab2">
-                                <div class="product-details-small nav mr-10 product-details-2" role=tablist>
-                                    <a class="active mb-10" th:if="${product.productImageCollection.isEmpty()}"
-                                        href="#pro-details1" data-toggle="tab" role="tab" aria-selected="true">
-                                        <img th:src="@{/images/noimage.png}" alt="">
+                                <div class="product-details-small nav mr-10 product-details-2" role=tablist style="display: block;">
+                                    <a class="active" th:if="${product.productImageCollection.isEmpty()}"
+                                        href="#pro-details1" data-toggle="tab" role="tab" aria-selected="true"
+                                        style="height:8rem; display: flex;align-items: center;">
+                                        <img th:src="@{/images/noimage.png}" alt="" style="max-height: 8rem;width: 100%;">
                                     </a>
-                                    <a class="mb-10" th:each="img,it : ${product.productImageCollection}"
+                                    <a class="" th:each="img,it : ${product.productImageCollection}"
                                         th:classappend="${it.index==0?'active':''}"
                                         th:href="${'#pro-details'+(it.index+1)}" data-toggle="tab" role="tab"
-                                        th:aria-selected="${it.index==0?'true':'false'}">
+                                        th:aria-selected="${it.index==0?'true':'false'}" 
+                                        style="height:8rem;display: flex;align-items: center;">
                                         <img th:src="@{/images/__${img.imagePath}__}" alt=""
-                                            th:onerror="'this.onerror=null;this.src=&quot;'+@{/images/noimage.png}+'&quot;'">
+                                            th:onerror="'this.onerror=null;this.src=&quot;'+@{/images/noimage.png}+'&quot;'"
+                                            style="max-height: 8rem;max-width: 100%;">
                                     </a>
                                     <!-- <a class="mb-10" href="#pro-details2" data-toggle="tab" role="tab"
                                         aria-selected="true">
@@ -152,18 +162,20 @@
                                         <img src="assets/img/product-details/s8.jpg" alt="">
                                     </a> -->
                                 </div>
-                                <div class="product-details-large tab-content">
+                                <div class="product-details-large tab-content" style="width: 100%; max-height: 30rem;">
                                     <div class="tab-pane active show fade"
                                         th:if="${product.productImageCollection.isEmpty()}" id="pro-details1"
-                                        role="tabpanel">
-                                        <div class="easyzoom">
+                                        role="tabpanel"
+                                        style="text-align: center;">
+                                        <div class="easyzoom" style="display:inline-block;position: relative;height:25rem">
                                             <img th:src="@{/images/noimage.png}" alt="">
                                         </div>
                                     </div>
                                     <div class="tab-pane fade" th:each="img,it : ${product.productImageCollection}"
                                         th:classappend="${it.index==0?'active show':''}"
-                                        th:id="${'pro-details'+(it.index+1)}" role="tabpanel">
-                                        <div style="display:inline-block;position: relative;">
+                                        th:id="${'pro-details'+(it.index+1)}" role="tabpanel"
+                                        style="text-align: center;">
+                                        <div style="display:inline-block;position: relative;height:25rem">
                                             <a>
                                                 <img th:src="@{/images/__${img.imagePath}__}" alt=""
                                                     th:onerror="'this.onerror=null;this.src=&quot;'+@{/images/noimage.png}+'&quot;'"
@@ -242,7 +254,7 @@
                             </div>
 
                             <div class="alert alert-warning mt-3"
-                                th:if="${(product.status == 1 || product.status == 2) && (product.promotionCollection.size() > 0 || product.category.promotionCollection.size() > 0)}">
+                                th:if="${(product.status == 1 || product.status == 2) && ( (product.promotionCollection.size() > 0 && product.promotionCollection.?[promotionDetail.endDate.after(#dates.createNow())].size() > 0) || (product.category.promotionCollection.size() > 0 && product.category.promotionCollection.?[promotionDetail.endDate.after(#dates.createNow())].size() > 0) )}">
                                 <strong class="">Promotion</strong>
                                 <ul>
                                     <li
@@ -376,7 +388,7 @@
                         </a>
                     </div>
                     <div class="description-review-text tab-content">
-                        <div class="tab-pane active show fade" id="pro-dec" role="tabpanel">
+                        <div class="tab-pane active show fade" id="pro-dec" role="tabpanel" style="margin-left: 10rem;">
                             <p th:utext="${product.description}"></p>
                         </div>
                         <div class="tab-pane fade overflow-auto text-left border border-secondary" id="pro-review"
