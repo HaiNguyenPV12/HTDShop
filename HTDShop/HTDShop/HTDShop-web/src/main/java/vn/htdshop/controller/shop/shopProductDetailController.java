@@ -127,7 +127,7 @@ public class shopProductDetailController {
         }
 
         model.asMap().put("product", product);
-        return "HTDShop/product";
+        return "HTDShop/productdetail";
 
     }
 

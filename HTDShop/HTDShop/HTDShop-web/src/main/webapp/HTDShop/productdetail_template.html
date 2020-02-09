@@ -1,0 +1,124 @@
+<th:block th:fragment="full-1">
+    <ul>
+        <li th:if="${product.series != null}"><strong>Series:</strong>
+            <th:block th:text="${product.series}"></th:block>
+        </li>
+        <li th:if="${product.socket != null}"><strong>Socket:</strong>
+            <th:block th:text="${product.socket}"></th:block>
+        </li>
+        <li th:if="${product.chipset != null}"><strong>Chipset:</strong>
+            <th:block th:text="${product.chipset}"></th:block>
+        </li>
+        <li th:if="${product.core != null}"><strong>Cores:</strong>
+            <th:block th:text="${product.core}"></th:block>
+        </li>
+        <li th:if="${product.thread != null}"><strong>Threads:</strong>
+            <th:block th:text="${product.thread}"></th:block>
+        </li>
+        <li th:if="${product.tdp != null}"><strong>TDP:</strong>
+            <th:block th:text="${product.tdp + ' W'}"></th:block>
+        </li>
+    </ul>
+</th:block>
+<th:block th:fragment="full-2">
+    <ul>
+        <li th:if="${product.socket != null}"><strong>CPU Socket support:</strong>
+            <th:block th:text="${product.socket}"></th:block>
+        </li>
+        <li th:if="${product.chipset != null}"><strong>Chipset:</strong>
+            <th:block th:text="${product.chipset}"></th:block>
+        </li>
+        <li th:if="${product.formFactor != null}"><strong>Form Factor:</strong>
+            <th:block th:text="${product.formFactor}"></th:block>
+        </li>
+
+        <li th:if="${product.memorySlot != null}"><strong>Memory Slots:</strong>
+            <th:block th:text="${product.memorySlot}"></th:block>
+        </li>
+    </ul>
+</th:block>
+<th:block th:fragment="full-3">
+    <ul>
+        <li th:if="${product.memory != null}"><strong>Memory:</strong>
+            <th:block th:text="${product.memory + ' GB'}"></th:block>
+        </li>
+        <li th:if="${product.chipset != null}"><strong>Chipset:</strong>
+            <th:block th:text="${product.chipset}"></th:block>
+        </li>
+        <li th:if="${product.memoryType != null}"><strong>Graphic Memory Type:</strong>
+            <th:block th:text="${product.memoryType}"></th:block>
+        </li>
+        <li th:if="${product.interface1 != null}"><strong>Interface:</strong>
+            <th:block th:text="${product.interface1}"></th:block>
+        </li>
+        <li th:if="${product.tdp != null}"><strong>TDP:</strong>
+            <th:block th:text="${product.tdp + ' W'}"></th:block>
+        </li>
+    </ul>
+</th:block>
+<th:block th:fragment="full-4">
+    <ul>
+        <li th:if="${product.memory != null}"><strong>Capacity:</strong>
+            <th:block th:text="${product.memory + ' GB'}"></th:block>
+        </li>
+        <li th:if="${product.memoryType != null}"><strong>Memory Type:</strong>
+            <th:block th:text="${product.memoryType}"></th:block>
+        </li>
+        <li th:if="${product.memoryModules != null}"><strong>Modules:</strong>
+            <th:block th:text="${product.memoryModules + ' x '+ (product.memory/product.memoryModules)}"></th:block>
+        </li>
+    </ul>
+</th:block>
+<th:block th:fragment="full-5">
+    <ul>
+        <li th:if="${product.formFactor != null}"><strong>Form Factor:</strong>
+            <th:block th:text="${product.formFactor}"></th:block>
+        </li>
+        <li th:if="${product.pSUWattage != null}"><strong>Wattage:</strong>
+            <th:block th:text="${product.pSUWattage + ' W'}"></th:block>
+        </li>
+    </ul>
+</th:block>
+<th:block th:fragment="full-6">
+    <ul>
+        <li th:if="${product.storageType != null}"><strong>Storage Type:</strong>
+            <th:block th:text="${product.storageType}"></th:block>
+        </li>
+        <li th:if="${product.memory != null}"><strong>Capacity:</strong>
+            <th:block th:text="${product.memory + ' GB'}"></th:block>
+        </li>
+        <li th:if="${product.interface1 != null}"><strong>Interface:</strong>
+            <th:block th:text="${product.interface1}"></th:block>
+        </li>
+        <li th:if="${product.formFactor != null}"><strong>Form Factor:</strong>
+            <th:block th:text="${product.formFactor}"></th:block>
+        </li>
+    </ul>
+</th:block>
+<th:block th:fragment="full-7">
+    <ul>
+        <li th:if="${product.socket != null}"><strong>CPU Socket support:</strong>
+            <th:block th:text="${product.socket}"></th:block>
+        </li>
+    </ul>
+</th:block>
+<th:block th:fragment="full-8">
+    <ul>
+        <li th:if="${product.formFactor != null}"><strong>Motherboard's Form Factor:</strong>
+            <th:block th:text="${product.formFactor}"></th:block>
+        </li>
+        <li th:if="${product.pSUFormFactor != null}"><strong>PSU's Form Factor:</strong>
+            <th:block th:text="${product.pSUFormFactor}"></th:block>
+        </li>
+    </ul>
+</th:block>
+<th:block th:fragment="full-9">
+    <ul>
+        <li th:if="${product.screenSize != null}"><strong>Screen Size:</strong>
+            <th:block th:text="${product.screenSize + ' inch'}"></th:block>
+        </li>
+        <li th:if="${product.resolution != null}"><strong>Resolution:</strong>
+            <th:block th:text="${product.resolution}"></th:block>
+        </li>
+    </ul>
+</th:block>

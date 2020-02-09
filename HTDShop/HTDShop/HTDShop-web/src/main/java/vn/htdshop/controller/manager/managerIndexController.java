@@ -94,8 +94,8 @@ public class managerIndexController {
             @RequestParam(value = "remember", required = false) String remember, Model model, BindingResult error,
             RedirectAttributes redirect, HttpSession session, HttpServletResponse response) {
         // Mannually check blank username
-        if (staff.getUserName().isEmpty()) {
-            error.rejectValue("userName", "staff", "Username cannot be blank.");
+        if (staff.getUsername().isEmpty()) {
+            error.rejectValue("username", "staff", "Username cannot be blank.");
         }
         // Mannually check blank password
         if (staff.getPassword().isEmpty()) {
@@ -105,12 +105,12 @@ public class managerIndexController {
         // Check if error exists
         if (!error.hasErrors()) {
             // If not, start to check login
-            Staff result = staffFacade.checkLogin(staff.getUserName(), staff.getPassword());
+            Staff result = staffFacade.checkLogin(staff.getUsername(), staff.getPassword());
             if (result != null) {
                 // If ok, save staff's session
                 session.setAttribute("loggedInStaff", result);
                 if (remember != null) {
-                    Cookie cookie = new Cookie("loggedInStaff", staff.getUserName());
+                    Cookie cookie = new Cookie("loggedInStaff", staff.getUsername());
                     response.addCookie(cookie);
                 }
 
@@ -119,7 +119,7 @@ public class managerIndexController {
                 return "redirect:/manager/index";
             }
             // If checking is false, manually add error
-            error.rejectValue("userName", "staff", "Invalid Login.");
+            error.rejectValue("username", "staff", "Invalid Login.");
         }
 
         // Add error and staff's input info to redirect session

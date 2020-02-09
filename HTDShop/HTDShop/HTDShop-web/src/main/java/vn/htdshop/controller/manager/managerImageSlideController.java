@@ -434,7 +434,7 @@ public class managerImageSlideController {
 
     private Boolean checkLoginWithRole(String role) {
         if (checkLogin()) {
-            String user = ((Staff) session.getAttribute("loggedInStaff")).getUserName();
+            String user = ((Staff) session.getAttribute("loggedInStaff")).getUsername();
             for (RoleRights roleRight : staffFacade.find(user).getRole().getRoleRightsCollection()) {
                 if (roleRight.getRightsDetail().getTag().equals(role)) {
                     return true;

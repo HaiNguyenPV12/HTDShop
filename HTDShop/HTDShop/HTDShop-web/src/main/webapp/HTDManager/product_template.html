@@ -515,6 +515,23 @@
                         </div>
                     </div>
                     <div class="form-group row">
+                        <label for="tdp" class="col-sm-3 col-form-label text-right">TDP<i
+                            class="text-danger">*</i></label>
+                        <div class="input-group col-sm-9">
+                            <input type="number" class="form-control" id="tdp" placeholder="TDP (W)"  th:field="*{tdp}"
+                            th:classappend="${(#fields.hasErrors('tdp')?'is-invalid':'') + (submited != null and !#fields.hasErrors('tdp')?'is-valid':'')}" required/>
+                            <div class="input-group-append">
+                                <span class="input-group-text">W</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-3"></div>
+                        <div class="col-sm-9" th:if="${#fields.hasErrors('tdp')}">
+                            <ul class="text-danger">
+                                <li th:each="err : ${#fields.errors('tdp')}" th:text="${err}">Name Error</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="form-group row">
                         <label for="memoryType" class="col-sm-3 col-form-label text-right">Memory Type<i
                             class="text-danger">*</i></label>
                         <div class="col-sm-3">
