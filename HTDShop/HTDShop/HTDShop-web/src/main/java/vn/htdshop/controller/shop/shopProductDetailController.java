@@ -5,26 +5,25 @@
  */
 package vn.htdshop.controller.shop;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.thymeleaf.expression.Calendars;
 
 import vn.htdshop.entity.Product;
-import vn.htdshop.entity.Promotion;
-import vn.htdshop.sb.CategoryFacadeLocal;
+import vn.htdshop.entity.ProductComment;
+import vn.htdshop.entity.ProductCommentReply;
+import vn.htdshop.sb.ProductCommentFacadeLocal;
+import vn.htdshop.sb.ProductCommentReplyFacadeLocal;
 import vn.htdshop.sb.ProductFacadeLocal;
 
 /**
@@ -38,8 +37,19 @@ public class shopProductDetailController {
     @EJB(mappedName = "ProductFacade")
     ProductFacadeLocal productFacade;
 
+    @EJB(mappedName = "ProductCommentFacade")
+    ProductCommentFacadeLocal productCommentFacade;
+
+    @EJB(mappedName = "ProductCommentReplyFacade")
+    ProductCommentReplyFacadeLocal productCommentReplyFacade;
+
+    @Autowired
+    ShopService shopService;
+
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String getProduct(Model model, @RequestParam(value = "id") Integer id) {
+        shopService.checkLogin();
+
         Product product = null;
         if (id == null) {
             return redirectHome;
@@ -49,81 +59,10 @@ public class shopProductDetailController {
                 return redirectHome;
             }
         }
-        Double discount = 0d;
-        if (product.getStatus() != 3) {
-            // Discount price calculation
-            Double oPrice = product.getPrice();
-            // Collection<Promotion> productList = product.getPromotionCollection();
-            // product's discount
-            for (Promotion promo : product.getPromotionCollection()) {
-                if (promo.getMaxQuantity() == null && promo.getMinQuantity() == null) {
-                    if (promo.getLimitedQuantity() != null && promo.getQuantityLeft() == 0) {
-                        continue;
-                    }
-                    if (promo.getPromotionDetail().getIsDisabled()) {
-                        continue;
-                    }
-                    if (!(promo.getPromotionDetail().getIsAlways())
-                            && (promo.getPromotionDetail().getEndDate().compareTo(new Date()) < 0)) {
-                        continue;
-                    }
-                    Double percentageDiscount = 0d;
-                    Double exactDiscount = 0d;
-                    if (promo.getPercentage() != null) {
-                        percentageDiscount = oPrice * promo.getPercentage() / 100;
-                        if (promo.getMaxSaleOff() != null && percentageDiscount > promo.getMaxSaleOff()) {
-                            percentageDiscount = promo.getMaxSaleOff();
-                        }
-                    }
-                    if (promo.getExactSaleOff() != null) {
-                        exactDiscount = promo.getExactSaleOff();
-                    }
-                    // System.out.println("\"" + promo.getPromotionDetail().getName() + "\" - product's discount %: "
-                    //         + percentageDiscount);
-                    // System.out.println("\"" + promo.getPromotionDetail().getName() + "\" - product's discount exact: "
-                    //         + exactDiscount);
-                    discount += percentageDiscount + exactDiscount;
-                }
-            }
 
-            // category's percentage discount
-            // Init valid promotion list
-            for (Promotion promo : product.getCategory().getPromotionCollection()) {
-                if (promo.getMaxQuantity() == null && promo.getMinQuantity() == null) {
-                    if (promo.getLimitedQuantity() != null && promo.getQuantityLeft() == 0) {
-                        continue;
-                    }
-                    if (promo.getPromotionDetail().getIsDisabled()) {
-                        continue;
-                    }
-                    if (!(promo.getPromotionDetail().getIsAlways())
-                            && (promo.getPromotionDetail().getEndDate().compareTo(new Date()) < 0)) {
-                        continue;
-                    }
-                    Double percentageDiscount = 0d;
-                    Double exactDiscount = 0d;
-                    if (promo.getPercentage() != null) {
-                        percentageDiscount = oPrice * promo.getPercentage() / 100;
-                        if (promo.getMaxSaleOff() != null && percentageDiscount > promo.getMaxSaleOff()) {
-                            percentageDiscount = promo.getMaxSaleOff();
-                        }
-                    }
-                    if (promo.getExactSaleOff() != null) {
-                        exactDiscount = promo.getExactSaleOff();
-                    }
-                    // System.out.println("\"" + promo.getPromotionDetail().getName() + "\" - category's discount %: "
-                    //         + percentageDiscount);
-                    // System.out.println("\"" + promo.getPromotionDetail().getName() + "\" - category's discount exact: "
-                    //         + exactDiscount);
-                    discount += percentageDiscount + exactDiscount;
-                }
-            }
-
-        }
-        System.out.println("Total discount: " + discount);
-        System.out.println("Discounted price: " + (product.getPrice() - discount));
-        if (discount != 0) {
-            model.asMap().put("discountPrice", product.getPrice() - discount);
+        Double discount = shopService.getDiscountPrice(product);
+        if (discount < product.getPrice()) {
+            model.asMap().put("discountPrice", discount);
         }
 
         model.asMap().put("product", product);
@@ -131,8 +70,28 @@ public class shopProductDetailController {
 
     }
 
-    @RequestMapping(value = "test", method = RequestMethod.GET)
-    public String getTest() {
-        return "HTDShop/test";
+    @RequestMapping(value = "doComment", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public String doComment(@RequestBody MultiValueMap<String, String> formData) {
+        ProductComment c = new ProductComment();
+        c.setId(null);
+        c.setUser(shopService.getLoggedInCustomer().getUser());
+        c.setContent(formData.getFirst("comment"));
+        c.setProduct(new Product(Integer.parseInt(formData.getFirst("productid"))));
+        c.setCreatedAt(new Date());
+        productCommentFacade.create(c);
+        return "redirect:/product?id=" + formData.getFirst("productid");
+    }
+
+    @RequestMapping(value = "doReply", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public String doReply(@RequestBody MultiValueMap<String, String> formData) {
+        ProductCommentReply r = new ProductCommentReply();
+        r.setId(null);
+        r.setStaff(null);
+        r.setUser(shopService.getLoggedInCustomer().getUser());
+        r.setContent(formData.getFirst("reply"));
+        r.setProductComment(new ProductComment(Integer.parseInt(formData.getFirst("commentid"))));
+        r.setCreatedAt(new Date());
+        productCommentReplyFacade.create(r);
+        return "redirect:/product?id=" + formData.getFirst("productid");
     }
 }
