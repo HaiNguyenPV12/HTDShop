@@ -9,13 +9,11 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletContext;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -69,11 +67,14 @@ public class managerProductController {
     @Autowired
     HttpServletRequest request;
 
+    @Autowired
+    ManagerService managerService;
+
     // ==== PRODUCT INDEX ==== \\
     @RequestMapping(value = { "", "index" }, method = RequestMethod.GET)
     public String getHome(HttpSession session, Model model) {
         // Check login with role
-        if (!checkLoginWithRole("product_read")) {
+        if (!managerService.checkLoginWithRole("product_read")) {
             return redirectHome;
         }
 
@@ -98,7 +99,7 @@ public class managerProductController {
     // Adding optional "cate" parameter by using @RequestParam(required = false)
     public String viewAdd(HttpSession session, Model model, @RequestParam(required = false) Integer cate) {
 
-        if (!checkLoginWithRole("product_add")) {
+        if (!managerService.checkLoginWithRole("product_add")) {
             return redirectProductHome;
         }
         // Prepare product model
@@ -133,7 +134,7 @@ public class managerProductController {
     public String doAdd(@Valid @ModelAttribute("product") Product product, BindingResult error, HttpSession session,
             Model model, @RequestParam(value = "uploadimg", required = false) MultipartFile[] uploadimg,
             RedirectAttributes redirect) {
-        if (!checkLoginWithRole("product_add")) {
+        if (!managerService.checkLoginWithRole("product_add")) {
             return redirectProductHome;
         }
         for (MultipartFile multipartFile : uploadimg) {
@@ -179,7 +180,7 @@ public class managerProductController {
     // ==== PRODUCT EDIT - VIEW ==== \\
     @RequestMapping(value = "edit", method = RequestMethod.GET)
     public String viewEdit(HttpSession session, Model model, @RequestParam(required = true) Integer id) {
-        if (!checkLoginWithRole("product_edit")) {
+        if (!managerService.checkLoginWithRole("product_edit")) {
             return redirectProductHome;
         }
 
@@ -228,7 +229,7 @@ public class managerProductController {
     public String doEditCPU(@Valid @ModelAttribute("product") Product product, BindingResult error, HttpSession session,
             Model model, @RequestParam(value = "uploadimg", required = false) MultipartFile[] uploadimg,
             RedirectAttributes redirect) {
-        if (!checkLoginWithRole("product_edit")) {
+        if (!managerService.checkLoginWithRole("product_edit")) {
             return redirectProductHome;
         }
 
@@ -270,7 +271,7 @@ public class managerProductController {
     @RequestMapping(value = "doDelete", method = RequestMethod.GET)
     public String doDelete(HttpSession session, Model model, @RequestParam(required = true) Integer id,
             RedirectAttributes redirect) {
-        if (!checkLoginWithRole("product_delete")) {
+        if (!managerService.checkLoginWithRole("product_delete")) {
             return redirectProductHome;
         }
 
@@ -349,35 +350,6 @@ public class managerProductController {
         // Add indicator attribute for sidemenu highlight
         model.asMap().put("menu", "product");
         return redirectProductHome;
-    }
-
-    private Boolean checkLogin() {
-        if (session.getAttribute("loggedInStaff") != null) {
-            return true;
-        } else {
-            String cookie = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("loggedInStaff"))
-                    .findFirst().map(Cookie::getValue).orElse(null);
-            if (cookie != null) {
-                Staff staff = staffFacade.find(cookie);
-                if (staff != null) {
-                    session.setAttribute("loggedInStaff", staff);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private Boolean checkLoginWithRole(String role) {
-        if (checkLogin()) {
-            String user = ((Staff) session.getAttribute("loggedInStaff")).getUsername();
-            for (RoleRights roleRight : staffFacade.find(user).getRole().getRoleRightsCollection()) {
-                if (roleRight.getRightsDetail().getTag().equals(role)) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     private Boolean uploadImages(MultipartFile[] uploadimg, Product product, boolean deleteOldImages) {

@@ -168,19 +168,18 @@
                                         role="tabpanel"
                                         style="text-align: center;">
                                         <div class="easyzoom" style="display:inline-block;position: relative;height:25rem">
-                                            <img th:src="@{/images/noimage.png}" alt="">
+                                            <img th:src="@{/images/noimage.png}" alt=""
+                                            style="width: auto;height:100%;max-height: 25rem;max-width: 100%;object-fit: contain;">
                                         </div>
                                     </div>
                                     <div class="tab-pane fade" th:each="img,it : ${product.productImageCollection}"
                                         th:classappend="${it.index==0?'active show':''}"
                                         th:id="${'pro-details'+(it.index+1)}" role="tabpanel"
                                         style="text-align: center;">
-                                        <div style="display:inline-block;position: relative;height:25rem">
-                                            <a>
-                                                <img th:src="@{/images/__${img.imagePath}__}" alt=""
+                                        <div style="display:inline-block;position: relative;height:25rem;vertical-align: middle;">
+                                            <img th:src="@{/images/__${img.imagePath}__}" alt=""
                                                     th:onerror="'this.onerror=null;this.src=&quot;'+@{/images/noimage.png}+'&quot;'"
-                                                    style="width: 100%;">
-                                            </a>
+                                                    style="width: auto;height:100%;max-height: 25rem;max-width: 100%;object-fit: contain;">
                                         </div>
                                     </div>
                                     <!-- <div class="tab-pane fade" id="pro-details2" role="tabpanel">
@@ -431,9 +430,10 @@
                                     
                                 </div>
                                 <!-- /.card-footer -->
-                                <div class="card-footer" th:if="${loggedInUser} != null">
+                                <div class="card-footer" th:if="${session.loggedInCustomer} != null">
                                     <form action="#" method="post">
                                         <div class="img-push">
+                                            <th:block th:text="${session.loggedInCustomer.firstName}"></th:block>
                                             <input type="text" class="form-control form-control-sm"
                                                 placeholder="Press enter to post comment">
                                             

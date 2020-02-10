@@ -78,10 +78,10 @@ public class shopProductDetailController {
                     if (promo.getExactSaleOff() != null) {
                         exactDiscount = promo.getExactSaleOff();
                     }
-                    System.out.println("\"" + promo.getPromotionDetail().getName() + "\" - product's discount %: "
-                            + percentageDiscount);
-                    System.out.println("\"" + promo.getPromotionDetail().getName() + "\" - product's discount exact: "
-                            + exactDiscount);
+                    // System.out.println("\"" + promo.getPromotionDetail().getName() + "\" - product's discount %: "
+                    //         + percentageDiscount);
+                    // System.out.println("\"" + promo.getPromotionDetail().getName() + "\" - product's discount exact: "
+                    //         + exactDiscount);
                     discount += percentageDiscount + exactDiscount;
                 }
             }
@@ -111,10 +111,10 @@ public class shopProductDetailController {
                     if (promo.getExactSaleOff() != null) {
                         exactDiscount = promo.getExactSaleOff();
                     }
-                    System.out.println("\"" + promo.getPromotionDetail().getName() + "\" - category's discount %: "
-                            + percentageDiscount);
-                    System.out.println("\"" + promo.getPromotionDetail().getName() + "\" - category's discount exact: "
-                            + exactDiscount);
+                    // System.out.println("\"" + promo.getPromotionDetail().getName() + "\" - category's discount %: "
+                    //         + percentageDiscount);
+                    // System.out.println("\"" + promo.getPromotionDetail().getName() + "\" - category's discount exact: "
+                    //         + exactDiscount);
                     discount += percentageDiscount + exactDiscount;
                 }
             }

@@ -79,7 +79,7 @@
                                             <span class="col-sm-8" th:with="actions=${new String[]{'read','add', 'edit', 'delete'}}">
                                                 <div class="d-flex"> 
                                                     <th:block th:each="action : ${actions}" th:with="right=${rn+'_'+action}" >
-                                                        <div class="icheck-primary mr-auto" th:if="${!right.equals('revenue_edit') and !right.equals('revenue_add') and !right.equals('revenue_delete')}"> 
+                                                        <div class="icheck-primary mr-auto" th:if="${!right.equals('revenue_edit') and !right.equals('revenue_add') and !right.equals('revenue_delete') and !right.equals('delivery_add') and !right.equals('delivery_delete')}"> 
                                                             <input th:id="${right}" type="checkbox" name="rights" th:if="${role.roleRightsCollection == null}" th:value="${right}"/>
                                                             <input th:id="${right}" type="checkbox" name="rights" th:if="${role.roleRightsCollection != null}" th:checked="${role.roleRightsCollection.![rightsDetail.tag].contains(right)}" th:value="${right}"/>
                                                             <label th:for="${right}" th:title="${#strings.capitalize(rn) + ': ' + action}">
@@ -96,7 +96,7 @@
                                     </div>
                                     
                                 </th:block>
-                                <div class="col-sm-6 border rounded-sm border-secondary form-group">
+                                <!-- <div class="col-sm-6 border rounded-sm border-secondary form-group">
                                     <div class="row">
                                         <label class="col-sm-3">Other</label>:
                                         <span class="col-sm-8">
@@ -111,7 +111,7 @@
                                             </div>
                                         </span>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                     </div>

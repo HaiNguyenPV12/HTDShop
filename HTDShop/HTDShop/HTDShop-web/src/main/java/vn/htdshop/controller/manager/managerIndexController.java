@@ -5,8 +5,6 @@
  */
 package vn.htdshop.controller.manager;
 
-import java.util.Arrays;
-
 import javax.ejb.EJB;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -44,10 +42,13 @@ public class managerIndexController {
     @Autowired
     HttpServletRequest request;
 
-    @RequestMapping(value = {"", "index"}, method = RequestMethod.GET)
+    @Autowired
+    ManagerService managerService;
+
+    @RequestMapping(value = { "", "index" }, method = RequestMethod.GET)
     public String getHome(HttpSession session, Model model, HttpServletRequest request) {
         // Check if logged in session is exists
-        if (!checkLogin()) {
+        if (!managerService.checkLogin()) {
             // If not, return to login page
             return "redirect:/manager/login";
         }
@@ -64,7 +65,7 @@ public class managerIndexController {
     @RequestMapping(value = "login", method = RequestMethod.GET)
     public String getLogin(@ModelAttribute("staff") Staff staff, Model model, ModelMap modelMap, HttpSession session) {
         // Check if logged in session is exists
-        if (checkLogin()) {
+        if (managerService.checkLogin()) {
             // If yes, redirect to index
             return "redirect:/manager";
         }
@@ -137,22 +138,5 @@ public class managerIndexController {
         response.addCookie(cookie);
         // redirect to login
         return "redirect:/manager/login";
-    }
-
-    private Boolean checkLogin() {
-        if (session.getAttribute("loggedInStaff") != null) {
-            return true;
-        } else {
-            String cookie = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("loggedInStaff"))
-                    .findFirst().map(Cookie::getValue).orElse(null);
-            if (cookie != null) {
-                Staff staff = staffFacade.find(cookie);
-                if (staff != null) {
-                    session.setAttribute("loggedInStaff", staff);
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 }

@@ -6,12 +6,10 @@
 package vn.htdshop.controller.manager;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletContext;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -53,7 +51,7 @@ public class managerRoleController {
     RightsDetailFacadeLocal rightsDetailFacade;
 
     final private String[] rightsNames = new String[] { "product", "prebuilt", "comment", "order", "customer",
-            "promotion", "imageslide", "staff", "role", "revenue" };
+            "promotion", "imageslide", "staff", "role", "revenue", "delivery" };
 
     @Autowired
     ServletContext context;
@@ -64,11 +62,14 @@ public class managerRoleController {
     @Autowired
     HttpServletRequest request;
 
+    @Autowired
+    ManagerService managerService;
+
     // ==== ROLE INDEX ==== \\
     @RequestMapping(value = { "", "index" }, method = RequestMethod.GET)
     public String getHome(HttpSession session, Model model) {
         // Check login session with role
-        if (!checkLoginWithRole("role_read")) {
+        if (!managerService.checkLoginWithRole("role_read")) {
             return redirectHome;
         }
 
@@ -93,7 +94,7 @@ public class managerRoleController {
     // ==== ROLE ADD - VIEW ==== \\
     @RequestMapping(value = "add", method = RequestMethod.GET)
     public String viewAdd(Model model) {
-        if (!checkLoginWithRole("role_add")) {
+        if (!managerService.checkLoginWithRole("role_add")) {
             return redirectRoleHome;
         }
         // Prepare model
@@ -134,7 +135,7 @@ public class managerRoleController {
     public String doAdd(@Valid @ModelAttribute("role") Role role,
             @RequestParam(value = "rights", required = false) String[] rights, BindingResult error, HttpSession session,
             Model model, RedirectAttributes redirect) {
-        if (!checkLoginWithRole("role_add")) {
+        if (!managerService.checkLoginWithRole("role_add")) {
             return redirectRoleHome;
         }
         // Check role name exists
@@ -181,7 +182,7 @@ public class managerRoleController {
     // ==== ROLE EDIT - VIEW ==== \\
     @RequestMapping(value = "edit", method = RequestMethod.GET)
     public String viewEdit(Model model, @RequestParam(value = "id") Integer id) {
-        if (!checkLoginWithRole("role_edit")) {
+        if (!managerService.checkLoginWithRole("role_edit")) {
             return redirectRoleHome;
         }
         // Prepare model
@@ -232,7 +233,7 @@ public class managerRoleController {
     public String doEdit(@Valid @ModelAttribute("role") Role role, BindingResult error, HttpSession session,
             Model model, @RequestParam(value = "rights", required = false) String[] rights,
             RedirectAttributes redirect) {
-        if (!checkLoginWithRole("role_edit")) {
+        if (!managerService.checkLoginWithRole("role_edit")) {
             return redirectRoleHome;
         }
         
@@ -293,7 +294,7 @@ public class managerRoleController {
     @RequestMapping(value = "doDelete", method = RequestMethod.GET)
     public String doDelete(HttpSession session, Model model, @RequestParam(required = true) Integer id,
             RedirectAttributes redirect) {
-        if (!checkLoginWithRole("role_delete")) {
+        if (!managerService.checkLoginWithRole("role_delete")) {
             return redirectRoleHome;
         }
 
@@ -329,34 +330,5 @@ public class managerRoleController {
         }
 
         return redirectRoleHome;
-    }
-
-    private Boolean checkLogin() {
-        if (session.getAttribute("loggedInStaff") != null) {
-            return true;
-        } else {
-            String cookie = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("loggedInStaff"))
-                    .findFirst().map(Cookie::getValue).orElse(null);
-            if (cookie != null) {
-                Staff staff = staffFacade.find(cookie);
-                if (staff != null) {
-                    session.setAttribute("loggedInStaff", staff);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private Boolean checkLoginWithRole(String role) {
-        if (checkLogin()) {
-            String user = ((Staff) session.getAttribute("loggedInStaff")).getUsername();
-            for (RoleRights roleRight : staffFacade.find(user).getRole().getRoleRightsCollection()) {
-                if (roleRight.getRightsDetail().getTag().equals(role)) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 }
