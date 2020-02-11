@@ -71,11 +71,13 @@
                             <div class="select-wrapper">
                                 <select class="select" name="category">
                                     <option value="0">All</option>
+                                    <option value="-1">Pre-built PC</option>
                                     <option
                                         th:each="cate : ${session.categories}"
                                         th:value="${cate.id}" th:text="${cate.name}">
                                         All Categories
                                     </option>
+                                    
                                 </select>
                             </div>
                         </div>

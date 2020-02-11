@@ -5,33 +5,23 @@
  */
 package vn.htdshop.controller.shop;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collector;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import vn.htdshop.entity.Product;
-import vn.htdshop.entity.ProductComment;
-import vn.htdshop.entity.ProductCommentReply;
+
 import vn.htdshop.sb.CategoryFacadeLocal;
-import vn.htdshop.sb.ProductCommentFacadeLocal;
-import vn.htdshop.sb.ProductCommentReplyFacadeLocal;
+import vn.htdshop.sb.PreBuiltFacadeLocal;
 import vn.htdshop.sb.ProductFacadeLocal;
 
 /**
@@ -39,12 +29,15 @@ import vn.htdshop.sb.ProductFacadeLocal;
  * @author Hai
  */
 @Controller
-@RequestMapping("search")
-public class shopSearchController {
+@RequestMapping("prebuilt")
+public class shopPreBuiltController {
     final private String redirectHome = "redirect:";
 
     @EJB(mappedName = "ProductFacade")
     ProductFacadeLocal productFacade;
+
+    @EJB(mappedName = "PreBuiltFacade")
+    PreBuiltFacadeLocal preBuiltFacade;
 
     @EJB(mappedName = "CategoryFacade")
     CategoryFacadeLocal categoryFacade;
@@ -52,29 +45,16 @@ public class shopSearchController {
     @Autowired
     ShopService shopService;
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    public String getSearch(Model model, @RequestParam(value = "category", required = false) Integer category,
-            @RequestParam(value = "keyword", required = false) String keyword,
-            @RequestParam(value = "page", required = false) Integer page,
-            @RequestParam(value = "style", required = false) String style,
-            @RequestParam(value = "from", required = false) Double from,
-            @RequestParam(value = "to", required = false) Double to,
-            @RequestParam(value = "sort", required = false) String sort) {
-
+    @RequestMapping(value = "search", method = RequestMethod.GET)
+    public String getSearch(Model model, @RequestParam(required = false) Map<String, String> param) {
         shopService.checkLogin();
-        if (category == -1) {
-            return "redirect:/prebuilt?keyword=" + category;
-        }
-        if (category == null || (category != 0 && categoryFacade.find(category) == null)) {
-            return redirectHome;
-        }
-        return "HTDShop/search";
 
+        return "HTDShop/prebuilt";
     }
 
     @RequestMapping(value = "result", method = RequestMethod.POST)
-    public String getSearchResult(Model model, @RequestParam(value = "category", required = false) Integer category,
-            @RequestParam(value = "keyword", required = false) String keyword,
+    public String getSearchResult(Model model, @RequestParam(value = "c", required = false) Integer category,
+            @RequestParam(value = "k", required = false) String keyword,
             @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "style", required = false) String style,
             @RequestParam(value = "from", required = false) Double from,
@@ -95,7 +75,7 @@ public class shopSearchController {
 
         // Create list
         List<Product> result = productFacade.search(category, keyword);
-        
+
         // Price
         if (from != null && to != null) {
             result = result.stream().filter(p -> p.getPrice() >= from && p.getPrice() <= to)
@@ -103,7 +83,7 @@ public class shopSearchController {
         }
 
         totalResult = result.size();
-        
+
         // Paging
         result = result.stream().filter(p -> p.getStatus() != 3).skip(pageDivide * (pageNumber - 1)).limit(pageDivide)
                 .collect(Collectors.toList());
@@ -134,6 +114,12 @@ public class shopSearchController {
         model.asMap().put("totalPage", totalPage);
         model.asMap().put("result", result);
         return "HTDShop/searchResult";
+    }
+
+    @RequestMapping(value = "productdetail", method = RequestMethod.POST)
+    public String getProductDetail(Model model, @RequestParam(value = "id", required = false) Integer id) {
+        model.asMap().put("product", productFacade.find(id));
+        return "HTDShop/searchProductDetail";
     }
 
 }
