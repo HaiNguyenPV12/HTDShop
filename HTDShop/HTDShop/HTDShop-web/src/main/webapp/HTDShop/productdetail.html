@@ -129,6 +129,18 @@
 
 <body>
     <div layout:fragment="content">
+        <div class="breadcrumb-area pt-10 pb-10"
+            style="background-image: linear-gradient(141deg, #9fb8ad 0%, #fff 51%, #9fb8ad 75%);">
+            <div class="container">
+                <div class="breadcrumb-content text-center">
+                    <ul>
+                        <li><a th:href="@{/}">home</a></li>
+                        <li><a th:href="@{/category?id=__${product.category.id}__}">Category</a></li>
+                        <li th:text="${product.name}"></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
         <div class="product-details ptb-100 pb-90">
             <div class="container">
                 <div class="row">
@@ -229,16 +241,16 @@
                                     <span th:if="${product.status == 1 || product.status == 2}">
                                         <i class="text-muted">
                                             <del
-                                                th:text="${'$'+#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}"></del>
+                                                th:text="${'$'+#numbers.formatDecimal(product.price, 1, 'POINT', 2, 'COMMA')}"></del>
                                         </i>
                                         <th:block
-                                            th:text="${'$'+#numbers.formatDecimal(discountPrice , 0, 'POINT', 0, 'COMMA')}">
+                                            th:text="${'$'+#numbers.formatDecimal(discountPrice , 1, 'POINT', 2, 'COMMA')}">
                                         </th:block>
                                     </span>
                                 </th:block>
                                 <th:block th:if="${discountPrice==null}">
                                     <span th:if="${product.status == 1 || product.status == 2}"
-                                        th:text="${'$'+#numbers.formatDecimal(product.price , 0, 'POINT', 0, 'COMMA')}"></span>
+                                        th:text="${'$'+#numbers.formatDecimal(product.price , 1, 'POINT', 2, 'COMMA')}"></span>
                                 </th:block>
                                 <span th:if="${product.status==3}">Unavailable</span>
                                 <span th:if="${product.status==2}"> - Cooming soon</span>

@@ -47,7 +47,7 @@ public class shopProductDetailController {
     ShopService shopService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public String getProduct(Model model, @RequestParam(value = "id") Integer id) {
+    public String getProduct(Model model, @RequestParam(value = "id", required = false) Integer id) {
         shopService.checkLogin();
 
         Product product = null;

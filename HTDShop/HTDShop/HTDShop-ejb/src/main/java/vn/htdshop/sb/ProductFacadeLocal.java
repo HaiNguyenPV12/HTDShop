@@ -29,5 +29,7 @@ public interface ProductFacadeLocal {
     List<Product> findRange(int[] range);
 
     int count();
+
+    List<Product> search(Integer cateId, String search);
     
 }

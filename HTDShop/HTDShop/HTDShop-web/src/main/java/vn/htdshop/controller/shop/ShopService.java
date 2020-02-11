@@ -15,6 +15,7 @@ import vn.htdshop.entity.Customer;
 import vn.htdshop.entity.Product;
 import vn.htdshop.entity.Promotion;
 import vn.htdshop.entity.User;
+import vn.htdshop.sb.CategoryFacadeLocal;
 import vn.htdshop.sb.CustomerFacadeLocal;
 import vn.htdshop.sb.UserFacadeLocal;
 
@@ -29,6 +30,9 @@ public class ShopService {
     @EJB(mappedName = "UserFacade")
     UserFacadeLocal userFacade;
 
+    @EJB(mappedName = "CategoryFacade")
+    CategoryFacadeLocal categoryFacade;
+
     @Autowired
     HttpSession session;
 
@@ -37,9 +41,10 @@ public class ShopService {
 
     public boolean checkLogin() {
         // System.out.println("Service called.");
+        Boolean result = false;
         if (session.getAttribute("loggedInCustomer") != null) {
             // System.out.println("Have session.");
-            return true;
+            result = true;
         } else {
             // System.out.println("No session.");
             String cookie = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("loggedInCustomer"))
@@ -49,12 +54,15 @@ public class ShopService {
                 // System.out.println("Have cookie.");
                 if (user != null) {
                     session.setAttribute("loggedInCustomer", user.getCustomerCollection().toArray()[0]);
-                    return true;
+                    result = true;
                 }
             }
             // System.out.println("No cookie.");
         }
-        return false;
+        if (session.getAttribute("categories") == null) {
+            session.setAttribute("categories", categoryFacade.findAll());
+        }
+        return result;
     }
 
     public Customer getLoggedInCustomer() {
