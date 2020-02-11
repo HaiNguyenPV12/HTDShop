@@ -2,6 +2,8 @@ package vn.htdshop.controller.shop;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
 import javax.servlet.http.Cookie;
@@ -12,11 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import vn.htdshop.entity.Customer;
+import vn.htdshop.entity.PreBuilt;
 import vn.htdshop.entity.Product;
 import vn.htdshop.entity.Promotion;
 import vn.htdshop.entity.User;
 import vn.htdshop.sb.CategoryFacadeLocal;
 import vn.htdshop.sb.CustomerFacadeLocal;
+import vn.htdshop.sb.PromotionFacadeLocal;
 import vn.htdshop.sb.UserFacadeLocal;
 
 /**
@@ -26,6 +30,9 @@ import vn.htdshop.sb.UserFacadeLocal;
 public class ShopService {
     @EJB(mappedName = "CustomerFacade")
     CustomerFacadeLocal customerFacade;
+
+    @EJB(mappedName = "PromotionFacade")
+    PromotionFacadeLocal promotionFacade;
 
     @EJB(mappedName = "UserFacade")
     UserFacadeLocal userFacade;
@@ -150,7 +157,73 @@ public class ShopService {
         return product.getPrice() - discount;
     }
 
-    public static String test() {
-        return "test";
+    public Double getPreBuiltPrice(PreBuilt prebuilt) {
+        Double result = 0d;
+        if (prebuilt.getCpu() != null) {
+            result += getDiscountPrice(prebuilt.getCpu());
+        }
+        if (prebuilt.getMotherboard() != null) {
+            result += getDiscountPrice(prebuilt.getMotherboard());
+        }
+        if (prebuilt.getVga() != null) {
+            result += getDiscountPrice(prebuilt.getVga());
+        }
+        if (prebuilt.getMemory() != null) {
+            result += getDiscountPrice(prebuilt.getMemory());
+        }
+        if (prebuilt.getPsu() != null) {
+            result += getDiscountPrice(prebuilt.getPsu());
+        }
+        if (prebuilt.getStorage() != null) {
+            result += getDiscountPrice(prebuilt.getStorage());
+        }
+        if (prebuilt.getCpucooler() != null) {
+            result += getDiscountPrice(prebuilt.getCpucooler());
+        }
+        if (prebuilt.getCases() != null) {
+            result += getDiscountPrice(prebuilt.getCases());
+        }
+        if (prebuilt.getMonitor() != null) {
+            result += getDiscountPrice(prebuilt.getMonitor());
+        }
+        return result;
     }
+
+    public Double getPreBuiltDiscountPrice(PreBuilt prebuilt) {
+        Double discount = 0d;
+        List<Promotion> promoList = promotionFacade.findAll().stream().filter(p -> p.getPreBuiltTarget() != null)
+                .collect(Collectors.toList());
+        Double oPrice = getPreBuiltPrice(prebuilt);
+        for (Promotion promo : promoList) {
+            if (promo.getMaxQuantity() == null && promo.getMinQuantity() == null) {
+                if (promo.getLimitedQuantity() != null && promo.getQuantityLeft() == 0) {
+                    continue;
+                }
+                if (promo.getPromotionDetail().getIsDisabled()) {
+                    continue;
+                }
+                if (!(promo.getPromotionDetail().getIsAlways())
+                        && (promo.getPromotionDetail().getEndDate().compareTo(new Date()) < 0)) {
+                    continue;
+                }
+                if (promo.getPreBuiltTarget() == 1 && prebuilt.getStaff() == null) {
+                    continue;
+                }
+                Double percentageDiscount = 0d;
+                Double exactDiscount = 0d;
+                if (promo.getPercentage() != null) {
+                    percentageDiscount = oPrice * promo.getPercentage() / 100;
+                    if (promo.getMaxSaleOff() != null && percentageDiscount > promo.getMaxSaleOff()) {
+                        percentageDiscount = promo.getMaxSaleOff();
+                    }
+                }
+                if (promo.getExactSaleOff() != null) {
+                    exactDiscount = promo.getExactSaleOff();
+                }
+                discount += percentageDiscount + exactDiscount;
+            }
+        }
+        return getPreBuiltPrice(prebuilt) - discount;
+    }
+
 }

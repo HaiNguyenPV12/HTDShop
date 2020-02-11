@@ -1,0 +1,103 @@
+<div class="shop-product-wrapper res-xl res-xl-btn" style="height: 63rem;">
+    <div class="shop-bar-area">
+        <div class="shop-bar pb-60">
+            <div class="shop-found-selector">
+                <div class="shop-found">
+                    <p><span th:text="${totalResult}">23</span> Product Found</p>
+                </div>
+                <div class="shop-selector">
+                    <label>Sort By : </label>
+                    <select name="sort" id="sort" style="width: auto;">
+                        <option value="default" th:selected="${sortString.equals('default')}">Default (Newest first)</option>
+                        <option value="priceasc" th:selected="${sortString.equals('priceasc')}">Price low -> high</option>
+                        <option value="pricedesc" th:selected="${sortString.equals('pricedesc')}">Price high -> low</option>
+                    </select>
+                </div>
+            </div>
+            <!-- <div class="shop-filter-tab">
+                <div class="shop-tab nav" role=tablist>
+                    <a class="active" href="#grid-sidebar1" data-toggle="tab" role="tab" aria-selected="false">
+                        <i class="ti-layout-grid4-alt"></i>
+                    </a>
+                    <a href="#grid-sidebar2" data-toggle="tab" role="tab" aria-selected="true">
+                        <i class="ti-menu"></i>
+                    </a>
+                </div>
+            </div> -->
+        </div>
+        <div class="shop-product-content tab-content">
+            <div class="tab-pane active show">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-xl-12 text-center" th:if="${result.size()==0}">No result</div>
+                    <div class="col-lg-6 col-md-6 col-xl-3" th:each="p : ${result}">
+                        <div class="product-wrapper mb-30">
+                            <div class="product-img text-center">
+                                <a th:href="@{/product(id=${p.id})}">
+                                    <img th:src="@{/images/__${p.productImageCollection.?[mainImage==true][0].imagePath}__}"
+                                        alt="" style="max-height: 10rem;height: 100%;width: auto;max-width: 100%;"
+                                        th:if="${p.productImageCollection.size()>0}">
+                                    <img th:src="@{/images/noimage.png}" alt=""
+                                        style="max-height: 10rem;height: 100%;width: auto;max-width: 100%;"
+                                        th:if="${p.productImageCollection.size()==0}">
+                                </a>
+                                <span th:if="${shopSv.getDiscountPrice(p) lt p.price}"><i
+                                        class="fas fa-gift text-warning"></i></span>
+                                <div class="product-action">
+                                    <!-- <a class="animate-left" title="Wishlist" href="#">
+                                        <i class="pe-7s-like"></i>
+                                    </a> -->
+                                    <a class="animate-top" title="Add To Cart" href="#">
+                                        <i class="pe-7s-cart"></i>
+                                    </a>
+                                    <!-- <a class="animate-right" title="Quick View" data-toggle="modal"
+                                        data-target="#exampleModal" href="#">
+                                        <i class="pe-7s-look"></i>
+                                    </a> -->
+                                </div>
+                            </div>
+                            <div class="product-content">
+                                <h4><a th:href="@{/product(id=${p.id})}" th:text="${p.name}"></a></h4>
+                                <span th:if="${p.status == 1 && p.stock > 0}">
+                                    <del th:if="${shopSv.getDiscountPrice(p) lt p.price}"
+                                        th:text="${'$'+#numbers.formatDecimal(p.price, 1, 'POINT', 2, 'COMMA')}"
+                                        class="text-muted"></del>
+                                    <th:block
+                                        th:text="${'$'+#numbers.formatDecimal(shopSv.getDiscountPrice(p), 1, 'POINT', 2, 'COMMA')}">
+                                    </th:block>
+                                </span>
+                                <span th:if="${p.status == 1 && p.stock == 0}">
+                                    Out of stock
+                                </span>
+                                <span th:if="${p.status == 2}">
+                                    <del th:if="${shopSv.getDiscountPrice(p) lt p.price}"
+                                        th:text="${'$'+#numbers.formatDecimal(p.price, 1, 'POINT', 2, 'COMMA')}"
+                                        class="text-muted"></del>
+                                    <th:block
+                                        th:text="${'$'+#numbers.formatDecimal(shopSv.getDiscountPrice(p), 1, 'POINT', 2, 'COMMA')}">
+                                    </th:block>
+                                    - Upcoming
+                                </span>
+                                <span th:if="${p.status == 3}">
+                                    Unavailable
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="pagination-style mt-30 text-center" id="paging" th:if="${totalPage > 0}">
+    <ul>
+        <li th:if="${pageNumber != 1}"><a style="cursor: pointer;" th:onclick="doSearch([[${pageNumber - 1}]])"><i class="ti-angle-left"></i></a></li>
+        <li th:each="i: ${#numbers.sequence(1, totalPage)}" th:classappend="${pageNumber==i?'active':''}">
+            <a th:text="${i}" th:onclick="doSearch([[${i}]])" style="cursor: pointer;" th:if="${pageNumber!=i}">1</a>
+            <a th:text="${i}" th:if="${pageNumber==i}">1</a>
+        </li>
+        <li th:if="${pageNumber != totalPage}"><a style="cursor: pointer;" th:onclick="doSearch([[${pageNumber +1 }]])"><i class="ti-angle-right"></i></a></li>
+    </ul>
+</div>
+<script>
+     $("#sort").on("change", function () { doSearch() });
+</script>

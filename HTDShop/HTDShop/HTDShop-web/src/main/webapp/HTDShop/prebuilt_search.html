@@ -3,7 +3,7 @@
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDShop/layout}">
 
 <head>
-    <title>HTD Shop - Search</title>
+    <title>HTD Shop - Search Pre-built PC</title>
     <th:block layout:fragment="additionalCss">
         <link rel="stylesheet" th:href="@{/resources/Content/fontawesome-free/css/all.min.css}">
     </th:block>
@@ -20,7 +20,7 @@
                 <div class="breadcrumb-content text-center">
                     <ul>
                         <li><a th:href="@{/}">home</a></li>
-                        <li id="searchLabel">Search: "[[${param.search}]]"</li>
+                        <li id="searchLabel">Search Pre-built PC: "[[${param.search}]]"</li>
                     </ul>
                 </div>
             </div>
@@ -31,7 +31,7 @@
                     <div class="col-lg-3">
                         <div class="shop-sidebar mr-50">
                             <div class="sidebar-widget mb-50">
-                                <h3 class="sidebar-title">Search Products</h3>
+                                <h3 class="sidebar-title">Search Pre-built PC</h3>
                                 <div class="sidebar-search">
                                     <form id="searchKeyword">
                                         <input placeholder="Search Products..." type="text" th:value="${param.keyword}"
@@ -40,19 +40,35 @@
                                     </form>
                                 </div>
                             </div>
-                            <div class="sidebar-widget mb-45">
-                                <h3 class="sidebar-title">Categories</h3>
-                                <div class="sidebar-categories">
-                                    <select class="select" name="category" id="category">
-                                        <option value="0" th:selected="${T(Integer).parseInt(param.category) == 0}">All
+                            <div class="sidebar-widget mb-45"
+                                th:with="cate = ${new String[]{'cpu', 'motherboard', 'gpu', 'memory', 'psu', 'storage', 'cpucooler', 'case', 'monitor'}}" id="parts">
+                                <h3 class="sidebar-title">Parts</h3>
+                                <div class="sidebar-categories mb-2" th:each="c, it : ${cate}">
+                                    <select class="select" th:name="${c}" th:id="${c}">
+                                        <option value="0"
+                                            th:selected="${param.__${c}__!=null && T(Integer).parseInt(param.__${c}__) == 0}">
+                                            All <th:block th:text="${#strings.capitalize(c == 'cpucooler'?'Cpu Cooler' : c)}"></th:block>
                                         </option>
-                                        <option th:each="cate : ${session.categories}" th:value="${cate.id}"
-                                            th:text="${cate.name}"
-                                            th:selected="${T(Integer).parseInt(param.category) == cate.id}">
-                                            All Categories
+                                        <option th:each="p : ${products.?[category.id== __${it.index + 1}__]}"
+                                            th:value="${p.id}" th:text="${p.name}"
+                                            th:selected="${param.__${c}__!=null && T(Integer).parseInt(param.__${c}__) == p.id}">
+                                            CPU
                                         </option>
                                     </select>
                                 </div>
+                                <!-- <div class="sidebar-categories">
+                                    <select class="select" name="motherboard" id="motherboard">
+                                        <option value="0"
+                                            th:selected="${param.motherboard!=null && T(Integer).parseInt(param.motherboard) == 0}">
+                                            All Motherboard
+                                        </option>
+                                        <option th:each="p : ${products.?[category==2]}" th:value="${p.id}"
+                                            th:text="${p.name}"
+                                            th:selected="${param.motherboard!=null && T(Integer).parseInt(param.motherboard) == p.id}">
+                                            Motherboard
+                                        </option>
+                                    </select>
+                                </div> -->
                             </div>
                             <div class="sidebar-widget mb-40">
                                 <h3 class="sidebar-title">Filter by Price</h3>
@@ -183,7 +199,7 @@
         /*<![CDATA[*/
         doSearch();
 
-        $("#category").on("change", function () { doSearch() });
+        $("#parts").on("change", function () { doSearch() });
 
         $("#searchKeyword").on("submit", function (e) {
             e.preventDefault();
@@ -202,7 +218,15 @@
             $("#from").val(0);
             $("#to").val(10000);
             $("#keyword").val("");
-            $("#category").val(0);
+            $("#cpu").val(0);
+            $("#motherboard").val(0);
+            $("#gpu").val(0);
+            $("#memory").val(0);
+            $("#psu").val(0);
+            $("#storage").val(0);
+            $("#cpucooler").val(0);
+            $("#case").val(0);
+            $("#monitor").val(0);
             doSearch(1, "default");
         });
 
@@ -210,10 +234,18 @@
             if (+$("#from").val() > +$("#to").val()) {
                 $("#from").val(0);
             }
-            var searchUrl = /*[[@{/search/result}]]*/'';
-            var href =  /*[[@{/search}]]*/'';
+            var searchUrl = /*[[@{/prebuilt/result}]]*/'';
+            var href =  /*[[@{/prebuilt/search}]]*/'';
             var kParam = $("#keyword").val();
-            var cParam = $("#category").val();
+            var cpuParam = $("#cpu").val();
+            var motherboardParam = $("#motherboard").val();
+            var gpuParam = $("#gpu").val();
+            var memoryParam = $("#memory").val();
+            var psuParam = $("#psu").val();
+            var storageParam = $("#storage").val();
+            var cpucoolerParam = $("#cpucooler").val();
+            var caseParam = $("#case").val();
+            var monitorParam = $("#monitor").val();
             var styleParam = /*[[${param.style!=null?param.style:''}]]*/"";
             var pageParam = 1;
             var fromParam = $("#from").val();
@@ -225,8 +257,8 @@
             if (page != null) {
                 pageParam = page;
             }
-            searchUrl += "?category=" + cParam + "&keyword=" + kParam + "&style=" + styleParam + "&page=" + pageParam + "&from=" + fromParam + "&to=" + toParam + "&sort=" + sortParam;
-            href += "?category=" + cParam + "&keyword=" + kParam + "&style=" + styleParam + "&page=" + pageParam + "&from=" + fromParam + "&to=" + toParam + "&sort=" + sortParam;
+            searchUrl += "?keyword=" + kParam + "&style=" + styleParam + "&page=" + pageParam + "&from=" + fromParam + "&to=" + toParam + "&sort=" + sortParam + "&cpu=" + cpuParam + "&motherboard=" + motherboardParam + "&gpu=" + gpuParam + "&memory=" + memoryParam + "&psu=" + psuParam + "&storage=" + storageParam + "&cpucooler=" + cpucoolerParam + "&case=" + caseParam + "&monitor=" + monitorParam;
+            href += "?keyword=" + kParam + "&style=" + styleParam + "&page=" + pageParam + "&from=" + fromParam + "&to=" + toParam + "&sort=" + sortParam + "&cpu=" + cpuParam + "&motherboard=" + motherboardParam + "&gpu=" + gpuParam + "&memory=" + memoryParam + "&psu=" + psuParam + "&storage=" + storageParam + "&cpucooler=" + cpucoolerParam + "&case=" + caseParam + "&monitor=" + monitorParam;
             if (history.pushState) {
                 $("#result").animate({ 'opacity': '0.0' }, 200, function () {
                     $.ajax({
@@ -236,8 +268,8 @@
                         success: function (data) {
                             $("#result").html(data);
                             $("#result").animate({ 'opacity': '1.0' }, 400);
-                            $("#searchLabel").html("Search: \"" + kParam + "\"");
-                            history.pushState('', 'HTD Shop - Search', href);
+                            $("#searchLabel").html("Search Pre-built PC: \"" + kParam + "\"");
+                            history.pushState('', 'HTD Shop - Search Pre-built PC', href);
                         }
                     });
                 });
