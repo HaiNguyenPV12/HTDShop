@@ -15,8 +15,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -30,10 +28,9 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Hai
+ * @author Thien
  */
 @Entity
-// Use [User] instead of User to prevent SQL keyword
 @Table(name = "[User]")
 @XmlRootElement
 @NamedQueries({
@@ -65,11 +62,11 @@ public class User implements Serializable {
     @NotNull
     @Column(name = "Point")
     private int point;
+    @OneToMany(mappedBy = "user")
+    private Collection<Customer> customerCollection;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Collection<ProductComment> productCommentCollection;
-    @JoinColumn(name = "CustomerId", referencedColumnName = "Id")
-    @ManyToOne(optional = false)
-    private Customer customer;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Collection<ProductCommentReply> productCommentReplyCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
@@ -78,6 +75,41 @@ public class User implements Serializable {
     private Collection<PreBuiltRating> preBuiltRatingCollection;
 
     public User() {
+    }
+
+    public Collection<ProductComment> getProductCommentCollection() {
+        return productCommentCollection;
+    }
+
+    public void setProductCommentCollection(Collection<ProductComment> productCommentCollection) {
+        this.productCommentCollection = productCommentCollection;
+    }
+
+    @XmlTransient
+    public Collection<ProductCommentReply> getProductCommentReplyCollection() {
+        return productCommentReplyCollection;
+    }
+
+    public void setProductCommentReplyCollection(Collection<ProductCommentReply> productCommentReplyCollection) {
+        this.productCommentReplyCollection = productCommentReplyCollection;
+    }
+
+    @XmlTransient
+    public Collection<PreBuilt> getPreBuiltCollection() {
+        return preBuiltCollection;
+    }
+
+    public void setPreBuiltCollection(Collection<PreBuilt> preBuiltCollection) {
+        this.preBuiltCollection = preBuiltCollection;
+    }
+
+    @XmlTransient
+    public Collection<PreBuiltRating> getPreBuiltRatingCollection() {
+        return preBuiltRatingCollection;
+    }
+
+    public void setPreBuiltRatingCollection(Collection<PreBuiltRating> preBuiltRatingCollection) {
+        this.preBuiltRatingCollection = preBuiltRatingCollection;
     }
 
     public User(Integer id) {
@@ -131,47 +163,12 @@ public class User implements Serializable {
     }
 
     @XmlTransient
-    public Collection<ProductComment> getProductCommentCollection() {
-        return productCommentCollection;
+    public Collection<Customer> getCustomerCollection() {
+        return customerCollection;
     }
 
-    public void setProductCommentCollection(Collection<ProductComment> productCommentCollection) {
-        this.productCommentCollection = productCommentCollection;
-    }
-
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
-    @XmlTransient
-    public Collection<ProductCommentReply> getProductCommentReplyCollection() {
-        return productCommentReplyCollection;
-    }
-
-    public void setProductCommentReplyCollection(Collection<ProductCommentReply> productCommentReplyCollection) {
-        this.productCommentReplyCollection = productCommentReplyCollection;
-    }
-
-    @XmlTransient
-    public Collection<PreBuilt> getPreBuiltCollection() {
-        return preBuiltCollection;
-    }
-
-    public void setPreBuiltCollection(Collection<PreBuilt> preBuiltCollection) {
-        this.preBuiltCollection = preBuiltCollection;
-    }
-
-    @XmlTransient
-    public Collection<PreBuiltRating> getPreBuiltRatingCollection() {
-        return preBuiltRatingCollection;
-    }
-
-    public void setPreBuiltRatingCollection(Collection<PreBuiltRating> preBuiltRatingCollection) {
-        this.preBuiltRatingCollection = preBuiltRatingCollection;
+    public void setCustomerCollection(Collection<Customer> customerCollection) {
+        this.customerCollection = customerCollection;
     }
 
     @Override
@@ -198,5 +195,5 @@ public class User implements Serializable {
     public String toString() {
         return "vn.htdshop.entity.User[ id=" + id + " ]";
     }
-    
+
 }

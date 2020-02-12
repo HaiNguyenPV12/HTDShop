@@ -5,8 +5,8 @@
 <head>
     <title>HTD Manager - Add new product</title>
     <th:block layout:fragment="additionalCss">
-        <link rel="stylesheet" th:href="@{/manager_resources/plugins/summernote/summernote-lite.css}"/>
-    </th:block> 
+        <link rel="stylesheet" th:href="@{/manager_resources/plugins/summernote/summernote-lite.css}" />
+    </th:block>
     <th:block layout:fragment="css">
         <style>
             /* HIDE RADIO */
@@ -57,7 +57,8 @@
             <div class="col-lg-12">
                 <div class="card card-purple card-outline">
                     <div class="card-body">
-                        <select class="form-control select2" style="width: 100%;" id="category">
+                        <select class="form-control select2" style="width: 100%;" id="category"
+                            data-dropdown-css-class="select2-purple">
                             <!-- 
                             + Specify when "selected" attribute is used by using
                                 th:selected="${condition}"
@@ -138,7 +139,7 @@
                 $("#uploadimg").html("");
             }
         });
-        
+
         $('#category').on('change', function () {
             var val = $(this).val();
             console.log($(this).val());
@@ -161,7 +162,7 @@
             theme: 'bootstrap4'
         });
 
-        $('.textarea').summernote({height: 150});
+        $('.textarea').summernote({ height: 150 });
     </script>
 </body>
 
