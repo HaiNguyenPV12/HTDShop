@@ -6,14 +6,20 @@
 package vn.htdshop.controller.shop;
 
 import javax.ejb.EJB;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import vn.htdshop.entity.Customer;
 import vn.htdshop.sb.CategoryFacadeLocal;
-
+import vn.htdshop.sb.CustomerFacadeLocal;
+import vn.htdshop.sb.UserFacadeLocal;
 
 /**
  *
@@ -26,14 +32,53 @@ public class shopIndexController {
     @EJB(mappedName = "CategoryFacade")
     CategoryFacadeLocal categoryFacade;
 
+    @EJB(mappedName = "UserFacade")
+    UserFacadeLocal userFacade;
+
+    @EJB(mappedName = "CustomerFacade")
+    CustomerFacadeLocal customerFacade;
+
+    @Autowired
+    HttpSession session;
+
+    @Autowired
+    ShopService shopService;
+
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String getHome(ModelMap modelMap) {
+        shopService.checkLogin();
         modelMap.addAttribute("categories", categoryFacade.findAll());
         return "HTDShop/index";
     }
 
-    @RequestMapping(value="test", method=RequestMethod.GET)
+    @RequestMapping(value = "test", method = RequestMethod.GET)
     public String getTest() {
         return "HTDShop/test";
+    }
+
+    @RequestMapping(value = "testlogin", method = RequestMethod.GET)
+    public String getLogin() {
+        Customer c = customerFacade.find(1);
+        session.setAttribute("loggedInCustomer", c);
+        return "redirect:";
+    }
+
+    @RequestMapping(value = "testlogincookie", method = RequestMethod.GET)
+    public String getLoginCookie(HttpServletResponse response) {
+        Customer c = customerFacade.find(1);
+
+        session.setAttribute("loggedInCustomer", c);
+        Cookie cookie = new Cookie("loggedInCustomer", "" + c.getUser().getId());
+        response.addCookie(cookie);
+        return "redirect:";
+    }
+
+    @RequestMapping(value = "testlogout", method = RequestMethod.GET)
+    public String getLogout(HttpServletResponse response) {
+        session.removeAttribute("loggedInCustomer");
+        Cookie cookie = new Cookie("loggedInCustomer", null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return "redirect:";
     }
 }

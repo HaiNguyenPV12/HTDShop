@@ -12,7 +12,7 @@ import vn.htdshop.entity.Customer;
 
 /**
  *
- * @author Hai
+ * @author Thien
  */
 @Stateless
 public class CustomerFacade extends AbstractFacade<Customer> implements CustomerFacadeLocal {

@@ -67,7 +67,7 @@ public class Promotion implements Serializable {
     @JoinColumn(name = "ProductId", referencedColumnName = "Id")
     @ManyToOne(optional = false)
     private Product product;
-    @JoinColumn(name = "PromotionId", referencedColumnName = "Id")
+    @JoinColumn(name = "PromotionDetailId", referencedColumnName = "Id")
     @ManyToOne(optional = false)
     private PromotionDetail promotionDetail;
 

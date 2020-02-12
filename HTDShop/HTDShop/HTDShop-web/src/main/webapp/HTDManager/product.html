@@ -105,9 +105,10 @@
                                     <td th:text="${p.stock}">30</td>
                                     <td>
                                         <span th:if="${p.productImageCollection.size() <= 0}">No images</span>
-                                        <div class="row" th:if="${p.productImageCollection.size() > 0}">
+                                        <div class="row flex-row flex-nowrap overflow-auto"
+                                            th:if="${p.productImageCollection.size() > 0}">
                                             <img th:each="img : ${p.productImageCollection}"
-                                                th:src="@{/images/__${img.imagePath}__}" class="col-4" />
+                                                th:src="@{/images/__${img.imagePath}__}" class="col-8" th:onclick="showModal([[${p.name}]], '&lt;img src=[[@{/images/__${img.imagePath}__}]] style=&quot;width:100%&quot;/&gt;', null, false, false);" style="cursor: pointer;"/>
                                         </div>
                                     </td>
                                     <td>
@@ -161,13 +162,13 @@
 
     <!--In case using custom script at pages using layout, add th:inline="none" like below-->
     <script layout:fragment="script" th:inline="none">
-        
+
         function confirmDelete(title, url) {
             showModal('Confirm deletion',
-                    'Are you sure to delete "' + title + '" ?<br><p class="text-danger">Warning: this will delete all images and promotion of this product.</p>',
-                    url,
-                    true,
-                    true);
+                'Are you sure to delete "' + title + '" ?<br><p class="text-danger">Warning: this will delete all images and promotion of this product.</p>',
+                url,
+                true,
+                true);
         }
         // Add custom filter for datatable
         $('#tblProduct tfoot th').each(function () {

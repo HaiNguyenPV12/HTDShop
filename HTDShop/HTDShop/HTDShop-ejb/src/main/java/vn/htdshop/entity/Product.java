@@ -187,8 +187,7 @@ public class Product implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
     private Collection<ProductComment> productCommentCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
-    private Collection<ProductCommentReply> productCommentReplyCollection;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
     private Collection<ProductImage> productImageCollection;
     @JoinColumn(name = "CateId", referencedColumnName = "Id")
@@ -453,14 +452,7 @@ public class Product implements Serializable {
         this.productCommentCollection = productCommentCollection;
     }
 
-    @XmlTransient
-    public Collection<ProductCommentReply> getProductCommentReplyCollection() {
-        return productCommentReplyCollection;
-    }
-
-    public void setProductCommentReplyCollection(Collection<ProductCommentReply> productCommentReplyCollection) {
-        this.productCommentReplyCollection = productCommentReplyCollection;
-    }
+    
 
     @XmlTransient
     public Collection<ProductImage> getProductImageCollection() {

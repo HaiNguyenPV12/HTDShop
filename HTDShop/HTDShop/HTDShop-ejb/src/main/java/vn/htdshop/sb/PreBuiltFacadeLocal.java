@@ -29,5 +29,7 @@ public interface PreBuiltFacadeLocal {
     List<PreBuilt> findRange(int[] range);
 
     int count();
-    
+
+    List<PreBuilt> search(String keyword);
+
 }

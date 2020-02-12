@@ -55,9 +55,9 @@ public class ProductCommentReply implements Serializable {
     @Column(name = "CreatedAt")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
-    @JoinColumn(name = "ProductId", referencedColumnName = "Id")
+    @JoinColumn(name = "ProductCommentId", referencedColumnName = "Id")
     @ManyToOne(optional = false)
-    private Product product;
+    private ProductComment productComment;
     @JoinColumn(name = "StaffUserName", referencedColumnName = "UserName")
     @ManyToOne(optional = false)
     private Staff staff;
@@ -102,12 +102,12 @@ public class ProductCommentReply implements Serializable {
         this.createdAt = createdAt;
     }
 
-    public Product getProduct() {
-        return product;
+    public ProductComment getProductComment() {
+        return productComment;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProductComment(ProductComment productComment) {
+        this.productComment = productComment;
     }
 
     public Staff getStaff() {

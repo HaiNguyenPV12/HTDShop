@@ -1,3 +1,4 @@
+<!DOCTYPE>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
@@ -22,7 +23,13 @@
     <link rel="stylesheet" th:href="@{/resources/Content/bundle.css}">
     <link rel="stylesheet" th:href="@{/resources/Content/style.css}">
     <link rel="stylesheet" th:href="@{/resources/Content/responsive.css}">
+    <link rel="stylesheet" th:href="@{/resources/Content/fontawesome-free/css/all.min.css}">
+    <link th:href="@{/resources/Plugins/select2/css/select2.min.css}" rel="stylesheet">
+    <link th:href="@{/resources/Plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}" rel="stylesheet">
     <script th:src="@{/resources/Scripts/vendor/modernizr-2.8.3.min.js}"></script>
+    <th:block layout:fragment="additionalCss">
+
+    </th:block>
 </head>
 
 <body>
@@ -33,14 +40,20 @@
                 <div class="header-contact-info header-contact-info2 ">
                     <ul>
                         <li><i class="pe-7s-call"></i> +84 90909 5555</li>
-                        <li><i class="pe-7s-mail"></i> <a href="#">company@domail.info</a></li>
+                        <li><i class="pe-7s-mail"></i> <a href="#">htdshop@mail.com</a></li>
                     </ul>
                 </div>
                 <div class="electronics-login-register">
                     <ul>
-                        <li><a href="#"><i class="pe-7s-users"></i>My Account</a></li>
-                        <li><a data-toggle="modal" data-target="#exampleCompare" href="#"><i
-                                    class="pe-7s-repeat"></i>Compare</a></li>
+                        <li th:if="${session.loggedInCustomer != null}"><a href="#"><i class="pe-7s-users"></i>
+                                <th:block
+                                    th:text="${session.loggedInCustomer.firstName + ' ('+ session.loggedInCustomer.user.point +')'}">
+                                </th:block>
+                            </a></li>
+                        <li th:if="${session.loggedInCustomer == null}"><a href="#"><i class="pe-7s-key"></i>Login</a>
+                        </li>
+                        <!-- <li><a data-toggle="modal" data-target="#exampleCompare" href="#"><i
+                                    class="pe-7s-repeat"></i>Compare</a></li> -->
                         <li><a href="wishlist.html"><i class="pe-7s-like"></i>Wishlist</a></li>
                         <li><a href="#"><i class="pe-7s-flag"></i>US</a></li>
                         <li><a class="border-none" href="#"><span>$</span>USD</a></li>
@@ -51,32 +64,33 @@
         <div class="header-bottom ptb-40 clearfix">
             <div class="header-bottom-wrapper pr-200 pl-200">
                 <div class="logo-3">
-                    <a href="">
-                        <img th:src="@{/resources/img/logo/logo-3.png}" alt="LOGO 3">
+                    <a th:href="@{/}">
+                        <img th:src="@{/resources/img/logo.png}" alt="HTD LOGO" style="max-height: 5rem;">
                     </a>
                 </div>
-                <div class="categories-search-wrapper categories-search-wrapper2">
-                    <div class="all-categories">
-                        <div class="select-wrapper">
-                            <select class="select">
-                                <option value="">All Categories</option>
-                                <option value="">Smartphones </option>
-                                <option value="">Computers</option>
-                                <option value="">Laptops </option>
-                                <option value="">Camerea </option>
-                                <option value="">Watches</option>
-                                <option value="">Lights </option>
-                                <option value="">Air conditioner</option>
-                            </select>
+                <form th:action="@{/search}" method="get">
+                    <div class="categories-search-wrapper categories-search-wrapper2">
+                        <div class="all-categories">
+                            <div class="select-wrapper">
+                                <select class="select" name="category">
+                                    <option value="0">All</option>
+                                    
+                                    <option
+                                        th:each="cate : ${session.categories}"
+                                        th:value="${cate.id}" th:text="${cate.name}">
+                                        All Categories
+                                    </option>
+                                    <option disabled>-----------------</option>
+                                    <option value="-1">Pre-built PC</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="categories-wrapper">
+                            <input placeholder="Enter Your key word" type="text" name="keyword" maxlength="100">
+                            <button type="submit"> Search </button>
                         </div>
                     </div>
-                    <div class="categories-wrapper">
-                        <form action="#">
-                            <input placeholder="Enter Your key word" type="text">
-                            <button type="button"> Search </button>
-                        </form>
-                    </div>
-                </div>
+                </form>
                 <div class="header-cart-3">
                     <a href="#">
                         <i class="ti-shopping-cart"></i>My Cart
@@ -85,7 +99,7 @@
                     <ul class="cart-dropdown">
                         <li class="single-product-cart">
                             <div class="cart-img">
-                                <a href="#"><img th:src="@{/resources/img/cart/1.jpg}" alt=""></a>
+                                <a href="#"><img th:src="@{/resources/img/cart/1.jpg}" alt="" ></a>
                             </div>
                             <div class="cart-title">
                                 <h5><a href="#"> Bits Headphone</a></h5>
@@ -375,6 +389,13 @@
     <script th:src="@{/resources/Scripts/owl.carousel.min.js}"></script>
     <script th:src="@{/resources/Scripts/plugins.js}"></script>
     <script th:src="@{/resources/Scripts/main.js}"></script>
+    <script th:src="@{/resources/Plugins/select2/js/select2.full.min.js}"></script> 
+    <th:block layout:fragment="additionalScript">
+
+    </th:block>
+    <script layout:fragment="script">
+
+    </script>
 </body>
 
 </html>

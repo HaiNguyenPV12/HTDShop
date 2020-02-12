@@ -9,14 +9,12 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletContext;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -61,11 +59,14 @@ public class managerImageSlideController {
     @Autowired
     HttpServletRequest request;
 
+    @Autowired
+    ManagerService managerService;
+
     // ==== IMAGE SLIDE INDEX ==== \\
     @RequestMapping(value = { "", "index" }, method = RequestMethod.GET)
     public String getHome(HttpSession session, Model model) {
         // Check login session with role
-        if (!checkLoginWithRole("imageslide_read")) {
+        if (!managerService.checkLoginWithRole("imageslide_read")) {
             return redirectHome;
         }
 
@@ -91,7 +92,7 @@ public class managerImageSlideController {
     // ==== IMAGE SLIDE ADD - VIEW ==== \\
     @RequestMapping(value = "add", method = RequestMethod.GET)
     public String viewAdd(Model model) {
-        if (!checkLoginWithRole("imageslide_add")) {
+        if (!managerService.checkLoginWithRole("imageslide_add")) {
             return redirectImageSlideHome;
         }
         // Prepare model
@@ -122,7 +123,7 @@ public class managerImageSlideController {
     public String doAdd(@Valid @ModelAttribute("imageSlide") ImageSlide imageSlide, BindingResult error,
             HttpSession session, Model model,
             @RequestParam(value = "uploadimg", required = false) MultipartFile uploadimg, RedirectAttributes redirect) {
-        if (!checkLoginWithRole("imageslide_add")) {
+        if (!managerService.checkLoginWithRole("imageslide_add")) {
             return redirectImageSlideHome;
         }
         // Check if image exists
@@ -163,7 +164,7 @@ public class managerImageSlideController {
     // ==== IMAGE SLIDE EDIT - VIEW ==== \\
     @RequestMapping(value = "edit", method = RequestMethod.GET)
     public String viewEdit(Model model, @RequestParam(value = "id") Integer id) {
-        if (!checkLoginWithRole("imageslide_edit")) {
+        if (!managerService.checkLoginWithRole("imageslide_edit")) {
             return redirectImageSlideHome;
         }
         // Prepare model
@@ -195,7 +196,7 @@ public class managerImageSlideController {
     public String doEdit(@Valid @ModelAttribute("imageSlide") ImageSlide imageSlide, BindingResult error,
             HttpSession session, Model model,
             @RequestParam(value = "uploadimg", required = false) MultipartFile uploadimg, RedirectAttributes redirect) {
-        if (!checkLoginWithRole("imageslide_edit")) {
+        if (!managerService.checkLoginWithRole("imageslide_edit")) {
             return redirectImageSlideHome;
         }
         String contentType = uploadimg.getContentType().substring(0, uploadimg.getContentType().lastIndexOf("/"));
@@ -241,7 +242,7 @@ public class managerImageSlideController {
     @RequestMapping(value = "doDelete", method = RequestMethod.GET)
     public String doDelete(HttpSession session, Model model, @RequestParam(required = true) Integer id,
             RedirectAttributes redirect) {
-        if (!checkLoginWithRole("imageslide_delete")) {
+        if (!managerService.checkLoginWithRole("imageslide_delete")) {
             return redirectImageSlideHome;
         }
 
@@ -279,7 +280,7 @@ public class managerImageSlideController {
     @RequestMapping(value = "doActivate", method = RequestMethod.GET)
     public String doActivate(Model model, HttpSession session, @RequestParam(value = "id") Integer id,
             RedirectAttributes redirect) {
-        if (!checkLoginWithRole("imageslide_edit")) {
+        if (!managerService.checkLoginWithRole("imageslide_edit")) {
             return redirectImageSlideHome;
         }
         ImageSlide imageSlide = imageSlideFacade.find(id);
@@ -293,7 +294,7 @@ public class managerImageSlideController {
     @RequestMapping(value = "doDeactivate", method = RequestMethod.GET)
     public String doDeactivate(Model model, HttpSession session, @RequestParam(value = "id") Integer id,
             RedirectAttributes redirect) {
-        if (!checkLoginWithRole("imageslide_edit")) {
+        if (!managerService.checkLoginWithRole("imageslide_edit")) {
             return redirectImageSlideHome;
         }
 
@@ -308,7 +309,7 @@ public class managerImageSlideController {
     @RequestMapping(value = "doReorder", method = RequestMethod.GET)
     public String doReorder(Model model, HttpSession session, @RequestParam(value = "id") Integer id,
             @RequestParam(value = "order") Integer order, RedirectAttributes redirect) {
-        if (!checkLoginWithRole("imageslide_edit")) {
+        if (!managerService.checkLoginWithRole("imageslide_edit")) {
             return redirectImageSlideHome;
         }
 
@@ -413,34 +414,5 @@ public class managerImageSlideController {
             e.printStackTrace();
             return false;
         }
-    }
-
-    private Boolean checkLogin() {
-        if (session.getAttribute("loggedInStaff") != null) {
-            return true;
-        } else {
-            String cookie = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("loggedInStaff"))
-                    .findFirst().map(Cookie::getValue).orElse(null);
-            if (cookie != null) {
-                Staff staff = staffFacade.find(cookie);
-                if (staff != null) {
-                    session.setAttribute("loggedInStaff", staff);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private Boolean checkLoginWithRole(String role) {
-        if (checkLogin()) {
-            String user = ((Staff) session.getAttribute("loggedInStaff")).getUserName();
-            for (RoleRights roleRight : staffFacade.find(user).getRole().getRoleRightsCollection()) {
-                if (roleRight.getRightsDetail().getTag().equals(role)) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 }

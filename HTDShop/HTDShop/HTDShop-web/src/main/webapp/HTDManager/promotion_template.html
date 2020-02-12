@@ -71,6 +71,7 @@
 
                 
                 <input type="hidden" th:field="*{id}" th:if="${update!=null}"/> 
+                <input type="hidden" th:field="*{image}" th:if="${update!=null}"/> 
                 <input type="hidden" th:field="*{isDisabled}" th:if="${update==null}" value="false"/> 
                 <input id="startDate" type="hidden" th:field="*{startDate}" /> 
                 <input id="endDate" type="hidden" th:field="*{endDate}" /> 
@@ -186,6 +187,35 @@
                                         </div>
                                     </div>
                                     <!-- Date - End -->
+
+                                    <!-- IsDisabled -->
+                                    <div class="form-group row" th:if="${update!=null}">
+                                        <label for="isDisabled" class="col-sm-3 col-form-label text-right">Enable<i
+                                                class="text-danger">*</i></label>
+                                        <div class="col-sm-9">
+                                            <div class="d-flex"> 
+                                                <div class="icheck-primary mr-auto"> 
+                                                    <input id="isDisabled0" type="radio" th:field="*{isDisabled}" value="false"/>
+                                                    <label for="isDisabled0">
+                                                        Yes
+                                                    </label>
+                                                </div>
+                                                <div class="icheck-primary mr-auto"> 
+                                                    <input id="isDisabled1" type="radio" th:field="*{isDisabled}" value="true"/>
+                                                    <label for="isDisabled1">
+                                                        No
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3"></div>
+                                        <div class="col-sm-9" th:if="${#fields.hasErrors('target')}">
+                                            <ul class="text-danger">
+                                                <li th:each="err : ${#fields.errors('target')}" th:text="${err}">Name Error</li>
+                                            </ul> 
+                                        </div>
+                                    </div>
+                                    <!-- IsDisabled - End -->
                                 </div>
                             </div>
                             <!-- Information - End -->
@@ -251,8 +281,8 @@
                                         <th:block th:if="${p.preBuiltTarget!=null}">[[${p.preBuiltTarget==0?"All pre-built PC":"HTD&apos;s exclusive PC"}]]</th:block> 
                                         <strong>Discount:</strong>
                                         [[${p.percentage!=null?p.percentage+'%':''}]]
-                                        [[${p.exactSaleOff!=null?p.exactSaleOff+' VND':''}]]
-                                        [[${p.maxSaleOff!=null?'(Max: '+p.maxSaleOff+' VND)':''}]]
+                                        [[${p.exactSaleOff!=null?'$'+p.exactSaleOff:''}]]
+                                        [[${p.maxSaleOff!=null?'(Max: $'+p.maxSaleOff+')':''}]]
                                         [[${p.limitedQuantity!=null?'|Limit: '+p.limitedQuantity+'|':''}]]
                                         [[${p.minQuantity!=null?'|Min: '+p.minQuantity+'|':''}]]
                                         [[${p.maxQuantity!=null?'|Max: '+p.maxQuantity+'|':''}]]
@@ -262,25 +292,6 @@
                                         <a type="button" class="btn btn-danger btn-sm" onclick="$(this).parent().parent().remove();"> <i class="fas fa-trash"></i></a>
                                     </div> 
                                 </div>
-                                <div class="col-sm-12 border rounded-sm border-secondary row hoverable">
-                                    <div class="col-sm-10">
-                                        <input type='hidden' name='conCount' value='1'/>
-                                        <input type="hidden" name="conCategory" value="2"/>
-                                        <input type="hidden" name="conProduct" value=""/>
-                                        <input type="hidden" name="conPreBuilt" value=""/>
-                                        <input type="hidden" name="conLimit" value="50"/>
-                                        <input type="hidden" name="conMin" value=""/>
-                                        <input type="hidden" name="conMax" value=""/>
-                                        <input type="hidden" name="conPercentage" value="10"/>
-                                        <input type="hidden" name="conMaxSale" value="1000000"/>
-                                        <input type="hidden" name="conExact" value=""/>
-                                        <strong>Applied to:</strong> Motherboard <strong>Discount:</strong>10% (Max:1000000) |Limit:50|
-                                    </div>
-                                    <div class="col-sm-2 text-right">
-                                        <a type="button" class="btn btn-warning btn-sm" onclick="showCondition(true, this)"> <i class="fas fa-pencil-alt" ></i></a>
-                                        <a type="button" class="btn btn-danger btn-sm" onclick="$(this).parent().parent().remove();"> <i class="fas fa-trash"></i></a>
-                                    </div> 
-                                </div> 
                             </div>
                         </div>
                     </div>
@@ -383,25 +394,21 @@
                                         <div class="input-group">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">
-                                                    Max discount
+                                                    Max discount: $
                                                 </span>
                                             </div>
                                             <input type="number" class="form-control" id="conMaxSaleVal" min="0">
-                                            <div class="input-group-append">
-                                                <span class="input-group-text">
-                                                    VND
-                                                </span>
-                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-sm-12" id="conExactContainer" style="display:none">
                                         <div class="input-group">
-                                            <input type="number" class="form-control" id="conExactVal" min="0">
-                                            <div class="input-group-append">
+                                            <div class="input-group-prepend">
                                                 <span class="input-group-text">
-                                                    VND
+                                                    $
                                                 </span>
                                             </div>
+                                            <input type="number" class="form-control" id="conExactVal" min="0">
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -605,9 +612,9 @@
                 string += "<input type='hidden' name='conExact' " + (conExact > 0 ? ("value='" + conExact + "'") : "") + "/>";
 
                 string += "<strong>Applied to:</strong> " + conCategoryText + conProductText + conPreBuiltText + " ";
-                string += "<strong>Discount:</strong> " + (conPercentage > 0 ? (conPercentage + "%") : (conExact + " VND")) + " ";
+                string += "<strong>Discount:</strong> " + (conPercentage > 0 ? (conPercentage + "%") : ("$"+conExact)) + " ";
                 if (conPercentage > 0 && conMaxSale > 0) {
-                    string += "(Max discount: " + conMaxSale + ") ";
+                    string += "(Max discount: $" + conMaxSale + ") ";
                 }
                 if (conLimit > 0) {
                     string += "|Limit: " + conLimit + "| ";

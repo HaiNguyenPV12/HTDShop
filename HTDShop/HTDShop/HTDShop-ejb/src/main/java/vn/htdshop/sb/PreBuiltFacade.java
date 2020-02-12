@@ -5,9 +5,13 @@
  */
 package vn.htdshop.sb;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+
 import vn.htdshop.entity.PreBuilt;
 
 /**
@@ -28,5 +32,13 @@ public class PreBuiltFacade extends AbstractFacade<PreBuilt> implements PreBuilt
     public PreBuiltFacade() {
         super(PreBuilt.class);
     }
-    
+
+    @Override
+    public List<PreBuilt> search(String keyword) {
+        TypedQuery<PreBuilt> query = null;
+        query = em.createQuery("SELECT p FROM PreBuilt p WHERE p.name LIKE :keyword", PreBuilt.class);
+        query.setParameter("keyword", "%" + keyword + "%");
+        return query.getResultList();
+    }
+
 }
