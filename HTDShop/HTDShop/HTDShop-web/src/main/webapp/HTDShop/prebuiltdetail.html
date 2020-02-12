@@ -3,9 +3,9 @@
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDShop/layout}">
 
 <head>
-    <title>HTD Shop - [[${product.name}]]</title>
+    <title>HTD Shop - [[${prebuilt.name}]]</title>
     <th:block layout:fragment="additionalCss">
-        <link rel="stylesheet" th:href="@{/resources/Content/fontawesome-free/css/all.min.css}">
+
     </th:block>
     <style>
         .product-details-small {
@@ -135,8 +135,8 @@
                 <div class="breadcrumb-content text-center">
                     <ul>
                         <li><a th:href="@{/}">home</a></li>
-                        <li><a th:href="@{/category?id=__${product.category.id}__}">Category: <th:block th:text="${product.category.name}"></th:block></a></li>
-                        <li th:text="${product.name}"></li>
+                        <li><a th:href="@{/prebuilt/search?k=}">Pre-built PC</a></li>
+                        <li th:text="${prebuilt.name}"></li>
                     </ul>
                 </div>
             </div>
@@ -149,37 +149,26 @@
                             <div class="product-details-tab mr-35 product-details-tab2">
                                 <div class="product-details-small nav mr-10 product-details-2" role=tablist
                                     style="display: block;">
-                                    <a class="active" th:if="${product.productImageCollection.isEmpty()}"
+                                    <a class="active" th:if="${prebuilt.preBuiltImageCollection.isEmpty()}"
                                         href="#pro-details1" data-toggle="tab" role="tab" aria-selected="true"
                                         style="height:8rem; display: flex;align-items: center;">
                                         <img th:src="@{/images/noimage.png}" alt=""
                                             style="max-height: 8rem;width: 100%;">
                                     </a>
-                                    <a class="" th:each="img,it : ${product.productImageCollection}"
+                                    <a class="" th:each="img,it : ${prebuilt.preBuiltImageCollection}"
                                         th:classappend="${it.index==0?'active':''}"
                                         th:href="${'#pro-details'+(it.index+1)}" data-toggle="tab" role="tab"
                                         th:aria-selected="${it.index==0?'true':'false'}"
                                         style="height:8rem;display: flex;align-items: center;">
-                                        <img th:src="@{/images/__${img.imagePath}__}" alt=""
+                                        <img th:src="@{/images/__${img.path}__}" alt=""
                                             th:onerror="'this.onerror=null;this.src=&quot;'+@{/images/noimage.png}+'&quot;'"
                                             style="max-height: 8rem;max-width: 100%;">
                                     </a>
-                                    <!-- <a class="mb-10" href="#pro-details2" data-toggle="tab" role="tab"
-                                        aria-selected="true">
-                                        <img src="assets/img/product-details/s6.jpg" alt="">
-                                    </a>
-                                    <a class="mb-10" href="#pro-details3" data-toggle="tab" role="tab"
-                                        aria-selected="true">
-                                        <img src="assets/img/product-details/s7.jpg" alt="">
-                                    </a>
-                                    <a class="mb-10" href="#pro-details4" data-toggle="tab" role="tab"
-                                        aria-selected="true">
-                                        <img src="assets/img/product-details/s8.jpg" alt="">
-                                    </a> -->
+
                                 </div>
                                 <div class="product-details-large tab-content" style="width: 100%; max-height: 30rem;">
                                     <div class="tab-pane active show fade"
-                                        th:if="${product.productImageCollection.isEmpty()}" id="pro-details1"
+                                        th:if="${prebuilt.preBuiltImageCollection.isEmpty()}" id="pro-details1"
                                         role="tabpanel" style="text-align: center;">
                                         <div class="easyzoom"
                                             style="display:inline-block;position: relative;height:25rem">
@@ -187,127 +176,67 @@
                                                 style="width: auto;height:100%;max-height: 25rem;max-width: 100%;object-fit: contain;">
                                         </div>
                                     </div>
-                                    <div class="tab-pane fade" th:each="img,it : ${product.productImageCollection}"
+                                    <div class="tab-pane fade" th:each="img,it : ${prebuilt.preBuiltImageCollection}"
                                         th:classappend="${it.index==0?'active show':''}"
                                         th:id="${'pro-details'+(it.index+1)}" role="tabpanel"
                                         style="text-align: center;">
                                         <div
                                             style="display:inline-block;position: relative;height:25rem;vertical-align: middle;">
-                                            <img th:src="@{/images/__${img.imagePath}__}" alt=""
+                                            <img th:src="@{/images/__${img.path}__}" alt=""
                                                 th:onerror="'this.onerror=null;this.src=&quot;'+@{/images/noimage.png}+'&quot;'"
                                                 style="width: auto;height:100%;max-height: 25rem;max-width: 100%;object-fit: contain;">
                                         </div>
                                     </div>
-                                    <!-- <div class="tab-pane fade" id="pro-details2" role="tabpanel">
-                                        <div class="easyzoom easyzoom--overlay  is-ready">
-                                            <a href="assets/img/product-details/bl2.jpg">
-                                                <img src="assets/img/product-details/l6-details-2.jpg" alt="">
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane fade" id="pro-details3" role="tabpanel">
-                                        <div class="easyzoom easyzoom--overlay  is-ready">
-                                            <a href="assets/img/product-details/bl3.jpg">
-                                                <img src="assets/img/product-details/l7-details-2.jpg" alt="">
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane fade" id="pro-details4" role="tabpanel">
-                                        <div class="easyzoom easyzoom--overlay  is-ready">
-                                            <a href="assets/img/product-details/bl4.jpg">
-                                                <img src="assets/img/product-details/l8-details-2.jpg" alt="">
-                                            </a>
-                                        </div>
-                                    </div> -->
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-12 col-lg-5 col-12">
                         <div class="product-details-content">
-                            <h3>[[${product.name}]]</h3>
+                            <h3>[[${prebuilt.name}]]</h3>
                             <div class="rating-number">
-                                <span>
-                                    <th:block
-                                        th:text="${product.orderDetailCollection.?[order1.orderStatus==4].size()}">
-                                    </th:block> sold
-                                </span>
+
                                 <div class="quick-view-number">
 
                                 </div>
                             </div>
                             <div class="details-price">
-                                <th:block th:if="${discountPrice!=null}">
-                                    <span th:if="${product.status == 1 || product.status == 2}">
-                                        <i class="text-muted">
-                                            <del
-                                                th:text="${'$'+#numbers.formatDecimal(product.price, 1, 'POINT', 2, 'COMMA')}"></del>
-                                        </i>
-                                        <th:block
-                                            th:text="${'$'+#numbers.formatDecimal(discountPrice , 1, 'POINT', 2, 'COMMA')}">
-                                        </th:block>
-                                    </span>
-                                </th:block>
+                                <span th:if="${discountPrice!=null}">
+                                    <i class="text-muted">
+                                        <del
+                                            th:text="${'$'+#numbers.formatDecimal(prebuiltprice, 1, 'POINT', 2, 'COMMA')}"></del>
+                                    </i>
+                                    <th:block
+                                        th:text="${'$'+#numbers.formatDecimal(discountPrice , 1, 'POINT', 2, 'COMMA')}">
+                                    </th:block>
+                                </span>
                                 <th:block th:if="${discountPrice==null}">
-                                    <span th:if="${product.status == 1 || product.status == 2}"
-                                        th:text="${'$'+#numbers.formatDecimal(product.price , 1, 'POINT', 2, 'COMMA')}"></span>
+                                    <span
+                                        th:text="${'$'+#numbers.formatDecimal(prebuiltprice , 1, 'POINT', 2, 'COMMA')}"></span>
                                 </th:block>
-                                <span th:if="${product.status==3}">Unavailable</span>
-                                <span th:if="${product.status==2}"> - Cooming soon</span>
                             </div>
 
-                            <div class="quickview-plus-minus" th:if="${product.status==1 && product.stock > 0}">
+                            <div class="quickview-plus-minus">
                                 <div class="cart-plus-minus">
-                                    <input type="text" value="1" name="qtybutton" class="cart-plus-minus-box"
-                                        th:max="${product.stock}">
+                                    <input type="text" value="1" name="qtybutton" class="cart-plus-minus-box" max="100">
                                 </div>
                                 <div class="mt-3">
-                                    &ThickSpace;/ [[${product.stock}]]
+
                                 </div>
                                 <div class="quickview-btn-cart">
                                     <a class="btn-hover-black" href="#">add to cart</a>
                                 </div>
                             </div>
 
-                            <div class="alert alert-warning mt-3"
-                                th:if="${(product.status == 1 || product.status == 2) && ( (product.promotionCollection.size() > 0 && product.promotionCollection.?[promotionDetail.endDate.after(#dates.createNow())].size() > 0) || (product.category.promotionCollection.size() > 0 && product.category.promotionCollection.?[promotionDetail.endDate.after(#dates.createNow())].size() > 0) )}">
+                            <div class="alert alert-warning mt-3" th:if="${promolist.size() > 0}">
                                 <strong class="">Promotion</strong>
                                 <ul>
-                                    <li
-                                        th:each="promo : ${product.promotionCollection.?[promotionDetail.isDisabled==false].?[promotionDetail.isAlways==true or promotionDetail.endDate.after(#dates.createNow())]}">
+                                    <li th:each="promo : ${promolist}">
                                         <i class="fas fa-gift fa-lg"></i>
                                         <th:block th:text="${'&quot;' + promo.promotionDetail.name + '&quot;:'}">
                                         </th:block>
-                                        <th:block th:text="${' ' + product.name + ' '}">
-                                        </th:block>
-                                        <strong
-                                            th:text="${' discount ' + (promo.percentage != null ? (promo.percentage + '%') : ('$' + #numbers.formatDecimal(promo.exactSaleOff , 0, 'POINT', 0, 'COMMA')))}">
-                                        </strong>
                                         <th:block
-                                            th:text="${promo.maxSaleOff != null ? ('(Max $' + #numbers.formatDecimal(promo.maxSaleOff , 0, 'POINT', 0, 'COMMA') + ')') : ''}">
-                                        </th:block>
-                                        <br>
-                                        <i>
-                                            <th:block
-                                                th:text="${promo.minQuantity != null ? ('Minimum quantity to get discount: ' + promo.minQuantity + '.') : ''}">
-                                            </th:block>
-                                            <th:block
-                                                th:text="${promo.maxQuantity != null ? ('Maximum quantity to have discount: ' + promo.maxQuantity + '.' ) : ''}">
-                                            </th:block>
-                                            <th:block
-                                                th:text="${promo.limitedQuantity != null ? ('Discount quantity left: ' + promo.quantityLeft + '.' ) : ''}">
-                                            </th:block>
-                                            <th:block
-                                                th:text="${promo.promotionDetail.isAlways == true ? 'Discount last permanently.' : ('Discount last from ' + #dates.format(promo.promotionDetail.startDate,'dd/MM/yyyy') + ' to ' + #dates.format(promo.promotionDetail.endDate,'dd/MM/yyyy') )}">
-                                            </th:block>
-                                        </i>
-                                    </li>
-                                    <li
-                                        th:each="promo : ${product.category.promotionCollection.?[promotionDetail.isDisabled==false].?[promotionDetail.isAlways==true or promotionDetail.endDate.after(#dates.createNow())]}">
-                                        <i class="fas fa-gift fa-lg"></i>
-                                        <th:block th:text="${'&quot;' + promo.promotionDetail.name + '&quot;:'}">
-                                        </th:block>
-                                        <th:block th:text="${' All ' + product.category.name + ' '}">
+                                            th:text="${' ' + (promo.preBuiltTarget == 0?'All Pre-built PC':'HTD exclusive PC') + ' '}">
                                         </th:block>
                                         <strong
                                             th:text="${' discount ' + (promo.percentage != null ? (promo.percentage + '%') : ('$' + #numbers.formatDecimal(promo.exactSaleOff , 0, 'POINT', 0, 'COMMA')))}">
@@ -340,20 +269,23 @@
                                         <li class="categories-title">Specifications :</li>
                                     </ul>
                                 </div>
-                                <div class="ml-3">
-                                    <th:block
-                                        th:replace="~{/HTDShop/productdetail_template :: full-__${product.category.id}__} ?:~{}">
-                                    </th:block>
+                                <div class="ml-3"
+                                    th:with="cate = ${new String[]{'cpu', 'motherboard', 'vga', 'memory', 'psu', 'storage', 'cpucooler', 'cases', 'monitor'}}">
+                                    <li th:each="part : ${cate}" th:if="${prebuilt.__${part}__ != null}">
+                                        <i class="fas fa-cube"></i>
+                                        <strong>
+                                            <th:block th:if="${part != 'vga' && part != 'cases' && part != 'cpucooler'}"
+                                                    th:text="${#strings.toUpperCase(part)}"></th:block>
+                                            <th:block th:if="${part == 'vga'}">GPU</th:block>
+                                            <th:block th:if="${part == 'cases'}">CASE</th:block>
+                                            <th:block th:if="${part == 'cpucooler'}">CPU COOLER</th:block>
+                                        </strong>
+                                        :
+                                        <a th:href="@{/product(id=${prebuilt.__${part}__.id})}" th:text="${prebuilt.__${part}__.name}"></a>
+                                    </li>
+                                   
                                 </div>
 
-                            </div>
-
-
-                            <div class="product-details-cati-tag mt-35">
-                                <ul>
-                                    <li class="categories-title">Categories :</li>
-                                    <li><a href="#">[[${product.category.name}]]</a></li>
-                                </ul>
                             </div>
 
 
@@ -395,36 +327,41 @@
                             Description
                         </a>
                         <a href="#pro-review" data-toggle="tab" role="tab" aria-selected="false">
-                            Comments (
-                            <th:block th:with="replySum=${#aggregates.sum(product.productCommentCollection.![productCommentReplyCollection.size()])}">
-                                <th:block
-                                    th:text="${product.productCommentCollection.size() + (replySum != null ? replySum : 0) }">
-                                </th:block>
+                            User's ratings (
+                            <th:block th:text="${prebuilt.preBuiltRatingCollection.size()}">
                             </th:block>
-                                )
+                            )
                         </a>
                     </div>
                     <div class="description-review-text tab-content">
                         <div class="tab-pane active show fade" id="pro-dec" role="tabpanel" style="margin-left: 10rem;">
-                            <p th:utext="${(product.description == null || product.description.isEmpty()) ? '(No description)' : product.description}"></p>
+                            <p
+                                th:utext="${(prebuilt.detail == null || prebuilt.detail.isEmpty()) ? '(No description)' : prebuilt.detail}">
+                            </p>
                         </div>
                         <div class="tab-pane fade overflow-auto text-left border border-secondary" id="pro-review"
                             role="tabpanel" style="height: 20em;overflow-y: scroll;">
                             <div class="card border-bottom border-secondary" th:if="${session.loggedInCustomer != null}"
-                            style="background-color: lightyellow;">
+                                style="background-color: lightyellow;">
                                 <div class="card-body border-bottom border-warning">
-                                    <form action="product/doComment" method="post" enctype="application/x-www-form-urlencoded">
+                                    <form action="prebuilt/doRating" method="post"
+                                        enctype="application/x-www-form-urlencoded">
                                         <div class="d-flex">
-                                            <input type="hidden" name="productid" th:value="${product.id}"/>
+                                            <input type="hidden" name="prebuiltid" th:value="${prebuilt.id}" />
+                                            <input type="number" class="form-control form-control-sm" name="rating"
+                                                required min=1 max=10 step="1" style="width: 5rem;" />
                                             <input type="text" class="form-control form-control-sm" name="comment"
-                                                placeholder="Comment on this product" required/>
-                                            <button type="submit" class="btn btn-secondary" style="height: auto;"><i class="fas fa-comment"></i></button>
+                                                placeholder="Comment and rating on this pre-built PC" required />
+                                            <button type="submit" class="btn btn-secondary" style="height: auto;"><i
+                                                    class="fas fa-comment"></i></button>
+                                            <br>
                                         </div>
+                                        <i class="text-muted">Rating is from 1 - 10</i>
                                     </form>
                                 </div>
                             </div>
                             <div class="card border-bottom border-secondary"
-                                th:each="cm : ${product.productCommentCollection}"
+                                th:each="r : ${prebuilt.preBuiltRatingCollection}"
                                 style="background-color: lightyellow;">
                                 <!-- /.card-header -->
                                 <div class="card-body border-bottom border-warning">
@@ -432,51 +369,29 @@
                                         <div class="comment-text">
                                             <span class="username">
                                                 <th:block
-                                                    th:text="${cm.user.customerCollection[0].firstName + ' ' + cm.user.customerCollection[0].lastName}">
+                                                    th:text="${r.user.customerCollection[0].firstName + ' ' + r.user.customerCollection[0].lastName}">
+
                                                 </th:block>
-                                                <span class="text-muted float-right" th:text="${#dates.format(cm.createdAt, 'dd/MM/yyyy HH:mm')}">8:03 PM Today</span>
+
+                                                <span class="text-muted float-right" th:text="${#dates.format(r.createdAt, 'dd/MM/yyyy HH:mm')}">8:03 PM Today</span>
+                                                <br>
+                                                <th:block th:each="i : ${#numbers.sequence(1, r.rating)}">
+                                                    <i th:if="${i != r.rating && i % 2 == 0}" class="fas fa-star"></i>
+                                                    <i th:if="${i == r.rating && i % 2 == 0}" class="fas fa-star"></i>
+                                                    <i th:if="${i == r.rating && i % 2 != 0}" class="fas fa-star-half-alt"></i>
+                                                </th:block>
+                                                <th:block th:each="i : ${#numbers.sequence(1, 10-r.rating)}" th:if="${r.rating != 10}">
+                                                    <i th:if="${i != (10-r.rating) && i % 2 == 0}" class="far fa-star"></i>
+                                                    <i th:if="${i == (10-r.rating) && i % 2 == 0}" class="far fa-star"></i>
+                                                </th:block>
                                             </span><!-- /.username -->
-                                            <th:block th:text="${cm.content}"></th:block>
+                                            <th:block th:text="${r.comment}"></th:block>
                                         </div>
                                         <!-- /.comment-text -->
                                     </div>
                                     <!-- /.card-comment -->
                                 </div>
                                 <!-- /.card-body -->
-                                <div class="card-footer card-comments" th:if="${cm.productCommentReplyCollection.size() > 0 || session.loggedInCustomer != null}">
-                                    <div class="card-comment" th:each="cmr : ${cm.productCommentReplyCollection}" >
-                                        <div class="comment-text">
-                                            <span class="username">
-                                                <th:block th:text="${cmr.user != null ? (cmr.user.customerCollection[0].firstName + ' ' + cmr.user.customerCollection[0].lastName) : (cmr.staff.firstName + ' ' + cmr.staff.lastName)}"></th:block>
-                                                <i class="text-muted" th:if="${cmr.staff != null}">(Staff)</i>
-                                                <span class="text-muted float-right" th:text="${#dates.format(cmr.createdAt, 'dd/MM/yyyy HH:mm')}">8:03 PM Today</span>
-                                            </span><!-- /.username -->
-                                            <th:block th:text="${cmr.content}"></th:block>
-                                        </div>
-                                        <!-- /.comment-text -->
-                                    </div>
-                                    <div class="card-comment" th:if="${session.loggedInCustomer != null}">
-                                        <form action="product/doReply" method="post" enctype="application/x-www-form-urlencoded">
-                                            <div class="comment-text">
-                                                <span class="username">
-                                                    
-                                                </span>
-                                                <div class="d-flex">
-                                                    <input type="hidden" name="productid" th:value="${product.id}"/>
-                                                    <input type="hidden" name="commentid" th:value="${cm.id}"/>
-                                                    <input type="text" class="form-control form-control-sm"
-                                                        placeholder="Reply to this comment." required name="reply">
-                                                    <button type="submit" class="btn btn-secondary" style="height: auto;"><i class="fas fa-reply"></i></button>
-                                                </div>
-                                            </div>
-                                            
-                                        </form>
-                                    </div>
-                                    <!-- /.card-comment -->
-                                </div>
-                                <!-- /.card-footer -->
-                                
-                                <!-- /.card-footer -->
                             </div>
                             
                             <!-- <a href="#">Be the first to write your review!</a> -->

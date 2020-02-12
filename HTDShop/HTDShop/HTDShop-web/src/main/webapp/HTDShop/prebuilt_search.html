@@ -8,7 +8,9 @@
         <link rel="stylesheet" th:href="@{/resources/Content/fontawesome-free/css/all.min.css}">
     </th:block>
     <style>
-
+        .select2-search__field {
+            height: auto;
+        }
     </style>
 </head>
 
@@ -41,10 +43,11 @@
                                 </div>
                             </div>
                             <div class="sidebar-widget mb-45"
-                                th:with="cate = ${new String[]{'cpu', 'motherboard', 'gpu', 'memory', 'psu', 'storage', 'cpucooler', 'case', 'monitor'}}" id="parts">
+                                th:with="cate = ${new String[]{'cpu', 'motherboard', 'gpu', 'memory', 'psu', 'storage', 'cpucooler', 'case', 'monitor'}}"
+                                id="parts">
                                 <h3 class="sidebar-title">Parts</h3>
                                 <div class="sidebar-categories mb-2" th:each="c, it : ${cate}">
-                                    <select class="select" th:name="${c}" th:id="${c}">
+                                    <select class="select2bs4" th:name="${c}" th:id="${c}">
                                         <option value="0"
                                             th:selected="${param.__${c}__!=null && T(Integer).parseInt(param.__${c}__) == 0}">
                                             All <th:block th:text="${#strings.capitalize(c == 'cpucooler'?'Cpu Cooler' : c)}"></th:block>
@@ -276,24 +279,14 @@
             } else {
                 location.href = href;
             }
-
-            // $.post(searchUrl, function (data) {
-            //     $.when(function () {
-            //         $("#result").fadeOut();
-            //     }).done(function () {
-            //         $("#result").html(data).fadeIn();
-            //     });
-            //     $("#searchLabel").html("Search: \"" + kParam + "\"");
-            //     //$("#result").fadeOut('fast').html(data).fadeIn();
-            //     //$(data).hide().appendTo('#result').fadeIn();
-            //     //$("#result").html(data);
-            // });
-
-            // $([document.documentElement, document.body]).animate({
-            //     scrollTop: $("#scrollHere").offset().top
-            // }, 500);
         }
+        //Initialize Select2 Elements
+        $('.select2').select2();
 
+        //Initialize Select2 Elements
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        });
         /*]]>*/
     </script>
 </body>

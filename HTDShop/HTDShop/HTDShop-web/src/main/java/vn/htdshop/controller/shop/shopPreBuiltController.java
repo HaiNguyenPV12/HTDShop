@@ -6,26 +6,33 @@
 package vn.htdshop.controller.shop;
 
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import vn.htdshop.entity.PreBuilt;
+import vn.htdshop.entity.PreBuiltRating;
 import vn.htdshop.entity.PreBuiltSearch;
 import vn.htdshop.entity.Product;
+import vn.htdshop.entity.Promotion;
 import vn.htdshop.entity.Search;
 import vn.htdshop.sb.CategoryFacadeLocal;
 import vn.htdshop.sb.PreBuiltFacade;
 import vn.htdshop.sb.PreBuiltFacadeLocal;
+import vn.htdshop.sb.PreBuiltRatingFacadeLocal;
 import vn.htdshop.sb.ProductFacadeLocal;
+import vn.htdshop.sb.PromotionFacadeLocal;
 
 /**
  *
@@ -35,6 +42,7 @@ import vn.htdshop.sb.ProductFacadeLocal;
 @RequestMapping("prebuilt")
 public class shopPreBuiltController {
     final private String redirectHome = "redirect:";
+    final private String redirectPreBuiltSearch = "redirect:/prebuilt/search?k=";
 
     @EJB(mappedName = "ProductFacade")
     ProductFacadeLocal productFacade;
@@ -42,16 +50,73 @@ public class shopPreBuiltController {
     @EJB(mappedName = "PreBuiltFacade")
     PreBuiltFacadeLocal preBuiltFacade;
 
+    @EJB(mappedName = "PreBuiltRatingFacade")
+    PreBuiltRatingFacadeLocal preBuiltRatingFacade;
+
     @EJB(mappedName = "CategoryFacade")
     CategoryFacadeLocal categoryFacade;
+
+    @EJB(mappedName = "PromotionFacade")
+    PromotionFacadeLocal promotionFacade;
 
     @Autowired
     ShopService shopService;
 
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public String getPreBuiltDetail(Model model, @RequestParam(value = "id", required = false) Integer id) {
+        shopService.checkLogin();
+
+        PreBuilt prebuilt = null;
+        if (id == null) {
+            return redirectPreBuiltSearch;
+        } else {
+            prebuilt = preBuiltFacade.find(id);
+            if (prebuilt == null) {
+                return redirectPreBuiltSearch;
+            }
+        }
+
+        Double discount = shopService.getPreBuiltDiscountPrice(prebuilt);
+        if (discount < shopService.getPreBuiltPrice(prebuilt)) {
+            model.asMap().put("discountPrice", discount);
+        }
+        model.asMap().put("prebuiltprice", shopService.getPreBuiltPrice(prebuilt));
+        List<Promotion> promolist = promotionFacade.findAll();
+        promolist = promolist.stream().filter(p -> p.getPromotionDetail().getIsDisabled() == false)
+                .filter(p -> p.getPreBuiltTarget() != null).filter(p -> p.getPromotionDetail().getIsAlways()
+                        || p.getPromotionDetail().getEndDate().after(new Date()))
+                .collect(Collectors.toList());
+        if (prebuilt.getUser() != null) {
+            promolist = promolist.stream().filter(p -> p.getPreBuiltTarget() == 0).collect(Collectors.toList());
+        }
+        model.asMap().put("promolist", promolist);
+        model.asMap().put("prebuilt", prebuilt);
+        return "HTDShop/prebuiltdetail";
+    }
+
+    @RequestMapping(value = "doRating", method = RequestMethod.POST)
+    public String doRating(@RequestParam(value = "prebuiltid", required = false) Integer prebuiltid,
+            @RequestParam(value = "comment", required = false) String comment,
+            @RequestParam(value = "rating", required = false) Double rating) {
+        try {
+            PreBuiltRating r = new PreBuiltRating();
+            r.setId(null);
+            r.setUser(shopService.getLoggedInCustomer().getUser());
+            r.setComment(comment);
+            r.setRating(rating);
+            r.setPreBuilt(new PreBuilt(prebuiltid));
+            r.setCreatedAt(new Date());
+            preBuiltRatingFacade.create(r);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "redirect:/prebuilt?id=" + prebuiltid;
+    }
+
     @RequestMapping(value = "search", method = RequestMethod.GET)
     public String getSearch(Model model, @RequestParam(required = false) Map<String, String> params) {
         shopService.checkLogin();
-        PreBuiltSearch search = new PreBuiltSearch(params);
+        // PreBuiltSearch search = new PreBuiltSearch(params);
 
         model.asMap().put("products", productFacade.findAll().stream()
                 .filter(p -> p.getStatus() != 3 && p.getStock() > 0).collect(Collectors.toList()));
@@ -78,31 +143,37 @@ public class shopPreBuiltController {
         List<PreBuilt> result = preBuiltFacade.search(search.getKeyword());
         // Filter parts
         if (search.getCpu() > 0) {
-            result = result.stream().filter(p->p.getCpu().getId() == search.getCpu()).collect(Collectors.toList());
+            result = result.stream().filter(p -> p.getCpu().getId() == search.getCpu()).collect(Collectors.toList());
         }
         if (search.getMotherboard() > 0) {
-            result = result.stream().filter(p->p.getMotherboard().getId() == search.getMotherboard()).collect(Collectors.toList());
+            result = result.stream().filter(p -> p.getMotherboard().getId() == search.getMotherboard())
+                    .collect(Collectors.toList());
         }
         if (search.getGpu() > 0) {
-            result = result.stream().filter(p->p.getVga().getId() == search.getGpu()).collect(Collectors.toList());
+            result = result.stream().filter(p -> p.getVga().getId() == search.getGpu()).collect(Collectors.toList());
         }
         if (search.getMemory() > 0) {
-            result = result.stream().filter(p->p.getMemory().getId() == search.getMemory()).collect(Collectors.toList());
+            result = result.stream().filter(p -> p.getMemory().getId() == search.getMemory())
+                    .collect(Collectors.toList());
         }
         if (search.getPsu() > 0) {
-            result = result.stream().filter(p->p.getPsu().getId() == search.getPsu()).collect(Collectors.toList());
+            result = result.stream().filter(p -> p.getPsu().getId() == search.getPsu()).collect(Collectors.toList());
         }
         if (search.getStorage() > 0) {
-            result = result.stream().filter(p->p.getStorage().getId() == search.getStorage()).collect(Collectors.toList());
+            result = result.stream().filter(p -> p.getStorage().getId() == search.getStorage())
+                    .collect(Collectors.toList());
         }
         if (search.getCpucooler() > 0) {
-            result = result.stream().filter(p->p.getCpucooler().getId() == search.getCpucooler()).collect(Collectors.toList());
+            result = result.stream().filter(p -> p.getCpucooler().getId() == search.getCpucooler())
+                    .collect(Collectors.toList());
         }
         if (search.getCase1() > 0) {
-            result = result.stream().filter(p->p.getCases().getId() == search.getCase1()).collect(Collectors.toList());
+            result = result.stream().filter(p -> p.getCases().getId() == search.getCase1())
+                    .collect(Collectors.toList());
         }
         if (search.getMonitor() > 0) {
-            result = result.stream().filter(p->p.getMonitor().getId() == search.getMonitor()).collect(Collectors.toList());
+            result = result.stream().filter(p -> p.getMonitor().getId() == search.getMonitor())
+                    .collect(Collectors.toList());
         }
         // Price
         if (search.getFrom() != null && search.getTo() != null) {
