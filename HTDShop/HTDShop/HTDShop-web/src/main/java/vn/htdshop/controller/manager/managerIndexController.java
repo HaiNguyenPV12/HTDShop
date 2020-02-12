@@ -5,8 +5,6 @@
  */
 package vn.htdshop.controller.manager;
 
-import java.util.Arrays;
-
 import javax.ejb.EJB;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -44,10 +42,13 @@ public class managerIndexController {
     @Autowired
     HttpServletRequest request;
 
+    @Autowired
+    ManagerService managerService;
+
     @RequestMapping(value = { "", "index" }, method = RequestMethod.GET)
     public String getHome(HttpSession session, Model model, HttpServletRequest request) {
         // Check if logged in session is exists
-        if (!checkLogin()) {
+        if (!managerService.checkLogin()) {
             // If not, return to login page
             return "redirect:/manager/login";
         }
@@ -64,14 +65,12 @@ public class managerIndexController {
     @RequestMapping(value = "login", method = RequestMethod.GET)
     public String getLogin(@ModelAttribute("staff") Staff staff, Model model, ModelMap modelMap, HttpSession session) {
         // Check if logged in session is exists
-        if (checkLogin()) {
+        if (managerService.checkLogin()) {
             // If yes, redirect to index
             return "redirect:/manager";
         }
         // Prepare staff model if not exists (for postLogin process)
-        if (!model.containsAttribute("staff")) {
-            model.addAttribute("staff", new Staff());
-        }
+        model.addAttribute("staff", new Staff());
         // Show error (if exists) after redirect to this page again
         if (model.asMap().containsKey("error")) {
             // Here is using for staff attribute that is declared, for other attribute,
@@ -94,8 +93,8 @@ public class managerIndexController {
             @RequestParam(value = "remember", required = false) String remember, Model model, BindingResult error,
             RedirectAttributes redirect, HttpSession session, HttpServletResponse response) {
         // Mannually check blank username
-        if (staff.getUserName().isEmpty()) {
-            error.rejectValue("userName", "staff", "Username cannot be blank.");
+        if (staff.getUsername() == null || staff.getUsername().isEmpty()) {
+            error.rejectValue("username", "staff", "Username cannot be blank.");
         }
         // Mannually check blank password
         if (staff.getPassword().isEmpty()) {
@@ -105,12 +104,12 @@ public class managerIndexController {
         // Check if error exists
         if (!error.hasErrors()) {
             // If not, start to check login
-            Staff result = staffFacade.checkLogin(staff.getUserName(), staff.getPassword());
+            Staff result = staffFacade.checkLogin(staff.getUsername(), staff.getPassword());
             if (result != null) {
                 // If ok, save staff's session
                 session.setAttribute("loggedInStaff", result);
                 if (remember != null) {
-                    Cookie cookie = new Cookie("loggedInStaff", staff.getUserName());
+                    Cookie cookie = new Cookie("loggedInStaff", staff.getUsername());
                     response.addCookie(cookie);
                 }
 
@@ -119,7 +118,7 @@ public class managerIndexController {
                 return "redirect:/manager/index";
             }
             // If checking is false, manually add error
-            error.rejectValue("userName", "staff", "Invalid Login.");
+            error.rejectValue("username", "staff", "Invalid Login.");
         }
 
         // Add error and staff's input info to redirect session
@@ -139,22 +138,5 @@ public class managerIndexController {
         response.addCookie(cookie);
         // redirect to login
         return "redirect:/manager/login";
-    }
-
-    private Boolean checkLogin() {
-        if (session.getAttribute("loggedInStaff") != null) {
-            return true;
-        } else {
-            String cookie = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("loggedInStaff"))
-                    .findFirst().map(Cookie::getValue).orElse(null);
-            if (cookie != null) {
-                Staff staff = staffFacade.find(cookie);
-                if (staff != null) {
-                    session.setAttribute("loggedInStaff", staff);
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 }

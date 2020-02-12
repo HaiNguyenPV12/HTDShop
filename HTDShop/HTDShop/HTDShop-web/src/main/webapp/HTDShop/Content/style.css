@@ -2248,7 +2248,7 @@ a.banner-book-style-btn:hover {
     padding-left: 12px;
 }
 
-.categories-wrapper form input {
+.categories-wrapper input {
     background: transparent none repeat scroll 0 0;
     border: medium none;
     box-shadow: none;
@@ -2260,14 +2260,14 @@ a.banner-book-style-btn:hover {
     width: 530px;
     padding-right: 100px;
 }
-.categories-wrapper form {
+.categories-wrapper {
     position: relative;
 }
-.categories-wrapper form input::-moz-placeholder {
+.categories-wrapper input::-moz-placeholder {
     color: #666666;
     opacity: 1;
 }
-.categories-wrapper form input::-webkit-placeholder {
+.categories-wrapper input::-webkit-placeholder {
     color: #666666;
     opacity: 1;
 }
@@ -6501,28 +6501,27 @@ a.icon-cart-furniture.food-cart span {
 
 /*------- 12. Breadcrumb style -------------*/
 .breadcrumb-content h2 {
-    color: #fff;
+    color: #444;
     font-size: 40px;
     font-weight: bold;
     margin-bottom: 16px;
     text-transform: capitalize;
 }
 .breadcrumb-content li {
-    color: #fff;
     display: inline-block;
     font-weight: 600;
     text-transform: uppercase;
 }
 .breadcrumb-content li a {
-    color: #fff;
+    color: #444;
     position: relative;
     padding-right: 18px;
 }
 .breadcrumb-content li a:hover {
-    color: #ccc;
+    color: rgb(167, 167, 167)
 }
 .breadcrumb-content li a::after {
-    background-color: #fff;
+    background-color: #686868;
     content: "";
     font-size: 8px;
     height: 1px;
@@ -7136,7 +7135,7 @@ h5.panel-title {
     color: #383838;
     font-size: 18px;
     font-weight: 600;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
     text-transform: capitalize;
 }
 .product-tags ul li {
@@ -7626,21 +7625,22 @@ h5.panel-title {
 }
 .description-review-title a.active {
     color: #333333;
+    font-weight: 600;
 }
 .description-review-title a {
     color: #666;
     font-size: 30px;
-    font-weight: 600;
+    font-weight: 400;
     margin: 0 20px;
 }
 .description-review-text .tab-pane p {
     color: #545454;
     font-size: 15px;
-    margin: 0 auto;
-    width: 61%;
+    /* margin: 0 auto; */
+    width: 85%;
 }
 #pro-review a {
-    background-color: #282828;
+    /* background-color: #282828;
     border: 0 none;
     color: #fff;
     display: inline-block;
@@ -7649,7 +7649,7 @@ h5.panel-title {
     margin: 0;
     padding: 10px 15px;
     text-shadow: none;
-    text-transform: uppercase;
+    text-transform: uppercase; */
 }
 .product-details-tab.product-details-tab2 {
     display: flex;

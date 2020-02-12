@@ -10,14 +10,12 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletContext;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -74,11 +72,14 @@ public class managerPromotionController {
     @Autowired
     HttpServletRequest request;
 
+    @Autowired
+    ManagerService managerService;
+
     // ==== PROMOTION INDEX ==== \\
     @RequestMapping(value = { "", "index" }, method = RequestMethod.GET)
     public String getHome(HttpSession session, Model model) {
         // Check login session with role
-        if (!checkLoginWithRole("promotion_read")) {
+        if (!managerService.checkLoginWithRole("promotion_read")) {
             return redirectHome;
         }
 
@@ -104,7 +105,7 @@ public class managerPromotionController {
     // ==== PROMOTION ADD - VIEW ==== \\
     @RequestMapping(value = "add", method = RequestMethod.GET)
     public String viewAdd(Model model) {
-        if (!checkLoginWithRole("promotion_add")) {
+        if (!managerService.checkLoginWithRole("promotion_add")) {
             return redirectPromotionHome;
         }
         // Prepare model
@@ -150,7 +151,7 @@ public class managerPromotionController {
             @RequestParam(value = "conPercentage", required = false) Double[] conPercentage,
             @RequestParam(value = "conMaxSale", required = false) Double[] conMaxSale,
             @RequestParam(value = "conExact", required = false) Double[] conExact, RedirectAttributes redirect) {
-        if (!checkLoginWithRole("promotion_add")) {
+        if (!managerService.checkLoginWithRole("promotion_add")) {
             return redirectPromotionHome;
         }
         // Check image extension
@@ -169,6 +170,9 @@ public class managerPromotionController {
                     p.setProduct(conProduct[i] != null ? productFacade.find(conProduct[i]) : null);
                     p.setPreBuiltTarget(conPreBuilt[i]);
                     p.setLimitedQuantity(conLimit[i]);
+                    if (conLimit[i] != null) {
+                        p.setQuantityLeft(conLimit[i]);
+                    }
                     p.setMinQuantity(conMin[i]);
                     p.setMaxQuantity(conMax[i]);
                     p.setPercentage(conPercentage[i]);
@@ -186,6 +190,9 @@ public class managerPromotionController {
                 p.setProduct(conProduct.length > 0 ? productFacade.find(conProduct[0]) : null);
                 p.setPreBuiltTarget(conPreBuilt.length > 0 ? conPreBuilt[0] : null);
                 p.setLimitedQuantity(conLimit.length > 0 ? conLimit[0] : null);
+                if (conLimit.length > 0) {
+                    p.setQuantityLeft(conLimit[0]);
+                }
                 p.setMinQuantity(conMin.length > 0 ? conMin[0] : null);
                 p.setMaxQuantity(conMax.length > 0 ? conMax[0] : null);
                 p.setPercentage(conPercentage.length > 0 ? conPercentage[0] : null);
@@ -247,7 +254,7 @@ public class managerPromotionController {
     // ==== PROMOTION EDIT - VIEW ==== \\
     @RequestMapping(value = "edit", method = RequestMethod.GET)
     public String viewEdit(Model model, @RequestParam(value = "id") Integer id) {
-        if (!checkLoginWithRole("promotion_edit")) {
+        if (!managerService.checkLoginWithRole("promotion_edit")) {
             return redirectPromotionHome;
         }
         // Prepare model
@@ -293,7 +300,7 @@ public class managerPromotionController {
             @RequestParam(value = "conPercentage", required = false) Double[] conPercentage,
             @RequestParam(value = "conMaxSale", required = false) Double[] conMaxSale,
             @RequestParam(value = "conExact", required = false) Double[] conExact, RedirectAttributes redirect) {
-        if (!checkLoginWithRole("promotion_edit")) {
+        if (!managerService.checkLoginWithRole("promotion_edit")) {
             return redirectPromotionHome;
         }
         // Check image extension if image exists
@@ -315,6 +322,9 @@ public class managerPromotionController {
                     p.setProduct(conProduct[i] != null ? productFacade.find(conProduct[i]) : null);
                     p.setPreBuiltTarget(conPreBuilt[i]);
                     p.setLimitedQuantity(conLimit[i]);
+                    if (conLimit[i] != null) {
+                        p.setQuantityLeft(conLimit[i]);
+                    }
                     p.setMinQuantity(conMin[i]);
                     p.setMaxQuantity(conMax[i]);
                     p.setPercentage(conPercentage[i]);
@@ -328,6 +338,9 @@ public class managerPromotionController {
                 p.setProduct(conProduct.length > 0 ? productFacade.find(conProduct[0]) : null);
                 p.setPreBuiltTarget(conPreBuilt.length > 0 ? conPreBuilt[0] : null);
                 p.setLimitedQuantity(conLimit.length > 0 ? conLimit[0] : null);
+                if (conLimit.length > 0) {
+                    p.setQuantityLeft(conLimit[0]);
+                }
                 p.setMinQuantity(conMin.length > 0 ? conMin[0] : null);
                 p.setMaxQuantity(conMax.length > 0 ? conMax[0] : null);
                 p.setPercentage(conPercentage.length > 0 ? conPercentage[0] : null);
@@ -382,7 +395,7 @@ public class managerPromotionController {
     @RequestMapping(value = "doDelete", method = RequestMethod.GET)
     public String doDelete(HttpSession session, Model model, @RequestParam(required = true) Integer id,
             RedirectAttributes redirect) {
-        if (!checkLoginWithRole("promotion_delete")) {
+        if (!managerService.checkLoginWithRole("promotion_delete")) {
             return redirectPromotionHome;
         }
 
@@ -461,34 +474,5 @@ public class managerPromotionController {
             e.printStackTrace();
             return false;
         }
-    }
-
-    private Boolean checkLogin() {
-        if (session.getAttribute("loggedInStaff") != null) {
-            return true;
-        } else {
-            String cookie = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("loggedInStaff"))
-                    .findFirst().map(Cookie::getValue).orElse(null);
-            if (cookie != null) {
-                Staff staff = staffFacade.find(cookie);
-                if (staff != null) {
-                    session.setAttribute("loggedInStaff", staff);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private Boolean checkLoginWithRole(String role) {
-        if (checkLogin()) {
-            String user = ((Staff) session.getAttribute("loggedInStaff")).getUserName();
-            for (RoleRights roleRight : staffFacade.find(user).getRole().getRoleRightsCollection()) {
-                if (roleRight.getRightsDetail().getTag().equals(role)) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 }

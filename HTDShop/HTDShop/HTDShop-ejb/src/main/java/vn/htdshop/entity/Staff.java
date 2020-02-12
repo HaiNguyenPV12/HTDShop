@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Staff.findAll", query = "SELECT s FROM Staff s")
-    , @NamedQuery(name = "Staff.findByUserName", query = "SELECT s FROM Staff s WHERE s.userName = :userName")
+    , @NamedQuery(name = "Staff.findByUsername", query = "SELECT s FROM Staff s WHERE s.username = :username")
     , @NamedQuery(name = "Staff.findByPassword", query = "SELECT s FROM Staff s WHERE s.password = :password")
     , @NamedQuery(name = "Staff.findByFirstName", query = "SELECT s FROM Staff s WHERE s.firstName = :firstName")
     , @NamedQuery(name = "Staff.findByLastName", query = "SELECT s FROM Staff s WHERE s.lastName = :lastName")
@@ -52,8 +52,8 @@ public class Staff implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
-    @Column(name = "UserName")
-    private String userName;
+    @Column(name = "Username")
+    private String username;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
@@ -113,12 +113,12 @@ public class Staff implements Serializable {
     public Staff() {
     }
 
-    public Staff(String userName) {
-        this.userName = userName;
+    public Staff(String username) {
+        this.username = username;
     }
 
-    public Staff(String userName, String password, String firstName, String lastName, boolean gender, Date birthday, String email, String address, String phone, String image) {
-        this.userName = userName;
+    public Staff(String username, String password, String firstName, String lastName, boolean gender, Date birthday, String email, String address, String phone, String image) {
+        this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -130,12 +130,12 @@ public class Staff implements Serializable {
         this.image = image;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -248,7 +248,7 @@ public class Staff implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (userName != null ? userName.hashCode() : 0);
+        hash += (username != null ? username.hashCode() : 0);
         return hash;
     }
 
@@ -259,7 +259,7 @@ public class Staff implements Serializable {
             return false;
         }
         Staff other = (Staff) object;
-        if ((this.userName == null && other.userName != null) || (this.userName != null && !this.userName.equals(other.userName))) {
+        if ((this.username == null && other.username != null) || (this.username != null && !this.username.equals(other.username))) {
             return false;
         }
         return true;
@@ -267,7 +267,7 @@ public class Staff implements Serializable {
 
     @Override
     public String toString() {
-        return "vn.htdshop.entity.Staff[ userName=" + userName + " ]";
+        return "vn.htdshop.entity.Staff[ username=" + username + " ]";
     }
     
 }
