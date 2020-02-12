@@ -69,9 +69,12 @@
                                     <td th:text="${o.orderDate}">CPU</td>
                                     <td th:text="${o.paidDate}">Intel</td>                     
                                     <td>
-                                        <th:block th:if="${o.orderStatus==1}">Delivering</th:block>
-                                        <th:block th:if="${o.orderStatus==2}">Delivered</th:block>
-                                        <th:block th:if="${o.orderStatus==3}">Cancelling</th:block>
+                                        <th:block th:if="${o.orderStatus==1}">Ordered</th:block>
+                                        <th:block th:if="${o.orderStatus==2}">Confirmed</th:block>
+                                        <th:block th:if="${o.orderStatus==3}">Shipping</th:block>
+                                        <th:block th:if="${o.orderStatus==4}">Done</th:block>
+                                        <th:block th:if="${o.orderStatus==5}">Cancelled</th:block>
+
                                     </td>
                                     <td>
                                         <button class="btn btn-danger btn-sm" href="#" data-toggle="tooltip"

@@ -17,10 +17,13 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,12 +44,10 @@ public class managerCustomerController {
     private final String redirectHome = "redirect:/manager";
     private final String redirectLogin = "redirect:/manager/login";
 
-    
-
     @EJB(mappedName = "CustomerFacade")
     CustomerFacadeLocal customerFacade;
 
-    @EJB(mappedName =  "StaffFacade")
+    @EJB(mappedName = "StaffFacade")
     StaffFacadeLocal staffFacade;
 
     @EJB(mappedName = "UserFacade")
@@ -61,12 +62,11 @@ public class managerCustomerController {
     @Autowired
     HttpServletRequest request;
 
+    // ===Customer Index===\\
 
-    //===Customer Index===\\
-
-    @RequestMapping(value = {"","index"},method = RequestMethod.GET)
-    public String getHome(HttpSession session, Model model){
-         // Check login with role
+    @RequestMapping(value = { "", "index" }, method = RequestMethod.GET)
+    public String getHome(HttpSession session, Model model) {
+        // Check login with role
         if (!checkLoginWithRole("customer_read")) {
             return redirectHome;
         }
@@ -82,12 +82,12 @@ public class managerCustomerController {
         model.asMap().put("customers", customerFacade.findAll().stream()
                 .sorted(Comparator.comparingInt(Customer::getId)).collect(Collectors.toList()));
         // Add indicator attribute for sidemenu highlight
-        model.asMap().put("menu", "customer");   
+        model.asMap().put("menu", "customer");
 
         return "HTDManager/customer";
-    }   
-    
-    //=== User-Detail View ===\\
+    }
+
+    // === User-Detail View ===\\
     @RequestMapping(value = "details", method = RequestMethod.GET)
     public String viewDetails(HttpSession session, Model model, @RequestParam(required = true) Integer id) {
         if (!checkLoginWithRole("customer_read")) {
@@ -107,7 +107,7 @@ public class managerCustomerController {
         return "HTDManager/user_detail";
     }
 
-    //=== Customer-EDIT  VIEW ===\\
+    // === Customer-EDIT VIEW ===\\
     @RequestMapping(value = "edit", method = RequestMethod.GET)
     public String viewEdit(HttpSession session, Model model, @RequestParam(required = true) Integer id) {
         if (!checkLoginWithRole("customer_edit")) {
@@ -136,18 +136,37 @@ public class managerCustomerController {
         // Prepare form url for form submit
         // model.addAttribute("formUrl", "doEdit" + category);
         model.addAttribute("formUrl", "doEdit");
-        // Indicator for update form
-        model.addAttribute("update", "update");
+
         // Show error (if exists) after redirect to this page again
         if (model.asMap().containsKey("error")) {
             model.addAttribute("org.springframework.validation.BindingResult.customer", model.asMap().get("error"));
         }
+        // Indicator for update form
+        model.addAttribute("update", "update");
         // Add indicator attribute for sidemenu highlight
         model.asMap().put("menu", "customer");
         // Continue to login page
         return "HTDManager/customer_edit";
     }
 
+    // === CUSTOMER-EDIT PROCESS ===\\
+    @RequestMapping(value = "doEdit", method = RequestMethod.POST)
+    public String doEdit(@Valid @ModelAttribute("customer") Customer customer, BindingResult error, HttpSession session,
+            Model model, RedirectAttributes redirect) {
+        if (!checkLoginWithRole("customer_edit")) {
+            return redirectCustomerHome;
+        }
+        model.addAttribute("error", error);
+        
+        if (!error.hasErrors()) {
+            // Update in database
+            customerFacade.edit(customer); 
+        }
+        redirect.addFlashAttribute("goodAlert", "Successfully updated \"" + customer.getId() + "\"!");
+        return redirectCustomerHome;
+    }
+
+    //=== Check Login ===\\
     private Boolean checkLogin() {
         if (session.getAttribute("loggedInStaff") != null) {
             return true;
@@ -177,6 +196,4 @@ public class managerCustomerController {
         return false;
     }
 
-    
-    
 }

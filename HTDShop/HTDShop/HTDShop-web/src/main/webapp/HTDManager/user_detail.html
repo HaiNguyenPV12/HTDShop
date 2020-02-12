@@ -32,7 +32,7 @@
         
     -->
     <span layout:fragment="title">
-        <i class="fas fa-box-open" style="font-size:20px"></i> User Detail        
+        <i class="nav-icon fas fa-users" style="font-size:20px"></i> User Detail        
     </span>
 
     <div layout:fragment="breadcrumb">
@@ -65,7 +65,7 @@
                                     <td th:text="${#dates.format(customer.user.birthday,'dd-MM-yyyy')}">Intel</td>                   
                                     <td th:text="${customer.user.point}">Intel</td>   
                                     <td>     
-                                        <a class="btn btn-warning btn-sm" th:href="@{/manager/customer/edit(id=${customer.user.id})}"
+                                        <a class="btn btn-warning btn-sm" th:href="@{/manager/customer/edit(id=${customer.id})}"
                                         data-toggle='tooltip' title="Edit">
                                         <i class="fas fa-pencil-alt"></i>
                                         </a>                                                        

@@ -26,6 +26,8 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 /**
  *
  * @author Thien
@@ -55,6 +57,7 @@ public class User implements Serializable {
     private String password;
     @Column(name = "Gender")
     private Boolean gender;
+    @DateTimeFormat (pattern="dd/MM/yyyy")
     @Column(name = "Birthday")
     @Temporal(TemporalType.DATE)
     private Date birthday;
