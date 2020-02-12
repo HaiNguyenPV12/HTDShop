@@ -40,7 +40,7 @@
                 <div class="header-contact-info header-contact-info2 ">
                     <ul>
                         <li><i class="pe-7s-call"></i> +84 90909 5555</li>
-                        <li><i class="pe-7s-mail"></i> <a href="#">company@domail.info</a></li>
+                        <li><i class="pe-7s-mail"></i> <a href="#">htdshop@mail.com</a></li>
                     </ul>
                 </div>
                 <div class="electronics-login-register">
@@ -52,8 +52,8 @@
                             </a></li>
                         <li th:if="${session.loggedInCustomer == null}"><a href="#"><i class="pe-7s-key"></i>Login</a>
                         </li>
-                        <li><a data-toggle="modal" data-target="#exampleCompare" href="#"><i
-                                    class="pe-7s-repeat"></i>Compare</a></li>
+                        <!-- <li><a data-toggle="modal" data-target="#exampleCompare" href="#"><i
+                                    class="pe-7s-repeat"></i>Compare</a></li> -->
                         <li><a href="wishlist.html"><i class="pe-7s-like"></i>Wishlist</a></li>
                         <li><a href="#"><i class="pe-7s-flag"></i>US</a></li>
                         <li><a class="border-none" href="#"><span>$</span>USD</a></li>
@@ -389,7 +389,7 @@
     <script th:src="@{/resources/Scripts/owl.carousel.min.js}"></script>
     <script th:src="@{/resources/Scripts/plugins.js}"></script>
     <script th:src="@{/resources/Scripts/main.js}"></script>
-    <script th:src="@{/resources/Plugins/select2/js/select2.min.js}"></script> 
+    <script th:src="@{/resources/Plugins/select2/js/select2.full.min.js}"></script> 
     <th:block layout:fragment="additionalScript">
 
     </th:block>
