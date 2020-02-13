@@ -1,0 +1,40 @@
+<div class="overflow-auto text-left border border-secondary" style="height: 20em;overflow-y: scroll;">
+	<div class="card border-bottom border-secondary"
+		style="background-color: lightyellow;">
+		<!-- /.card-header -->
+		<div class="card-body border-bottom border-warning">
+			<div class="card-comment">
+				<div class="comment-text">
+					<span class="username">
+						<th:block
+							th:text="${content.user.customerCollection[0].firstName + ' ' + content.user.customerCollection[0].lastName}">
+						</th:block>
+						<span class="text-muted float-right" th:text="${#dates.format(content.createdAt, 'dd/MM/yyyy HH:mm')}">8:03 PM Today</span>
+					</span><!-- /.username -->
+					<th:block th:text="${content.content}"></th:block>
+				</div>
+				<!-- /.comment-text -->
+			</div>
+			<!-- /.card-comment -->
+		</div>
+		<!-- /.card-body -->
+		<div class="card-footer card-comments" th:if="${content.productCommentReplyCollection.size() > 0}">
+			<div class="card-comment" th:each="cmr : ${content.productCommentReplyCollection}" >
+				<div class="comment-text">
+					<span class="username">
+						<th:block th:text="${cmr.user != null ? (cmr.user.customerCollection[0].firstName + ' ' + cmr.user.customerCollection[0].lastName) : (cmr.staff.firstName + ' ' + cmr.staff.lastName)}"></th:block>
+						<i class="text-muted" th:if="${cmr.staff != null}">(Staff)</i>
+						<span class="text-muted float-right" th:text="${#dates.format(cmr.createdAt, 'dd/MM/yyyy HH:mm')}">8:03 PM Today</span>
+					</span><!-- /.username -->
+					<th:block th:text="${cmr.content}"></th:block>
+				</div>
+				<!-- /.comment-text -->
+			</div>
+			
+			<!-- /.card-comment -->
+		</div>
+		<!-- /.card-footer -->
+		
+		<!-- /.card-footer -->
+	</div>
+</div>

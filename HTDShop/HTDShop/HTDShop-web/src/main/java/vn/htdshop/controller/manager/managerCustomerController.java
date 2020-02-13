@@ -62,12 +62,15 @@ public class managerCustomerController {
     @Autowired
     HttpServletRequest request;
 
+    @Autowired
+    ManagerService managerService;
+
     // ===Customer Index===\\
 
     @RequestMapping(value = { "", "index" }, method = RequestMethod.GET)
     public String getHome(HttpSession session, Model model) {
         // Check login with role
-        if (!checkLoginWithRole("customer_read")) {
+        if (!managerService.checkLoginWithRole("customer_read")) {
             return redirectHome;
         }
         // Check for any alert
@@ -90,7 +93,7 @@ public class managerCustomerController {
     // === User-Detail View ===\\
     @RequestMapping(value = "details", method = RequestMethod.GET)
     public String viewDetails(HttpSession session, Model model, @RequestParam(required = true) Integer id) {
-        if (!checkLoginWithRole("customer_read")) {
+        if (!managerService.checkLoginWithRole("customer_read")) {
             return redirectCustomerHome;
         }
         Customer cust = null;
@@ -110,7 +113,7 @@ public class managerCustomerController {
     // === Customer-EDIT VIEW ===\\
     @RequestMapping(value = "edit", method = RequestMethod.GET)
     public String viewEdit(HttpSession session, Model model, @RequestParam(required = true) Integer id) {
-        if (!checkLoginWithRole("customer_edit")) {
+        if (!managerService.checkLoginWithRole("customer_edit")) {
             return redirectCustomerHome;
         }
 
@@ -118,23 +121,14 @@ public class managerCustomerController {
         Customer c = null;
         // First, check parameter "id"
         if (id != null) {
-            // In case not null, find product by id and continue
-            // to check if product is exists or not
             c = customerFacade.find(id);
             if (c == null) {
-                // If not exists, redirect to product index
                 return redirectCustomerHome;
             }
         } else {
-            // In case id is null, redirect to product index
             return redirectCustomerHome;
         }
-        // Continue if everything is ok
-
-        // Prepare product model
         model.addAttribute("customer", c);
-        // Prepare form url for form submit
-        // model.addAttribute("formUrl", "doEdit" + category);
         model.addAttribute("formUrl", "doEdit");
 
         // Show error (if exists) after redirect to this page again
@@ -153,7 +147,7 @@ public class managerCustomerController {
     @RequestMapping(value = "doEdit", method = RequestMethod.POST)
     public String doEdit(@Valid @ModelAttribute("customer") Customer customer, BindingResult error, HttpSession session,
             Model model, RedirectAttributes redirect) {
-        if (!checkLoginWithRole("customer_edit")) {
+        if (!managerService.checkLoginWithRole("customer_edit")) {
             return redirectCustomerHome;
         }
         model.addAttribute("error", error);
@@ -165,35 +159,5 @@ public class managerCustomerController {
         redirect.addFlashAttribute("goodAlert", "Successfully updated \"" + customer.getId() + "\"!");
         return redirectCustomerHome;
     }
-
-    //=== Check Login ===\\
-    private Boolean checkLogin() {
-        if (session.getAttribute("loggedInStaff") != null) {
-            return true;
-        } else {
-            String cookie = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("loggedInStaff"))
-                    .findFirst().map(Cookie::getValue).orElse(null);
-            if (cookie != null) {
-                Staff staff = staffFacade.find(cookie);
-                if (staff != null) {
-                    session.setAttribute("loggedInStaff", staff);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private Boolean checkLoginWithRole(String role) {
-        if (checkLogin()) {
-            String user = ((Staff) session.getAttribute("loggedInStaff")).getUserName();
-            for (RoleRights roleRight : staffFacade.find(user).getRole().getRoleRightsCollection()) {
-                if (roleRight.getRightsDetail().getTag().equals(role)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
+   
 }

@@ -56,5 +56,12 @@ import vn.htdshop.sb.StaffFacadeLocal;
         }
         return false;
     }
+
+    public Staff getLoggedInStaff() {
+        if (checkLogin()) {
+            return (Staff) session.getAttribute("loggedInStaff");
+        }
+        return null;
+    }
     
 }

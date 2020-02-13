@@ -61,13 +61,16 @@ public class managerOrderController {
     @Autowired
     HttpServletRequest request;
 
+    @Autowired
+    ManagerService managerService;
+
 
     //===Order Index===\\
 
     @RequestMapping(value = {"","index"},method = RequestMethod.GET)
     public String getHome(HttpSession session, Model model){
          // Check login with role
-        if (!checkLoginWithRole("order_read")) {
+        if (!managerService.checkLoginWithRole("order_read")) {
             return redirectHome;
         }
         // Check for any alert
@@ -92,11 +95,11 @@ public class managerOrderController {
     @RequestMapping(value = "doCancel", method = RequestMethod.GET)
     public String doCancel(HttpSession session, Model model, @RequestParam(required = true) Integer id)
     {
-        if (!checkLoginWithRole("order_edit")){
+        if (!managerService.checkLoginWithRole("order_edit")){
             return redirectOrderHome;
         }
         Order1 o = order1Facade.find(id);
-        o.setOrderStatus(3);
+        o.setOrderStatus(5);
         o.setCancelledDate(Calendar.getInstance().getTime());
         order1Facade.edit(o);
         return redirectOrderHome;
@@ -106,7 +109,7 @@ public class managerOrderController {
 
     @RequestMapping(value = "details", method = RequestMethod.GET)
     public String viewDetails(HttpSession session, Model model, @RequestParam(required = true) Integer id) {
-        if (!checkLoginWithRole("order_read")) {
+        if (!managerService.checkLoginWithRole("order_read")) {
             return redirectOrderHome;
         }
         Order1 o = null;
@@ -123,34 +126,7 @@ public class managerOrderController {
         return "HTDManager/order_detail";
     }
 
-    private Boolean checkLogin() {
-        if (session.getAttribute("loggedInStaff") != null) {
-            return true;
-        } else {
-            String cookie = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("loggedInStaff"))
-                    .findFirst().map(Cookie::getValue).orElse(null);
-            if (cookie != null) {
-                Staff staff = staffFacade.find(cookie);
-                if (staff != null) {
-                    session.setAttribute("loggedInStaff", staff);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private Boolean checkLoginWithRole(String role) {
-        if (checkLogin()) {
-            String user = ((Staff) session.getAttribute("loggedInStaff")).getUserName();
-            for (RoleRights roleRight : staffFacade.find(user).getRole().getRoleRightsCollection()) {
-                if (roleRight.getRightsDetail().getTag().equals(role)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+    
 
     
     

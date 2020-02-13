@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<!--
+    + To use layout, add following attribute in <html> tag: 
+        layout:decorate="~{path_from_java's_webapp_root_folder_and_without_extension}"
+
+    + To change content from layout, add following attribute to correspondly tag:
+        layout:fragment="fragment_name"
+      Declare any unique tag like <title>,... will replace it from layout 
+
+    + Any src / href attribute that using relative url from web, change it all to th:src and th:href
+    like following code:
+        th:src="@{/url_from_context_path_(not_include_context_path)}"
+        th:href="@{/url_from_context_path_(not_include_context_path)}"
+-->
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDManager/layout}">
+
+<head>
+    <title>HTD Manager - Product</title>
+    <!-- Hide default datatable's filter -->
+    <style>
+        .dataTables_filter {
+            float: right !important;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!--
+        
+    -->
+    <span layout:fragment="title">
+        <i class="fas fa-box-open" style="font-size:20px"></i> Comment Manager
+    </span>
+
+    <div layout:fragment="breadcrumb">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a th:href="@{/manager}">Home</a></li>
+            <li class="breadcrumb-item active">Comment</li>
+        </ol>
+    </div>
+
+    <div layout:fragment="content">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card card-purple card-outline">
+                    <div class="card-body">
+
+                        <table id="tblProduct" class="table table-bordered table-striped table-hover">
+                            <thead class="bg-purple">
+                                <th>ID</th>
+                                <th>Product Name</th>
+                                <th>Customer Name </th>
+                                <th>Content</th>
+                                <th>CreatedAt</th>
+                                <th>Action</th>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${comments eq null or comments.empty}">
+                                    <td colspan="9">No Comment</td>
+                                </tr>
+
+                                <tr th:each="com : ${comments}">
+                                    <td th:text="${com.id}">001</td>
+                                    <td th:text="${com.product.name}">Intel Core i5 8400 3.0 GHz</td>
+                                    <td th:text="${com.user.customerCollection[0].lastName}">CPU</td>
+                                    <td th:text="${com.content}">Intel</td>
+                                    <td th:text="${com.createdAt}">Intel</td>
+                                    <td>
+                                        <a class="btn btn-warning btn-sm" th:onclick="showCommentModal([[${com.id}]])"
+                                            title="Reply Comment">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="bg-purple">
+                                <th>ID</th>
+                                <th>Product Name</th>
+                                <th>Customer Name </th>
+                                <th>Content</th>
+                                <th>CreatedAt</th>
+                                <th>Action</th>
+                                </thead>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="commentModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header" id='modalHeader'>
+                        <h4 class="modal-title" id="modalTitle">Reply to...<span></span></h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="modalBody">
+
+                        <form th:action="@{/manager/comment/doReply}" method="post">
+                            <div class="comment-text">
+                                <div class="d-flex">
+                                    <input type="hidden" name="commentid" value="" id="commentid" />
+                                    <input type="text" class="form-control form-control-sm"
+                                        placeholder="Reply to this comment." required name="reply" id="reply">
+                                    <button type="submit" class="btn btn-secondary" style="height: auto;"><i
+                                            class="fas fa-reply"></i></button>
+                                </div>
+                            </div>
+                        </form>
+                        <div id="comment">
+                        </div>
+                    </div>                    
+                </div>
+                
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+
+
+        </div>
+
+
+    </div>
+
+    <!--In case using custom script at pages using layout, add th:inline="none" like below-->
+    <script layout:fragment="script" th:inline="javascript">
+        function showCommentModal(cmtid) {
+            var searchUrl = /*[[@{/manager/comment/content}]]*/'';
+            searchUrl += "?id=" + cmtid;
+            $("#comment").html("");
+            $.ajax({
+                url: searchUrl,
+                method: 'POST',
+                cache: false,
+                success: function (data) {
+                    $("#comment").html(data);
+                }
+            });
+            $('#reply').val("");
+            $('#commentid').val(cmtid);
+            $('#commentModal').modal('show');
+        }
+
+
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+</body>
+
+</html>
