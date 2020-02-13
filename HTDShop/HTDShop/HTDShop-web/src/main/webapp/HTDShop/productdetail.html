@@ -432,7 +432,7 @@
                                         <div class="comment-text">
                                             <span class="username">
                                                 <th:block
-                                                    th:text="${cm.user.customerCollection[0].firstName + ' ' + cm.user.customerCollection[0].lastName}">
+                                                    th:text="${cm.customer.firstName + ' ' + cm.customer.lastName}">
                                                 </th:block>
                                                 <span class="text-muted float-right" th:text="${#dates.format(cm.createdAt, 'dd/MM/yyyy HH:mm')}">8:03 PM Today</span>
                                             </span><!-- /.username -->
@@ -447,7 +447,7 @@
                                     <div class="card-comment" th:each="cmr : ${cm.productCommentReplyCollection}" >
                                         <div class="comment-text">
                                             <span class="username">
-                                                <th:block th:text="${cmr.user != null ? (cmr.user.customerCollection[0].firstName + ' ' + cmr.user.customerCollection[0].lastName) : (cmr.staff.firstName + ' ' + cmr.staff.lastName)}"></th:block>
+                                                <th:block th:text="${cmr.customer != null ? (cmr.customer.firstName + ' ' + cmr.customer.lastName) : (cmr.staff.firstName + ' ' + cmr.staff.lastName)}"></th:block>
                                                 <i class="text-muted" th:if="${cmr.staff != null}">(Staff)</i>
                                                 <span class="text-muted float-right" th:text="${#dates.format(cmr.createdAt, 'dd/MM/yyyy HH:mm')}">8:03 PM Today</span>
                                             </span><!-- /.username -->

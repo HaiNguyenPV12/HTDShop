@@ -123,11 +123,6 @@
         <local>vn.htdshop.sb.StaffFacadeLocal</local>
     </ejb-local-ref>
     <ejb-local-ref>
-        <ejb-ref-name>UserFacade</ejb-ref-name>
-        <ejb-ref-type>Session</ejb-ref-type>
-        <local>vn.htdshop.sb.UserFacadeLocal</local>
-    </ejb-local-ref>
-    <ejb-local-ref>
         <ejb-ref-name>ImageSlideFacade</ejb-ref-name>
         <ejb-ref-type>Session</ejb-ref-type>
         <local>vn.htdshop.sb.ImageSlideFacadeLocal</local>
