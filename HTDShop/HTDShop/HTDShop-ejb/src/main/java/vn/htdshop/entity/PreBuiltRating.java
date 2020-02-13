@@ -39,6 +39,10 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "PreBuiltRating.findByCreatedAt", query = "SELECT p FROM PreBuiltRating p WHERE p.createdAt = :createdAt")})
 public class PreBuiltRating implements Serializable {
 
+    @JoinColumn(name = "CustomerId", referencedColumnName = "Id")
+    @ManyToOne(optional = false)
+    private Customer customer;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,9 +67,6 @@ public class PreBuiltRating implements Serializable {
     @JoinColumn(name = "PreBuiltId", referencedColumnName = "Id")
     @ManyToOne(optional = false)
     private PreBuilt preBuilt;
-    @JoinColumn(name = "UserId", referencedColumnName = "Id")
-    @ManyToOne(optional = false)
-    private User user;
 
     public PreBuiltRating() {
     }
@@ -121,14 +122,6 @@ public class PreBuiltRating implements Serializable {
         this.preBuilt = preBuilt;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -152,6 +145,14 @@ public class PreBuiltRating implements Serializable {
     @Override
     public String toString() {
         return "vn.htdshop.entity.PreBuiltRating[ id=" + id + " ]";
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
     
 }

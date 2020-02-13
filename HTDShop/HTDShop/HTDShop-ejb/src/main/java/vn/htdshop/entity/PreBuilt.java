@@ -43,6 +43,10 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "PreBuilt.findByCreatedAt", query = "SELECT p FROM PreBuilt p WHERE p.createdAt = :createdAt")})
 public class PreBuilt implements Serializable {
 
+    @JoinColumn(name = "CustomerId", referencedColumnName = "Id")
+    @ManyToOne
+    private Customer customer;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -97,9 +101,6 @@ public class PreBuilt implements Serializable {
     @JoinColumn(name = "StaffUserName", referencedColumnName = "UserName")
     @ManyToOne(optional = false)
     private Staff staff;
-    @JoinColumn(name = "UserId", referencedColumnName = "Id")
-    @ManyToOne(optional = false)
-    private User user;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "preBuilt")
     private Collection<PreBuiltRating> preBuiltRatingCollection;
 
@@ -166,14 +167,6 @@ public class PreBuilt implements Serializable {
 
     public void setStaff(Staff staff) {
         this.staff = staff;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     @XmlTransient
@@ -334,6 +327,14 @@ public class PreBuilt implements Serializable {
      */
     public void setCpu(Product cpu) {
         this.cpu = cpu;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
     
 }

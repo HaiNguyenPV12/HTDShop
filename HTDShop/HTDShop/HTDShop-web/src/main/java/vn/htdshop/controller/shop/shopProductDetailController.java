@@ -74,7 +74,7 @@ public class shopProductDetailController {
     public String doComment(@RequestBody MultiValueMap<String, String> formData) {
         ProductComment c = new ProductComment();
         c.setId(null);
-        c.setUser(shopService.getLoggedInCustomer().getUser());
+        c.setCustomer(shopService.getLoggedInCustomer());
         c.setContent(formData.getFirst("comment"));
         c.setProduct(new Product(Integer.parseInt(formData.getFirst("productid"))));
         c.setCreatedAt(new Date());
@@ -87,7 +87,7 @@ public class shopProductDetailController {
         ProductCommentReply r = new ProductCommentReply();
         r.setId(null);
         r.setStaff(null);
-        r.setUser(shopService.getLoggedInCustomer().getUser());
+        r.setCustomer(shopService.getLoggedInCustomer());
         r.setContent(formData.getFirst("reply"));
         r.setProductComment(new ProductComment(Integer.parseInt(formData.getFirst("commentid"))));
         r.setCreatedAt(new Date());

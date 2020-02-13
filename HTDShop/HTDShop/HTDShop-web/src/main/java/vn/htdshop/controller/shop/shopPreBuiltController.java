@@ -86,7 +86,7 @@ public class shopPreBuiltController {
                 .filter(p -> p.getPreBuiltTarget() != null).filter(p -> p.getPromotionDetail().getIsAlways()
                         || p.getPromotionDetail().getEndDate().after(new Date()))
                 .collect(Collectors.toList());
-        if (prebuilt.getUser() != null) {
+        if (prebuilt.getCustomer() != null) {
             promolist = promolist.stream().filter(p -> p.getPreBuiltTarget() == 0).collect(Collectors.toList());
         }
         model.asMap().put("promolist", promolist);
@@ -101,7 +101,7 @@ public class shopPreBuiltController {
         try {
             PreBuiltRating r = new PreBuiltRating();
             r.setId(null);
-            r.setUser(shopService.getLoggedInCustomer().getUser());
+            r.setCustomer(shopService.getLoggedInCustomer());
             r.setComment(comment);
             r.setRating(rating);
             r.setPreBuilt(new PreBuilt(prebuiltid));

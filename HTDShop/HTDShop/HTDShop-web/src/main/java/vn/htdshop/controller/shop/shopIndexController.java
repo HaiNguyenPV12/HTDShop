@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import vn.htdshop.entity.Customer;
 import vn.htdshop.sb.CategoryFacadeLocal;
 import vn.htdshop.sb.CustomerFacadeLocal;
-import vn.htdshop.sb.UserFacadeLocal;
 
 /**
  *
@@ -31,9 +30,6 @@ public class shopIndexController {
 
     @EJB(mappedName = "CategoryFacade")
     CategoryFacadeLocal categoryFacade;
-
-    @EJB(mappedName = "UserFacade")
-    UserFacadeLocal userFacade;
 
     @EJB(mappedName = "CustomerFacade")
     CustomerFacadeLocal customerFacade;
@@ -68,7 +64,7 @@ public class shopIndexController {
         Customer c = customerFacade.find(1);
 
         session.setAttribute("loggedInCustomer", c);
-        Cookie cookie = new Cookie("loggedInCustomer", "" + c.getUser().getId());
+        Cookie cookie = new Cookie("loggedInCustomer", "" + c.getId());
         response.addCookie(cookie);
         return "redirect:";
     }

@@ -47,7 +47,7 @@
                     <ul>
                         <li th:if="${session.loggedInCustomer != null}"><a href="#"><i class="pe-7s-users"></i>
                                 <th:block
-                                    th:text="${session.loggedInCustomer.firstName + ' ('+ session.loggedInCustomer.user.point +')'}">
+                                    th:text="${session.loggedInCustomer.firstName + ' ('+ session.loggedInCustomer.point +')'}">
                                 </th:block>
                             </a></li>
                         <li th:if="${session.loggedInCustomer == null}"><a href="#"><i class="pe-7s-key"></i>Login</a>
