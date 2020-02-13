@@ -42,6 +42,10 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "ProductComment.findByCreatedAt", query = "SELECT p FROM ProductComment p WHERE p.createdAt = :createdAt")})
 public class ProductComment implements Serializable {
 
+    @JoinColumn(name = "CustomerId", referencedColumnName = "Id")
+    @ManyToOne(optional = false)
+    private Customer customer;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,9 +66,6 @@ public class ProductComment implements Serializable {
     @JoinColumn(name = "ProductId", referencedColumnName = "Id")
     @ManyToOne(optional = false)
     private Product product;
-    @JoinColumn(name = "UserId", referencedColumnName = "Id")
-    @ManyToOne(optional = false)
-    private User user;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "productComment")
     private Collection<ProductCommentReply> productCommentReplyCollection;
 
@@ -122,14 +123,6 @@ public class ProductComment implements Serializable {
         this.product = product;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -153,6 +146,14 @@ public class ProductComment implements Serializable {
     @Override
     public String toString() {
         return "vn.htdshop.entity.ProductComment[ id=" + id + " ]";
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
 }
