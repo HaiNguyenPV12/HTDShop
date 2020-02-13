@@ -11,6 +11,26 @@
         .select2-search__field {
             height: auto;
         }
+
+        @media (max-width:1200px) {
+            .product-list {
+                height: 110rem;
+            }
+            .product-list2 {
+                height: 108rem;
+            }
+        }
+        @media (min-width:1200px) {
+            .product-list {
+                height: 65rem;
+            }
+            .product-list2 {
+                height: 63rem;
+            }
+        }
+        .select2{
+            width: 100%;
+        }
     </style>
 </head>
 
@@ -40,6 +60,12 @@
                                             name="keyword" id="keyword" maxlength="100">
                                         <button type="submit"><i class="ti-search"></i></button>
                                     </form>
+                                </div>
+                            </div>
+                            <div class="sidebar-widget mb-40">
+                                <div class="d-flex">
+                                    <button type="button" id="resetFilter" class="py-2" style="width:100%">Reset all
+                                        filter</button>
                                 </div>
                             </div>
                             <div class="sidebar-widget mb-5">
@@ -72,15 +98,16 @@
                                     </form>
                                 </div>
                             </div>
-                            <div class="sidebar-widget mb-40">
-                                <div class="d-flex">
-                                    <button type="button" id="resetFilter" class="py-2" style="width:100%">Reset all
-                                        filter</button>
+
+                            <div class="sidebar-widget mb-5">
+                                <h3 class="sidebar-title">More Filters</h3>
+                                <div class="d-flex" id="filters">
+
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-9" id="result" style="height: 65rem;">
+                    <div class="col-lg-9 product-list" id="result">
 
                     </div>
                 </div>
@@ -239,7 +266,7 @@
                         cache: false,
                         success: function (data) {
                             $("#result").html(data);
-                            $("#result").animate({ 'opacity': '1.0' }, 400);
+                            $("#result").animate({ 'opacity': '1.0' }, 200);
                             $("#searchLabel").html("Search: \"" + kParam + "\"");
                             history.replaceState('', 'HTD Shop - Search', href);
                         }
@@ -265,7 +292,6 @@
             //     scrollTop: $("#scrollHere").offset().top
             // }, 500);
         }
-
 
         //Initialize Select2 Elements
         $('.select2').select2();

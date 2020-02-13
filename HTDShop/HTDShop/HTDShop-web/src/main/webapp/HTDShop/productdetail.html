@@ -124,6 +124,7 @@
         .tab-pane li {
             list-style: square;
         }
+
     </style>
 </head>
 
@@ -135,7 +136,8 @@
                 <div class="breadcrumb-content text-center">
                     <ul>
                         <li><a th:href="@{/}">home</a></li>
-                        <li><a th:href="@{/search?category=__${product.category.id}__}">Category: <th:block th:text="${product.category.name}"></th:block></a></li>
+                        <li><a th:href="@{/search?category=__${product.category.id}__}">Category: <th:block
+                                    th:text="${product.category.name}"></th:block></a></li>
                         <li th:text="${product.name}"></li>
                     </ul>
                 </div>
@@ -258,14 +260,16 @@
 
                             <div class="quickview-plus-minus" th:if="${product.status==1 && product.stock > 0}">
                                 <div class="cart-plus-minus">
-                                    <input type="text" value="1" name="qtybutton" class="cart-plus-minus-box"
+                                    <input type="text" value="1" name="quan" id="quan" class="cart-plus-minus-box"
                                         th:max="${product.stock}">
                                 </div>
                                 <div class="mt-3">
                                     &ThickSpace;/ [[${product.stock}]]
                                 </div>
                                 <div class="quickview-btn-cart">
-                                    <a class="btn-hover-black" href="#">add to cart</a>
+                                    <a class="btn-hover-black"
+                                        th:onclick="doAddToCart([[${product.id}]], $('#quan').val())"
+                                        style="cursor: pointer;color:#fff">add to cart</a>
                                 </div>
                             </div>
 

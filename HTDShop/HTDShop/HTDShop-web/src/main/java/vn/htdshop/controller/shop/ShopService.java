@@ -13,12 +13,14 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import vn.htdshop.entity.CartItem;
 import vn.htdshop.entity.Customer;
 import vn.htdshop.entity.PreBuilt;
 import vn.htdshop.entity.Product;
 import vn.htdshop.entity.Promotion;
 import vn.htdshop.sb.CategoryFacadeLocal;
 import vn.htdshop.sb.CustomerFacadeLocal;
+import vn.htdshop.sb.ProductFacadeLocal;
 import vn.htdshop.sb.PromotionFacadeLocal;
 
 /**
@@ -32,6 +34,9 @@ public class ShopService {
     @EJB(mappedName = "PromotionFacade")
     PromotionFacadeLocal promotionFacade;
 
+    @EJB(mappedName = "ProductFacade")
+    ProductFacadeLocal productFacade;
+
     @EJB(mappedName = "CategoryFacade")
     CategoryFacadeLocal categoryFacade;
 
@@ -40,6 +45,39 @@ public class ShopService {
 
     @Autowired
     HttpServletRequest request;
+
+    public List<CartItem> getCart() {
+        // Compare quantity with product's stock
+        List<CartItem> result = (List<CartItem>) session.getAttribute("cart");
+        if (result != null) {
+            for (CartItem item : result) {
+                Product p = productFacade.find(item.getId());
+                if (item.getQuan() > p.getStock()) {
+                    item.setQuan(p.getStock());
+                }
+                if (p.getStatus() != 1) {
+                    item.setQuan(0);
+                }
+            }
+        }
+        session.setAttribute("cart", result);
+        return result;
+    }
+
+    public Double getCartTotal() {
+        Double result = 0d;
+        if (getCart() != null && getCart().size() > 0) {
+            for (CartItem item : getCart()) {
+                result += (getDiscountPrice(productFacade.find(item.getId())) * item.getQuan());
+            }
+        }
+
+        return result;
+    }
+
+    public Product getProduct(Integer id) {
+        return productFacade.find(id);
+    }
 
     public boolean checkLogin() {
         // System.out.println("Service called.");

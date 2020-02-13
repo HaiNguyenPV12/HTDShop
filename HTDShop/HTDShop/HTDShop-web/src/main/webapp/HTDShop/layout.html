@@ -26,6 +26,8 @@
     <link rel="stylesheet" th:href="@{/resources/Content/fontawesome-free/css/all.min.css}">
     <link th:href="@{/resources/Plugins/select2/css/select2.min.css}" rel="stylesheet">
     <link th:href="@{/resources/Plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}" rel="stylesheet">
+    <link th:href="@{/resources/Plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css}" rel="stylesheet">
+    <link th:href="@{/resources/Plugins/toastr/toastr.min.css}" rel="stylesheet">
     <script th:src="@{/resources/Scripts/vendor/modernizr-2.8.3.min.js}"></script>
     <th:block layout:fragment="additionalCss">
 
@@ -74,10 +76,9 @@
                             <div class="select-wrapper">
                                 <select class="select" name="category">
                                     <option value="0">All</option>
-                                    
-                                    <option
-                                        th:each="cate : ${session.categories}"
-                                        th:value="${cate.id}" th:text="${cate.name}">
+
+                                    <option th:each="cate : ${session.categories}" th:value="${cate.id}"
+                                        th:text="${cate.name}">
                                         All Categories
                                     </option>
                                     <option disabled>-----------------</option>
@@ -94,12 +95,12 @@
                 <div class="header-cart-3">
                     <a href="#">
                         <i class="ti-shopping-cart"></i>My Cart
-                        <span>02</span>
+                        <span id="cartSize">02</span>
                     </a>
-                    <ul class="cart-dropdown">
+                    <ul class="cart-dropdown" id="cartList">
                         <li class="single-product-cart">
                             <div class="cart-img">
-                                <a href="#"><img th:src="@{/resources/img/cart/1.jpg}" alt="" ></a>
+                                <a href="#"><img th:src="@{/resources/img/cart/1.jpg}" alt=""></a>
                             </div>
                             <div class="cart-title">
                                 <h5><a href="#"> Bits Headphone</a></h5>
@@ -389,10 +390,83 @@
     <script th:src="@{/resources/Scripts/owl.carousel.min.js}"></script>
     <script th:src="@{/resources/Scripts/plugins.js}"></script>
     <script th:src="@{/resources/Scripts/main.js}"></script>
-    <script th:src="@{/resources/Plugins/select2/js/select2.full.min.js}"></script> 
+    <script th:src="@{/resources/Plugins/select2/js/select2.full.min.js}"></script>
+    <script th:src="@{/resources/Plugins/sweetalert2/sweetalert2.min.js}"></script>
+    <script th:src="@{/resources/Plugins/toastr/toastr.min.js}"></script>
     <th:block layout:fragment="additionalScript">
 
     </th:block>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        getCart();
+        function getCart() {
+            var quickCartUrl = /*[[@{/cart/quick}]]*/'';
+            $("#cartList").animate({ 'opacity': '0.0' }, 200, function () {
+                $.ajax({
+                    url: quickCartUrl,
+                    method: 'POST',
+                    cache: false,
+                    success: function (data) {
+                        $("#cartList").html(data);
+                        $("#cartSize").html($("#cartNum").val());
+                        $("#cartList").animate({ 'opacity': '1.0' }, 200);
+                    }
+                });
+            });
+        }
+        function doAddToCart(id, quan) {
+            var addToCartUrl = /*[[@{/cart/add}]]*/'';
+            addToCartUrl += "?id=" + id + "&quan=" + quan;
+            $.ajax({
+                url: addToCartUrl,
+                method: 'POST',
+                cache: false,
+                success: function (data) {
+                    if (data == "ok") {
+                        getCart();
+                        Toast.fire({
+                            type: 'success',
+                            title: 'Added to cart.'
+                        });
+                    } else {
+                        Toast.fire({
+                            type: 'error',
+                            title: 'Cannot add to cart.'
+                        });
+                    }
+                }
+            });
+        }
+        function doRemoveFromCart(id) {
+            var removeFromCartUrl = /*[[@{/cart/remove}]]*/'';
+            removeFromCartUrl += "?id=" + id;
+            $.ajax({
+                url: removeFromCartUrl,
+                method: 'POST',
+                cache: false,
+                success: function (data) {
+                    if (data == "ok") {
+                        getCart();
+                        Toast.fire({
+                            type: 'success',
+                            title: 'Removed from cart.'
+                        });
+                    }
+                }
+            });
+        }
+
+        // Initialize toast from sweetalert 
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 2000,
+            background: '#fff'
+        });
+
+        /*]]>*/
+    </script>
     <script layout:fragment="script">
 
     </script>
