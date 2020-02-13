@@ -50,9 +50,6 @@ public class managerCustomerController {
     @EJB(mappedName = "StaffFacade")
     StaffFacadeLocal staffFacade;
 
-    @EJB(mappedName = "UserFacade")
-    UserFacadeLocal userFacade;
-
     @Autowired
     ServletContext context;
 

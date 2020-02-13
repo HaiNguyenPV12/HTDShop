@@ -48,7 +48,7 @@
                 <div class="card card-purple card-outline">
                     <div class="card-body">
 
-                        <table id="tblProduct" class="table table-bordered table-striped table-hover">
+                        <table id="tblOrderDetail" class="table table-bordered table-striped table-hover">
                             <thead class="bg-purple">
                                 <th>ID</th>
                                 <th>Product Name</th>
@@ -60,7 +60,7 @@
                                     <td th:text="${o.id}">001</td>
                                     <td th:text="${o.product.name}">Intel Core i5 8400 3.0 GHz</td>
                                     <td th:text="${o.quantity}">CPU</td>
-                                    <td th:text="${o.price}">Intel</td>
+                                    <td th:text="'$'+${o.price}">Intel</td>
                                 </tr>
                             </tbody>
                             <tfoot class="bg-purple">
@@ -81,22 +81,12 @@
     <!--In case using custom script at pages using layout, add th:inline="none" like below-->
     <script layout:fragment="script" th:inline="none">
         
-        function confirmCancel(title, url) {
-            showModal('Confirm Cancelling',
-                    'Are you sure to cancel order "' + title + '" ?<br>',
-                    url,
-                    true,
-                    true);
-        }
         // Add custom filter for datatable
-        $('#tblProduct tfoot th').each(function () {
+        $('#tblOrderDetail tfoot th').each(function () {
             var title = $(this).text();
-            if (title == "Action" || title == "Image") {
+            if (title == "Action" || title == "ID") {
                 // Collum that not using filter
                 $(this).html('');
-            } else if (title == "Status" || title == "Category") {
-                // Collum that using select filter
-                $(this).html('<select class="form-control"><option value="">All</option></select>');
             } else {
                 // Collum that using text filter
                 $(this).html('<input id="txtSearch' + title + '" type="text" placeholder="Search ' + title + '" class="form-control" style="width:100%" />');
@@ -104,14 +94,14 @@
 
         });
         // Setting up table here
-        var table = $('#tblProduct').DataTable({
+        var table = $('#tblOrderDetail').DataTable({
             // Move filter from foot to head
             initComplete: function () {
-                var r = $('#tblProduct tfoot tr');
+                var r = $('#tblOrderDetail tfoot tr');
                 r.find('th').each(function () {
                     $(this).css('padding', 8);
                 });
-                $('#tblProduct thead').append(r);
+                $('#tblOrderDetail thead').append(r);
                 $('div.dataTables_length').addClass('form-inline');
             },
             "paging": true,
@@ -123,15 +113,10 @@
             "autoWidth": false,
             // custom collums's width
             "columns": [
-                { "width": "5%" },
-                { "width": "15%" },
                 { "width": "10%" },
-                { "width": "10%" },
-                { "width": "10%" },
-                { "width": "5%" },
-                { "width": "20%" },
-                { "width": "5%" },
-                { "width": "10%" }
+                { "width": "40%" },
+                { "width": "25%" },
+                { "width": "25%" }
             ]
         });
         // Set up filter action

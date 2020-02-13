@@ -59,11 +59,11 @@
                             </thead>
                             <tbody>                             
                                 <tr>
-                                    <td th:text="${customer.user.id}">001</td>
-                                    <td th:text="${customer.user.password}">Intel Core i5 8400 3.0 GHz</td>
-                                    <td th:text="${customer.user.gender==true?'Male':'Female'}">Intel</td>   
-                                    <td th:text="${#dates.format(customer.user.birthday,'dd-MM-yyyy')}">Intel</td>                   
-                                    <td th:text="${customer.user.point}">Intel</td>   
+                                    <td th:text="${customer.id}">001</td>
+                                    <td th:text="${customer.password}">Intel Core i5 8400 3.0 GHz</td>
+                                    <td th:text="${customer.gender==true?'Male':'Female'}">Intel</td>   
+                                    <td th:text="${#dates.format(customer.birthday,'dd-MM-yyyy')}">Intel</td>                   
+                                    <td th:text="${customer.point}">Intel</td>   
                                     <td>     
                                         <a class="btn btn-warning btn-sm" th:href="@{/manager/customer/edit(id=${customer.id})}"
                                         data-toggle='tooltip' title="Edit">

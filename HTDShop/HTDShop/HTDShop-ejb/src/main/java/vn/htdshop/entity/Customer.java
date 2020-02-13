@@ -28,6 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.hibernate.validator.constraints.Email;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *
@@ -90,6 +91,7 @@ public class Customer implements Serializable {
     @Column(name = "Gender")
     private Boolean gender;
     @Column(name = "Birthday")
+    @DateTimeFormat (pattern="dd/MM/yyyy")
     @Temporal(TemporalType.DATE)
     private Date birthday;
     @Column(name = "Point")

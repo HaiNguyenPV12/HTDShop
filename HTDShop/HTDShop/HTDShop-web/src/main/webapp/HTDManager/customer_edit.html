@@ -31,6 +31,7 @@
     <div layout:fragment="content">
         <form action="" th:action="@{/manager/customer/__${formUrl}__}" th:object="${customer}" method="POST"
             enctype="multipart/form-data">
+            <input type="hidden" th:field="*{point}"/>
             <div class="row">
                 <div class="col-lg-12 mb-3" th:if="${#fields.hasErrors('global')}">
                     <p class="alert alert-danger">
@@ -45,6 +46,7 @@
                         <div class="card-header">
                             <h3 class="card-title">Customer Information</h3>
                         </div>
+                        
                         <div class="card-body">
                             <div class="form-group row">
                                 <label for="firstName" class="col-sm-3 col-form-label text-right">First Name<i
@@ -119,7 +121,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6" th:if="${customer.user!=null}">
+                <div class="col-lg-6" th:if="${customer.password!=null}">
                     <div class="card card-purple">
                         <div class="card-header">
                             <h3 class="card-title">User Information</h3>
@@ -128,13 +130,13 @@
                             <label for="password" class="col-sm-3 col-form-label text-right">Password<i
                                     class="text-danger">*</i></label>
                             <div class="col-sm-9">
-                                <input class="form-control" id="password" placeholder="Password" th:field="*{user.password}"
-                                    th:classappend="${(#fields.hasErrors('user.password')?'is-invalid':'') + (submited != null and !#fields.hasErrors('user.password')?'is-valid':'')}" required/>
+                                <input class="form-control" id="password" placeholder="Password" th:field="*{password}"
+                                    th:classappend="${(#fields.hasErrors('password')?'is-invalid':'') + (submited != null and !#fields.hasErrors('password')?'is-valid':'')}" required/>
                             </div>
                             <div class="col-sm-3"></div>
-                            <div class="col-sm-9" th:if="${#fields.hasErrors('user.password')}">
+                            <div class="col-sm-9" th:if="${#fields.hasErrors('password')}">
                                 <ul class="text-danger">
-                                    <li th:each="err : ${#fields.errors('user.password')}" th:text="${err}">Name Error</li>
+                                    <li th:each="err : ${#fields.errors('password')}" th:text="${err}">Name Error</li>
                                 </ul> 
                             </div>
                         </div>
@@ -143,20 +145,20 @@
                                     class="text-danger">*</i></label>
                                     <div class="col-sm-9">
                                         <div class="custom-control custom-radio">
-                                            <input class="custom-control-input" type="radio" value="true" th:field="*{user.gender}"
-                                            th:selected="${customer.user.gender==true}" id="gender1"/>
+                                            <input class="custom-control-input" type="radio" value="true" th:field="*{gender}"
+                                            th:selected="${customer.gender==true}" id="gender1"/>
                                             <label for="gender1" class="custom-control-label">Male</label>
                                         </div>
                                         <div class="custom-control custom-radio">
-                                            <input class="custom-control-input" type="radio" value="false" th:field="*{user.gender}"
-                                            th:selected="${customer.user.gender==false}" id="gender2"/>
+                                            <input class="custom-control-input" type="radio" value="false" th:field="*{gender}"
+                                            th:selected="${customer.gender==false}" id="gender2"/>
                                             <label for="gender2" class="custom-control-label">Female</label>
                                         </div>                                       
                                     </div>
                             <div class="col-sm-3"></div>
-                            <div class="col-sm-9" th:if="${#fields.hasErrors('user.gender')}">
+                            <div class="col-sm-9" th:if="${#fields.hasErrors('gender')}">
                                 <ul class="text-danger">
-                                    <li th:each="err : ${#fields.errors('user.gender')}" th:text="${err}">Name Error</li>
+                                    <li th:each="err : ${#fields.errors('gender')}" th:text="${err}">Name Error</li>
                                 </ul> 
                             </div>
                         </div>
@@ -170,14 +172,14 @@
                                             <i class="far fa-calendar-alt"></i>
                                         </span>
                                     </div>
-                                    <input type="hidden" th:field="${customer.user.birthday}" id="birthday">
+                                    <input type="hidden" th:field="${customer.birthday}" id="birthday">
                                     <input type="text" class="form-control float-right" id="date" name="date" >
                                 </div>
                             </div>
                             <div class="col-sm-3"></div>
-                            <div class="col-sm-9" th:if="${#fields.hasErrors('user.birthday')}">
+                            <div class="col-sm-9" th:if="${#fields.hasErrors('birthday')}">
                                 <ul class="text-danger">
-                                    <li th:each="err : ${#fields.errors('user.birthday')}" th:text="${err}">Name Error</li>
+                                    <li th:each="err : ${#fields.errors('birthday')}" th:text="${err}">Name Error</li>
                                 </ul> 
                             </div>
                         </div>

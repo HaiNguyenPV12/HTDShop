@@ -91,7 +91,7 @@ public class managerCommentController {
             ProductCommentReply r = new ProductCommentReply();
             r.setId(null);
             r.setProductComment(new ProductComment(commentid));
-            r.setUser(null);
+            r.setCustomer(null);
             r.setStaff(managerService.getLoggedInStaff());
             r.setContent(reply);
             r.setCreatedAt(new Date());

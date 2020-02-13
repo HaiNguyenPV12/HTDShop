@@ -48,7 +48,7 @@
                 <div class="card card-purple card-outline">
                     <div class="card-body">
 
-                        <table id="tblProduct" class="table table-bordered table-striped table-hover">
+                        <table id="tblComment" class="table table-bordered table-striped table-hover">
                             <thead class="bg-purple">
                                 <th>ID</th>
                                 <th>Product Name</th>
@@ -65,7 +65,7 @@
                                 <tr th:each="com : ${comments}">
                                     <td th:text="${com.id}">001</td>
                                     <td th:text="${com.product.name}">Intel Core i5 8400 3.0 GHz</td>
-                                    <td th:text="${com.user.customerCollection[0].lastName}">CPU</td>
+                                    <td th:text="${com.Customer.firstName}">CPU</td>
                                     <td th:text="${com.content}">Intel</td>
                                     <td th:text="${com.createdAt}">Intel</td>
                                     <td>
@@ -82,8 +82,7 @@
                                 <th>Customer Name </th>
                                 <th>Content</th>
                                 <th>CreatedAt</th>
-                                <th>Action</th>
-                                </thead>
+                                <th>Action</th>                                
                             </tfoot>
                         </table>
                     </div>
@@ -147,6 +146,78 @@
             $('#commentid').val(cmtid);
             $('#commentModal').modal('show');
         }
+
+        $('#tblComment tfoot th').each(function () {
+            var title = $(this).text();
+            if (title == "Action" || title == "ID" || title == "CreatedAt" ) {
+                // Collum that not using filter
+                $(this).html('');
+            } else {
+                // Collum that using text filter
+                $(this).html('<input id="txtSearch' + title + '" type="text" placeholder="Search ' + title + '" class="form-control" style="width:100%" />');
+            }
+
+        });
+        // Setting up table here
+        var table = $('#tblComment').DataTable({
+            // Move filter from foot to head
+            initComplete: function () {
+                var r = $('#tblComment tfoot tr');
+                r.find('th').each(function () {
+                    $(this).css('padding', 8);
+                });
+                $('#tblComment thead').append(r);
+                $('div.dataTables_length').addClass('form-inline');
+            },
+            "paging": true,
+            "lengthChange": true,
+            "lengthMenu": [ [5, 10, 25, 50, -1], [5, 10, 25, 50, "All"] ],
+            "searching": true,
+            "ordering": false,
+            "info": true,
+            "autoWidth": false,
+            // custom collums's width
+            "columns": [
+                { "width": "10%" },
+                { "width": "20%" },
+                { "width": "20%" },
+                { "width": "20%" },
+                { "width": "20%" },
+                { "width": "10%" }
+            ]
+        });
+        // Set up filter action
+        table.columns().every(function () {
+            var thisCol = this;
+            // Set up action listener for text filter
+            $('input', this.footer()).on('keyup change clear', function () {
+                if (thisCol.search() !== this.value) {
+                    thisCol.search(this.value).draw();
+                }
+            });
+            // Set up data for select filter
+            $('select', this.footer()).each(function () {
+                var title = thisCol.header();
+                // Using unique data from table
+                var thisSelect = this;
+                thisCol.data().unique().sort().each(function (d, j) {
+                    $(thisSelect).append("<option value='" + d + "'>" + d + "</option>");
+                });
+                /* Or using customized data
+                if($(title).html()=="Status"){
+                    var thisSelect = this;
+                    $(thisSelect).append("<option value='1'>"+Is selling+"</option>");
+                }*/
+            });
+            // Set up action listener for select filter
+            $('select', this.footer()).on('change', function () {
+                var val = $.fn.dataTable.util.escapeRegex(
+                    $(this).val()
+                );
+                thisCol.search(val ? '^' + val + '$' : '', true, false).draw();
+            });
+
+        });
 
 
         $(function () {
