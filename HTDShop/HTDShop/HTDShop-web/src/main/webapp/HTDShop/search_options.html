@@ -1,0 +1,9 @@
+<th:block th:if="${cate == 1}">
+    <form id="advancedSearch" class="d-flex">
+        <input type="number" placeholder="From..." th:value="${param.from!=null?param.from:'0'}" name="from" size="5"
+            required min=0 max=10000 id="from">
+        <input type="number" placeholder="To..." th:value="${param.to!=null?param.to:'10000'}" name="to" size="5"
+            required min=10 max=10000 id="to">
+        <button type="submit" style="width: 100%;">Filter</button>
+    </form>
+</th:block>

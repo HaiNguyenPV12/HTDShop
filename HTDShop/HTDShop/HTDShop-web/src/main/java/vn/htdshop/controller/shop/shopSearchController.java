@@ -5,35 +5,25 @@
  */
 package vn.htdshop.controller.shop;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
+import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import vn.htdshop.entity.Product;
-import vn.htdshop.entity.ProductComment;
-import vn.htdshop.entity.ProductCommentReply;
 import vn.htdshop.entity.Search;
 import vn.htdshop.sb.CategoryFacadeLocal;
-import vn.htdshop.sb.ProductCommentFacadeLocal;
-import vn.htdshop.sb.ProductCommentReplyFacadeLocal;
 import vn.htdshop.sb.ProductFacadeLocal;
 
 /**
@@ -125,6 +115,11 @@ public class shopSearchController {
         model.asMap().put("totalPage", totalPage);
         model.asMap().put("result", result);
         return "HTDShop/search_result";
+    }
+
+    @RequestMapping(value = "getSearchOption", method = RequestMethod.GET)
+    public String getSearchOption(Model model, @RequestParam(value = "cateid") Integer cateid) {
+        return "HTDShop/search_options";
     }
 
 }
