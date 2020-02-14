@@ -14,21 +14,25 @@
 
         @media (max-width:1200px) {
             .product-list {
-                height: 110rem;
+                height: 114rem;
             }
+
             .product-list2 {
-                height: 108rem;
+                height: 112rem;
             }
         }
+
         @media (min-width:1200px) {
             .product-list {
                 height: 65rem;
             }
+
             .product-list2 {
                 height: 63rem;
             }
         }
-        .select2{
+
+        .select2 {
             width: 100%;
         }
     </style>
@@ -42,7 +46,10 @@
                 <div class="breadcrumb-content text-center">
                     <ul>
                         <li><a th:href="@{/}">home</a></li>
-                        <li id="searchLabel">Search: "[[${param.search}]]"</li>
+                        <li id="searchLabel">Search: <th:block
+                                th:text="${(param.keyword != null && !param.keyword.isEmpty()) ? 'All with filters' : ('&quot;' + param.keyword + '&quot;')}">
+                            </th:block>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -57,17 +64,12 @@
                                 <div class="sidebar-search">
                                     <form id="searchKeyword">
                                         <input placeholder="Search Products..." type="text" th:value="${param.keyword}"
-                                            name="keyword" id="keyword" maxlength="100">
+                                            name="keyword" id="keyword" maxlength="100" class="form-control">
                                         <button type="submit"><i class="ti-search"></i></button>
                                     </form>
                                 </div>
                             </div>
-                            <div class="sidebar-widget mb-40">
-                                <div class="d-flex">
-                                    <button type="button" id="resetFilter" class="py-2" style="width:100%">Reset all
-                                        filter</button>
-                                </div>
-                            </div>
+
                             <div class="sidebar-widget mb-5">
                                 <h3 class="sidebar-title">Categories</h3>
                                 <div class="sidebar-categories">
@@ -84,34 +86,92 @@
                                 </div>
                             </div>
 
+                            <div class="sidebar-widget mb-5" id="filters">
+
+                            </div>
+
                             <div class="sidebar-widget mb-5">
                                 <h3 class="sidebar-title">Filter by Price</h3>
                                 <div class="d-flex">
                                     <form id="searchPrice" class="d-flex">
                                         <input type="number" placeholder="From..."
-                                            th:value="${param.from!=null?param.from:'0'}" name="from" size="5" required
-                                            min=0 max=10000 id="from">
+                                            th:value="${param.from!=null?param.from:'0'}" name="from" required min=0
+                                            max=10000 id="from" class="form-control mr-2">
+                                        <i class="fas fa-long-arrow-alt-right mt-3"></i>
                                         <input type="number" placeholder="To..."
-                                            th:value="${param.to!=null?param.to:'10000'}" name="to" size="5" required
-                                            min=10 max=10000 id="to">
-                                        <button type="submit" style="width: 100%;">Filter</button>
+                                            th:value="${param.to!=null?param.to:'10000'}" name="to" required min=10
+                                            max=10000 id="to" class="ml-2 form-control">
                                     </form>
                                 </div>
                             </div>
 
-                            <div class="sidebar-widget mb-5">
-                                <h3 class="sidebar-title">More Filters</h3>
-                                <div class="d-flex" id="filters">
+                            <div class="sidebar-widget mb-40">
+                                <div class="d-flex mb-2">
+                                    <button type="button" id="filter" class="py-2" style="width:100%">Filter</button>
+                                </div>
+                                <div class="d-flex">
+                                    <button type="button" id="resetFilter" class="py-2" style="width:100%">Reset all
+                                        filter</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-9 product-list">
+
+
+                        <div class="shop-product-wrapper res-xl res-xl-btn product-list2">
+                            <div class="shop-bar-area">
+                                <div class="shop-bar pb-60">
+                                    <div class="shop-found-selector">
+                                        <div class="shop-found">
+                                            <p><span id="totalNumber"></span> product(s) found</p>
+                                        </div>
+                                        <div class="shop-selector">
+                                            <label>Sort By : </label>
+                                            <select name="psort" id="psort" style="width: auto;" onchange="doSearch()">
+                                                <option value="default"
+                                                    th:selected="${param.sort==null || param.sort.equals('default')}">
+                                                    Default (Newest first)
+                                                </option>
+                                                <option value="priceasc"
+                                                    th:selected="${param.sort!=null && param.sort.equals('priceasc')}">
+                                                    Price low -> high
+                                                </option>
+                                                <option value="pricedesc"
+                                                    th:selected="${param.sort!=null && param.sort.equals('pricedesc')}">
+                                                    Price high -> low
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="shop-filter-tab">
+                                        <div class="shop-tab nav" role=tablist>
+                                            <a class="active" href="#grid-sidebar1" data-toggle="tab" role="tab" aria-selected="false">
+                                                <i class="ti-layout-grid4-alt"></i>
+                                            </a>
+                                            <a href="#grid-sidebar2" data-toggle="tab" role="tab" aria-selected="true">
+                                                <i class="ti-menu"></i>
+                                            </a>
+                                        </div>
+                                    </div> -->
+                                </div>
+                                <div class="shop-product-content tab-content" id="result">
 
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-lg-9 product-list" id="result">
+                        <div class="pagination-style mt-30 text-center" id="paging">
+
+                        </div>
+
+
 
                     </div>
                 </div>
             </div>
+
+
         </div>
 
 
@@ -212,9 +272,14 @@
 
     <script layout:fragment="script" th:inline="javascript">
         /*<![CDATA[*/
+        var searched = +0;
+        var oldCate = /*[[${param.category!=null? param.category : 0 }]]*/'';
         doSearch();
 
-        $("#category").on("change", function () { doSearch() });
+        $("#category").on("change", function () {
+            //getAdvancedSearch($(this).val(), null, true);
+            doSearch(null, null, true);
+        });
 
         $("#searchKeyword").on("submit", function (e) {
             e.preventDefault();
@@ -229,45 +294,72 @@
             doSearch();
         });
 
+        $("#filter").on("click", function () {
+            doSearch(1, "default", null);
+        });
+
         $("#resetFilter").on("click", function () {
             $("#from").val(0);
             $("#to").val(10000);
             $("#keyword").val("");
-            $("#category").val(0);
-            doSearch(1, "default");
+            $("#psort").val("default");
+            $("#category").val(0).trigger("change");
+
         });
 
-        function doSearch(page, sort) {
+        $("#sort").on("change", function () {
+
+        });
+
+
+        function doSearch(page, sort, cateChanged) {
+
+            // Start building url and do ajax
             if (+$("#from").val() > +$("#to").val()) {
                 $("#from").val(0);
             }
             var searchUrl = /*[[@{/search/result}]]*/'';
             var href =  /*[[@{/search}]]*/'';
             var kParam = $("#keyword").val();
-            var cParam = $("#category").val();
-            var styleParam = /*[[${param.style!=null?param.style:''}]]*/"";
+            var cParam = /*[[${param.category!=null? param.category : 0 }]]*/'';
+            var styleParam = /*[[${param.style!=null? param.style : '' }]]*/"";
             var pageParam = 1;
             var fromParam = $("#from").val();
             var toParam = $("#to").val();
             var sortParam = /*[[${param.sort!=null?param.sort:'default'}]]*/"default";
+            var cateChanged = (cateChanged == null ? false : cateChanged);
+            if (parseInt($("#category").val()) != parseInt(oldCate) || searched == 0) {
+                cateChanged = true;
+                oldCate = parseInt($("#category").val());
+            }
+            cParam = parseInt($("#category").val());
+            sortParam = $("#psort").val();
             if (sort != null) {
                 sortParam = sort;
             }
+
             if (page != null) {
                 pageParam = page;
             }
-            searchUrl += "?category=" + cParam + "&keyword=" + kParam + "&style=" + styleParam + "&page=" + pageParam + "&from=" + fromParam + "&to=" + toParam + "&sort=" + sortParam;
-            href += "?category=" + cParam + "&keyword=" + kParam + "&style=" + styleParam + "&page=" + pageParam + "&from=" + fromParam + "&to=" + toParam + "&sort=" + sortParam;
+            // Get advanced
+            var advanced = getAdvancedSearchString(cParam, cateChanged);
+            console.log("advanced: " + advanced);
+            // Create url
+            searchUrl += "?" + "category=" + encodeURIComponent(cParam) + "&keyword=" + encodeURIComponent(kParam) + "&style=" + encodeURIComponent(styleParam) + "&page=" + encodeURIComponent(pageParam) + "&from=" + encodeURIComponent(fromParam) + "&to=" + encodeURIComponent(toParam) + "&sort=" + encodeURIComponent(sortParam) + "&" + advanced;
+            href += "?" + "category=" + encodeURIComponent(cParam) + "&keyword=" + encodeURIComponent(kParam) + "&style=" + encodeURIComponent(styleParam) + "&page=" + encodeURIComponent(pageParam) + "&from=" + encodeURIComponent(fromParam) + "&to=" + encodeURIComponent(toParam) + "&sort=" + encodeURIComponent(sortParam) + "&" + advanced;
             if (history.pushState) {
                 $("#result").animate({ 'opacity': '0.0' }, 200, function () {
+                    $("#result").html("");
                     $.ajax({
                         url: searchUrl,
                         method: 'POST',
                         cache: false,
                         success: function (data) {
                             $("#result").html(data);
+                            $("#totalNumber").html($("#result").find("#totalProduct").val());
+                            renderPaging(parseInt($("#result").find("#totalPage").val()), pageParam);
                             $("#result").animate({ 'opacity': '1.0' }, 200);
-                            $("#searchLabel").html("Search: \"" + kParam + "\"");
+                            $("#searchLabel").html("Search: " + (kParam == "" ? "All with filters" : ("\"" + kParam + "\"")));
                             history.replaceState('', 'HTD Shop - Search', href);
                         }
                     });
@@ -275,22 +367,89 @@
             } else {
                 location.href = href;
             }
-
-            // $.post(searchUrl, function (data) {
-            //     $.when(function () {
-            //         $("#result").fadeOut();
-            //     }).done(function () {
-            //         $("#result").html(data).fadeIn();
-            //     });
-            //     $("#searchLabel").html("Search: \"" + kParam + "\"");
-            //     //$("#result").fadeOut('fast').html(data).fadeIn();
-            //     //$(data).hide().appendTo('#result').fadeIn();
-            //     //$("#result").html(data);
-            // });
+            searched++;
 
             // $([document.documentElement, document.body]).animate({
             //     scrollTop: $("#scrollHere").offset().top
             // }, 500);
+        }
+
+
+        function renderPaging(totalPage, curPage) {
+            var pageStr = "<ul>";
+            if (curPage > 1) {
+                pageStr += '<li><a style="cursor: pointer;" onclick="doSearch(' + (curPage - 1) + ', null, false)"><i class="ti-angle-left"></i></a></li>'
+            }
+            for (let i = 1; i <= totalPage; i++) {
+                pageStr += '<li class="' + (i == curPage ? 'active' : '')
+                    + '">';
+                if (i == curPage) {
+                    pageStr += "<a>" + i + "</a>";
+                } else {
+                    pageStr += "<a onclick='doSearch(" + i + ", null, false)' style='cursor: pointer;'>" + i + "</a>";
+                }
+                pageStr += "</li>";
+            }
+            if (curPage < totalPage) {
+                pageStr += '<li><a style="cursor: pointer;" onclick="doSearch(' + (curPage + 1) + ', null, false)"><i class="ti-angle-right"></i></a></li>'
+            }
+            pageStr += "</ul>";
+            $("#paging").html(pageStr);
+        }
+
+        function getAdvancedSearch(cateid, params, cateChanged) {
+            var advancedSearchUrl = /*[[@{/search/getAdvancedSearch?cateid=}]]*/'';
+            advancedSearchUrl += cateid;
+
+            if (params != null) {
+                advancedSearchUrl += "&" + params;
+            }
+            // console.log(advancedSearchUrl);
+            if (cateChanged == true) {
+                $("#filters").html("");
+                $.ajax({
+                    url: advancedSearchUrl,
+                    method: 'POST',
+                    cache: false,
+                    success: function (data) {
+                        $("#filters").html(data);
+                        $("#filters").find('.select2bs4').select2({
+                            theme: 'bootstrap4'
+                        });
+                        $("#filters .select2").css("width", "100%");
+                        // $("#filters").find("select").on("change", function () {
+                        //     doSearch();
+                        // });
+                    }
+                });
+            }
+
+        }
+
+        function getAdvancedSearchString(category, cateChanged) {
+            var str = "";
+            var cateid = category;
+
+            var skParam = /*[[${param.sk!=null? param.sk : '' }]]*/'';
+            var tdpminParam = /*[[${param.tdpmin!=null? param.tdpmin : 0 }]]*/'';
+            var tdpmaxParam = /*[[${param.tdpmax!=null? param.tdpmax : 10000 }]]*/'';
+            var coParam = /*[[${param.co!=null? param.co : '' }]]*/'';
+            var thrParam = /*[[${param.thr!=null? param.thr : '' }]]*/'';
+            var srParam = /*[[${param.sr!=null? param.sr : '' }]]*/'';
+            switch (parseInt(cateid)) {
+                case 1:
+                    str += "sk=" + encodeURIComponent($("#sk").length ? $("#sk").val() : skParam)
+                        + "&tdpmin=" + encodeURIComponent($("#tdpmin").length ? $("#tdpmin").val() : tdpminParam)
+                        + "&tdpmax=" + encodeURIComponent($("#tdpmax").length ? $("#tdpmax").val() : tdpmaxParam)
+                        + "&co=" + encodeURIComponent($("#co").length ? $("#co").val() : coParam)
+                        //+ "&thr=" + ($("#thr").length ? $("#thr").val() : thrParam)
+                        + "&sr=" + encodeURIComponent($("#sr").length ? $("#sr").val() : srParam);
+                    break;
+                default:
+                    break;
+            }
+            getAdvancedSearch(cateid, str, cateChanged);
+            return str;
         }
 
         //Initialize Select2 Elements
@@ -300,6 +459,8 @@
         $('.select2bs4').select2({
             theme: 'bootstrap4'
         });
+        $(".select2").css("width", "100%");
+
         /*]]>*/
     </script>
 </body>

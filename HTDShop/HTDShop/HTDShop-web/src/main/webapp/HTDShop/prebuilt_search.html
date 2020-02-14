@@ -11,23 +11,28 @@
         .select2-search__field {
             height: auto;
         }
+
         @media (max-width:1200px) {
             .product-list {
-                height: 110rem;
+                height: 114rem;
             }
+
             .product-list2 {
-                height: 108rem;
+                height: 112rem;
             }
         }
+
         @media (min-width:1200px) {
             .product-list {
                 height: 65rem;
             }
+
             .product-list2 {
                 height: 63rem;
             }
         }
-        .select2{
+
+        .select2 {
             width: 100%;
         }
     </style>
@@ -72,7 +77,8 @@
                                 id="parts">
                                 <h3 class="sidebar-title">Parts</h3>
                                 <div class="sidebar-categories mb-2" th:each="c, it : ${cate}">
-                                    <select class="select2bs4" data-dropdown-css-class="select2-purple" th:name="${c}" th:id="${c}">
+                                    <select class="select2bs4" data-dropdown-css-class="select2-purple" th:name="${c}"
+                                        th:id="${c}">
                                         <option value="0"
                                             th:selected="${param.__${c}__!=null && T(Integer).parseInt(param.__${c}__) == 0}">
                                             All <th:block th:text="${#strings.capitalize(c == 'cpucooler'?'Cpu Cooler' : c)}"></th:block>
@@ -241,15 +247,34 @@
             $("#from").val(0);
             $("#to").val(10000);
             $("#keyword").val("");
-            $("#cpu").val(0).trigger('change');;
-            $("#motherboard").val(0).trigger('change');;
-            $("#gpu").val(0).trigger('change');;
-            $("#memory").val(0).trigger('change');;
-            $("#psu").val(0).trigger('change');;
-            $("#storage").val(0).trigger('change');;
-            $("#cpucooler").val(0).trigger('change');;
-            $("#case").val(0).trigger('change');;
-            $("#monitor").val(0).trigger('change');;
+            if ($("#cpu").val() != 0) {
+                $("#cpu").val(0).trigger('change');
+            }
+            if ($("#motherboard").val() != 0) {
+                $("#motherboard").val(0).trigger('change');
+            }
+            if ($("#gpu").val() != 0) {
+                $("#gpu").val(0).trigger('change');
+            }
+            if ($("#memory").val() != 0) {
+                $("#memory").val(0).trigger('change');
+            }
+            if ($("#psu").val() != 0) {
+                $("#psu").val(0).trigger('change');
+            }
+            if ($("#storage").val() != 0) {
+                $("#storage").val(0).trigger('change');
+            }
+            if ($("#cpucooler").val() != 0) {
+                $("#cpucooler").val(0).trigger('change');
+            }
+            if ($("#case").val() != 0) {
+                $("#case").val(0).trigger('change');
+            }
+            if ($("#monitor").val() != 0) {
+                $("#monitor").val(0).trigger('change');
+            }
+
             doSearch(1, "default");
         });
 
@@ -280,8 +305,8 @@
             if (page != null) {
                 pageParam = page;
             }
-            searchUrl += "?keyword=" + kParam + "&style=" + styleParam + "&page=" + pageParam + "&from=" + fromParam + "&to=" + toParam + "&sort=" + sortParam + "&cpu=" + cpuParam + "&motherboard=" + motherboardParam + "&gpu=" + gpuParam + "&memory=" + memoryParam + "&psu=" + psuParam + "&storage=" + storageParam + "&cpucooler=" + cpucoolerParam + "&case=" + caseParam + "&monitor=" + monitorParam;
-            href += "?keyword=" + kParam + "&style=" + styleParam + "&page=" + pageParam + "&from=" + fromParam + "&to=" + toParam + "&sort=" + sortParam + "&cpu=" + cpuParam + "&motherboard=" + motherboardParam + "&gpu=" + gpuParam + "&memory=" + memoryParam + "&psu=" + psuParam + "&storage=" + storageParam + "&cpucooler=" + cpucoolerParam + "&case=" + caseParam + "&monitor=" + monitorParam;
+            searchUrl += "?keyword=" + kParam + "&style=" + styleParam + "&page=" + pageParam + "&from=" + fromParam + "&to=" + toParam + "&sort=" + sortParam + "&1=" + cpuParam + "&2=" + motherboardParam + "&3=" + gpuParam + "&4=" + memoryParam + "&5=" + psuParam + "&6=" + storageParam + "&7=" + cpucoolerParam + "&8=" + caseParam + "&9=" + monitorParam;
+            href += "?keyword=" + kParam + "&style=" + styleParam + "&page=" + pageParam + "&from=" + fromParam + "&to=" + toParam + "&sort=" + sortParam + "&1=" + cpuParam + "&2=" + motherboardParam + "&3=" + gpuParam + "&4=" + memoryParam + "&5=" + psuParam + "&6=" + storageParam + "&7=" + cpucoolerParam + "&8=" + caseParam + "&9=" + monitorParam;
             if (history.pushState) {
                 $("#result").animate({ 'opacity': '0.0' }, 200, function () {
                     $.ajax({

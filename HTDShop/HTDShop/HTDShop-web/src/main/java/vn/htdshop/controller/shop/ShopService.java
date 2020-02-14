@@ -1,5 +1,6 @@
 package vn.htdshop.controller.shop;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -110,6 +111,15 @@ public class ShopService {
             return (Customer) session.getAttribute("loggedInCustomer");
         }
         return null;
+    }
+
+    public List<String> getList(String attr) {
+        List<String> result = new ArrayList<>();
+
+        if (attr.equals("sk")) {
+            
+        }
+        return result;
     }
 
     public Double getDiscountPrice(Product product) {

@@ -13,10 +13,8 @@ import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,11 +22,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import vn.htdshop.entity.PreBuilt;
 import vn.htdshop.entity.PreBuiltRating;
 import vn.htdshop.entity.PreBuiltSearch;
-import vn.htdshop.entity.Product;
 import vn.htdshop.entity.Promotion;
-import vn.htdshop.entity.Search;
 import vn.htdshop.sb.CategoryFacadeLocal;
-import vn.htdshop.sb.PreBuiltFacade;
 import vn.htdshop.sb.PreBuiltFacadeLocal;
 import vn.htdshop.sb.PreBuiltRatingFacadeLocal;
 import vn.htdshop.sb.ProductFacadeLocal;
@@ -41,7 +36,6 @@ import vn.htdshop.sb.PromotionFacadeLocal;
 @Controller
 @RequestMapping("prebuilt")
 public class shopPreBuiltController {
-    final private String redirectHome = "redirect:";
     final private String redirectPreBuiltSearch = "redirect:/prebuilt/search?k=";
 
     @EJB(mappedName = "ProductFacade")

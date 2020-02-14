@@ -6,8 +6,6 @@
 package vn.htdshop.controller.shop;
 
 import java.util.Comparator;
-import java.util.Dictionary;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -21,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import vn.htdshop.entity.AdvancedSearch;
 import vn.htdshop.entity.Product;
 import vn.htdshop.entity.Search;
 import vn.htdshop.sb.CategoryFacadeLocal;
@@ -62,6 +61,7 @@ public class shopSearchController {
     @RequestMapping(value = "result", method = RequestMethod.POST)
     public String getSearchResult(Model model, @RequestParam(required = false) Map<String, String> params) {
         Search search = new Search(params);
+        AdvancedSearch asearch = new AdvancedSearch(params);
         Integer pageDivide = 12;
         Integer pageNumber = 1;
         Integer totalResult = 0;
@@ -83,24 +83,39 @@ public class shopSearchController {
             result = result.stream().filter(p -> p.getPrice() >= search.getFrom() && p.getPrice() <= search.getTo())
                     .collect(Collectors.toList());
         }
+        // More filters
+        if (!asearch.getSocket().isEmpty()) {
+            result = result.stream().filter(p -> p.getSocket().equals(asearch.getSocket()))
+                    .collect(Collectors.toList());
+        }
+        if (!asearch.getSeries().isEmpty()) {
+            result = result.stream().filter(p -> p.getSeries().equals(asearch.getSeries()))
+                    .collect(Collectors.toList());
+        }
+        if (asearch.getCore() > 0) {
+            result = result.stream().filter(p -> p.getCore() == asearch.getCore()).collect(Collectors.toList());
+        }
 
         totalResult = result.size();
 
-        // Paging
-        result = result.stream().skip(pageDivide * (pageNumber - 1)).limit(pageDivide).collect(Collectors.toList());
         // Sort
         if (search.getSort() != null && search.getSort().equals("priceasc")) {
             sortString = search.getSort();
-            result = result.stream().sorted(Comparator.comparing(p -> shopService.getDiscountPrice(p), Comparator.naturalOrder()))
+            result = result.stream()
+                    .sorted(Comparator.comparing(p -> shopService.getDiscountPrice(p), Comparator.naturalOrder()))
                     .collect(Collectors.toList());
         } else if (search.getSort() != null && search.getSort().equals("pricedesc")) {
             sortString = search.getSort();
-            result = result.stream().sorted(Comparator.comparing(p -> shopService.getDiscountPrice(p), Comparator.reverseOrder()))
+            result = result.stream()
+                    .sorted(Comparator.comparing(p -> shopService.getDiscountPrice(p), Comparator.reverseOrder()))
                     .collect(Collectors.toList());
         } else {
             result = result.stream().sorted(Comparator.comparing(Product::getId, Comparator.reverseOrder()))
                     .collect(Collectors.toList());
         }
+        // Paging
+        result = result.stream().skip(pageDivide * (pageNumber - 1)).limit(pageDivide).collect(Collectors.toList());
+        
         // Calculate page's related data
         totalPage = Math.floorDiv(totalResult, pageDivide);
         if (Double.parseDouble(totalResult.toString()) % Double.parseDouble(pageDivide.toString()) > 0) {
@@ -117,9 +132,17 @@ public class shopSearchController {
         return "HTDShop/search_result";
     }
 
-    @RequestMapping(value = "getSearchOption", method = RequestMethod.GET)
-    public String getSearchOption(Model model, @RequestParam(value = "cateid") Integer cateid) {
-        return "HTDShop/search_options";
+    @RequestMapping(value = "getAdvancedSearch", method = RequestMethod.POST)
+    public String getAdvancedSearch(Model model, @RequestParam(required = false) Map<String, String> params) {
+        AdvancedSearch search = new AdvancedSearch(params);
+        if (search.getCategory() == 1) {
+            model.asMap().put("skList", productFacade.getStringList("socket"));
+            model.asMap().put("srList", productFacade.getStringList("series"));
+            model.asMap().put("coList", productFacade.getIntegerList("core"));
+        }
+        model.asMap().put("data", search);
+        model.asMap().put("cateid", search.getCategory());
+        return "HTDShop/search_advanced";
     }
 
 }

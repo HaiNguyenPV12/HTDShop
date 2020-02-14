@@ -1,0 +1,36 @@
+<th:block th:if="${cateid == 1}">
+    <h3 class="sidebar-title">More Filters</h3>
+
+    <div class="d-flex mb-2">
+        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="sr" id="sr">
+            <option value="" th:selected="${data.series==null || data.series == ''}">All Series
+            </option>
+            <option th:each="sr : ${srList}" th:value="${sr}" th:text="${sr}"
+                th:selected="${data.series != null && data.series == sr}">
+                Series
+            </option>
+        </select>
+    </div>
+
+    <div class="d-flex mb-2">
+        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="sk" id="sk">
+            <option value="" th:selected="${data.socket==null || data.socket == ''}">All Socket
+            </option>
+            <option th:each="sk : ${skList}" th:value="${sk}" th:text="${sk}"
+                th:selected="${data.socket != null && data.socket == sk}">
+                Socket
+            </option>
+        </select>
+    </div>
+
+    <div class="d-flex mb-2">
+        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="co" id="co">
+            <option value="0" th:selected="${data.core==null || data.core == 0}">All Number of Cores
+            </option>
+            <option th:each="co : ${coList}" th:value="${co}" th:text="${co}"
+                th:selected="${data.core != null && data.core == co}">
+                Number of Cores
+            </option>
+        </select>
+    </div>
+</th:block>

@@ -29,6 +29,16 @@
     <link th:href="@{/resources/Plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css}" rel="stylesheet">
     <link th:href="@{/resources/Plugins/toastr/toastr.min.css}" rel="stylesheet">
     <script th:src="@{/resources/Scripts/vendor/modernizr-2.8.3.min.js}"></script>
+    <style>
+        .bg-purple{
+            background: #9628f08c;
+            color: rgb(20, 20, 20) !important;
+        }
+        .bg-purple-2{
+            background: #6611acef;
+            color: white ;
+        }
+    </style>
     <th:block layout:fragment="additionalCss">
 
     </th:block>
@@ -95,61 +105,12 @@
                 <div class="header-cart-3">
                     <a href="#">
                         <i class="ti-shopping-cart"></i>My Cart
-                        <span id="cartSize">02</span>
+                        <span id="cartSize"></span>
                     </a>
-                    <ul class="cart-dropdown" id="cartList">
-                        <li class="single-product-cart">
-                            <div class="cart-img">
-                                <a href="#"><img th:src="@{/resources/img/cart/1.jpg}" alt=""></a>
-                            </div>
-                            <div class="cart-title">
-                                <h5><a href="#"> Bits Headphone</a></h5>
-                                <h6><a href="#">Black</a></h6>
-                                <span>$80.00 x 1</span>
-                            </div>
-                            <div class="cart-delete">
-                                <a href="#"><i class="ti-trash"></i></a>
-                            </div>
-                        </li>
-                        <li class="single-product-cart">
-                            <div class="cart-img">
-                                <a href="#"><img th:src="@{/resources/img/cart/2.jpg}" alt=""></a>
-                            </div>
-                            <div class="cart-title">
-                                <h5><a href="#"> Bits Headphone</a></h5>
-                                <h6><a href="#">Black</a></h6>
-                                <span>$80.00 x 1</span>
-                            </div>
-                            <div class="cart-delete">
-                                <a href="#"><i class="ti-trash"></i></a>
-                            </div>
-                        </li>
-                        <li class="single-product-cart">
-                            <div class="cart-img">
-                                <a href="#"><img th:src="@{/resources/img/cart/3.jpg}" alt=""></a>
-                            </div>
-                            <div class="cart-title">
-                                <h5><a href="#"> Bits Headphone</a></h5>
-                                <h6><a href="#">Black</a></h6>
-                                <span>$80.00 x 1</span>
-                            </div>
-                            <div class="cart-delete">
-                                <a href="#"><i class="ti-trash"></i></a>
-                            </div>
-                        </li>
-                        <li class="cart-space">
-                            <div class="cart-sub">
-                                <h4>Subtotal</h4>
-                            </div>
-                            <div class="cart-price">
-                                <h4>$240.00</h4>
-                            </div>
-                        </li>
-                        <li class="cart-btn-wrapper">
-                            <a class="cart-btn btn-hover" href="#">view cart</a>
-                            <a class="cart-btn btn-hover" href="#">checkout</a>
-                        </li>
-                    </ul>
+                    <span id="cartList">
+
+                    </span>
+
                 </div>
                 <div class="mobile-menu-area mobile-menu-none-block electro-2-menu">
                     <div class="mobile-menu">
@@ -311,7 +272,7 @@
                 </div>
             </div>
         </div>
-        <div class="footer-middle black-bg-2 pt-35 pb-40">
+        <div class="footer-middle bg-purple-2 pt-35 pb-40">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-4 col-md-4">
@@ -431,12 +392,37 @@
                     } else {
                         Toast.fire({
                             type: 'error',
-                            title: 'Cannot add to cart.'
+                            title: data
                         });
                     }
                 }
             });
         }
+
+        function doAddPreBuiltToCart(id, quan) {
+            var addPreBuiltToCartUrl = /*[[@{/cart/addPreBuilt}]]*/'';
+            addPreBuiltToCartUrl += "?id=" + id + "&quan=" + quan;
+            $.ajax({
+                url: addPreBuiltToCartUrl,
+                method: 'POST',
+                cache: false,
+                success: function (data) {
+                    if (data == "ok") {
+                        getCart();
+                        Toast.fire({
+                            type: 'success',
+                            title: 'Added to cart.'
+                        });
+                    } else {
+                        Toast.fire({
+                            type: 'error',
+                            title: data
+                        });
+                    }
+                }
+            });
+        }
+
         function doRemoveFromCart(id) {
             var removeFromCartUrl = /*[[@{/cart/remove}]]*/'';
             removeFromCartUrl += "?id=" + id;
@@ -450,6 +436,11 @@
                         Toast.fire({
                             type: 'success',
                             title: 'Removed from cart.'
+                        });
+                    } else {
+                        Toast.fire({
+                            type: 'success',
+                            title: data
                         });
                     }
                 }

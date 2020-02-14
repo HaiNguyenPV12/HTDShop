@@ -31,5 +31,9 @@ public interface ProductFacadeLocal {
     int count();
 
     List<Product> search(Integer cateId, String search);
+
+    List<String> getStringList(String attr);
+    
+    List<Integer> getIntegerList(String attr);
     
 }

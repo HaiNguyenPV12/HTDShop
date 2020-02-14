@@ -35,91 +35,91 @@ public class PreBuiltSearch {
         // Sort
         this.sort = params.get("sort");
         // CPU
-        if (params.get("cpu") == null) {
+        if (params.get("1") == null) {
             this.cpu = 0;
         } else {
             try {
-                this.cpu = Integer.parseInt(params.get("cpu"));
+                this.cpu = Integer.parseInt(params.get("1"));
             } catch (Exception e) {
                 this.cpu = 0;
             }
         }
         // Motherboard
-        if (params.get("motherboard") == null) {
+        if (params.get("2") == null) {
             this.motherboard = 0;
         } else {
             try {
-                this.motherboard = Integer.parseInt(params.get("motherboard"));
+                this.motherboard = Integer.parseInt(params.get("2"));
             } catch (Exception e) {
                 this.motherboard = 0;
             }
         }
         // GPU
-        if (params.get("gpu") == null) {
+        if (params.get("3") == null) {
             this.gpu = 0;
         } else {
             try {
-                this.gpu = Integer.parseInt(params.get("gpu"));
+                this.gpu = Integer.parseInt(params.get("3"));
             } catch (Exception e) {
                 this.gpu = 0;
             }
         }
         // Memory
-        if (params.get("memory") == null) {
+        if (params.get("4") == null) {
             this.memory = 0;
         } else {
             try {
-                this.memory = Integer.parseInt(params.get("memory"));
+                this.memory = Integer.parseInt(params.get("4"));
             } catch (Exception e) {
                 this.memory = 0;
             }
         }
         // PSU
-        if (params.get("psu") == null) {
+        if (params.get("5") == null) {
             this.psu = 0;
         } else {
             try {
-                this.psu = Integer.parseInt(params.get("psu"));
+                this.psu = Integer.parseInt(params.get("5"));
             } catch (Exception e) {
                 this.psu = 0;
             }
         }
         // Storage
-        if (params.get("storage") == null) {
+        if (params.get("6") == null) {
             this.storage = 0;
         } else {
             try {
-                this.storage = Integer.parseInt(params.get("storage"));
+                this.storage = Integer.parseInt(params.get("6"));
             } catch (Exception e) {
                 this.storage = 0;
             }
         }
         // CPU Cooler
-        if (params.get("cpucooler") == null) {
+        if (params.get("7") == null) {
             this.cpucooler = 0;
         } else {
             try {
-                this.cpucooler = Integer.parseInt(params.get("cpucooler"));
+                this.cpucooler = Integer.parseInt(params.get("7"));
             } catch (Exception e) {
                 this.cpucooler = 0;
             }
         }
         // Case
-        if (params.get("case") == null) {
+        if (params.get("8") == null) {
             this.case1 = 0;
         } else {
             try {
-                this.case1 = Integer.parseInt(params.get("case"));
+                this.case1 = Integer.parseInt(params.get("8"));
             } catch (Exception e) {
                 this.case1 = 0;
             }
         }
         // Monitor
-        if (params.get("monitor") == null) {
+        if (params.get("9") == null) {
             this.monitor = 0;
         } else {
             try {
-                this.monitor = Integer.parseInt(params.get("monitor"));
+                this.monitor = Integer.parseInt(params.get("9"));
             } catch (Exception e) {
                 this.monitor = 0;
             }

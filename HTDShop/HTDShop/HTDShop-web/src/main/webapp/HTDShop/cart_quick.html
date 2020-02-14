@@ -1,45 +1,47 @@
-<li class="single-product-cart" th:each="c : ${cart}" th:with="product = ${shopSv.getProduct(c.id)}"
-    th:if="${cart != null}">
-    <div class="cart-img">
-        <a th:href="@{/product(id=${c.id})}">
-            <img th:if="${product.productImageCollection.size() > 0}"
-                th:src="@{/images/__${product.productImageCollection.?[mainImage==true][0].imagePath}__}" alt=""
-                style="width: 5rem;height: 100%;object-fit: contain;">
-            <img th:if="${product.productImageCollection.size() == 0}" th:src="@{/images/noimage.png}" alt=""
-                style="width: 5rem;height: 100%;object-fit: contain;">
-        </a>
-    </div>
-    <div class="cart-title">
-        <h5><a th:href="@{/product(id=${c.id})}" th:text="${product.name}">Bits Headphone</a></h5>
-        <i th:if="${c.quan > 0}">
-            <th:block
-                th:text="${'$' + #numbers.formatDecimal(shopSv.getDiscountPrice(product) , 0, 'POINT', 0, 'COMMA')}">
-            </th:block> x <th:block th:text="${c.quan}">
-            </th:block>
-        </i>
-        <i th:if="${c.quan==0}">
-            Out of stock
-        </i>
-    </div>
-    <div class="cart-delete">
-        <a style="cursor: pointer;" th:onclick="doRemoveFromCart([[${c.id}]])"><i class="ti-trash"></i></a>
-    </div>
-</li>
+<ul class="cart-dropdown">
+    <li class="single-product-cart" th:each="c : ${cart}" th:with="product = ${shopSv.getProduct(c.id)}"
+        th:if="${cart != null}">
+        <div class="cart-img">
+            <a th:href="@{/product(id=${c.id})}">
+                <img th:if="${product.productImageCollection.size() > 0}"
+                    th:src="@{/images/__${product.productImageCollection.?[mainImage==true][0].imagePath}__}" alt=""
+                    style="width: 5rem;height: 100%;object-fit: contain;">
+                <img th:if="${product.productImageCollection.size() == 0}" th:src="@{/images/noimage.png}" alt=""
+                    style="width: 5rem;height: 100%;object-fit: contain;">
+            </a>
+        </div>
+        <div class="cart-title">
+            <h5><a th:href="@{/product(id=${c.id})}" th:text="${product.name}">Bits Headphone</a></h5>
+            <i th:if="${c.quan > 0}">
+                <th:block
+                    th:text="${'$' + #numbers.formatDecimal(shopSv.getDiscountPrice(product) , 0, 'POINT', 0, 'COMMA')}">
+                </th:block> x <th:block th:text="${c.quan}">
+                </th:block>
+            </i>
+            <i th:if="${c.quan==0}">
+                Out of stock
+            </i>
+        </div>
+        <div class="cart-delete">
+            <a style="cursor: pointer;" th:onclick="doRemoveFromCart([[${c.id}]])"><i class="ti-trash"></i></a>
+        </div>
+    </li>
 
-<th:block th:if="${cart == null || cart.size() == 0}">
-    No items
-</th:block>
-<li class="cart-space">
-    <div class="cart-sub">
-        <h4>Subtotal</h4>
-    </div>
-    <div class="cart-price">
-        <h4 th:text="${'$' + #numbers.formatDecimal(shopSv.getCartTotal() , 0, 'POINT', 0, 'COMMA')}"></h4>
-    </div>
-</li>
-<li class="cart-btn-wrapper">
-    <input type="hidden" id="cartNum"
-        th:value="${cart == null || cart.size()==0? '0' : #aggregates.sum(cart.![quan])}" />
-    <a class="cart-btn btn-hover" th:href="@{/cart}">view cart</a>
-    <a class="cart-btn btn-hover" th:href="@{/checkout}">checkout</a>
-</li>
+    <th:block th:if="${cart == null || cart.size() == 0}">
+        No items
+    </th:block>
+    <li class="cart-space">
+        <div class="cart-sub">
+            <h4>Subtotal</h4>
+        </div>
+        <div class="cart-price">
+            <h4 th:text="${'$' + #numbers.formatDecimal(shopSv.getCartTotal() , 0, 'POINT', 0, 'COMMA')}"></h4>
+        </div>
+    </li>
+    <li class="cart-btn-wrapper">
+        <input type="hidden" id="cartNum"
+            th:value="${cart == null || cart.size()==0? '0' : #aggregates.sum(cart.![quan])}" />
+        <a class="cart-btn btn-hover" th:href="@{/cart}">view cart</a>
+        <a class="cart-btn btn-hover" th:href="@{/checkout}">checkout</a>
+    </li>
+</ul>

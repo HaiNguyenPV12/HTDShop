@@ -124,6 +124,10 @@
         .tab-pane li {
             list-style: square;
         }
+
+        .border-purple {
+            border-color: #9628f08c !important
+        }
     </style>
 </head>
 
@@ -149,13 +153,13 @@
                             <div class="product-details-tab mr-35 product-details-tab2">
                                 <div class="product-details-small nav mr-10 product-details-2" role=tablist
                                     style="display: block;">
-                                    <a class="active" th:if="${prebuilt.preBuiltImageCollection.isEmpty()}"
+                                    <a class="border border-purple active" th:if="${prebuilt.preBuiltImageCollection.isEmpty()}"
                                         href="#pro-details1" data-toggle="tab" role="tab" aria-selected="true"
                                         style="height:8rem; display: flex;align-items: center;">
                                         <img th:src="@{/images/noimage.png}" alt=""
                                             style="max-height: 8rem;width: 100%;">
                                     </a>
-                                    <a class="" th:each="img,it : ${prebuilt.preBuiltImageCollection}"
+                                    <a class="border border-purple" th:each="img,it : ${prebuilt.preBuiltImageCollection}"
                                         th:classappend="${it.index==0?'active':''}"
                                         th:href="${'#pro-details'+(it.index+1)}" data-toggle="tab" role="tab"
                                         th:aria-selected="${it.index==0?'true':'false'}"
@@ -166,7 +170,7 @@
                                     </a>
 
                                 </div>
-                                <div class="product-details-large tab-content" style="width: 100%; max-height: 30rem;">
+                                <div class="border border-purple product-details-large tab-content" style="width: 100%; max-height: 30rem;">
                                     <div class="tab-pane active show fade"
                                         th:if="${prebuilt.preBuiltImageCollection.isEmpty()}" id="pro-details1"
                                         role="tabpanel" style="text-align: center;">
@@ -218,13 +222,16 @@
 
                             <div class="quickview-plus-minus">
                                 <div class="cart-plus-minus">
-                                    <input type="text" value="1" name="qtybutton" class="cart-plus-minus-box" max="100">
+                                    <input type="text" value="1" name="qtybutton" class="cart-plus-minus-box" max="100"
+                                        min="1" id="quan">
                                 </div>
                                 <div class="mt-3">
 
                                 </div>
                                 <div class="quickview-btn-cart">
-                                    <a class="btn-hover-black" href="#">add to cart</a>
+                                    <a class="btn-hover-black" style="cursor: pointer;color: #fff;"
+                                        th:onclick="doAddPreBuiltToCart([[${prebuilt.id}]],$('#quan').val())">add to
+                                        cart</a>
                                 </div>
                             </div>
 
@@ -275,7 +282,7 @@
                                         <i class="fas fa-cube"></i>
                                         <strong>
                                             <th:block th:if="${part != 'vga' && part != 'cases' && part != 'cpucooler'}"
-                                                    th:text="${#strings.toUpperCase(part)}"></th:block>
+                                                th:text="${#strings.toUpperCase(part)}"></th:block>
                                             <th:block th:if="${part == 'vga'}">GPU</th:block>
                                             <th:block th:if="${part == 'cases'}">CASE</th:block>
                                             <th:block th:if="${part == 'cpucooler'}">CPU COOLER</th:block>

@@ -10,6 +10,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import vn.htdshop.entity.Product;
@@ -46,6 +47,33 @@ public class ProductFacade extends AbstractFacade<Product> implements ProductFac
         }
         query.setParameter("search", "%" + search + "%");
         return query.getResultList();
+    }
+
+    @Override
+    public List<String> getStringList(String attr) {
+        Query q = null;
+        if (attr.equals("socket")) {
+            q = em.createNativeQuery("SELECT DISTINCT CAST(Socket AS VARCHAR(MAX)) FROM Product WHERE CateId = 1");
+        } else if (attr.equals("series")) {
+            q = em.createNativeQuery("SELECT DISTINCT Series FROM Product WHERE CateId = 1");
+        } else {
+            return null;
+        }
+
+        return (List<String>) q.getResultList();
+    }
+
+    @Override
+    public List<Integer> getIntegerList(String attr) {
+        TypedQuery<Integer> q = null;
+        if (attr.equals("core")) {
+            q = em.createQuery("SELECT DISTINCT p.core FROM Product p WHERE p.category.id = 1", Integer.class);
+        } else if (attr.equals("thread")) {
+            q = em.createQuery("SELECT DISTINCT p.thread FROM Product p WHERE p.category.id = 1", Integer.class);
+        } else {
+            return null;
+        }
+        return q.getResultList();
     }
 
 }
