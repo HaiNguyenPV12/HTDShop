@@ -5,6 +5,7 @@
  */
 package vn.htdshop.controller.shop;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -84,6 +85,10 @@ public class shopSearchController {
                     .collect(Collectors.toList());
         }
         // More filters
+        if (!asearch.getManufacturer().isEmpty()) {
+            result = result.stream().filter(p -> p.getManufacturer().equals(asearch.getManufacturer()))
+                    .collect(Collectors.toList());
+        }
         if (!asearch.getSocket().isEmpty()) {
             result = result.stream().filter(p -> p.getSocket().equals(asearch.getSocket()))
                     .collect(Collectors.toList());
@@ -95,7 +100,53 @@ public class shopSearchController {
         if (asearch.getCore() > 0) {
             result = result.stream().filter(p -> p.getCore() == asearch.getCore()).collect(Collectors.toList());
         }
-
+        if (!asearch.getChipset().isEmpty()) {
+            result = result.stream().filter(p -> p.getChipset().equals(asearch.getChipset()))
+                    .collect(Collectors.toList());
+        }
+        if (!asearch.getMemoryType().isEmpty()) {
+            result = result.stream().filter(p -> p.getMemoryType().equals(asearch.getMemoryType()))
+                    .collect(Collectors.toList());
+        }
+        if (!asearch.getFormFactor().isEmpty()) {
+            result = result.stream().filter(p -> p.getFormFactor().equals(asearch.getFormFactor()))
+                    .collect(Collectors.toList());
+        }
+        if (asearch.getMemorySlot() > 0) {
+            result = result.stream().filter(p -> p.getMemorySlot() >= asearch.getMemorySlot())
+                    .collect(Collectors.toList());
+        }
+        if (!asearch.getInterface1().isEmpty()) {
+            result = result.stream().filter(p -> p.getInterface1().equals(asearch.getInterface1()))
+                    .collect(Collectors.toList());
+        }
+        if (asearch.getMemory() > 0) {
+            result = result.stream().filter(p -> p.getMemory() >= asearch.getMemory()).collect(Collectors.toList());
+        }
+        if (asearch.getMemoryModules() > 0) {
+            result = result.stream().filter(p -> p.getMemoryModules() == asearch.getMemoryModules())
+                    .collect(Collectors.toList());
+        }
+        if (!asearch.getPSUFormFactor().isEmpty()) {
+            result = result.stream().filter(p -> p.getPSUFormFactor().equals(asearch.getPSUFormFactor()))
+                    .collect(Collectors.toList());
+        }
+        if (asearch.getPSUWattage() > 0) {
+            result = result.stream().filter(p -> p.getPSUWattage() >= asearch.getPSUWattage())
+                    .collect(Collectors.toList());
+        }
+        if (!asearch.getStorageType().isEmpty()) {
+            result = result.stream().filter(p -> p.getStorageType().equals(asearch.getStorageType()))
+                    .collect(Collectors.toList());
+        }
+        if (!asearch.getResolution().isEmpty()) {
+            result = result.stream().filter(p -> p.getResolution().equals(asearch.getResolution()))
+                    .collect(Collectors.toList());
+        }
+        if (asearch.getScreenSize() > 0) {
+            result = result.stream().filter(p -> p.getScreenSize() >= asearch.getScreenSize())
+                    .collect(Collectors.toList());
+        }
         totalResult = result.size();
 
         // Sort
@@ -115,7 +166,7 @@ public class shopSearchController {
         }
         // Paging
         result = result.stream().skip(pageDivide * (pageNumber - 1)).limit(pageDivide).collect(Collectors.toList());
-        
+
         // Calculate page's related data
         totalPage = Math.floorDiv(totalResult, pageDivide);
         if (Double.parseDouble(totalResult.toString()) % Double.parseDouble(pageDivide.toString()) > 0) {
@@ -135,11 +186,58 @@ public class shopSearchController {
     @RequestMapping(value = "getAdvancedSearch", method = RequestMethod.POST)
     public String getAdvancedSearch(Model model, @RequestParam(required = false) Map<String, String> params) {
         AdvancedSearch search = new AdvancedSearch(params);
-        if (search.getCategory() == 1) {
-            model.asMap().put("skList", productFacade.getStringList("socket"));
+        switch (search.getCategory()) {
+        case 1:
+            model.asMap().put("manuList", productFacade.getStringList("manuCpu"));
+            model.asMap().put("skList", productFacade.getStringList("socketCpu"));
             model.asMap().put("srList", productFacade.getStringList("series"));
             model.asMap().put("coList", productFacade.getIntegerList("core"));
+            break;
+        case 2:
+            model.asMap().put("manuList", productFacade.getStringList("manuMotherboard"));
+            model.asMap().put("skList", productFacade.getStringList("socketMotherboard"));
+            model.asMap().put("csList", productFacade.getStringList("chipsetMotherboard"));
+            model.asMap().put("mtList", productFacade.getStringList("memoryTypeMotherboard"));
+            model.asMap().put("ffList", productFacade.getStringList("formFactorMotherboard"));
+            break;
+        case 3:
+            model.asMap().put("manuList", productFacade.getStringList("manuGpu"));
+            model.asMap().put("csList", productFacade.getStringList("chipsetGpu"));
+            model.asMap().put("mtList", productFacade.getStringList("memoryTypeGpu"));
+            model.asMap().put("itfList", productFacade.getStringList("interfaceGpu"));
+            break;
+        case 4:
+            model.asMap().put("manuList", productFacade.getStringList("manuMemory"));
+            model.asMap().put("mtList", productFacade.getStringList("memoryTypeMemory"));
+            model.asMap().put("mmmList", productFacade.getIntegerList("memoryModuleMemory"));
+            break;
+        case 5:
+            model.asMap().put("manuList", productFacade.getStringList("manuPsu"));
+            model.asMap().put("psufList", productFacade.getStringList("psuFormFactorPsu"));
+            break;
+        case 6:
+            model.asMap().put("manuList", productFacade.getStringList("manuStorage"));
+            model.asMap().put("ffList", productFacade.getStringList("formFactorStorage"));
+            model.asMap().put("stList", productFacade.getStringList("storageTypeStorage"));
+            model.asMap().put("itfList", productFacade.getStringList("interfaceStorage"));
+            break;
+        case 7:
+            model.asMap().put("manuList", productFacade.getStringList("manuCpuCooler"));
+            break;
+        case 8:
+            model.asMap().put("manuList", productFacade.getStringList("manuCase"));
+            model.asMap().put("ffList", productFacade.getStringList("formFactorCase"));
+            model.asMap().put("psufList", productFacade.getStringList("psuFormFactorCase"));
+            break;
+        case 9:
+            model.asMap().put("manuList", productFacade.getStringList("manuMonitor"));
+            model.asMap().put("ssList", productFacade.getDoubleList("screenSizeMonitor"));
+            model.asMap().put("rsList", productFacade.getStringList("resolutionMonitor"));
+            break;
+        default:
+            break;
         }
+
         model.asMap().put("data", search);
         model.asMap().put("cateid", search.getCategory());
         return "HTDShop/search_advanced";

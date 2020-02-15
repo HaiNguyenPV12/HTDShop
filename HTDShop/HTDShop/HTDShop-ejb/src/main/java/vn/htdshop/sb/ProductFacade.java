@@ -38,8 +38,7 @@ public class ProductFacade extends AbstractFacade<Product> implements ProductFac
     public List<Product> search(Integer cateId, String search) {
         TypedQuery<Product> query = null;
         if (cateId == 0) {
-            query = em.createQuery("SELECT p FROM Product p WHERE p.name LIKE :search",
-                    Product.class);
+            query = em.createQuery("SELECT p FROM Product p WHERE p.name LIKE :search", Product.class);
         } else {
             query = em.createQuery("SELECT p FROM Product p WHERE p.category.id = :cateId AND p.name LIKE :search",
                     Product.class);
@@ -52,10 +51,58 @@ public class ProductFacade extends AbstractFacade<Product> implements ProductFac
     @Override
     public List<String> getStringList(String attr) {
         Query q = null;
-        if (attr.equals("socket")) {
+        if (attr.equals("socketCpu")) {
             q = em.createNativeQuery("SELECT DISTINCT CAST(Socket AS VARCHAR(MAX)) FROM Product WHERE CateId = 1");
         } else if (attr.equals("series")) {
             q = em.createNativeQuery("SELECT DISTINCT Series FROM Product WHERE CateId = 1");
+        } else if (attr.equals("manuCpu")) {
+            q = em.createNativeQuery("SELECT DISTINCT Manufacturer FROM Product WHERE CateId = 1");
+        } else if (attr.equals("manuMotherboard")) {
+            q = em.createNativeQuery("SELECT DISTINCT Manufacturer FROM Product WHERE CateId = 2");
+        } else if (attr.equals("manuGpu")) {
+            q = em.createNativeQuery("SELECT DISTINCT Manufacturer FROM Product WHERE CateId = 3");
+        } else if (attr.equals("manuMemory")) {
+            q = em.createNativeQuery("SELECT DISTINCT Manufacturer FROM Product WHERE CateId = 4");
+        } else if (attr.equals("manuPsu")) {
+            q = em.createNativeQuery("SELECT DISTINCT Manufacturer FROM Product WHERE CateId = 5");
+        } else if (attr.equals("manuStorage")) {
+            q = em.createNativeQuery("SELECT DISTINCT Manufacturer FROM Product WHERE CateId = 6");
+        } else if (attr.equals("manuCpuCooler")) {
+            q = em.createNativeQuery("SELECT DISTINCT Manufacturer FROM Product WHERE CateId = 7");
+        } else if (attr.equals("manuCase")) {
+            q = em.createNativeQuery("SELECT DISTINCT Manufacturer FROM Product WHERE CateId = 8");
+        } else if (attr.equals("manuMonitor")) {
+            q = em.createNativeQuery("SELECT DISTINCT Manufacturer FROM Product WHERE CateId = 9");
+        } else if (attr.equals("socketMotherboard")) {
+            q = em.createNativeQuery("SELECT DISTINCT CAST(Socket AS VARCHAR(MAX)) FROM Product WHERE CateId = 2");
+        } else if (attr.equals("chipsetMotherboard")) {
+            q = em.createNativeQuery("SELECT DISTINCT Chipset FROM Product WHERE CateId = 2");
+        } else if (attr.equals("memoryTypeMotherboard")) {
+            q = em.createNativeQuery("SELECT DISTINCT MemoryType FROM Product WHERE CateId = 2");
+        } else if (attr.equals("memoryTypeGpu")) {
+            q = em.createNativeQuery("SELECT DISTINCT MemoryType FROM Product WHERE CateId = 3");
+        } else if (attr.equals("memoryTypeMemory")) {
+            q = em.createNativeQuery("SELECT DISTINCT MemoryType FROM Product WHERE CateId = 4");
+        } else if (attr.equals("formFactorMotherboard")) {
+            q = em.createNativeQuery("SELECT DISTINCT FormFactor FROM Product WHERE CateId = 2");
+        } else if (attr.equals("psuFormFactorPsu")) {
+            q = em.createNativeQuery("SELECT DISTINCT PSUFormFactor FROM Product WHERE CateId = 5");
+        } else if (attr.equals("formFactorStorage")) {
+            q = em.createNativeQuery("SELECT DISTINCT FormFactor FROM Product WHERE CateId = 6");
+        } else if (attr.equals("formFactorCase")) {
+            q = em.createNativeQuery("SELECT DISTINCT FormFactor FROM Product WHERE CateId = 8");
+        } else if (attr.equals("psuFormFactorCase")) {
+            q = em.createNativeQuery("SELECT DISTINCT PSUFormFactor FROM Product WHERE CateId = 8");
+        } else if (attr.equals("chipsetGpu")) {
+            q = em.createNativeQuery("SELECT DISTINCT Chipset FROM Product WHERE CateId = 3");
+        } else if (attr.equals("interfaceGpu")) {
+            q = em.createNativeQuery("SELECT DISTINCT Interface FROM Product WHERE CateId = 3");
+        } else if (attr.equals("interfaceStorage")) {
+            q = em.createNativeQuery("SELECT DISTINCT Interface FROM Product WHERE CateId = 6");
+        } else if (attr.equals("storageTypeStorage")) {
+            q = em.createNativeQuery("SELECT DISTINCT StorageType FROM Product WHERE CateId = 6");
+        } else if (attr.equals("resolutionMonitor")) {
+            q = em.createNativeQuery("SELECT DISTINCT Resolution FROM Product WHERE CateId = 9");
         } else {
             return null;
         }
@@ -70,6 +117,19 @@ public class ProductFacade extends AbstractFacade<Product> implements ProductFac
             q = em.createQuery("SELECT DISTINCT p.core FROM Product p WHERE p.category.id = 1", Integer.class);
         } else if (attr.equals("thread")) {
             q = em.createQuery("SELECT DISTINCT p.thread FROM Product p WHERE p.category.id = 1", Integer.class);
+        } else if (attr.equals("memoryModuleMemory")) {
+            q = em.createQuery("SELECT DISTINCT p.memoryModules FROM Product p WHERE p.category.id = 4", Integer.class);
+        } else {
+            return null;
+        }
+        return q.getResultList();
+    }
+
+    @Override
+    public List<Double> getDoubleList(String attr) {
+        TypedQuery<Double> q = null;
+        if (attr.equals("screenSizeMonitor")) {
+            q = em.createQuery("SELECT DISTINCT p.screenSize FROM Product p WHERE p.category.id = 9", Double.class);
         } else {
             return null;
         }

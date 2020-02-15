@@ -12,6 +12,17 @@
             height: auto;
         }
 
+        @media (min-width:1200px) {
+            .product-list {
+                height: 65rem;
+            }
+
+            .product-list2 {
+                height: 63rem;
+            }
+        }
+
+
         @media (max-width:1200px) {
             .product-list {
                 height: 114rem;
@@ -22,13 +33,13 @@
             }
         }
 
-        @media (min-width:1200px) {
+        @media (max-width:768px) {
             .product-list {
-                height: 65rem;
+                height: 204rem;
             }
 
             .product-list2 {
-                height: 63rem;
+                height: 202rem;
             }
         }
 
@@ -129,7 +140,7 @@
                                         </div>
                                         <div class="shop-selector">
                                             <label>Sort By : </label>
-                                            <select name="psort" id="psort" style="width: auto;" onchange="doSearch()">
+                                            <select name="psort" id="psort" style="width: auto;">
                                                 <option value="default"
                                                     th:selected="${param.sort==null || param.sort.equals('default')}">
                                                     Default (Newest first)
@@ -277,7 +288,6 @@
         doSearch();
 
         $("#category").on("change", function () {
-            //getAdvancedSearch($(this).val(), null, true);
             doSearch(null, null, true);
         });
 
@@ -307,20 +317,19 @@
 
         });
 
-        $("#sort").on("change", function () {
-
+        $("#psort").on("change", function () {
+            doSearch();
         });
 
 
         function doSearch(page, sort, cateChanged) {
+            // Validate filters
+            doValidateFilters();
 
             // Start building url and do ajax
-            if (+$("#from").val() > +$("#to").val()) {
-                $("#from").val(0);
-            }
             var searchUrl = /*[[@{/search/result}]]*/'';
             var href =  /*[[@{/search}]]*/'';
-            var kParam = $("#keyword").val();
+            var kParam = $("#keyword").val().trim();
             var cParam = /*[[${param.category!=null? param.category : 0 }]]*/'';
             var styleParam = /*[[${param.style!=null? param.style : '' }]]*/"";
             var pageParam = 1;
@@ -337,16 +346,27 @@
             if (sort != null) {
                 sortParam = sort;
             }
-
             if (page != null) {
                 pageParam = page;
             }
-            // Get advanced
+            // Get advanced url
             var advanced = getAdvancedSearchString(cParam, cateChanged);
-            console.log("advanced: " + advanced);
             // Create url
-            searchUrl += "?" + "category=" + encodeURIComponent(cParam) + "&keyword=" + encodeURIComponent(kParam) + "&style=" + encodeURIComponent(styleParam) + "&page=" + encodeURIComponent(pageParam) + "&from=" + encodeURIComponent(fromParam) + "&to=" + encodeURIComponent(toParam) + "&sort=" + encodeURIComponent(sortParam) + "&" + advanced;
-            href += "?" + "category=" + encodeURIComponent(cParam) + "&keyword=" + encodeURIComponent(kParam) + "&style=" + encodeURIComponent(styleParam) + "&page=" + encodeURIComponent(pageParam) + "&from=" + encodeURIComponent(fromParam) + "&to=" + encodeURIComponent(toParam) + "&sort=" + encodeURIComponent(sortParam) + "&" + advanced;
+            var urlparams = "";
+            if (fromParam > 0) {
+                urlparams += "&from=" + encodeURIComponent(fromParam);
+            }
+            if (toParam < 10000) {
+                urlparams += "&to=" + encodeURIComponent(toParam);
+            }
+            if (sortParam != "default") {
+                urlparams += "&sort=" + encodeURIComponent(sortParam);
+            }
+            if (styleParam != "" && styleParam != "grid") {
+                urlparams += "&style=" + encodeURIComponent(styleParam);
+            }
+            searchUrl += "?" + "category=" + encodeURIComponent(cParam) + "&keyword=" + encodeURIComponent(kParam) + "&page=" + encodeURIComponent(pageParam) + urlparams + advanced;
+            href += "?" + "category=" + encodeURIComponent(cParam) + "&keyword=" + encodeURIComponent(kParam) + "&page=" + encodeURIComponent(pageParam) + urlparams + advanced;
             if (history.pushState) {
                 $("#result").animate({ 'opacity': '0.0' }, 200, function () {
                     $("#result").html("");
@@ -372,6 +392,68 @@
             // $([document.documentElement, document.body]).animate({
             //     scrollTop: $("#scrollHere").offset().top
             // }, 500);
+        }
+
+        function doValidateFilters() {
+            // Keyword
+            $("#keyword").val($("#keyword").val().trim());
+
+            // Price filter
+            if (!$("#searchPrice")[0].checkValidity()) {
+                $("#tdpmin").val(0);
+                $("#tdpmax").val(2000);
+            }
+            var pricemin = +$("#from").val() || 0;
+            var pricemax = +$("#from").val() || 10000;
+            if (pricemin > pricemax) {
+                $("#from").val(0);
+            }
+
+            // TDP
+            if ($("#tdpmin").length) {
+                if (!$("#filterTdp")[0].checkValidity()) {
+                    $("#tdpmin").val(0);
+                    $("#tdpmax").val(2000);
+                }
+                var vTdpMin = +$("#tdpmin").val() || 0;
+                var vTdpMax = +$("#tdpmax").val() || 2000;
+                if (vTdpMin > vTdpMax) {
+                    $("#tdpmin").val(0);
+                }
+            }
+
+            // Memory Slot
+            if ($("#mms").length) {
+                var vMms = +$("#mms").val() || 0;
+                if (vMms < 0) {
+                    $("#mms").val(0);
+                }
+                if (vMms > 20) {
+                    $("#mms").val(20);
+                }
+            }
+
+            // Memory
+            if ($("#mm").length) {
+                var vMm = +$("#mm").val() || 0;
+                if (vMm < 0) {
+                    $("#mm").val(0);
+                }
+                if (vMm > 1000000) {
+                    $("#mm").val(1000000);
+                }
+            }
+
+            // Screen Size
+            if ($("#ss").length) {
+                var vSs = +$("#ss").val() || 0;
+                if (vSs < 0) {
+                    $("#ss").val(0);
+                }
+                if (vSs > 200) {
+                    $("#ss").val(200);
+                }
+            }
         }
 
 
@@ -402,7 +484,7 @@
             advancedSearchUrl += cateid;
 
             if (params != null) {
-                advancedSearchUrl += "&" + params;
+                advancedSearchUrl += params;
             }
             // console.log(advancedSearchUrl);
             if (cateChanged == true) {
@@ -417,9 +499,6 @@
                             theme: 'bootstrap4'
                         });
                         $("#filters .select2").css("width", "100%");
-                        // $("#filters").find("select").on("change", function () {
-                        //     doSearch();
-                        // });
                     }
                 });
             }
@@ -430,24 +509,112 @@
             var str = "";
             var cateid = category;
 
+            // Check for old paramerter
+            var manuParam = /*[[${param.manu!=null? param.manu : '' }]]*/'';
             var skParam = /*[[${param.sk!=null? param.sk : '' }]]*/'';
             var tdpminParam = /*[[${param.tdpmin!=null? param.tdpmin : 0 }]]*/'';
-            var tdpmaxParam = /*[[${param.tdpmax!=null? param.tdpmax : 10000 }]]*/'';
+            var tdpmaxParam = /*[[${param.tdpmax!=null? param.tdpmax : 2000 }]]*/'';
             var coParam = /*[[${param.co!=null? param.co : '' }]]*/'';
             var thrParam = /*[[${param.thr!=null? param.thr : '' }]]*/'';
             var srParam = /*[[${param.sr!=null? param.sr : '' }]]*/'';
+            var csParam = /*[[${param.cs!=null? param.cs : '' }]]*/'';
+            var mtParam = /*[[${param.mt!=null? param.mt : '' }]]*/'';
+            var ffParam = /*[[${param.ff!=null? param.ff : '' }]]*/'';
+            var mmsParam = /*[[${param.mms!=null? param.mms : 0 }]]*/'';
+            var mmParam = /*[[${param.mm!=null? param.mm : 0 }]]*/'';
+            var itfParam = /*[[${param.itf!=null? param.itf : '' }]]*/'';
+            var mmmParam = /*[[${param.mmm!=null? param.mmm : 0 }]]*/'';
+            var psuwParam = /*[[${param.psuw!=null? param.psuw : 0 }]]*/'';
+            var psufParam = /*[[${param.psuf!=null? param.psuf : '' }]]*/'';
+            var stParam = /*[[${param.st!=null? param.st : '' }]]*/'';
+            var rsParam = /*[[${param.rs!=null? param.rs : '' }]]*/'';
+            var ssParam = /*[[${param.ss!=null? param.ss : 0 }]]*/'';
+
+            // Re check when number of searches > 0
+            if (searched > 0) {
+                manuParam = $("#manu").length && !cateChanged ? $("#manu").val() : "";
+                skParam = $("#sk").length && !cateChanged ? $("#sk").val() : "";
+                tdpminParam = $("#tdpmin").length && !cateChanged ? $("#tdpmin").val() : 0;
+                tdpmaxParam = $("#tdpmax").length && !cateChanged ? $("#tdpmax").val() : 2000;
+                coParam = $("#co").length && !cateChanged ? $("#co").val() : 0;
+                thrParam = $("#thr").length && !cateChanged ? $("#thr").val() : 0;
+                srParam = $("#sr").length && !cateChanged ? $("#sr").val() : "";
+                csParam = $("#cs").length && !cateChanged ? $("#cs").val() : "";
+                mtParam = $("#mt").length && !cateChanged ? $("#mt").val() : "";
+                ffParam = $("#ff").length && !cateChanged ? $("#ff").val() : "";
+                mmsParam = $("#mms").length && !cateChanged ? $("#mms").val() : 0;
+                mmParam = $("#mm").length && !cateChanged ? $("#mm").val() : 0;
+                itfParam = $("#itf").length && !cateChanged ? $("#itf").val() : "";
+                mmmParam = $("#mmm").length && !cateChanged ? $("#mmm").val() : 0;
+                psuwParam = $("#psuw").length && !cateChanged ? $("#psuw").val() : 0;
+                psufParam = $("#psuf").length && !cateChanged ? $("#psuf").val() : "";
+                stParam = $("#st").length && !cateChanged ? $("#st").val() : "";
+                rsParam = $("#rs").length && !cateChanged ? $("#rs").val() : "";
+                ssParam = $("#ss").length && !cateChanged ? $("#ss").val() : 0;
+            }
+
+
             switch (parseInt(cateid)) {
                 case 1:
-                    str += "sk=" + encodeURIComponent($("#sk").length ? $("#sk").val() : skParam)
-                        + "&tdpmin=" + encodeURIComponent($("#tdpmin").length ? $("#tdpmin").val() : tdpminParam)
-                        + "&tdpmax=" + encodeURIComponent($("#tdpmax").length ? $("#tdpmax").val() : tdpmaxParam)
-                        + "&co=" + encodeURIComponent($("#co").length ? $("#co").val() : coParam)
-                        //+ "&thr=" + ($("#thr").length ? $("#thr").val() : thrParam)
-                        + "&sr=" + encodeURIComponent($("#sr").length ? $("#sr").val() : srParam);
+                    str += (manuParam != "" ? "&manu=" + encodeURIComponent(manuParam) : "")
+                        + (skParam != "" ? "&sk=" + encodeURIComponent(skParam) : "")
+                        + (tdpminParam > 0 ? "&tdpmin=" + encodeURIComponent(tdpminParam) : "")
+                        + (tdpmaxParam < 2000 ? "&tdpmax=" + encodeURIComponent(tdpmaxParam) : "")
+                        + (coParam != 0 ? "&co=" + encodeURIComponent(coParam) : "")
+                        + (srParam != "" ? "&sr=" + encodeURIComponent(srParam) : "");
+                    break;
+                case 2:
+                    str += (manuParam != "" ? "&manu=" + encodeURIComponent(manuParam) : "")
+                        + (skParam != "" ? "&sk=" + encodeURIComponent(skParam) : "")
+                        + (csParam != "" ? "&cs=" + encodeURIComponent(csParam) : "")
+                        + (mtParam != "" ? "&mt=" + encodeURIComponent(mtParam) : "")
+                        + (ffParam != "" ? "&ff=" + encodeURIComponent(ffParam) : "")
+                        + (mmsParam > 0 ? "&mms=" + encodeURIComponent(mmsParam) : "");
+                    break;
+                case 3:
+                    str += (manuParam != "" ? "&manu=" + encodeURIComponent(manuParam) : "")
+                        + (csParam != "" ? "&cs=" + encodeURIComponent(csParam) : "")
+                        + (mtParam != "" ? "&mt=" + encodeURIComponent(mtParam) : "")
+                        + (tdpminParam > 0 ? "&tdpmin=" + encodeURIComponent(tdpminParam) : "")
+                        + (tdpmaxParam < 2000 ? "&tdpmax=" + encodeURIComponent(tdpmaxParam) : "")
+                        + (itfParam != "" ? "&itf=" + encodeURIComponent(itfParam) : "")
+                        + (mmParam > 0 ? "&mm=" + encodeURIComponent(mmParam) : "");
+                    break;
+                case 4:
+                    str += (manuParam != "" ? "&manu=" + encodeURIComponent(manuParam) : "")
+                        + (mtParam != "" ? "&mt=" + encodeURIComponent(mtParam) : "")
+                        + (mmParam > 0 ? "&mm=" + encodeURIComponent(mmParam) : "")
+                        + (mmmParam > 0 ? "&mmm=" + encodeURIComponent(mmmParam) : "");
+                    break;
+                case 5:
+                    str += (manuParam != "" ? "&manu=" + encodeURIComponent(manuParam) : "")
+                        + (psufParam != "" ? "&psuf=" + encodeURIComponent(psufParam) : "")
+                        + (psuwParam > 0 ? "&psuw=" + encodeURIComponent(psuwParam) : "");
+                    break;
+                case 6:
+                    str += (manuParam != "" ? "&manu=" + encodeURIComponent(manuParam) : "")
+                        + (stParam != "" ? "&st=" + encodeURIComponent(stParam) : "")
+                        + (ffParam != "" ? "&ff=" + encodeURIComponent(ffParam) : "")
+                        + (itfParam != "" ? "&itf=" + encodeURIComponent(itfParam) : "")
+                        + (mmParam > 0 ? "&mm=" + encodeURIComponent(mmParam) : "");
+                    break;
+                case 7:
+                    str += (manuParam != "" ? "&manu=" + encodeURIComponent(manuParam) : "");
+                    break;
+                case 8:
+                    str += (manuParam != "" ? "&manu=" + encodeURIComponent(manuParam) : "")
+                        + (ffParam != "" ? "&ff=" + encodeURIComponent(ffParam) : "")
+                        + (psufParam != "" ? "&psuf=" + encodeURIComponent(psufParam) : "");
+                    break;
+                case 9:
+                    str += (manuParam != "" ? "&manu=" + encodeURIComponent(manuParam) : "")
+                        + (rsParam != "" ? "&rs=" + encodeURIComponent(rsParam) : "")
+                        + (ssParam > 0 ? "&ss=" + encodeURIComponent(ssParam) : "");
                     break;
                 default:
                     break;
             }
+            //console.log(str);
             getAdvancedSearch(cateid, str, cateChanged);
             return str;
         }

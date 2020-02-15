@@ -36,4 +36,5 @@ public interface ProductFacadeLocal {
     
     List<Integer> getIntegerList(String attr);
     
+    List<Double> getDoubleList(String attr);
 }

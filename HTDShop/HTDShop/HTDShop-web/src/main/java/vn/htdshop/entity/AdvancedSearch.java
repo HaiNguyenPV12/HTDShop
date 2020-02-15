@@ -9,6 +9,7 @@ public class AdvancedSearch {
 
     private Integer category;
     private String socket;
+    private String chipset;
     private String memoryType;
     private String formFactor;
     private Integer tdpmin;
@@ -25,12 +26,21 @@ public class AdvancedSearch {
     private String pSUFormFactor;
     private Double screenSize;
     private String resolution;
+    private String manufacturer;
 
     public AdvancedSearch() {
 
     }
 
     public AdvancedSearch(Map<String, String> params) {
+
+        // Manufacturer
+        if (params.get("manu") == null) {
+            this.manufacturer = "";
+        } else {
+            this.manufacturer = params.get("manu");
+        }
+
         // Category
         if (params.get("cateid") == null) {
             this.category = 0;
@@ -47,6 +57,13 @@ public class AdvancedSearch {
             this.socket = "";
         } else {
             this.socket = params.get("sk");
+        }
+
+        // Chipset
+        if (params.get("cs") == null) {
+            this.chipset = "";
+        } else {
+            this.chipset = params.get("cs");
         }
 
         // Memory Type
@@ -127,7 +144,7 @@ public class AdvancedSearch {
             try {
                 this.core = Integer.parseInt(params.get("co"));
             } catch (Exception e) {
-                //e.printStackTrace();
+                // e.printStackTrace();
                 this.core = 0;
             }
         }
@@ -196,6 +213,22 @@ public class AdvancedSearch {
         } else {
             this.resolution = params.get("rs");
         }
+    }
+
+    public String getChipset() {
+        return chipset;
+    }
+
+    public void setChipset(String chipset) {
+        this.chipset = chipset;
+    }
+
+    public String getManufacturer() {
+        return manufacturer;
+    }
+
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
     }
 
     /**
@@ -421,7 +454,6 @@ public class AdvancedSearch {
     public void setResolution(String resolution) {
         this.resolution = resolution;
     }
-
 
     /**
      * @return Integer return the tdpmin
