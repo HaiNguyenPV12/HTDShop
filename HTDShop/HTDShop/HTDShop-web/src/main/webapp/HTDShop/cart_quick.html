@@ -1,13 +1,13 @@
 <ul class="cart-dropdown">
-    <li class="single-product-cart" th:each="c : ${cart}" th:with="product = ${shopSv.getProduct(c.id)}"
-        th:if="${cart != null}">
+    <li class="single-product-cart" th:each="c, ite: ${cart}" th:with="product = ${shopSv.getProduct(c.id)}"
+        th:if="${cart != null && ite.index lt 7}">
         <div class="cart-img">
             <a th:href="@{/product(id=${c.id})}">
                 <img th:if="${product.productImageCollection.size() > 0}"
                     th:src="@{/images/__${product.productImageCollection.?[mainImage==true][0].imagePath}__}" alt=""
-                    style="width: 5rem;height: 100%;object-fit: contain;">
+                    style="width: 3rem;height: 100%;object-fit: contain;">
                 <img th:if="${product.productImageCollection.size() == 0}" th:src="@{/images/noimage.png}" alt=""
-                    style="width: 5rem;height: 100%;object-fit: contain;">
+                    style="width: 3rem;height: 100%;object-fit: contain;">
             </a>
         </div>
         <div class="cart-title">
@@ -27,10 +27,14 @@
         </div>
     </li>
 
+    <th:block th:if="${cart != null && cart.size() > 7}">
+        and more... (click VIEW CART to see all)
+    </th:block>
+
     <th:block th:if="${cart == null || cart.size() == 0}">
         No items
     </th:block>
-    <li class="cart-space">
+    <li class="cart-space mt-2">
         <div class="cart-sub">
             <h4>Subtotal</h4>
         </div>

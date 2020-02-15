@@ -449,8 +449,8 @@
 .single-product-cart {
     border-bottom: 1px solid #f6f6f6;
     display: flex;
-    margin-bottom: 20px;
-    padding-bottom: 20px;
+    margin-bottom: 5px;
+    padding-bottom: 5px;
 }
 .single-product-cart:last-child {
     border-bottom: 0px solid #f6f6f6;
@@ -463,7 +463,7 @@
     justify-content: flex-end;
 }
 .cart-title {
-    margin: 19px 0 0 15px;
+    margin: 5px 0 0 5px;
 }
 .cart-title h5,
 .cart-title h6,

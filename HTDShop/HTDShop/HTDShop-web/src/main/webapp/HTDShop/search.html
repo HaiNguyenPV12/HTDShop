@@ -81,6 +81,16 @@
                                 </div>
                             </div>
 
+                            <div class="sidebar-widget mb-40">
+                                <div class="d-flex mb-2">
+                                    <button type="button" id="filter" class="py-2" style="width:100%">Filter</button>
+                                </div>
+                                <div class="d-flex">
+                                    <button type="button" id="resetFilter" class="py-2" style="width:100%">Reset all
+                                        filter</button>
+                                </div>
+                            </div>
+
                             <div class="sidebar-widget mb-5">
                                 <h3 class="sidebar-title">Categories</h3>
                                 <div class="sidebar-categories">
@@ -116,21 +126,11 @@
                                 </div>
                             </div>
 
-                            <div class="sidebar-widget mb-40">
-                                <div class="d-flex mb-2">
-                                    <button type="button" id="filter" class="py-2" style="width:100%">Filter</button>
-                                </div>
-                                <div class="d-flex">
-                                    <button type="button" id="resetFilter" class="py-2" style="width:100%">Reset all
-                                        filter</button>
-                                </div>
-                            </div>
+
 
                         </div>
                     </div>
                     <div class="col-lg-9 product-list">
-
-
                         <div class="shop-product-wrapper res-xl res-xl-btn product-list2">
                             <div class="shop-bar-area">
                                 <div class="shop-bar pb-60">
@@ -142,15 +142,15 @@
                                             <label>Sort By : </label>
                                             <select name="psort" id="psort" style="width: auto;">
                                                 <option value="default"
-                                                    th:selected="${param.sort==null || param.sort.equals('default')}">
+                                                    th:selected="${param.sort==null || param.sort[0].equals('default')}">
                                                     Default (Newest first)
                                                 </option>
                                                 <option value="priceasc"
-                                                    th:selected="${param.sort!=null && param.sort.equals('priceasc')}">
+                                                    th:selected="${param.sort!=null && param.sort[0].equals('priceasc')}">
                                                     Price low -> high
                                                 </option>
                                                 <option value="pricedesc"
-                                                    th:selected="${param.sort!=null && param.sort.equals('pricedesc')}">
+                                                    th:selected="${param.sort!=null && param.sort[0].equals('pricedesc')}">
                                                     Price high -> low
                                                 </option>
                                             </select>
@@ -288,12 +288,12 @@
         doSearch();
 
         $("#category").on("change", function () {
-            doSearch(null, null, true);
+            doSearch(1, null, true);
         });
 
         $("#searchKeyword").on("submit", function (e) {
             e.preventDefault();
-            doSearch();
+            doSearch(1, null);
         });
 
         $("#searchPrice").on("submit", function (e) {
@@ -305,7 +305,7 @@
         });
 
         $("#filter").on("click", function () {
-            doSearch(1, "default", null);
+            doSearch(1, null, null);
         });
 
         $("#resetFilter").on("click", function () {
@@ -315,10 +315,6 @@
             $("#psort").val("default");
             $("#category").val(0).trigger("change");
 
-        });
-
-        $("#psort").on("change", function () {
-            doSearch();
         });
 
 
@@ -332,7 +328,7 @@
             var kParam = $("#keyword").val().trim();
             var cParam = /*[[${param.category!=null? param.category : 0 }]]*/'';
             var styleParam = /*[[${param.style!=null? param.style : '' }]]*/"";
-            var pageParam = 1;
+            var pageParam = /*[[${param.page!=null? param.page : 1 }]]*/1;
             var fromParam = $("#from").val();
             var toParam = $("#to").val();
             var sortParam = /*[[${param.sort!=null?param.sort:'default'}]]*/"default";
@@ -400,11 +396,11 @@
 
             // Price filter
             if (!$("#searchPrice")[0].checkValidity()) {
-                $("#tdpmin").val(0);
-                $("#tdpmax").val(2000);
+                $("#from").val(0);
+                $("#to").val(2000);
             }
             var pricemin = +$("#from").val() || 0;
-            var pricemax = +$("#from").val() || 10000;
+            var pricemax = +$("#to").val() || 10000;
             if (pricemin > pricemax) {
                 $("#from").val(0);
             }
