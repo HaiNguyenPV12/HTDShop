@@ -30,14 +30,29 @@
     <link th:href="@{/resources/Plugins/toastr/toastr.min.css}" rel="stylesheet">
     <script th:src="@{/resources/Scripts/vendor/modernizr-2.8.3.min.js}"></script>
     <style>
-        .bg-purple{
+        .bg-purple {
             background: #9628f08c;
             color: rgb(20, 20, 20) !important;
         }
-        .bg-purple-2{
+
+        .bg-purple-2 {
             background: #6611acef;
-            color: white ;
+            color: white;
         }
+
+        .header-bottom {
+            background-image: url("[[@{/images/logoback.png}]]");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+        }
+
+        .breadcrumb-area {
+            background-image: linear-gradient(141deg, #7906d88c 0%, #fff 51%, #7906d88c 75%);
+            border: 2px solid #868e96;
+        }
+
+
     </style>
     <th:block layout:fragment="additionalCss">
 
@@ -77,11 +92,12 @@
             <div class="header-bottom-wrapper pr-200 pl-200">
                 <div class="logo-3">
                     <a th:href="@{/}">
-                        <img th:src="@{/resources/img/logo.png}" alt="HTD LOGO" style="max-height: 5rem;">
+                        <img th:src="@{/resources/img/logo.png}" alt="HTD LOGO"
+                            style="max-height: 5rem;margin-left:3rem;" class="rounded">
                     </a>
                 </div>
                 <form th:action="@{/search}" method="get">
-                    <div class="categories-search-wrapper categories-search-wrapper2">
+                    <div class="categories-search-wrapper categories-search-wrapper2 mt-3">
                         <div class="all-categories">
                             <div class="select-wrapper">
                                 <select class="select" name="category">
@@ -102,7 +118,7 @@
                         </div>
                     </div>
                 </form>
-                <div class="header-cart-3">
+                <div class="header-cart-3 my-auto">
                     <a href="#">
                         <i class="ti-shopping-cart"></i>My Cart
                         <span id="cartSize"></span>

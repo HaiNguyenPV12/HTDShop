@@ -147,6 +147,11 @@ public class shopSearchController {
             result = result.stream().filter(p -> p.getScreenSize() >= asearch.getScreenSize())
                     .collect(Collectors.toList());
         }
+        if (asearch.getTdpmin() > 0 || asearch.getTdpmax() < 2000) {
+            result = result.stream().filter(p -> p.getTdp() >= asearch.getTdpmin() && p.getTdp() <= asearch.getTdpmax())
+                    .collect(Collectors.toList());
+        }
+        
         totalResult = result.size();
 
         // Sort
