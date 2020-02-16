@@ -18,7 +18,8 @@ import vn.htdshop.sb.StaffFacadeLocal;
  * managerService
  */
 @Service("managerService")
- public class ManagerService {
+public class ManagerService {
+
     @Autowired
     HttpSession session;
 
@@ -27,24 +28,26 @@ import vn.htdshop.sb.StaffFacadeLocal;
 
     @EJB(mappedName = "StaffFacade")
     StaffFacadeLocal staffFacade;
-    
+
     public Boolean checkLogin() {
         if (session.getAttribute("loggedInStaff") != null) {
             return true;
         } else {
-            String cookie = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("loggedInStaff"))
-                    .findFirst().map(Cookie::getValue).orElse(null);
-            if (cookie != null) {
-                Staff staff = staffFacade.find(cookie);
-                if (staff != null) {
-                    session.setAttribute("loggedInStaff", staff);
-                    return true;
+            if (request.getCookies() != null) {
+                String cookie = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("loggedInStaff"))
+                        .findFirst().map(Cookie::getValue).orElse(null);
+                if (cookie != null) {
+                    Staff staff = staffFacade.find(cookie);
+                    if (staff != null) {
+                        session.setAttribute("loggedInStaff", staff);
+                        return true;
+                    }
                 }
             }
         }
         return false;
     }
-    
+
     public Boolean checkLoginWithRole(String role) {
         if (checkLogin()) {
             String user = ((Staff) session.getAttribute("loggedInStaff")).getUsername();
@@ -63,5 +66,5 @@ import vn.htdshop.sb.StaffFacadeLocal;
         }
         return null;
     }
-    
+
 }

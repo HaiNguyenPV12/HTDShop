@@ -69,6 +69,7 @@ public class shopIndexController {
 
         session.setAttribute("loggedInCustomer", c);
         Cookie cookie = new Cookie("loggedInCustomer", "" + c.getId());
+        cookie.setMaxAge(60*60*24*7*4);
         response.addCookie(cookie);
         return "redirect:";
     }

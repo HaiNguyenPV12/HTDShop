@@ -110,6 +110,7 @@ public class managerIndexController {
                 session.setAttribute("loggedInStaff", result);
                 if (remember != null) {
                     Cookie cookie = new Cookie("loggedInStaff", staff.getUsername());
+                    cookie.setMaxAge(60*60*24*7*4);
                     response.addCookie(cookie);
                 }
 

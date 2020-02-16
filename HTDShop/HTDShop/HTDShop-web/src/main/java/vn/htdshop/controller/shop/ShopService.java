@@ -29,6 +29,7 @@ import vn.htdshop.sb.PromotionFacadeLocal;
  */
 @Service("shopService")
 public class ShopService {
+
     @EJB(mappedName = "CustomerFacade")
     CustomerFacadeLocal customerFacade;
 
@@ -81,24 +82,22 @@ public class ShopService {
     }
 
     public boolean checkLogin() {
-        // System.out.println("Service called.");
         Boolean result = false;
         if (session.getAttribute("loggedInCustomer") != null) {
-            // System.out.println("Have session.");
             result = true;
         } else {
-            // System.out.println("No session.");
-            String cookie = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("loggedInCustomer"))
-                    .findFirst().map(Cookie::getValue).orElse(null);
-            if (cookie != null) {
-                Customer customer = customerFacade.find(Integer.parseInt(cookie));
-                // System.out.println("Have cookie.");
-                if (customer != null) {
-                    session.setAttribute("loggedInCustomer", customer);
-                    result = true;
+            if (request.getCookies() != null) {
+                String cookie = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("loggedInCustomer"))
+                        .findFirst().map(Cookie::getValue).orElse(null);
+                if (cookie != null) {
+                    Customer customer = customerFacade.find(Integer.parseInt(cookie));
+                    if (customer != null) {
+                        session.setAttribute("loggedInCustomer", customer);
+                        result = true;
+                    }
                 }
             }
-            // System.out.println("No cookie.");
+
         }
         if (session.getAttribute("categories") == null) {
             session.setAttribute("categories", categoryFacade.findAll());
@@ -117,7 +116,7 @@ public class ShopService {
         List<String> result = new ArrayList<>();
 
         if (attr.equals("sk")) {
-            
+
         }
         return result;
     }
