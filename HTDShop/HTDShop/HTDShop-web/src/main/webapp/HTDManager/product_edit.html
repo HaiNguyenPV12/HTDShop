@@ -5,8 +5,10 @@
 <head>
     <title>HTD Manager - Update product</title>
     <th:block layout:fragment="additionalCss">
-        <link rel="stylesheet" th:href="@{/manager_resources/plugins/summernote/summernote-lite.css}"/>
-    </th:block> 
+        <link rel="stylesheet" th:href="@{/manager_resources/plugins/summernote/summernote-lite.css}" />
+        <link rel="stylesheet" th:href="@{/manager_resources/plugins/jquery-ui/jquery-ui.min.css}" />
+        <link rel="stylesheet" th:href="@{/manager_resources/plugins/jquery-ui/jquery-ui.theme.min.css}" />
+    </th:block>
     <style>
         /* HIDE RADIO */
         .uploadimg>[type=radio] {
@@ -80,8 +82,10 @@
     </div>
     <th:block layout:fragment="additionalScript">
         <script th:src="@{/manager_resources/plugins/summernote/summernote-lite.min.js}"></script>
+        <script th:src="@{/manager_resources/plugins/jquery-ui/jquery-ui.min.js}"></script>
     </th:block>
-    <script layout:fragment="script" th:inline="none">
+    <script layout:fragment="script" th:inline="javascript">
+        /*<![CDATA[*/
         $("#btnUploadImage").on("change", function () {
             if (this.files && this.files[0]) {
                 if (this.files.length > 10) {
@@ -107,7 +111,7 @@
                 $("#uploadimg").html("");
             }
         });
-        
+
         //Initialize Select2 Elements
         $('.select2').select2();
 
@@ -116,7 +120,35 @@
             theme: 'bootstrap4'
         });
 
-        $('.textarea').summernote({height: 150});
+        $('.textarea').summernote({ height: 150 });
+
+        $("input.autocomplete").each(function (i, e) {
+            var attr = $(this).attr("id");
+            var cate = $(this).attr("auto-for");
+            var searchUrl = /*[[@{/manager/product/autolist}]]*/'';
+
+            if (attr == "manufacturer") {
+                attr = "manu";
+            }
+            searchUrl += "?attr=" + attr + "&cate=" + cate;
+            var data = $.ajax({
+                url: searchUrl,
+                method: 'POST',
+                success: function (result) {
+                    return result;
+                }
+            });
+
+            $(this).autocomplete({
+                source: function (request, response) {
+                    $.post(searchUrl, request, response);
+                },
+                minLength: 0
+            }).focus(function () {
+                $(this).data("uiAutocomplete").search($(this).val());
+            });
+        });
+        /*]]>*/
     </script>
 </body>
 

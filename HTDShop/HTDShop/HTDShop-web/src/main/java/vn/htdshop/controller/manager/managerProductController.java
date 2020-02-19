@@ -276,9 +276,43 @@ public class managerProductController {
             return redirectProductHome;
         }
         // Continue if everything is ok
+        String cateName = "";
+        switch (p.getCategory().getId()) {
+            case 1:
+                cateName = "Cpu";
+                break;
+            case 2:
+                cateName = "Motherboard";
+                break;
+            case 3:
+                cateName = "Gpu";
+                break;
+            case 4:
+                cateName = "Memory";
+                break;
+            case 5:
+                cateName = "Psu";
+                break;
+            case 6:
+                cateName = "Storage";
+                break;
+            case 7:
+                cateName = "CpuCooler";
+                break;
+            case 8:
+                cateName = "Case";
+                break;
+            case 9:
+                cateName = "Monitor";
+                break;
+            default:
+                break;
+        }
 
         // Prepare product model
         model.addAttribute("product", p);
+        model.asMap().put("cateName", cateName);
+
         // Prepare form url for form submit
         // model.addAttribute("formUrl", "doEdit" + category);
         model.addAttribute("formUrl", "doEdit");
@@ -302,8 +336,8 @@ public class managerProductController {
 
     // ==== PRODUCT EDIT - PROCESS ==== \\
     @RequestMapping(value = "doEdit", method = RequestMethod.POST)
-    public String doEditCPU(@Valid @ModelAttribute("product") Product product, BindingResult error, HttpSession session,
-            Model model, @RequestParam(value = "uploadimg", required = false) MultipartFile[] uploadimg,
+    public String doEditCPU(@Valid @ModelAttribute("product") Product product, BindingResult error, Model model,
+            @RequestParam(value = "uploadimg", required = false) MultipartFile[] uploadimg,
             RedirectAttributes redirect) {
         if (!managerService.checkLoginWithRole("product_edit")) {
             return redirectProductHome;
@@ -319,6 +353,7 @@ public class managerProductController {
         }
         // If there is no error
         if (!error.hasErrors()) {
+            product.setCategory(new Category(CateId));
             productFacade.edit(product);
             // Check if upload img exists then replace images
             if (uploadimg != null && uploadimg[0].getSize() > 0) {
