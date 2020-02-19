@@ -353,7 +353,6 @@ public class managerProductController {
         }
         // If there is no error
         if (!error.hasErrors()) {
-            product.setCategory(new Category(CateId));
             productFacade.edit(product);
             // Check if upload img exists then replace images
             if (uploadimg != null && uploadimg[0].getSize() > 0) {
