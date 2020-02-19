@@ -103,9 +103,9 @@
                         <label for="manufacturer" class="col-sm-3 col-form-label text-center">Manufacturer<i
                             class="text-danger">*</i></label>
                         <div class="col-sm-9">
-                            <input class="form-control" id="manufacturer" placeholder="Manufacturer"
+                            <input class="form-control autocomplete" id="manufacturer" placeholder="Manufacturer"
                                     th:field="*{manufacturer}"
-                                    th:classappend="${(#fields.hasErrors('manufacturer')?'is-invalid':'') + (submited != null and !#fields.hasErrors('manufacturer')?'is-valid':'')}" required/>
+                                    th:classappend="${(#fields.hasErrors('manufacturer')?'is-invalid':'') + (submited != null and !#fields.hasErrors('manufacturer')?'is-valid':'')}" required th:auto-for="${cateName}"/>
                         </div>
                         <div class="col-sm-3"></div>
                         <div class="col-sm-9" th:if="${#fields.hasErrors('manufacturer')}">
@@ -290,8 +290,8 @@
                         <label for="series" class="col-sm-3 col-form-label text-right">Series<i
                             class="text-danger">*</i></label>
                         <div class="col-sm-9">
-                            <input class="form-control" id="series" placeholder="Series"  th:field="*{series}"
-                            th:classappend="${(#fields.hasErrors('series')?'is-invalid':'') + (submited != null and !#fields.hasErrors('series')?'is-valid':'')}" required/>
+                            <input class="form-control autocomplete" id="series" placeholder="Series"  th:field="*{series}"
+                            th:classappend="${(#fields.hasErrors('series')?'is-invalid':'') + (submited != null and !#fields.hasErrors('series')?'is-valid':'')}" required auto-for=""/>
                         </div>
                         <div class="col-sm-3"></div>
                         <div class="col-sm-9" th:if="${#fields.hasErrors('series')}">
@@ -304,8 +304,8 @@
                         <label for="socket" class="col-sm-3 col-form-label text-right">Socket<i
                             class="text-danger">*</i></label>
                         <div class="col-sm-9">
-                            <input class="form-control" id="socket" placeholder="Socket"  th:field="*{socket}"
-                            th:classappend="${(#fields.hasErrors('socket')?'is-invalid':'') + (submited != null and !#fields.hasErrors('socket')?'is-valid':'')}" required/>
+                            <input class="form-control autocomplete" id="socket" placeholder="Socket"  th:field="*{socket}"
+                            th:classappend="${(#fields.hasErrors('socket')?'is-invalid':'') + (submited != null and !#fields.hasErrors('socket')?'is-valid':'')}" required th:auto-for="${cateName}"/>
                         </div>
                         <div class="col-sm-3"></div>
                         <div class="col-sm-9" th:if="${#fields.hasErrors('socket')}">
@@ -398,8 +398,8 @@
                         <label for="socket" class="col-sm-3 col-form-label text-right">Socket<i
                             class="text-danger">*</i></label>
                         <div class="col-sm-9">
-                            <input class="form-control" id="socket" placeholder="Socket"  th:field="*{socket}"
-                            th:classappend="${(#fields.hasErrors('socket')?'is-invalid':'') + (submited != null and !#fields.hasErrors('socket')?'is-valid':'')}" required/>
+                            <input class="form-control autocomplete" id="socket" placeholder="Socket"  th:field="*{socket}"
+                            th:classappend="${(#fields.hasErrors('socket')?'is-invalid':'') + (submited != null and !#fields.hasErrors('socket')?'is-valid':'')}" required th:auto-for="${cateName}"/>
                         </div>
                         <div class="col-sm-3"></div>
                         <div class="col-sm-9" th:if="${#fields.hasErrors('socket')}">
@@ -412,8 +412,8 @@
                         <label for="chipset" class="col-sm-3 col-form-label text-right">Chipset<i
                             class="text-danger">*</i></label>
                         <div class="col-sm-9">
-                            <input class="form-control" id="chipset" placeholder="Chipset"  th:field="*{chipset}"
-                            th:classappend="${(#fields.hasErrors('chipset')?'is-invalid':'') + (submited != null and !#fields.hasErrors('chipset')?'is-valid':'')}"/>
+                            <input class="form-control autocomplete" id="chipset" placeholder="Chipset"  th:field="*{chipset}"
+                            th:classappend="${(#fields.hasErrors('chipset')?'is-invalid':'') + (submited != null and !#fields.hasErrors('chipset')?'is-valid':'')}" th:auto-for="${cateName}"/>
                         </div>
                         <div class="col-sm-3"></div>
                         <div class="col-sm-9" th:if="${#fields.hasErrors('chipset')}">
@@ -426,8 +426,8 @@
                         <label for="formFactor" class="col-sm-3 col-form-label text-right">Form Factor<i
                             class="text-danger">*</i></label>
                         <div class="col-sm-9">
-                            <input class="form-control" id="formFactor" placeholder="Form Factor"  th:field="*{formFactor}"
-                            th:classappend="${(#fields.hasErrors('formFactor')?'is-invalid':'') + (submited != null and !#fields.hasErrors('formFactor')?'is-valid':'')}"/>
+                            <input class="form-control autocomplete" id="formFactor" placeholder="Form Factor"  th:field="*{formFactor}"
+                            th:classappend="${(#fields.hasErrors('formFactor')?'is-invalid':'') + (submited != null and !#fields.hasErrors('formFactor')?'is-valid':'')}" th:auto-for="${cateName}"/>
                         </div>
                         <div class="col-sm-3"></div>
                         <div class="col-sm-9" th:if="${#fields.hasErrors('formFactor')}">
@@ -440,8 +440,8 @@
                         <label for="memoryType" class="col-sm-3 col-form-label text-right">Memory Type<i
                             class="text-danger">*</i></label>
                         <div class="col-sm-3">
-                            <input class="form-control" id="memoryType" placeholder="Memory Type"  th:field="*{memoryType}"
-                            th:classappend="${(#fields.hasErrors('memoryType')?'is-invalid':'') + (submited != null and !#fields.hasErrors('memoryType')?'is-valid':'')}" required/>
+                            <input class="form-control autocomplete" id="memoryType" placeholder="Memory Type"  th:field="*{memoryType}"
+                            th:classappend="${(#fields.hasErrors('memoryType')?'is-invalid':'') + (submited != null and !#fields.hasErrors('memoryType')?'is-valid':'')}" required th:auto-for="${cateName}"/>
                         </div>
 
                         <label for="memorySlot" class="col-sm-3 col-form-label text-right">Memory Slots<i
@@ -490,8 +490,8 @@
                         <label for="chipset" class="col-sm-3 col-form-label text-right">Chipset<i
                             class="text-danger">*</i></label>
                         <div class="col-sm-9">
-                            <input class="form-control" id="chipset" placeholder="Chipset"  th:field="*{chipset}"
-                            th:classappend="${(#fields.hasErrors('chipset')?'is-invalid':'') + (submited != null and !#fields.hasErrors('chipset')?'is-valid':'')}"/>
+                            <input class="form-control autocomplete" id="chipset" placeholder="Chipset"  th:field="*{chipset}"
+                            th:classappend="${(#fields.hasErrors('chipset')?'is-invalid':'') + (submited != null and !#fields.hasErrors('chipset')?'is-valid':'')}" th:auto-for="${cateName}"/>
                         </div>
                         <div class="col-sm-3"></div>
                         <div class="col-sm-9" th:if="${#fields.hasErrors('chipset')}">
@@ -504,8 +504,8 @@
                         <label for="interface1" class="col-sm-3 col-form-label text-right">Interface<i
                             class="text-danger">*</i></label>
                         <div class="col-sm-9">
-                            <input class="form-control" id="interface1" placeholder="Interface"  th:field="*{interface1}"
-                            th:classappend="${(#fields.hasErrors('interface1')?'is-invalid':'') + (submited != null and !#fields.hasErrors('interface1')?'is-valid':'')}" required/>
+                            <input class="form-control autocomplete" id="interface1" placeholder="Interface"  th:field="*{interface1}"
+                            th:classappend="${(#fields.hasErrors('interface1')?'is-invalid':'') + (submited != null and !#fields.hasErrors('interface1')?'is-valid':'')}" required th:auto-for="${cateName}"/>
                         </div>
                         <div class="col-sm-3"></div>
                         <div class="col-sm-9" th:if="${#fields.hasErrors('interface1')}">
@@ -535,8 +535,8 @@
                         <label for="memoryType" class="col-sm-3 col-form-label text-right">Memory Type<i
                             class="text-danger">*</i></label>
                         <div class="col-sm-3">
-                            <input class="form-control" id="memoryType" placeholder="Memory Type"  th:field="*{memoryType}"
-                            th:classappend="${(#fields.hasErrors('memoryType')?'is-invalid':'') + (submited != null and !#fields.hasErrors('memoryType')?'is-valid':'')}" required/>
+                            <input class="form-control autocomplete" id="memoryType" placeholder="Memory Type"  th:field="*{memoryType}"
+                            th:classappend="${(#fields.hasErrors('memoryType')?'is-invalid':'') + (submited != null and !#fields.hasErrors('memoryType')?'is-valid':'')}" required th:auto-for="${cateName}"/>
                         </div>
 
                         <label for="memory" class="col-sm-3 col-form-label text-right">Memory<i
@@ -588,8 +588,8 @@
                         <label for="memoryType" class="col-sm-3 col-form-label text-right">Memory Type<i
                             class="text-danger">*</i></label>
                         <div class="col-sm-3">
-                            <input class="form-control" id="memoryType" placeholder="Memory Type"  th:field="*{memoryType}"
-                            th:classappend="${(#fields.hasErrors('memoryType')?'is-invalid':'') + (submited != null and !#fields.hasErrors('memoryType')?'is-valid':'')}" required/>
+                            <input class="form-control autocomplete" id="memoryType" placeholder="Memory Type"  th:field="*{memoryType}"
+                            th:classappend="${(#fields.hasErrors('memoryType')?'is-invalid':'') + (submited != null and !#fields.hasErrors('memoryType')?'is-valid':'')}" required th:auto-for="${cateName}"/>
                         </div>
 
                         <label for="memory" class="col-sm-3 col-form-label text-right">Capacity<i
@@ -656,13 +656,13 @@
                         <label for="formFactor" class="col-sm-3 col-form-label text-right">PSU Form Factor<i
                             class="text-danger">*</i></label>
                         <div class="col-sm-9">
-                            <input class="form-control" id="pSUformFactor" placeholder="PSU Form Factor"  th:field="*{pSUformFactor}"
-                            th:classappend="${(#fields.hasErrors('pSUformFactor')?'is-invalid':'') + (submited != null and !#fields.hasErrors('pSUformFactor')?'is-valid':'')}"/>
+                            <input class="form-control autocomplete" id="pSUFormFactor" placeholder="PSU Form Factor"  th:field="*{pSUFormFactor}"
+                            th:classappend="${(#fields.hasErrors('pSUFormFactor')?'is-invalid':'') + (submited != null and !#fields.hasErrors('pSUFormFactor')?'is-valid':'')}" th:auto-for="${cateName}"/>
                         </div>
                         <div class="col-sm-3"></div>
-                        <div class="col-sm-9" th:if="${#fields.hasErrors('pSUformFactor')}">
+                        <div class="col-sm-9" th:if="${#fields.hasErrors('pSUFormFactor')}">
                             <ul class="text-danger">
-                                <li th:each="err : ${#fields.errors('pSUformFactor')}" th:text="${err}">Name Error</li>
+                                <li th:each="err : ${#fields.errors('pSUFormFactor')}" th:text="${err}">Name Error</li>
                             </ul>
                         </div>
                     </div>
@@ -709,8 +709,8 @@
                         <label for="interface1" class="col-sm-3 col-form-label text-right">Interface<i
                             class="text-danger">*</i></label>
                         <div class="col-sm-9">
-                            <input class="form-control" id="interface1" placeholder="Interface"  th:field="*{interface1}"
-                            th:classappend="${(#fields.hasErrors('interface1')?'is-invalid':'') + (submited != null and !#fields.hasErrors('interface1')?'is-valid':'')}" required/>
+                            <input class="form-control autocomplete" id="interface1" placeholder="Interface"  th:field="*{interface1}"
+                            th:classappend="${(#fields.hasErrors('interface1')?'is-invalid':'') + (submited != null and !#fields.hasErrors('interface1')?'is-valid':'')}" required th:auto-for="${cateName}"/>
                         </div>
                         <div class="col-sm-3"></div>
                         <div class="col-sm-9" th:if="${#fields.hasErrors('interface1')}">
@@ -723,8 +723,8 @@
                         <label for="formFactor" class="col-sm-3 col-form-label text-right">Form Factor<i
                             class="text-danger">*</i></label>
                         <div class="col-sm-9">
-                            <input class="form-control" id="formFactor" placeholder="Form Factor"  th:field="*{formFactor}"
-                            th:classappend="${(#fields.hasErrors('formFactor')?'is-invalid':'') + (submited != null and !#fields.hasErrors('formFactor')?'is-valid':'')}"/>
+                            <input class="form-control autocomplete" id="formFactor" placeholder="Form Factor"  th:field="*{formFactor}"
+                            th:classappend="${(#fields.hasErrors('formFactor')?'is-invalid':'') + (submited != null and !#fields.hasErrors('formFactor')?'is-valid':'')}" th:auto-for="${cateName}"/>
                         </div>
                         <div class="col-sm-3"></div>
                         <div class="col-sm-9" th:if="${#fields.hasErrors('formFactor')}">
@@ -737,8 +737,8 @@
                         <label for="storageType" class="col-sm-3 col-form-label text-right">Storage Type<i
                             class="text-danger">*</i></label>
                         <div class="col-sm-3">
-                            <input class="form-control" id="storageType" placeholder="Storage Type"  th:field="*{storageType}"
-                            th:classappend="${(#fields.hasErrors('storageType')?'is-invalid':'') + (submited != null and !#fields.hasErrors('storageType')?'is-valid':'')}" required/>
+                            <input class="form-control autocomplete" id="storageType" placeholder="Storage Type"  th:field="*{storageType}"
+                            th:classappend="${(#fields.hasErrors('storageType')?'is-invalid':'') + (submited != null and !#fields.hasErrors('storageType')?'is-valid':'')}" required th:auto-for="${cateName}"/>
                         </div>
 
                         <label for="memory" class="col-sm-3 col-form-label text-right">Capacity<i
@@ -826,8 +826,8 @@
                         <label for="formFactor" class="col-sm-3 col-form-label text-right">Motherboard's Form Factor<i
                             class="text-danger">*</i></label>
                         <div class="col-sm-9">
-                            <input class="form-control" id="formFactor" placeholder="Form Factor"  th:field="*{formFactor}"
-                            th:classappend="${(#fields.hasErrors('formFactor')?'is-invalid':'') + (submited != null and !#fields.hasErrors('formFactor')?'is-valid':'')}"/>
+                            <input class="form-control autocomplete" id="formFactor" placeholder="Form Factor"  th:field="*{formFactor}"
+                            th:classappend="${(#fields.hasErrors('formFactor')?'is-invalid':'') + (submited != null and !#fields.hasErrors('formFactor')?'is-valid':'')}" th:auto-for="${cateName}"/>
                         </div>
                         <div class="col-sm-3"></div>
                         <div class="col-sm-9" th:if="${#fields.hasErrors('formFactor')}">
@@ -841,8 +841,8 @@
                         <label for="pSUFormFactor" class="col-sm-3 col-form-label text-right">PSU's Form Factor<i
                             class="text-danger">*</i></label>
                         <div class="col-sm-9">
-                            <input class="form-control" id="pSUFormFactor" placeholder="Form Factor"  th:field="*{pSUFormFactor}"
-                            th:classappend="${(#fields.hasErrors('pSUFormFactor')?'is-invalid':'') + (submited != null and !#fields.hasErrors('pSUFormFactor')?'is-valid':'')}"/>
+                            <input class="form-control autocomplete" id="pSUFormFactor" placeholder="Form Factor"  th:field="*{pSUFormFactor}"
+                            th:classappend="${(#fields.hasErrors('pSUFormFactor')?'is-invalid':'') + (submited != null and !#fields.hasErrors('pSUFormFactor')?'is-valid':'')}" th:auto-for="${cateName}"/>
                         </div>
                         <div class="col-sm-3"></div>
                         <div class="col-sm-9" th:if="${#fields.hasErrors('pSUFormFactor')}">
@@ -888,8 +888,8 @@
                         <label for="resolution" class="col-sm-3 col-form-label text-right">Resolution<i
                             class="text-danger">*</i></label>
                         <div class="input-group col-sm-3">
-                            <input class="form-control" id="resolution" placeholder="Resolution"  th:field="*{resolution}"
-                            th:classappend="${(#fields.hasErrors('resolution')?'is-invalid':'') + (submited != null and !#fields.hasErrors('resolution')?'is-valid':'')}" required/>
+                            <input class="form-control autocomplete" id="resolution" placeholder="Resolution"  th:field="*{resolution}"
+                            th:classappend="${(#fields.hasErrors('resolution')?'is-invalid':'') + (submited != null and !#fields.hasErrors('resolution')?'is-valid':'')}" required th:auto-for="${cateName}"/>
                         </div>
 
                         <div class="col-sm-3"></div>

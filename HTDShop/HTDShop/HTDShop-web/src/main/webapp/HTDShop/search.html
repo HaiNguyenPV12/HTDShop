@@ -106,10 +106,6 @@
                                 </div>
                             </div>
 
-                            <div class="sidebar-widget mb-5" id="filters">
-
-                            </div>
-
                             <div class="sidebar-widget mb-5">
                                 <h3 class="sidebar-title">Filter by Price</h3>
                                 <div class="d-flex">
@@ -124,6 +120,12 @@
                                     </form>
                                 </div>
                             </div>
+
+                            <div class="sidebar-widget mb-5" id="filters">
+
+                            </div>
+
+                            
 
 
 
@@ -375,7 +377,7 @@
                             renderPaging(parseInt($("#result").find("#totalPage").val()), pageParam);
                             $("#result").animate({ 'opacity': '1.0' }, 200);
                             $("#searchLabel").html("Search: " + (kParam == "" ? "All with filters" : ("\"" + kParam + "\"")));
-                            history.replaceState('', 'HTD Shop - Search', href);
+                            history.pushState('', 'HTD Shop - Search', href);
                         }
                     });
                 });

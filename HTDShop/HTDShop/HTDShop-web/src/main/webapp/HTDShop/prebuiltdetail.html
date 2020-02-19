@@ -153,13 +153,15 @@
                             <div class="product-details-tab mr-35 product-details-tab2">
                                 <div class="product-details-small nav mr-10 product-details-2" role=tablist
                                     style="display: block;">
-                                    <a class="border border-purple active" th:if="${prebuilt.preBuiltImageCollection.isEmpty()}"
-                                        href="#pro-details1" data-toggle="tab" role="tab" aria-selected="true"
+                                    <a class="border border-purple active"
+                                        th:if="${prebuilt.preBuiltImageCollection.isEmpty()}" href="#pro-details1"
+                                        data-toggle="tab" role="tab" aria-selected="true"
                                         style="height:8rem; display: flex;align-items: center;">
                                         <img th:src="@{/images/noimage.png}" alt=""
                                             style="max-height: 8rem;width: 100%;">
                                     </a>
-                                    <a class="border border-purple" th:each="img,it : ${prebuilt.preBuiltImageCollection}"
+                                    <a class="border border-purple"
+                                        th:each="img,it : ${prebuilt.preBuiltImageCollection}"
                                         th:classappend="${it.index==0?'active':''}"
                                         th:href="${'#pro-details'+(it.index+1)}" data-toggle="tab" role="tab"
                                         th:aria-selected="${it.index==0?'true':'false'}"
@@ -170,7 +172,8 @@
                                     </a>
 
                                 </div>
-                                <div class="border border-purple product-details-large tab-content" style="width: 100%; max-height: 30rem;">
+                                <div class="border border-purple product-details-large tab-content"
+                                    style="width: 100%; max-height: 30rem;">
                                     <div class="tab-pane active show fade"
                                         th:if="${prebuilt.preBuiltImageCollection.isEmpty()}" id="pro-details1"
                                         role="tabpanel" style="text-align: center;">
@@ -410,7 +413,20 @@
         <!-- product area start -->
     </div>
 
-    <script>
+    <script layout:fragment="script">
+        $("#quan").keypress(function (event) {
+            if (event.which == 45 || event.which == 189) {
+                event.preventDefault();
+            }
+        })
+        $("#quan").on("keyup change clear", function () {
+            if (+$(this).val() > +$(this).attr("max")) {
+                $(this).val($(this).attr("max"));
+            }
+            if (+$(this).val() < 1) {
+                $(this).val(1);
+            }
+        });
     </script>
 </body>
 

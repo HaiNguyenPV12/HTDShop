@@ -53,7 +53,7 @@ public class ProductFacade extends AbstractFacade<Product> implements ProductFac
         Query q = null;
         if (attr.equals("socketCpu")) {
             q = em.createNativeQuery("SELECT DISTINCT CAST(Socket AS VARCHAR(MAX)) FROM Product WHERE CateId = 1");
-        } else if (attr.equals("series")) {
+        } else if (attr.equals("series") || attr.equals("seriesCpu")) {
             q = em.createNativeQuery("SELECT DISTINCT Series FROM Product WHERE CateId = 1");
         } else if (attr.equals("manuCpu")) {
             q = em.createNativeQuery("SELECT DISTINCT Manufacturer FROM Product WHERE CateId = 1");
@@ -85,19 +85,19 @@ public class ProductFacade extends AbstractFacade<Product> implements ProductFac
             q = em.createNativeQuery("SELECT DISTINCT MemoryType FROM Product WHERE CateId = 4");
         } else if (attr.equals("formFactorMotherboard")) {
             q = em.createNativeQuery("SELECT DISTINCT FormFactor FROM Product WHERE CateId = 2");
-        } else if (attr.equals("psuFormFactorPsu")) {
+        } else if (attr.equals("psuFormFactorPsu") || attr.equals("pSUFormFactorPsu")) {
             q = em.createNativeQuery("SELECT DISTINCT PSUFormFactor FROM Product WHERE CateId = 5");
         } else if (attr.equals("formFactorStorage")) {
             q = em.createNativeQuery("SELECT DISTINCT FormFactor FROM Product WHERE CateId = 6");
         } else if (attr.equals("formFactorCase")) {
             q = em.createNativeQuery("SELECT DISTINCT FormFactor FROM Product WHERE CateId = 8");
-        } else if (attr.equals("psuFormFactorCase")) {
+        } else if (attr.equals("psuFormFactorCase") || attr.equals("pSUFormFactorCase")) {
             q = em.createNativeQuery("SELECT DISTINCT PSUFormFactor FROM Product WHERE CateId = 8");
         } else if (attr.equals("chipsetGpu")) {
             q = em.createNativeQuery("SELECT DISTINCT Chipset FROM Product WHERE CateId = 3");
-        } else if (attr.equals("interfaceGpu")) {
+        } else if (attr.equals("interfaceGpu") || attr.equals("interface1Gpu")) {
             q = em.createNativeQuery("SELECT DISTINCT Interface FROM Product WHERE CateId = 3");
-        } else if (attr.equals("interfaceStorage")) {
+        } else if (attr.equals("interfaceStorage") || attr.equals("interface1Storage")) {
             q = em.createNativeQuery("SELECT DISTINCT Interface FROM Product WHERE CateId = 6");
         } else if (attr.equals("storageTypeStorage")) {
             q = em.createNativeQuery("SELECT DISTINCT StorageType FROM Product WHERE CateId = 6");

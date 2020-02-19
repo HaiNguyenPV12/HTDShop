@@ -9,16 +9,21 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,6 +31,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -87,11 +93,48 @@ public class managerProductController {
         }
 
         // Pass product list to session
-        model.asMap().put("products", productFacade.findAll().stream()
-                .sorted(Comparator.comparingInt(Product::getStatus)).collect(Collectors.toList()));
+        model.asMap().put("products",
+                productFacade.findAll().stream().sorted(Comparator.comparingInt(Product::getStatus))
+                        .sorted(Comparator.comparing(Product::getId, Comparator.reverseOrder()))
+                        .collect(Collectors.toList()));
         // Add indicator attribute for sidemenu highlight
         model.asMap().put("menu", "product");
         return "HTDManager/product";
+    }
+
+    // ==== PRODUCT LIST ==== \\
+    @RequestMapping(value = "list", method = RequestMethod.POST)
+    public @ResponseBody List<ProductView> getList(Model model, HttpServletResponse response) {
+        response.setContentType("application/json");
+        // Check login with role
+        if (!managerService.checkLoginWithRole("product_read")) {
+            return new ArrayList<ProductView>();
+        }
+        List<Product> productList = productFacade.findAll().stream().sorted(Comparator.comparingInt(Product::getStatus))
+                .sorted(Comparator.comparing(Product::getId, Comparator.reverseOrder())).collect(Collectors.toList());
+        List<ProductView> result = new ArrayList<>();
+        for (Product product : productList) {
+            result.add(new ProductView(product));
+        }
+        return result;
+    }
+
+    // ==== PRODUCT LIST ==== \\
+    @RequestMapping(value = "autolist", method = RequestMethod.POST)
+    public @ResponseBody List<String> getAutoList(Model model, HttpServletResponse response,
+            @RequestParam(required = false) Map<String, String> params) {
+        response.setContentType("application/json");
+        // Check login with role
+        if (!managerService.checkLoginWithRole("product_read")) {
+            return new ArrayList<String>();
+        }
+        if (params.get("attr") == null || params.get("cate") == null) {
+            return new ArrayList<String>();
+        }
+
+        List<String> result = new ArrayList<String>();
+        result = productFacade.getStringList(params.get("attr") + params.get("cate"));
+        return result;
     }
 
     // ==== PRODUCT ADD - VIEW ==== \\
@@ -105,11 +148,43 @@ public class managerProductController {
         // Prepare product model
         Category c = new Category();
         Product p = new Product();
-
+        String cateName = "";
         if (cate != null) {
             c.setId(cate);
+            switch (cate) {
+                case 1:
+                    cateName = "Cpu";
+                    break;
+                case 2:
+                    cateName = "Motherboard";
+                    break;
+                case 3:
+                    cateName = "Gpu";
+                    break;
+                case 4:
+                    cateName = "Memory";
+                    break;
+                case 5:
+                    cateName = "Psu";
+                    break;
+                case 6:
+                    cateName = "Storage";
+                    break;
+                case 7:
+                    cateName = "CpuCooler";
+                    break;
+                case 8:
+                    cateName = "Case";
+                    break;
+                case 9:
+                    cateName = "Monitor";
+                    break;
+                default:
+                    break;
+            }
         }
         p.setCategory(c);
+        p.setStatus(1);
         model.addAttribute("product", p);
 
         // Prepare form url for form submit
@@ -123,6 +198,7 @@ public class managerProductController {
 
         // Pass category list to view
         model.asMap().put("categories", categoryFacade.findAll());
+        model.asMap().put("cateName", cateName);
         // Add indicator attribute for sidemenu highlight
         model.asMap().put("menu", "product");
         // Continue to login page

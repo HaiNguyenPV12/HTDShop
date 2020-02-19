@@ -154,8 +154,9 @@
                             <div class="product-details-tab mr-35 product-details-tab2">
                                 <div class="product-details-small nav mr-10 product-details-2" role=tablist
                                     style="display: block;">
-                                    <a class="border border-purple active" th:if="${product.productImageCollection.isEmpty()}"
-                                        href="#pro-details1" data-toggle="tab" role="tab" aria-selected="true"
+                                    <a class="border border-purple active"
+                                        th:if="${product.productImageCollection.isEmpty()}" href="#pro-details1"
+                                        data-toggle="tab" role="tab" aria-selected="true"
                                         style="height:8rem; display: flex;align-items: center;">
                                         <img th:src="@{/images/noimage.png}" alt=""
                                             style="max-height: 8rem;width: 100%;">
@@ -182,7 +183,8 @@
                                         <img src="assets/img/product-details/s8.jpg" alt="">
                                     </a> -->
                                 </div>
-                                <div class="border border-purple product-details-large tab-content" style="width: 100%; max-height: 30rem;">
+                                <div class="border border-purple product-details-large tab-content"
+                                    style="width: 100%; max-height: 30rem;">
                                     <div class="tab-pane active show fade"
                                         th:if="${product.productImageCollection.isEmpty()}" id="pro-details1"
                                         role="tabpanel" style="text-align: center;">
@@ -257,13 +259,14 @@
                                     <span th:if="${product.status == 1 || product.status == 2}"
                                         th:text="${'$'+#numbers.formatDecimal(product.price , 1, 'POINT', 2, 'COMMA')}"></span>
                                 </th:block>
-                                <span th:if="${product.status==3}">Unavailable</span>
-                                <span th:if="${product.status==2}"> - Cooming soon</span>
+                                <span th:if="${product.status == 3}">Unavailable</span>
+                                <span th:if="${product.status == 2}"> - Cooming soon</span>
+                                <span th:if="${product.status == 1 && product.stock == 0}"> - Out of stock</span>
                             </div>
 
                             <div class="quickview-plus-minus" th:if="${product.status==1 && product.stock > 0}">
                                 <div class="cart-plus-minus">
-                                    <input type="text" value="1" name="quan" id="quan" class="cart-plus-minus-box"
+                                    <input type="text" value="1" name="quan" id="quan" class="cart-plus-minus-box" min=1
                                         th:max="${product.stock}">
                                 </div>
                                 <div class="mt-3">
@@ -493,9 +496,25 @@
             </div>
         </div>
         <!-- product area start -->
+
+
+        
     </div>
 
-    <script>
+    <script layout:fragment="script">
+        $("#quan").keypress(function (event) {
+            if (event.which == 45 || event.which == 189) {
+                event.preventDefault();
+            }
+        })
+        $("#quan").on("keyup change clear", function () {
+            if (+$(this).val() > +$(this).attr("max")) {
+                $(this).val($(this).attr("max"));
+            }
+            if (+$(this).val() < 1) {
+                $(this).val(1);
+            }
+        });
     </script>
 </body>
 

@@ -312,7 +312,7 @@
                             renderPaging(parseInt($("#result").find("#totalPage").val()), pageParam);
                             $("#result").animate({ 'opacity': '1.0' }, 200);
                             $("#searchLabel").html("Search Pre-built PC: " + (kParam == "" ? "All with filters" : ("\"" + kParam + "\"")));
-                            history.replaceState('', 'HTD Shop - Search Pre-built PC', href);
+                            history.pushreplaceState('', 'HTD Shop - Search Pre-built PC', href);
                         }
                     });
                 });

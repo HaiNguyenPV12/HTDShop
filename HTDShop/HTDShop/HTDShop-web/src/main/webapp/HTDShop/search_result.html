@@ -39,7 +39,9 @@
                         </th:block>
                     </span>
                     <span th:if="${p.status == 1 && p.stock == 0}">
-                        Out of stock
+                        <th:block th:text="${'$'+#numbers.formatDecimal(p.price, 1, 'POINT', 2, 'COMMA')}"
+                            class="text-muted"></th:block> 
+                        - Out of stock
                     </span>
                     <span th:if="${p.status == 2}">
                         <del th:if="${shopSv.getDiscountPrice(p) lt p.price}"
