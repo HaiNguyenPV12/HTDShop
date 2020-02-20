@@ -8,6 +8,9 @@ package vn.htdshop.sb;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+
 import vn.htdshop.entity.Customer;
 
 /**
@@ -28,5 +31,18 @@ public class CustomerFacade extends AbstractFacade<Customer> implements Customer
     public CustomerFacade() {
         super(Customer.class);
     }
-    
+
+    @Override
+    public Customer checkLogin(String e, String p) {
+        TypedQuery<Customer> query = em.createQuery(
+                "SELECT c FROM Customer c WHERE c.email = :email AND c.password = :password", Customer.class);
+        query.setParameter("email", e);
+        query.setParameter("password", p);
+
+        if (query.getResultList().size() == 0) {
+            return null;
+        }
+        return query.getSingleResult();
+    }
+
 }

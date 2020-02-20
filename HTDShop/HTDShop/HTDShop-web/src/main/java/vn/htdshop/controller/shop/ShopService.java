@@ -1,5 +1,6 @@
 package vn.htdshop.controller.shop;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -13,29 +14,30 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import vn.htdshop.entity.CartItem;
 import vn.htdshop.entity.Customer;
 import vn.htdshop.entity.PreBuilt;
 import vn.htdshop.entity.Product;
 import vn.htdshop.entity.Promotion;
-import vn.htdshop.entity.User;
 import vn.htdshop.sb.CategoryFacadeLocal;
 import vn.htdshop.sb.CustomerFacadeLocal;
+import vn.htdshop.sb.ProductFacadeLocal;
 import vn.htdshop.sb.PromotionFacadeLocal;
-import vn.htdshop.sb.UserFacadeLocal;
 
 /**
  * shopService
  */
 @Service("shopService")
 public class ShopService {
+
     @EJB(mappedName = "CustomerFacade")
     CustomerFacadeLocal customerFacade;
 
     @EJB(mappedName = "PromotionFacade")
     PromotionFacadeLocal promotionFacade;
 
-    @EJB(mappedName = "UserFacade")
-    UserFacadeLocal userFacade;
+    @EJB(mappedName = "ProductFacade")
+    ProductFacadeLocal productFacade;
 
     @EJB(mappedName = "CategoryFacade")
     CategoryFacadeLocal categoryFacade;
@@ -46,25 +48,56 @@ public class ShopService {
     @Autowired
     HttpServletRequest request;
 
-    public boolean checkLogin() {
-        // System.out.println("Service called.");
-        Boolean result = false;
-        if (session.getAttribute("loggedInCustomer") != null) {
-            // System.out.println("Have session.");
-            result = true;
-        } else {
-            // System.out.println("No session.");
-            String cookie = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("loggedInCustomer"))
-                    .findFirst().map(Cookie::getValue).orElse(null);
-            if (cookie != null) {
-                User user = userFacade.find(Integer.parseInt(cookie));
-                // System.out.println("Have cookie.");
-                if (user != null) {
-                    session.setAttribute("loggedInCustomer", user.getCustomerCollection().toArray()[0]);
-                    result = true;
+    public List<CartItem> getCart() {
+        // Compare quantity with product's stock
+        List<CartItem> result = (List<CartItem>) session.getAttribute("cart");
+        if (result != null) {
+            for (CartItem item : result) {
+                Product p = productFacade.find(item.getId());
+                if (item.getQuan() > p.getStock()) {
+                    item.setQuan(p.getStock());
+                }
+                if (p.getStatus() != 1) {
+                    item.setQuan(0);
                 }
             }
-            // System.out.println("No cookie.");
+        }
+        session.setAttribute("cart", result);
+        return result;
+    }
+
+    public Double getCartTotal() {
+        Double result = 0d;
+        if (getCart() != null && getCart().size() > 0) {
+            for (CartItem item : getCart()) {
+                result += (getDiscountPrice(productFacade.find(item.getId())) * item.getQuan());
+            }
+        }
+
+        return result;
+    }
+
+    public Product getProduct(Integer id) {
+        return productFacade.find(id);
+    }
+
+    public boolean checkLogin() {
+        Boolean result = false;
+        if (session.getAttribute("loggedInCustomer") != null) {
+            result = true;
+        } else {
+            if (request.getCookies() != null) {
+                String cookie = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("loggedInCustomer"))
+                        .findFirst().map(Cookie::getValue).orElse(null);
+                if (cookie != null) {
+                    Customer customer = customerFacade.find(Integer.parseInt(cookie));
+                    if (customer != null) {
+                        session.setAttribute("loggedInCustomer", customer);
+                        result = true;
+                    }
+                }
+            }
+
         }
         if (session.getAttribute("categories") == null) {
             session.setAttribute("categories", categoryFacade.findAll());
@@ -77,6 +110,15 @@ public class ShopService {
             return (Customer) session.getAttribute("loggedInCustomer");
         }
         return null;
+    }
+
+    public List<String> getList(String attr) {
+        List<String> result = new ArrayList<>();
+
+        if (attr.equals("sk")) {
+
+        }
+        return result;
     }
 
     public Double getDiscountPrice(Product product) {
