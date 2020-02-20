@@ -23,7 +23,6 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -48,9 +47,6 @@ public class managerProductController {
 
     private final String redirectProductHome = "redirect:/manager/product";
     private final String redirectHome = "redirect:/manager";
-
-    @EJB(mappedName = "StaffFacade")
-    StaffFacadeLocal staffFacade;
 
     @EJB(mappedName = "ProductFacade")
     ProductFacadeLocal productFacade;
@@ -92,11 +88,12 @@ public class managerProductController {
             model.addAttribute("badAlert", model.asMap().get("badAlert"));
         }
 
-        // Pass product list to session
-        model.asMap().put("products",
-                productFacade.findAll().stream().sorted(Comparator.comparingInt(Product::getStatus))
-                        .sorted(Comparator.comparing(Product::getId, Comparator.reverseOrder()))
-                        .collect(Collectors.toList()));
+        // Pass product list to session -- No need for now (using ajax)
+        // model.asMap().put("products",
+        // productFacade.findAll().stream().sorted(Comparator.comparingInt(Product::getStatus))
+        // .sorted(Comparator.comparing(Product::getId, Comparator.reverseOrder()))
+        // .collect(Collectors.toList()));
+
         // Add indicator attribute for sidemenu highlight
         model.asMap().put("menu", "product");
         return "HTDManager/product";
@@ -110,8 +107,9 @@ public class managerProductController {
         if (!managerService.checkLoginWithRole("product_read")) {
             return new ArrayList<ProductView>();
         }
-        List<Product> productList = productFacade.findAll().stream().sorted(Comparator.comparingInt(Product::getStatus))
-                .sorted(Comparator.comparing(Product::getId, Comparator.reverseOrder())).collect(Collectors.toList());
+        List<Product> productList = productFacade.findAll().stream()
+                .sorted(Comparator.comparing(Product::getId, Comparator.reverseOrder()))
+                .sorted(Comparator.comparingInt(Product::getStatus)).collect(Collectors.toList());
         List<ProductView> result = new ArrayList<>();
         for (Product product : productList) {
             result.add(new ProductView(product));
@@ -119,7 +117,7 @@ public class managerProductController {
         return result;
     }
 
-    // ==== PRODUCT LIST ==== \\
+    // ==== PRODUCT AUTOCOMPLETE LIST ==== \\
     @RequestMapping(value = "autolist", method = RequestMethod.POST)
     public @ResponseBody List<String> getAutoList(Model model, HttpServletResponse response,
             @RequestParam(required = false) Map<String, String> params) {

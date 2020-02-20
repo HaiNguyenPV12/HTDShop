@@ -32,19 +32,13 @@
                             </h3>
                         </div>
                         <div class="card-body row" id="uploadimg">
-                            <span th:if="${update!=null}" class="text-danger">Choose new image here will replace all of old images. To manage more detail, please choose [Image] button of this product in list.</span>
-                            <!--
-                            <label class="col-sm-1 text-center uploadimg">
-                                <input type="radio" name="test" value="small" checked="">
-                                <img src="http://placehold.it/60x60/0bf/fff&amp;text=A">
-                                <i class="font-weight-light text-muted text-small">Img.png</i>
-                            </label> 
-                            <label class="col-sm-1 text-center uploadimg">
-                                <input type="radio" name="test" value="small" checked="">
-                                <img src="http://placehold.it/60x60/0bf/fff&amp;text=B">
-                                <i class="font-weight-light text-muted text-small">Img.png</i>
-                            </label>
-                        -->
+                            <span th:if="${update!=null}" class="text-danger col-sm-12">Choose new image here will replace all of old images. To manage more detail of this product's image, click <a th:href="@{/manager/product/image(id=${product.id})}">this</a>.</span>
+                            <th:block th:if="${update!=null}">
+                                <label class="col-sm-1 text-center uploadimg" th:each="pi : ${product.productImageCollection}">
+                                    <input type="radio" name="uploadradio">
+                                    <img th:src="@{/images/__${pi.imagePath}__}">
+                                </label>
+                            </th:block>
                         </div>
                         
                     </div>

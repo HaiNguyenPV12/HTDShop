@@ -1,7 +1,6 @@
 package vn.htdshop.entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,25 +38,27 @@ public class ProductView implements Serializable {
         this.price = p.getPrice();
         this.stock = p.getStock();
         switch (p.getStatus()) {
-        case 1:
-            this.status = "Is selling";
-            break;
-        case 2:
-            this.status = "Upcoming";
-            break;
-        default:
-            this.status = "Unavailable";
-            break;
+            case 1:
+                this.status = "Is selling";
+                break;
+            case 2:
+                this.status = "Upcoming";
+                break;
+            default:
+                this.status = "Unavailable";
+                break;
         }
+
         if (p.getProductImageCollection().size() > 0) {
-            if (p.getProductImageCollection().stream().filter(i -> i.getMainImage() == true)
-                    .collect(Collectors.toList()).size() > 0) {
-                this.image = ((ProductImage) (p.getProductImageCollection().stream()
-                        .filter(i -> i.getMainImage() == true).collect(Collectors.toList()).toArray()[0]))
-                                .getImagePath();
-                
-            } else {
-                this.image = ((ProductImage) (p.getProductImageCollection().toArray()[0])).getImagePath();
+            int count = 0;
+            for (ProductImage pi : p.getProductImageCollection()) {
+                if (count == 0) {
+                    this.image = pi.getImagePath();
+                }
+                if (pi.getMainImage()) {
+                    this.image = pi.getImagePath();
+                }
+                count++;
             }
             this.imageMore = p.getProductImageCollection().size() - 1;
         } else {

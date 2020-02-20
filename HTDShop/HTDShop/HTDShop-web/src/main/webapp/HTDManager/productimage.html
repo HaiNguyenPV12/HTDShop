@@ -17,7 +17,7 @@
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDManager/layout}">
 
 <head>
-    <title>HTD Manager - Product</title>
+    <title>HTD Manager - Product Image</title>
     <!-- Hide default datatable's filter -->
     <style>
         .dataTables_filter {
@@ -27,8 +27,8 @@
 
         .product-img {
             cursor: pointer;
-            height: 6rem;
-            width: 8rem;
+            height: 10rem;
+            width: 14rem;
             object-fit: contain;
             background-color: white;
             border: 1px solid #9628f08c;
@@ -41,16 +41,22 @@
         
     -->
     <span layout:fragment="title">
-        <i class="fas fa-box-open" style="font-size:20px"></i> Product
-        <a class="btn btn-success" th:href="@{/manager/product/add}">
-            <i class="fas fa-plus-square fa-lg mr-2"></i> Add new Product
+        <a th:href="@{/manager/product}">
+            <i class="fas fa-box-open" style="font-size:20px"></i> Product
         </a>
+        > Image
+        <div class="file btn btn-success" style="position:relative;overflow:hidden;">
+            <i class="fas fa-plus-square fa-lg mr-2"></i> Add new Image
+            <input type="file" style="position: absolute;font-size:50px;opacity: 0;right: 0;top: 0;cursor: pointer;"
+                id="btnUploadImage" multiple="multiple" name="uploadimg" accept="image/*">
+        </div>
     </span>
 
     <div layout:fragment="breadcrumb">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a th:href="@{/manager}">Home</a></li>
-            <li class="breadcrumb-item active">Product</li>
+            <li class="breadcrumb-item"><a th:href="@{/manager/product}">Product</a></li>
+            <li class="breadcrumb-item active">Image</li>
         </ol>
     </div>
 
@@ -60,16 +66,10 @@
                 <div class="card card-purple card-outline">
                     <div class="card-body">
 
-                        <table id="tblProduct" class="table table-bordered table-striped table-hover">
+                        <table id="tblProductImage" class="table table-bordered table-striped table-hover">
                             <thead class="bg-purple">
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Category</th>
-                                <th>Manufacturer</th>
-                                <th>Price</th>
-                                <th>Stock</th>
+                                <th>Main Image</th>
                                 <th>Image</th>
-                                <th>Status</th>
                                 <th>Action</th>
                             </thead>
 
@@ -82,8 +82,8 @@
                                 </tr>
                                 will be rendered when attribute "products" is null or empty
                             -->
-                                <tr th:if="${products eq null or products.empty}">
-                                    <td colspan="9">No products</td>
+                                <tr th:if="${productImages eq null or productImages.empty}">
+                                    <td colspan="2">No products</td>
                                 </tr>
                                 <!--
                                 + To get data from controller through model, use:
@@ -107,14 +107,8 @@
 
                             </tbody>
                             <tfoot class="bg-purple">
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Category</th>
-                                <th>Manufacturer</th>
-                                <th>Price</th>
-                                <th>Stock</th>
+                                <th>Main Image</th>
                                 <th>Image</th>
-                                <th>Status</th>
                                 <th>Action</th>
                             </tfoot>
                         </table>
@@ -129,6 +123,9 @@
     <!--In case using custom script at pages using layout, add th:inline="none" like below-->
     <script layout:fragment="script" th:inline="javascript">
         /*<![CDATA[*/
+
+        var existImgSize = +0;
+
         function confirmDelete(title, url) {
             showModal('Confirm deletion',
                 'Are you sure to delete "' + title + '" ?<br><p class="text-danger">Warning: this will delete all images and promotion of this product.</p>',
@@ -136,30 +133,69 @@
                 true,
                 true);
         }
+
+        $("#btnUploadImage").on("change", function () {
+            var productid =/*[[${param.id[0]}]]*/0;
+            if (this.files && this.files[0]) {
+                if ((this.files.length + existImgSize) > 10) {
+                    Toast.fire({
+                        type: 'error',
+                        title: 'Product can have maximum 10 images.'
+                    });
+                    $(this).val("");
+                    return;
+                }
+
+                var myFormData = new FormData();
+                for (var i = 0; i < this.files.length; i++) {
+                    myFormData.append('uploadimg', this.files[i]);
+                }
+                myFormData.append("id", productid);
+
+                $.ajax({
+                    url: /*[[@{/manager/product/image/doAdd}]]*/'',
+                    type: 'POST',
+                    processData: false, // important
+                    contentType: false, // important
+                    data: myFormData,
+                    success: function (jsonData) {
+                        if (jsonData == "ok") {
+                            Toast.fire({
+                                type: 'success',
+                                title: 'Successfully added image.'
+                            });
+                            table.ajax.reload();
+                        } else {
+                            Toast.fire({
+                                type: 'error',
+                                title: result,
+                                timer: 5000
+                            });
+                        }
+                    }
+                });
+            }
+            $(this).val("");
+        });
+
         // Add custom filter for datatable
-        $('#tblProduct tfoot th').each(function () {
+        $('#tblProductImage tfoot th').each(function () {
             var title = $(this).text();
-            if (title == "Action" || title == "Image") {
+            if (title == "Action" || title == "Image" || title == "Main Image") {
                 // Collum that not using filter
                 $(this).html('');
-            } else if (title == "Status" || title == "Category") {
-                // Collum that using select filter
-                $(this).html('<select class="form-control"><option value="">All</option></select>');
-            } else {
-                // Collum that using text filter
-                $(this).html('<input id="txtSearch' + title + '" type="text" placeholder="Search ' + title + '" class="form-control" style="width:100%" />');
             }
 
         });
         // Setting up table here
-        var table = $('#tblProduct').DataTable({
+        var table = $('#tblProductImage').DataTable({
             // Move filter from foot to head
             initComplete: function () {
-                var r = $('#tblProduct tfoot tr');
+                var r = $('#tblProductImage tfoot tr');
                 r.find('th').each(function () {
                     $(this).css('padding', 8);
                 });
-                $('#tblProduct thead').append(r);
+                $('#tblProductImage thead').append(r);
                 $('div.dataTables_length').addClass('form-inline');
                 table.columns().every(function () {
                     var thisCol = this;
@@ -192,74 +228,121 @@
                     });
 
                 });
-
-
             },
             "paging": true,
-            "lengthChange": true,
+            "lengthChange": false,
             "lengthMenu": [
-                [5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]
+                [10, 25, 50, -1], [10, 25, 50, "All"]
             ],
             "searching": true,
             "ordering": false,
             "info": true,
             "autoWidth": false,
-            ajax: { url:/*[[@{/manager/product/list}]]*/"", dataSrc: "", type: "POST" },
+            ajax: {
+                url:/*[[@{/manager/product/image/list(id=${param.id})}]]*/"",
+                dataSrc: function (json) {
+                    //Make your callback here.
+                    existImgSize = json.length;
+                    return json;
+                },
+                type: "POST"
+            },
             "deferRender": true,
             "columnDefs": [{
-                "targets": 6,
+                "targets": 1,
                 "render": function (data, type, row, meta) {
                     var img = /*[[@{/images/}]]*/'';
-                    var productlink = /*[[@{/manager/product}]]*/'';
                     var str = "";
                     if (data != "") {
-                        str += "<img src='" + img + data + "' class='product-img' onclick=\"showModal(\'" + row.name.replace("\"", "&quot;") + "\', \'<img src=" + img + data + " style=width:100%; />\', null, false, false);\"></img>";
-                    } else {
-                        str += "<a href='" + productlink + "/image?id=" + row.id + "'><img src='" + img + "noimage.png' class='product-img'></img></a>";
-                    }
-                    if (row.imageMore > 0) {
-                        str += "<a href='" + productlink + "/image?id=" + row.id + "'>(" + row.imageMore + " more...)</a>";
+                        str += "<img src='" + img + data + "' class='product-img' onclick=\"showModal(\'\', \'<img src=" + img + data + " style=width:100%; />\', null, false, false);\"></img>";
                     }
                     return str;
                 }
             }, {
-                "targets": 8,
+                "targets": 2,
                 "render": function (data, type, row, meta) {
-                    var productlink = /*[[@{/manager/product}]]*/'';
+                    var productImagelink = /*[[@{/manager/product/image}]]*/'';
                     var id = row.id;
                     var str = "";
-                    str += '<a class="btn btn-info btn-sm" href="' + productlink + '/image?id=' + id + '" data-toggle="tooltip" title = "Images" > <i class="fas fa-images" ></i></a>';
-                    str += '<a class="btn btn-warning btn-sm" href="' + productlink + '/edit?id=' + id + '" data-toggle="tooltip" title = "Edit" > <i class="fas fa-pencil-alt" ></i></a>';
-                    str += '<button class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete" onclick=\"confirmDelete(\'' + row.name.replace("\"", "&quot;") + '\',\'' + productlink + '/doDelete?id=' + id + '\')\"><i class="fas fa-trash"></i></button>';
+                    str += '<button class="btn btn-danger btn-sm" name="delete" id="' + row.id + '" data-toggle="tooltip" title="Delete"><i class="fas fa-trash"></i></button>';
+                    return str;
+                }
+            }, {
+                "targets": 0,
+                "render": function (data, type, row, meta) {
+                    var str = "";
+                    if (data == true) {
+                        str += "<i class='fas fa-star text-center'></i>";
+                    } else {
+                        str += "<button class='btn btn-success' name='makeMainImage' id=\'" + row.id + "\' >Make main image</button>"
+                    }
+
                     return str;
                 }
             }],
             // custom collums's width
             "columns": [
-                { "width": "5%", "data": "id" },
-                { "width": "15%", "data": "name" },
-                { "width": "10%", "data": "category" },
-                { "width": "10%", "data": "manufacturer" },
-                { "width": "10%", "data": "price" },
-                { "width": "5%", "data": "stock" },
-                { "width": "20%", "data": "image" },
-                { "width": "5%", "data": "status" },
+                { "width": "10%", "data": "mainImage" },
+                { "width": "80%", "data": "imagePath" },
                 { "width": "10%", "data": null }
             ],
             "createdRow": function (row, data, dataIndex) {
-                if (data.status == 'Upcoming') {
-                    $(row).addClass('bg-info');
+                if (data.mainImage == true) {
+                    $(row).addClass('bg-success');
                 }
-                if (data.status == 'Unavailable') {
-                    $(row).addClass('bg-secondary');
-                }
+                $(row).addClass('text-center');
             },
             "drawCallback": function (settings) {
                 $('[data-toggle="tooltip"]').tooltip();
+
+                $("button[name='makeMainImage']").click(function () {
+                    var mainUrl = /*[[@{/manager/product/image/makeMainImage}]]*/"";
+                    mainUrl += "?id=" + $(this).attr("id");
+                    $.ajax({
+                        url: mainUrl,
+                        method: 'POST',
+                        success: function (result) {
+                            if (result == true) {
+                                Toast.fire({
+                                    type: 'success',
+                                    title: 'Successfully changed main image.'
+                                });
+                                table.ajax.reload();
+                            } else {
+                                Toast.fire({
+                                    type: 'error',
+                                    title: 'Cannot make this main image.'
+                                });
+                            }
+                        }
+                    });
+                });
+
+                $("button[name='delete']").click(function () {
+                    var mainUrl = /*[[@{/manager/product/image/doDelete}]]*/"";
+                    mainUrl += "?id=" + $(this).attr("id");
+                    $.ajax({
+                        url: mainUrl,
+                        method: 'POST',
+                        success: function (result) {
+                            if (result == true) {
+                                Toast.fire({
+                                    type: 'success',
+                                    title: 'Successfully deleted image.'
+                                });
+                                table.ajax.reload();
+                            } else {
+                                Toast.fire({
+                                    type: 'error',
+                                    title: 'Cannot delete this image.'
+                                });
+                            }
+                        }
+                    });
+                });
             }
         });
 
-        table.select.items('row');
         /*]]>*/
     </script>
 </body>
