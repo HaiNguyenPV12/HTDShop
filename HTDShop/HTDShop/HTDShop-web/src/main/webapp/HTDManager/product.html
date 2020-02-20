@@ -18,6 +18,7 @@
 
 <head>
     <title>HTD Manager - Product</title>
+
     <!-- Hide default datatable's filter -->
     <style>
         .dataTables_filter {
@@ -33,7 +34,13 @@
             background-color: white;
             border: 1px solid #9628f08c;
         }
+
+        table.dataTable tbody>tr.selected,
+        table.dataTable tbody>tr>.selected {
+            background-color: #0275d8 !important;
+        }
     </style>
+
 </head>
 
 <body>
@@ -56,10 +63,11 @@
 
     <div layout:fragment="content">
         <div class="row">
+
             <div class="col-lg-12">
                 <div class="card card-purple card-outline">
                     <div class="card-body">
-
+                        <!-- <div class="col-lg-12" id="events">0 row(s) selected</div> -->
                         <table id="tblProduct" class="table table-bordered table-striped table-hover">
                             <thead class="bg-purple">
                                 <th>ID</th>
@@ -144,7 +152,11 @@
                 $(this).html('');
             } else if (title == "Status" || title == "Category") {
                 // Collum that using select filter
-                $(this).html('<select class="form-control"><option value="">All</option></select>');
+                $(this).html('<select id="txtSearch' + title + '" class="form-control"><option value="">All</option></select>');
+            } else if (title == "Price") {
+                $(this).html('<div class="d-flex"><input type="number" id="txtSearch' + title + 'Min" placeholder="Min" class="form-control" style="width:100%" value="0"/> - <input type="number" id="txtSearch' + title + 'Max" placeholder="Max" class="form-control" style="width:100%" value="1000000"/></div>');
+            } else if (title == "Stock") {
+                $(this).html('<div class="d-flex"><input type="number" id="txtSearch' + title + 'Min" placeholder="Min" class="form-control" style="width:100%" value="0"/> - <input type="number" id="txtSearch' + title + 'Max" placeholder="Max" class="form-control" style="width:100%" value="10000"/></div>');
             } else {
                 // Collum that using text filter
                 $(this).html('<input id="txtSearch' + title + '" type="text" placeholder="Search ' + title + '" class="form-control" style="width:100%" />');
@@ -164,7 +176,7 @@
                 table.columns().every(function () {
                     var thisCol = this;
                     // Set up action listener for text filter
-                    $('input', this.footer()).on('keyup change clear', function () {
+                    $('input[type="text"]', this.footer()).on('keyup change clear', function () {
                         if (thisCol.search() !== this.value) {
                             thisCol.search(this.value).draw();
                         }
@@ -190,7 +202,38 @@
                         );
                         thisCol.search(val ? '^' + val + '$' : '', true, false).draw();
                     });
+                    $("#events").html('0 row(s) selected');
 
+                    $.fn.dataTable.ext.search.push(
+                        function (settings, data, dataIndex) {
+                            var pricemin = +$('#txtSearchPriceMin').val() || 0;
+                            var pricemax = +$('#txtSearchPriceMax').val() || 1000000;
+                            var price = parseFloat(data[4]) || 0;
+                            var stockmin = +$('#txtSearchStockMin').val() || 0;
+                            var stockmax = +$('#txtSearchStockMax').val() || 10000;
+                            var stock = parseInt(data[5]) || 0;
+
+                            if (
+                                (
+                                    (isNaN(pricemin) && isNaN(pricemax)) ||
+                                    (isNaN(pricemin) && price <= pricemax) ||
+                                    (pricemin <= price && isNaN(pricemax)) ||
+                                    (pricemin <= price && price <= pricemax)
+                                ) && (
+                                    (isNaN(stockmin) && isNaN(stockmax)) ||
+                                    (isNaN(stockmin) && stock <= stockmax) ||
+                                    (stockmin <= stock && isNaN(stockmax)) ||
+                                    (stockmin <= stock && stock <= stockmax)
+                                )
+                            ) {
+                                return true;
+                            }
+                            return false;
+                        }
+                    );
+                    $('#txtSearchPriceMin, #txtSearchPriceMax, #txtSearchStockMin, #txtSearchStockMax').on("keyup change clear", function () {
+                        table.draw();
+                    });
                 });
 
 
@@ -218,7 +261,7 @@
                         str += "<a href='" + productlink + "/image?id=" + row.id + "'><img src='" + img + "noimage.png' class='product-img'></img></a>";
                     }
                     if (row.imageMore > 0) {
-                        str += "<a href='" + productlink + "/image?id=" + row.id + "'>(" + row.imageMore + " more...)</a>";
+                        str += "<br><a href='" + productlink + "/image?id=" + row.id + "'>(" + row.imageMore + " more...)</a>";
                     }
                     return str;
                 }
@@ -237,14 +280,14 @@
             // custom collums's width
             "columns": [
                 { "width": "5%", "data": "id" },
-                { "width": "15%", "data": "name" },
-                { "width": "10%", "data": "category" },
+                { "width": "18%", "data": "name" },
+                { "width": "12%", "data": "category" },
                 { "width": "10%", "data": "manufacturer" },
-                { "width": "10%", "data": "price" },
-                { "width": "5%", "data": "stock" },
-                { "width": "20%", "data": "image" },
+                { "width": "15%", "data": "price" },
+                { "width": "15%", "data": "stock" },
+                { "width": "10%", "data": "image", "className": "text-center" },
                 { "width": "5%", "data": "status" },
-                { "width": "10%", "data": null }
+                { "width": "10%", "data": null, "className": "text-center" }
             ],
             "createdRow": function (row, data, dataIndex) {
                 if (data.status == 'Upcoming') {
@@ -256,10 +299,114 @@
             },
             "drawCallback": function (settings) {
                 $('[data-toggle="tooltip"]').tooltip();
+            },
+            "select": {
+                style: 'os',
+                items: 'row',
+                info: false
+            },
+            dom: "<'row'<'#events.col-sm-12 col-md-4'><'col-sm-12 col-md-8 text-right'B>>" +
+                "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+            buttons: [
+                {
+                    text: 'Select filtered items',
+                    action: function () {
+                        table.rows().deselect();
+                        table.rows({ search: 'applied' }).select()
+                    }
+                },
+                'selectAll',
+                'selectNone',
+
+                {
+                    extend: 'collection',
+                    text: 'Selected items\'s action',
+                    buttons: [
+                        {
+                            text: 'Disable selected items',
+                            action: function () {
+                                var myFormData = new FormData();
+                                table.rows({ selected: true }).every(function (rowId) {
+                                    myFormData.append('id', table.row(rowId).data().id);
+                                });
+                                myFormData.append("status", '3', "Successfully disable item(s).");
+                                var url = /*[[@{/manager/product/setStatus}]]*/'';
+                                doAjax(url, myFormData);
+                            }
+                        },
+                        {
+                            text: 'Enable selected items',
+                            action: function () {
+                                var myFormData = new FormData();
+                                table.rows({ selected: true }).every(function (rowId) {
+                                    myFormData.append('id', table.row(rowId).data().id);
+                                });
+                                myFormData.append("status", '1', "Successfully enabled item(s).");
+                                var url = /*[[@{/manager/product/setStatus}]]*/'';
+                                doAjax(url, myFormData);
+                            }
+                        }
+                    ],
+                    enabled: false
+                }, 
+                {
+                    text: 'Reset filter',
+                    action: function () {
+                        $("#txtSearchID").val("");
+                        $("#txtSearchName").val("");
+                        $("#txtSearchCategory").val("");
+                        $("#txtSearchManufacturer").val("");
+                        $("#txtSearchPriceMin").val(0);
+                        $("#txtSearchPriceMax").val(1000000);
+                        $("#txtSearchStockMin").val(0);
+                        $("#txtSearchStockMax").val(10000);
+                        $("#txtSearchStatus").val("").trigger("change");
+                    }
+                }
+            ],
+            language: {
+                buttons: {
+                    selectAll: "Select all",
+                    selectNone: "Select none"
+                }
             }
+
+        });
+        table.on('select deselect', function (e, dt, type, indexes) {
+            //var rowData = table.rows(indexes).data().toArray();
+            //events.prepend('<div><b>' + type + ' selection</b> - ' + JSON.stringify(rowData) + '</div>');
+            var count = table.rows({ selected: true }).count();
+            $("#events").html(count + ' row(s) selected');
+            table.button(3).enable(count > 0);
         });
 
-        table.select.items('row');
+        function doAjax(formUrl, formData, successText) {
+            console.log(formData);
+            $.ajax({
+                url: formUrl,
+                type: 'POST',
+                processData: false,
+                contentType: false,
+                data: formData,
+                success: function (data) {
+                    if (data == "ok") {
+                        Toast.fire({
+                            type: 'success',
+                            title: successText
+                        });
+                        table.ajax.reload();
+                    } else {
+                        Toast.fire({
+                            type: 'error',
+                            title: data,
+                            timer: 5000
+                        });
+                    }
+                }
+            });
+        }
         /*]]>*/
     </script>
 </body>

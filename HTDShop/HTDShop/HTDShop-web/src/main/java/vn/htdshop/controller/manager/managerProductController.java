@@ -117,6 +117,29 @@ public class managerProductController {
         return result;
     }
 
+    // ==== PRODUCT - DISABLE MULTIPLE PRODUCTS ==== \\
+    @RequestMapping(value = "setStatus", method = RequestMethod.POST)
+    public @ResponseBody String setStatus(Model model, HttpServletResponse response,
+            @RequestParam(value = "id", required = false) Integer[] id,
+            @RequestParam(value = "status", required = false) Integer status) {
+        response.setContentType("application/json");
+        // Check login with role
+        if (!managerService.checkLoginWithRole("product_edit")) {
+            return "No permission.";
+        }
+
+        if (id == null || id.length <= 0 || status == null) {
+            return "Error submiting form.";
+        }
+
+        for (Integer i : id) {
+            Product p = productFacade.find(i);
+            p.setStatus(status);
+            productFacade.edit(p);
+        }
+        return "ok";
+    }
+
     // ==== PRODUCT AUTOCOMPLETE LIST ==== \\
     @RequestMapping(value = "autolist", method = RequestMethod.POST)
     public @ResponseBody List<String> getAutoList(Model model, HttpServletResponse response,

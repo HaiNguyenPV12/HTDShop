@@ -15,8 +15,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
@@ -44,8 +42,6 @@ import vn.htdshop.sb.*;
 @Controller
 @RequestMapping("manager/product/image")
 public class managerProductImageController {
-
-    private final String redirectProductImageHome = "redirect:/manager/product/image";
     private final String redirectProductHome = "redirect:/manager/product";
     private final String redirectHome = "redirect:/manager";
 

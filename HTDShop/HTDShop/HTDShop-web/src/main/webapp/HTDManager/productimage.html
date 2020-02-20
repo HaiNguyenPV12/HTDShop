@@ -158,8 +158,8 @@
                     processData: false, // important
                     contentType: false, // important
                     data: myFormData,
-                    success: function (jsonData) {
-                        if (jsonData == "ok") {
+                    success: function (result) {
+                        if (result == "ok") {
                             Toast.fire({
                                 type: 'success',
                                 title: 'Successfully added image.'
@@ -274,7 +274,7 @@
                     if (data == true) {
                         str += "<i class='fas fa-star text-center'></i>";
                     } else {
-                        str += "<button class='btn btn-success' name='makeMainImage' id=\'" + row.id + "\' >Make main image</button>"
+                        str += "<button class='btn btn-success' name='makeMainImage' id=\'" + row.id + "\' >Choose as main</button>"
                     }
 
                     return str;
