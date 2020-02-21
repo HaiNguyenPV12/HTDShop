@@ -331,9 +331,9 @@
                                 table.rows({ selected: true }).every(function (rowId) {
                                     myFormData.append('id', table.row(rowId).data().id);
                                 });
-                                myFormData.append("status", '3', "Successfully disable item(s).");
+                                myFormData.append("status", '3');
                                 var url = /*[[@{/manager/product/setStatus}]]*/'';
-                                doAjax(url, myFormData);
+                                doAjax(url, myFormData,'Successfully disabled item(s).');
                             }
                         },
                         {
@@ -343,9 +343,9 @@
                                 table.rows({ selected: true }).every(function (rowId) {
                                     myFormData.append('id', table.row(rowId).data().id);
                                 });
-                                myFormData.append("status", '1', "Successfully enabled item(s).");
+                                myFormData.append("status", '1');
                                 var url = /*[[@{/manager/product/setStatus}]]*/'';
-                                doAjax(url, myFormData);
+                                doAjax(url, myFormData, 'Successfully enabled item(s).');
                             }
                         }
                     ],
@@ -356,7 +356,7 @@
                     action: function () {
                         $("#txtSearchID").val("");
                         $("#txtSearchName").val("");
-                        $("#txtSearchCategory").val("");
+                        $("#txtSearchCategory").val("").trigger("change");
                         $("#txtSearchManufacturer").val("");
                         $("#txtSearchPriceMin").val(0);
                         $("#txtSearchPriceMax").val(1000000);
@@ -375,15 +375,12 @@
 
         });
         table.on('select deselect', function (e, dt, type, indexes) {
-            //var rowData = table.rows(indexes).data().toArray();
-            //events.prepend('<div><b>' + type + ' selection</b> - ' + JSON.stringify(rowData) + '</div>');
             var count = table.rows({ selected: true }).count();
             $("#events").html(count + ' row(s) selected');
             table.button(3).enable(count > 0);
         });
 
         function doAjax(formUrl, formData, successText) {
-            console.log(formData);
             $.ajax({
                 url: formUrl,
                 type: 'POST',
@@ -396,7 +393,7 @@
                             type: 'success',
                             title: successText
                         });
-                        table.ajax.reload();
+                        table.ajax.reload(null, false);
                     } else {
                         Toast.fire({
                             type: 'error',

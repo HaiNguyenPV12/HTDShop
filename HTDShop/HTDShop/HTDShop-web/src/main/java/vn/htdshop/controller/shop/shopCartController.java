@@ -76,7 +76,7 @@ public class shopCartController {
         }
         Boolean found = false;
         for (CartItem cartItem : cart) {
-            if (cartItem.getId() == id) {
+            if (Integer.parseInt(cartItem.getId().toString()) == Integer.parseInt(id.toString())) {
                 found = true;
                 if (cartItem.getQuan() + quan > p.getStock()) {
                     return "Cannot add because added number exceeding product's stock.";
@@ -106,7 +106,7 @@ public class shopCartController {
         }
         Boolean found = false;
         for (CartItem cartItem : cart) {
-            if (cartItem.getId() == id) {
+            if (Integer.parseInt(cartItem.getId().toString()) == Integer.parseInt(id.toString())) {
                 found = true;
                 cart.remove(cartItem);
                 break;
