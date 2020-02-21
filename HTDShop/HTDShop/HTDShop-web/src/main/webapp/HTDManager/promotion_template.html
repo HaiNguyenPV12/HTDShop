@@ -31,8 +31,6 @@
                 outline: 2px solid #f00;
             }
 
-            .uploadimg>img {}
-
             .hoverable:hover {
                 background-color: lightgray;
             }
@@ -344,16 +342,23 @@
                             </div>
                             <div class="col-sm-3"></div>
                             <div class="col-sm-9">
-                                <select id="conCategoryVal" class="form-control">
-                                    <option th:each="cate : ${categoryList}" th:value="${cate.id}" th:text="${cate.name}"></option>
-                                </select>
-                                <select id="conProductVal" class="form-control" style="display:none">
-                                    <option th:each="p : ${productList}" th:value="${p.id}" th:text="${p.name}"></option>
-                                </select>
-                                <select id="conPreBuiltVal" class="form-control" style="display:none">
-                                    <option value="0">All pre-built PC</option>
-                                    <option value="1">HTD's exclusive PC</option>
-                                </select>
+                                <div id="conCategoryCon" >
+                                    <select id="conCategoryVal" class="form-control select2" data-dropdown-css-class="select2-purple">
+                                        <option th:each="cate : ${categoryList}" th:value="${cate.id}" th:text="${cate.name}"></option>
+                                    </select>
+                                </div>
+                                <div id="conProductCon" style="display: none;">
+                                    <select id="conProductVal" class="form-control select2" style="display:none" data-dropdown-css-class="select2-purple">
+                                        <option th:each="p : ${productList}" th:value="${p.id}" th:text="${p.name}"></option>
+                                    </select>
+                                </div>
+                                <div id="conPreBuiltCon" style="display: none;">
+                                    <select id="conPreBuiltVal" class="form-control select2" style="display:none" data-dropdown-css-class="select2-purple">
+                                        <option value="0">All pre-built PC</option>
+                                        <option value="1">HTD's exclusive PC</option>
+                                    </select>
+                                </div>
+                                
                             </div> 
                         </div>
                         <!-- Condition target - End -->
@@ -491,6 +496,10 @@
 
         function showCondition(update, button) {
             $("#conModalConfirm").off("click");
+            $("#conDiscountTypeError").html("");
+            $("#conMinError").html("");
+            $("#conMaxError").html("");
+            $("#conLimitError").html("");
             $("#conCategoryForm").click();
             $("#conCategoryVal").val($("#conCategoryVal option:first").val());
             $("#conProductVal").val($("#conProductVal option:first").val());
@@ -612,7 +621,7 @@
                 string += "<input type='hidden' name='conExact' " + (conExact > 0 ? ("value='" + conExact + "'") : "") + "/>";
 
                 string += "<strong>Applied to:</strong> " + conCategoryText + conProductText + conPreBuiltText + " ";
-                string += "<strong>Discount:</strong> " + (conPercentage > 0 ? (conPercentage + "%") : ("$"+conExact)) + " ";
+                string += "<strong>Discount:</strong> " + (conPercentage > 0 ? (conPercentage + "%") : ("$" + conExact)) + " ";
                 if (conPercentage > 0 && conMaxSale > 0) {
                     string += "(Max discount: $" + conMaxSale + ") ";
                 }
@@ -685,17 +694,17 @@
 
         $("input[name='conTargetForm']").on("change", function () {
             if ($(this).val() == "category") {
-                $("#conCategoryVal").css("display", "block");
-                $("#conProductVal").css("display", "none");
-                $("#conPreBuiltVal").css("display", "none");
+                $("#conCategoryCon").css("display", "block");
+                $("#conProductCon").css("display", "none");
+                $("#conPreBuiltCon").css("display", "none");
             } else if ($(this).val() == "product") {
-                $("#conCategoryVal").css("display", "none");
-                $("#conProductVal").css("display", "block");
-                $("#conPreBuiltVal").css("display", "none");
+                $("#conCategoryCon").css("display", "none");
+                $("#conProductCon").css("display", "block");
+                $("#conPreBuiltCon").css("display", "none");
             } else {
-                $("#conCategoryVal").css("display", "none");
-                $("#conProductVal").css("display", "none");
-                $("#conPreBuiltVal").css("display", "block");
+                $("#conCategoryCon").css("display", "none");
+                $("#conProductCon").css("display", "none");
+                $("#conPreBuiltCon").css("display", "block");
             }
         });
 
@@ -790,7 +799,15 @@
                 $("#endDate").val(end.format('DD/MM/YYYY'));
                 console.log("A new date selection was made: " + start.format('DD/MM/YYYY') + ' to ' + end.format('DD/MM/YYYY'));
             });
+            //Initialize Select2 Elements
+            $('.select2').select2();
+
+            //Initialize Select2 Elements
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            });
         });
+
     </script>
 </body>
 

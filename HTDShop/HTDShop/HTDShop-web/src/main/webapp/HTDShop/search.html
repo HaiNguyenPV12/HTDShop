@@ -93,7 +93,7 @@
                             <div class="sidebar-widget mb-5">
                                 <h3 class="sidebar-title">Categories</h3>
                                 <div class="sidebar-categories">
-                                    <select class="select2bs4" data-dropdown-css-class="select2-purple" name="category"
+                                    <select class="select2" data-dropdown-css-class="select2-purple" name="category"
                                         id="category">
                                         <option value="0" th:selected="${T(Integer).parseInt(param.category) == 0}">All
                                         </option>
@@ -112,11 +112,11 @@
                                     <form id="searchPrice" class="d-flex">
                                         <input type="number" placeholder="From..."
                                             th:value="${param.from!=null?param.from:'0'}" name="from" required min=0
-                                            max=10000 id="from" class="form-control mr-2">
+                                            max=1000000 id="from" class="form-control mr-2">
                                         <i class="fas fa-long-arrow-alt-right mt-3"></i>
                                         <input type="number" placeholder="To..."
-                                            th:value="${param.to!=null?param.to:'10000'}" name="to" required min=10
-                                            max=10000 id="to" class="ml-2 form-control">
+                                            th:value="${param.to!=null?param.to:'1000000'}" name="to" required min=10
+                                            max=1000000 id="to" class="ml-2 form-control">
                                     </form>
                                 </div>
                             </div>
@@ -311,7 +311,7 @@
 
         $("#resetFilter").on("click", function () {
             $("#from").val(0);
-            $("#to").val(10000);
+            $("#to").val(1000000);
             $("#keyword").val("");
             $("#psort").val("default");
             $("#category").val(0).trigger("change");
@@ -353,7 +353,7 @@
             if (fromParam > 0) {
                 urlparams += "&from=" + encodeURIComponent(fromParam);
             }
-            if (toParam < 10000) {
+            if (toParam < 1000000) {
                 urlparams += "&to=" + encodeURIComponent(toParam);
             }
             if (sortParam != "default") {
@@ -401,7 +401,7 @@
                 $("#to").val(2000);
             }
             var pricemin = +$("#from").val() || 0;
-            var pricemax = +$("#to").val() || 10000;
+            var pricemax = +$("#to").val() || 1000000;
             if (pricemin > pricemax) {
                 $("#from").val(0);
             }
@@ -495,6 +495,7 @@
                         $("#filters").find('.select2bs4').select2({
                             theme: 'bootstrap4'
                         });
+                        $("#filters").find('.select2').select2();
                         $("#filters .select2").css("width", "100%");
                     }
                 });

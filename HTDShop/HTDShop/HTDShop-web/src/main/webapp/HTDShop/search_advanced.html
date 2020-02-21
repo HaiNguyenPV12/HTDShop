@@ -7,7 +7,7 @@
     <h3 class="sidebar-title">CPU Filters</h3>
 
     <div class="d-flex mb-2">
-        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="manu" id="manu">
+        <select class="select2" data-dropdown-css-class="select2-purple" name="manu" id="manu">
             <option value="" th:selected="${data.manufacturer==null || data.manufacturer == ''}">All Manufacturers
             </option>
             <option th:each="manu : ${manuList}" th:value="${manu}" th:text="${manu}"
@@ -18,7 +18,7 @@
     </div>
 
     <div class="d-flex mb-2">
-        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="sr" id="sr">
+        <select class="select2" data-dropdown-css-class="select2-purple" name="sr" id="sr">
             <option value="" th:selected="${data.series==null || data.series == ''}">All Series
             </option>
             <option th:each="sr : ${srList}" th:value="${sr}" th:text="${sr}"
@@ -29,7 +29,7 @@
     </div>
 
     <div class="d-flex mb-2">
-        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="sk" id="sk">
+        <select class="select2" data-dropdown-css-class="select2-purple" name="sk" id="sk">
             <option value="" th:selected="${data.socket==null || data.socket == ''}">All Socket
             </option>
             <option th:each="sk : ${skList}" th:value="${sk}" th:text="${sk}"
@@ -40,7 +40,7 @@
     </div>
 
     <div class="d-flex mb-2">
-        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="co" id="co">
+        <select class="select2" data-dropdown-css-class="select2-purple" name="co" id="co">
             <option value="0" th:selected="${data.core==null || data.core == 0}">All Number of Cores
             </option>
             <option th:each="co : ${coList}" th:value="${co}" th:text="${co}"
@@ -72,7 +72,7 @@
     <h3 class="sidebar-title">Motherboard Filters</h3>
 
     <div class="d-flex mb-2">
-        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="manu" id="manu">
+        <select class="select2" data-dropdown-css-class="select2-purple" name="manu" id="manu">
             <option value="" th:selected="${data.manufacturer==null || data.manufacturer == ''}">All Manufacturers
             </option>
             <option th:each="manu : ${manuList}" th:value="${manu}" th:text="${manu}"
@@ -83,7 +83,7 @@
     </div>
 
     <div class="d-flex mb-2">
-        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="sk" id="sk">
+        <select class="select2" data-dropdown-css-class="select2-purple" name="sk" id="sk">
             <option value="" th:selected="${data.socket==null || data.socket == ''}">All Socket
             </option>
             <option th:each="sk : ${skList}" th:value="${sk}" th:text="${sk}"
@@ -94,7 +94,7 @@
     </div>
 
     <div class="d-flex mb-2">
-        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="cs" id="cs">
+        <select class="select2" data-dropdown-css-class="select2-purple" name="cs" id="cs">
             <option value="" th:selected="${data.chipset==null || data.chipset == ''}">All Chipset
             </option>
             <option th:each="cs : ${csList}" th:value="${cs}" th:text="${cs}"
@@ -105,7 +105,7 @@
     </div>
 
     <div class="d-flex mb-2">
-        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="mt" id="mt">
+        <select class="select2" data-dropdown-css-class="select2-purple" name="mt" id="mt">
             <option value="" th:selected="${data.memoryType==null || data.memoryType == ''}">All Memory Type
             </option>
             <option th:each="mt : ${mtList}" th:value="${mt}" th:text="${mt}"
@@ -116,7 +116,7 @@
     </div>
 
     <div class="d-flex mb-2">
-        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="ff" id="ff">
+        <select class="select2" data-dropdown-css-class="select2-purple" name="ff" id="ff">
             <option value="" th:selected="${data.formFactor==null || data.formFactor == ''}">All Form Factor
             </option>
             <option th:each="ff : ${ffList}" th:value="${ff}" th:text="${ff}"
@@ -144,7 +144,7 @@
     <h3 class="sidebar-title">GPU Filters</h3>
 
     <div class="d-flex mb-2">
-        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="manu" id="manu">
+        <select class="select2" data-dropdown-css-class="select2-purple" name="manu" id="manu">
             <option value="" th:selected="${data.manufacturer==null || data.manufacturer == ''}">All Manufacturers
             </option>
             <option th:each="manu : ${manuList}" th:value="${manu}" th:text="${manu}"
@@ -155,7 +155,7 @@
     </div>
 
     <div class="d-flex mb-2">
-        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="cs" id="cs">
+        <select class="select2" data-dropdown-css-class="select2-purple" name="cs" id="cs">
             <option value="" th:selected="${data.chipset==null || data.chipset == ''}">All Chipset
             </option>
             <option th:each="cs : ${csList}" th:value="${cs}" th:text="${cs}"
@@ -166,7 +166,7 @@
     </div>
 
     <div class="d-flex mb-2">
-        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="mt" id="mt">
+        <select class="select2" data-dropdown-css-class="select2-purple" name="mt" id="mt">
             <option value="" th:selected="${data.memoryType==null || data.memoryType == ''}">All Memory Type
             </option>
             <option th:each="mt : ${mtList}" th:value="${mt}" th:text="${mt}"
@@ -177,7 +177,7 @@
     </div>
 
     <div class="d-flex mb-2">
-        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="itf" id="itf">
+        <select class="select2" data-dropdown-css-class="select2-purple" name="itf" id="itf">
             <option value="" th:selected="${data.interface1==null || data.interface1 == ''}">All Interface
             </option>
             <option th:each="itf : ${itfList}" th:value="${itf}" th:text="${itf}"
@@ -217,7 +217,7 @@
     <h3 class="sidebar-title">Memory Filters</h3>
 
     <div class="d-flex mb-2">
-        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="manu" id="manu">
+        <select class="select2" data-dropdown-css-class="select2-purple" name="manu" id="manu">
             <option value="" th:selected="${data.manufacturer==null || data.manufacturer == ''}">All Manufacturers
             </option>
             <option th:each="manu : ${manuList}" th:value="${manu}" th:text="${manu}"
@@ -228,7 +228,7 @@
     </div>
 
     <div class="d-flex mb-2">
-        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="mt" id="mt">
+        <select class="select2" data-dropdown-css-class="select2-purple" name="mt" id="mt">
             <option value="" th:selected="${data.memoryType==null || data.memoryType == ''}">All Memory Type
             </option>
             <option th:each="mt : ${mtList}" th:value="${mt}" th:text="${mt}"
@@ -239,7 +239,7 @@
     </div>
 
     <div class="d-flex mb-2">
-        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="mmm" id="mmm">
+        <select class="select2" data-dropdown-css-class="select2-purple" name="mmm" id="mmm">
             <option value="0" th:selected="${data.memoryModules==null || data.memoryModules == 0}">All Memory Modules
             </option>
             <option th:each="mmm : ${mmmList}" th:value="${mmm}" th:text="${mmm}"
@@ -265,7 +265,7 @@
     <h3 class="sidebar-title">PSU Filters</h3>
 
     <div class="d-flex mb-2">
-        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="manu" id="manu">
+        <select class="select2" data-dropdown-css-class="select2-purple" name="manu" id="manu">
             <option value="" th:selected="${data.manufacturer==null || data.manufacturer == ''}">All Manufacturers
             </option>
             <option th:each="manu : ${manuList}" th:value="${manu}" th:text="${manu}"
@@ -276,7 +276,7 @@
     </div>
 
     <div class="d-flex mb-2">
-        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="psuf" id="psuf">
+        <select class="select2" data-dropdown-css-class="select2-purple" name="psuf" id="psuf">
             <option value="" th:selected="${data.pSUFormFactor==null || data.pSUFormFactor == ''}">All PSU Form Factor
             </option>
             <option th:each="psuf : ${psufList}" th:value="${psuf}" th:text="${psuf}"
@@ -304,7 +304,7 @@
     <h3 class="sidebar-title">Storage Filters</h3>
 
     <div class="d-flex mb-2">
-        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="manu" id="manu">
+        <select class="select2" data-dropdown-css-class="select2-purple" name="manu" id="manu">
             <option value="" th:selected="${data.manufacturer==null || data.manufacturer == ''}">All Manufacturers
             </option>
             <option th:each="manu : ${manuList}" th:value="${manu}" th:text="${manu}"
@@ -315,7 +315,7 @@
     </div>
 
     <div class="d-flex mb-2">
-        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="st" id="st">
+        <select class="select2" data-dropdown-css-class="select2-purple" name="st" id="st">
             <option value="" th:selected="${data.storageType==null || data.storageType == ''}">All Storage Type
             </option>
             <option th:each="st : ${stList}" th:value="${st}" th:text="${st}"
@@ -326,7 +326,7 @@
     </div>
 
     <div class="d-flex mb-2">
-        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="ff" id="ff">
+        <select class="select2" data-dropdown-css-class="select2-purple" name="ff" id="ff">
             <option value="" th:selected="${data.formFactor==null || data.formFactor == ''}">All Form Factor
             </option>
             <option th:each="ff : ${ffList}" th:value="${ff}" th:text="${ff}"
@@ -337,7 +337,7 @@
     </div>
 
     <div class="d-flex mb-2">
-        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="itf" id="itf">
+        <select class="select2" data-dropdown-css-class="select2-purple" name="itf" id="itf">
             <option value="" th:selected="${data.interface1==null || data.interface1 == ''}">All Interface
             </option>
             <option th:each="itf : ${itfList}" th:value="${itf}" th:text="${itf}"
@@ -364,7 +364,7 @@
     <h3 class="sidebar-title">CPU Cooler Filters</h3>
 
     <div class="d-flex mb-2">
-        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="manu" id="manu">
+        <select class="select2" data-dropdown-css-class="select2-purple" name="manu" id="manu">
             <option value="" th:selected="${data.manufacturer==null || data.manufacturer == ''}">All Manufacturers
             </option>
             <option th:each="manu : ${manuList}" th:value="${manu}" th:text="${manu}"
@@ -386,7 +386,7 @@
     <h3 class="sidebar-title">Case Filters</h3>
 
     <div class="d-flex mb-2">
-        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="manu" id="manu">
+        <select class="select2" data-dropdown-css-class="select2-purple" name="manu" id="manu">
             <option value="" th:selected="${data.manufacturer==null || data.manufacturer == ''}">All Manufacturers
             </option>
             <option th:each="manu : ${manuList}" th:value="${manu}" th:text="${manu}"
@@ -396,7 +396,7 @@
         </select>
     </div>
     <div class="d-flex mb-2">
-        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="ff" id="ff">
+        <select class="select2" data-dropdown-css-class="select2-purple" name="ff" id="ff">
             <option value="" th:selected="${data.formFactor==null || data.formFactor == ''}">All Motherboard Form Factor
             </option>
             <option th:each="ff : ${ffList}" th:value="${ff}" th:text="${ff}"
@@ -407,7 +407,7 @@
     </div>
 
     <div class="d-flex mb-2">
-        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="psuf" id="psuf">
+        <select class="select2" data-dropdown-css-class="select2-purple" name="psuf" id="psuf">
             <option value="" th:selected="${data.pSUFormFactor==null || data.pSUFormFactor == ''}">All PSU Form Factor
             </option>
             <option th:each="psuf : ${psufList}" th:value="${psuf}" th:text="${psuf}"
@@ -430,7 +430,7 @@
     <h3 class="sidebar-title">Monitor Filters</h3>
 
     <div class="d-flex mb-2">
-        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="manu" id="manu">
+        <select class="select2" data-dropdown-css-class="select2-purple" name="manu" id="manu">
             <option value="" th:selected="${data.manufacturer==null || data.manufacturer == ''}">All Manufacturers
             </option>
             <option th:each="manu : ${manuList}" th:value="${manu}" th:text="${manu}"
@@ -441,7 +441,7 @@
     </div>
 
     <div class="d-flex mb-2">
-        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="rs" id="rs">
+        <select class="select2" data-dropdown-css-class="select2-purple" name="rs" id="rs">
             <option value="" th:selected="${data.resolution==null || data.resolution == ''}">All Resolution
             </option>
             <option th:each="rs : ${rsList}" th:value="${rs}" th:text="${rs}"

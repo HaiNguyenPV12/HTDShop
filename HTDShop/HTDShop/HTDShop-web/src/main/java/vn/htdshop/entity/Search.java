@@ -56,7 +56,7 @@ public class Search {
             }
         }
         if (params.get("to") == null) {
-            this.to = 10000d;
+            this.to = 1000000d;
         } else {
             try {
                 this.to = Double.parseDouble(params.get("to"));
