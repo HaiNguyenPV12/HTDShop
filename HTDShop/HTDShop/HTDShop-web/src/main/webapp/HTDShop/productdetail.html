@@ -166,7 +166,7 @@
                                         th:href="${'#pro-details'+(it.index+1)}" data-toggle="tab" role="tab"
                                         th:aria-selected="${it.index==0?'true':'false'}"
                                         style="height:8rem;display: flex;align-items: center;">
-                                        <img th:src="@{/images/__${img.imagePath}__}" alt=""
+                                        <img th:src="@{/images/__${(img.thumbnailPath!=null && !img.thumbnailPath.isEmpty())? img.thumbnailPath : img.imagePath}__}" alt=""
                                             th:onerror="'this.onerror=null;this.src=&quot;'+@{/images/noimage.png}+'&quot;'"
                                             style="max-height: 8rem;max-width: 100%;">
                                     </a>

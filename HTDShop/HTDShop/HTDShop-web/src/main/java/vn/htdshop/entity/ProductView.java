@@ -1,8 +1,6 @@
 package vn.htdshop.entity;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * ProductView
@@ -22,6 +20,8 @@ public class ProductView implements Serializable {
     private String status;
 
     private String image;
+
+    private String imageThumbnail;
 
     private Integer imageMore;
 
@@ -49,21 +49,34 @@ public class ProductView implements Serializable {
                 break;
         }
 
-        if (p.getProductImageCollection().size() > 0) {
+        if (p.getProductImageCollection() != null && p.getProductImageCollection().size() > 0) {
             int count = 0;
             for (ProductImage pi : p.getProductImageCollection()) {
                 if (count == 0) {
                     this.image = pi.getImagePath();
+                    if (pi.getThumbnailPath() != null && !pi.getThumbnailPath().isEmpty()) {
+                        this.imageThumbnail = pi.getThumbnailPath();
+                    } else {
+                        this.imageThumbnail = pi.getImagePath();
+                    }
+                } else {
+                    if (pi.getMainImage()) {
+                        this.image = pi.getImagePath();
+                        if (pi.getThumbnailPath() != null && !pi.getThumbnailPath().isEmpty()) {
+                            this.imageThumbnail = pi.getThumbnailPath();
+                        } else {
+                            this.imageThumbnail = pi.getImagePath();
+                        }
+                    }
                 }
-                if (pi.getMainImage()) {
-                    this.image = pi.getImagePath();
-                }
+
                 count++;
             }
             this.imageMore = p.getProductImageCollection().size() - 1;
         } else {
             this.imageMore = 0;
             this.image = "";
+            this.imageThumbnail = "";
         }
         this.category = p.getCategory().getName();
     }
@@ -178,6 +191,20 @@ public class ProductView implements Serializable {
      */
     public void setImage(String image) {
         this.image = image;
+    }
+
+    /**
+     * @return the image
+     */
+    public String getImageThumbnail() {
+        return imageThumbnail;
+    }
+
+    /**
+     * @param image the image to set
+     */
+    public void setImageThumbnail(String imageThumbnail) {
+        this.imageThumbnail = imageThumbnail;
     }
 
     /**

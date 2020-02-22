@@ -12,6 +12,8 @@ public class ProductImageView implements Serializable {
 
     private String imagePath;
 
+    private String thumbnailPath;
+
     private Boolean mainImage;
 
     public ProductImageView() {
@@ -21,12 +23,19 @@ public class ProductImageView implements Serializable {
     public ProductImageView(ProductImage pi) {
         this.id = pi.getId();
         this.imagePath = pi.getImagePath();
+        if (pi.getThumbnailPath() != null && !pi.getThumbnailPath().isEmpty()) {
+            this.thumbnailPath = pi.getThumbnailPath();
+        } else {
+            this.thumbnailPath = pi.getImagePath();
+        }
+
         this.mainImage = pi.getMainImage();
     }
 
-    public ProductImageView(Integer id, String imagePath, Boolean mainImage) {
+    public ProductImageView(Integer id, String imagePath, String thumbnailPath, Boolean mainImage) {
         this.id = id;
         this.imagePath = imagePath;
+        this.thumbnailPath = thumbnailPath;
         this.mainImage = mainImage;
     }
 
@@ -67,6 +76,20 @@ public class ProductImageView implements Serializable {
      */
     public void setMainImage(Boolean mainImage) {
         this.mainImage = mainImage;
+    }
+
+    /**
+     * @return the thumbnailPath
+     */
+    public String getThumbnailPath() {
+        return thumbnailPath;
+    }
+
+    /**
+     * @param thumbnailPath the thumbnailPath to set
+     */
+    public void setThumbnailPath(String thumbnailPath) {
+        this.thumbnailPath = thumbnailPath;
     }
 
 }

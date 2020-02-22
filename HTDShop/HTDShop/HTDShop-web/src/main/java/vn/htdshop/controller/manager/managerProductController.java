@@ -9,8 +9,10 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -22,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,6 +39,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import vn.htdshop.entity.*;
 import vn.htdshop.sb.*;
+import vn.htdshop.utility.ImageThumbnail;
 
 /**
  *
@@ -123,7 +127,7 @@ public class managerProductController {
         return result;
     }
 
-    // ==== PRODUCT - DISABLE MULTIPLE PRODUCTS ==== \\
+    // ==== PRODUCT - SET STATUS MULTIPLE PRODUCTS ==== \\
     @RequestMapping(value = "setStatus", method = RequestMethod.POST)
     public @ResponseBody String setStatus(Model model, HttpServletResponse response,
             @RequestParam(value = "id", required = false) Integer[] id,
@@ -458,11 +462,13 @@ public class managerProductController {
                 // First, delete product's images
                 for (ProductImage img : p.getProductImageCollection()) {
                     File deleteFile = new File(System.getProperty("catalina.home") + "/img/" + img.getImagePath());
+                    File deleteThumbnailFile = new File(System.getProperty("catalina.home") + "/img/" + img.getThumbnailPath());
                     if (deleteFile.delete()) {
                         System.out.println("Deleted image: " + deleteFile.getPath());
                     } else {
                         System.out.println("Cannot delete image: " + deleteFile.getPath());
                     }
+                    deleteThumbnailFile.delete();
                     productImageFacade.remove(img);
                 }
 
@@ -501,6 +507,8 @@ public class managerProductController {
                     } else {
                         System.out.println("Cannot delete image: " + deleteFile.getPath());
                     }
+                    File deleteThumbnailFile = new File(System.getProperty("catalina.home") + "/img/" + img.getThumbnailPath());
+                    deleteThumbnailFile.delete();
                     // Then, delete record in database
                     productImageFacade.remove(img);
                 }
@@ -514,18 +522,23 @@ public class managerProductController {
             if (!checkPath.exists()) {
                 checkPath.mkdirs();
             }
+
             // With each of file, do following
             int count = 0;
             for (MultipartFile multipartFile : uploadimg) {
                 // File name: [count].[extension]
-                // TODO: check extensions
-                String fileName = count + multipartFile.getOriginalFilename()
-                        .substring(multipartFile.getOriginalFilename().lastIndexOf("."));
+                String originName = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
+                String ext = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
+                String fileName = originName + "." + ext;
+                String thumbnailFileName = originName + "_th." + ext;
                 // file path:
                 // Path_to_glassfish/domains/domain_name/img/product/product_id/count.extension
                 String filePath = folderPath + "/" + fileName;
+                String thumbnailFilePath = folderPath + "/" + thumbnailFileName;
                 // Use Files to copy multipartFile's input stream to declared path
                 Files.copy(multipartFile.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(ImageThumbnail.getImageThumbnail(multipartFile), Paths.get(thumbnailFilePath),
+                        StandardCopyOption.REPLACE_EXISTING);
 
                 // Create image data in database
                 ProductImage pimg = new ProductImage();
@@ -535,6 +548,7 @@ public class managerProductController {
                     pimg.setMainImage(false);
                 }
                 pimg.setImagePath("product/" + product.getId() + "/" + fileName);
+                pimg.setThumbnailPath("product/" + product.getId() + "/" + thumbnailFileName);
                 pimg.setProduct(product);
                 productImageFacade.create(pimg);
                 count++;
