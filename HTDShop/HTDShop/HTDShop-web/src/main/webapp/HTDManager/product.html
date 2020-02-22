@@ -28,8 +28,8 @@
 
         .product-img {
             cursor: pointer;
-            height: 6rem;
-            width: 8rem;
+            height: 4rem;
+            width: 6rem;
             object-fit: contain;
             background-color: white;
             border: 1px solid #9628f08c;
@@ -202,7 +202,7 @@
                         );
                         thisCol.search(val ? '^' + val + '$' : '', true, false).draw();
                     });
-                    $("#events").html('0 row(s) selected');
+                    $("#events").html('0 item(s) selected');
 
                     $.fn.dataTable.ext.search.push(
                         function (settings, data, dataIndex) {
@@ -305,7 +305,7 @@
                 items: 'row',
                 info: false
             },
-            dom: "<'row'<'#events.col-sm-12 col-md-4'><'col-sm-12 col-md-8 text-right'B>>" +
+            dom: "<'row'<'#events.col-sm-12 col-md-3'><'col-sm-12 col-md-9 text-right'B>>" +
                 "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
                 "<'row'<'col-sm-12'tr>>" +
                 "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
@@ -315,7 +315,8 @@
                     action: function () {
                         table.rows().deselect();
                         table.rows({ search: 'applied' }).select()
-                    }
+                    },
+                    enabled: false
                 },
                 'selectAll',
                 'selectNone',
@@ -333,7 +334,7 @@
                                 });
                                 myFormData.append("status", '3');
                                 var url = /*[[@{/manager/product/setStatus}]]*/'';
-                                doAjax(url, myFormData,'Successfully disabled item(s).');
+                                doAjax(url, myFormData, 'Successfully disabled item(s).');
                             }
                         },
                         {
@@ -350,19 +351,19 @@
                         }
                     ],
                     enabled: false
-                }, 
+                },
                 {
                     text: 'Reset filter',
                     action: function () {
-                        $("#txtSearchID").val("");
-                        $("#txtSearchName").val("");
-                        $("#txtSearchCategory").val("").trigger("change");
-                        $("#txtSearchManufacturer").val("");
+                        $("#txtSearchID").val("").change();
+                        $("#txtSearchName").val("").change();
+                        $("#txtSearchCategory").val("").change();
+                        $("#txtSearchManufacturer").val("").change();
                         $("#txtSearchPriceMin").val(0);
                         $("#txtSearchPriceMax").val(1000000);
                         $("#txtSearchStockMin").val(0);
-                        $("#txtSearchStockMax").val(10000);
-                        $("#txtSearchStatus").val("").trigger("change");
+                        $("#txtSearchStockMax").val(10000).change();
+                        $("#txtSearchStatus").val("").change();
                     }
                 }
             ],
@@ -376,8 +377,35 @@
         });
         table.on('select deselect', function (e, dt, type, indexes) {
             var count = table.rows({ selected: true }).count();
-            $("#events").html(count + ' row(s) selected');
+            $("#events").html(count + ' item(s) selected');
+
             table.button(3).enable(count > 0);
+        });
+
+        table.on('search.dt', function () {
+            var filtered = true;
+            var totalCount = table.rows().count();
+            var count = table.rows({ search: "applied" }).count();
+            if ($("#txtSearchID").val() == ""
+                && $("#txtSearchName").val() == ""
+                && $("#txtSearchCategory").val() == ""
+                && $("#txtSearchManufacturer").val() == ""
+                && parseFloat($("#txtSearchPriceMin").val()) == 0
+                && parseFloat($("#txtSearchPriceMax").val()) == 1000000
+                && parseInt($("#txtSearchStockMin").val()) == 0
+                && parseInt($("#txtSearchStockMax").val()) == 10000
+                && $("#txtSearchStatus").val() == "") {
+                filtered = false;
+            } else {
+                filtered = true;
+            }
+
+            if (count > 0 && count < totalCount) {
+                table.button(0).text("Select filtered (" + count + " items)");
+            } else {
+                table.button(0).text("Select filtered");
+            }
+            table.button(0).enable(filtered);
         });
 
         function doAjax(formUrl, formData, successText) {
