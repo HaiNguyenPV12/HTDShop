@@ -39,6 +39,17 @@
         table.dataTable tbody>tr>.selected {
             background-color: #0275d8 !important;
         }
+
+        .select2-selection__choice {
+            /*float: left;*/
+            display: inline;
+            float: none;
+        }
+
+        .select2-container .select2-selection {
+            height: 3rem;
+            overflow: scroll;
+        }
     </style>
 
 </head>
@@ -152,7 +163,8 @@
                 $(this).html('');
             } else if (title == "Status" || title == "Category") {
                 // Collum that using select filter
-                $(this).html('<select id="txtSearch' + title + '" class="form-control"><option value="">All</option></select>');
+                $(this).html('<select id="txtSearch' + title + '" class="form-control select2 multiple" data-dropdown-css-class="select2-purple"></select>');
+                // $(this).html('<select id="txtSearch' + title + '" class="form-control select2 multiple"><option value="">All</option></select>');
             } else if (title == "Price") {
                 $(this).html('<div class="d-flex"><input type="number" id="txtSearch' + title + 'Min" placeholder="Min" class="form-control" style="width:100%" value="0"/> - <input type="number" id="txtSearch' + title + 'Max" placeholder="Max" class="form-control" style="width:100%" value="1000000"/></div>');
             } else if (title == "Stock") {
@@ -173,6 +185,7 @@
                 });
                 $('#tblProduct thead').append(r);
                 $('div.dataTables_length').addClass('form-inline');
+
                 table.columns().every(function () {
                     var thisCol = this;
                     // Set up action listener for text filter
@@ -195,35 +208,54 @@
                             $(thisSelect).append("<option value='1'>"+Is selling+"</option>");
                         }*/
                     });
+
+                    $('select', this.footer()).select2({
+                        multiple: true,
+                        closeOnSelect: false
+                    });
+
                     // Set up action listener for select filter
                     $('select', this.footer()).on('change', function () {
-                        var val = $.fn.dataTable.util.escapeRegex(
-                            $(this).val()
-                        );
-                        thisCol.search(val ? '^' + val + '$' : '', true, false).draw();
-                    });
-                    $("#events").html('0 item(s) selected');
+                        var data = $.map($(this).select2('data'), function (value, key) {
+                            return value.text ? '^' + $.fn.dataTable.util.escapeRegex(value.text) + '$' : null;
+                        });
 
-                    $.fn.dataTable.ext.search.push(
-                        function (settings, data, dataIndex) {
-                            var pricemin = isNaN(+$('#txtSearchPriceMin').val()) ? 0 : +$('#txtSearchPriceMin').val();
-                            var pricemax = isNaN(+$('#txtSearchPriceMax').val()) ? 1000000 : +$('#txtSearchPriceMax').val();
-                            var price = parseFloat(data[4]) || 0;
-                            var stockmin = isNaN(+$('#txtSearchStockMin').val()) ? 0 : +$('#txtSearchStockMin').val();
-                            var stockmax = isNaN(+$('#txtSearchStockMax').val()) ? 10000 : +$('#txtSearchStockMax').val();
-                            var stock = parseInt(data[5]) || 0;
-                            if ((pricemin <= price && price <= pricemax) && (stockmin <= stock && stock <= stockmax)) {
-                                return true;
-                            }
-                            return false;
+                        //if no data selected use ""
+                        if (data.length === 0) {
+                            data = [""];
                         }
-                    );
-                    $('#txtSearchPriceMin, #txtSearchPriceMax, #txtSearchStockMin, #txtSearchStockMax').on("keyup change clear", function () {
-                        table.draw();
+
+                        //join array into string with regex or (|)
+                        var val = data.join('|');
+                        // var val = $.fn.dataTable.util.escapeRegex(
+                        //     $(this).val()
+                        // );
+                        thisCol.search(val ? '^' + val + '$' : '', true, false).draw();
                     });
                 });
 
+                $('.select2').val(null).trigger('change');
 
+                $("#events").html('0 item(s) selected');
+
+                $.fn.dataTable.ext.search.push(
+                    function (settings, data, dataIndex) {
+                        var pricemin = isNaN(+$('#txtSearchPriceMin').val()) ? 0 : +$('#txtSearchPriceMin').val();
+                        var pricemax = isNaN(+$('#txtSearchPriceMax').val()) ? 1000000 : +$('#txtSearchPriceMax').val();
+                        var price = parseFloat(data[4]) || 0;
+                        var stockmin = isNaN(+$('#txtSearchStockMin').val()) ? 0 : +$('#txtSearchStockMin').val();
+                        var stockmax = isNaN(+$('#txtSearchStockMax').val()) ? 10000 : +$('#txtSearchStockMax').val();
+                        var stock = parseInt(data[5]) || 0;
+                        if ((pricemin <= price && price <= pricemax) && (stockmin <= stock && stock <= stockmax)) {
+                            return true;
+                        }
+                        return false;
+                    }
+                );
+                $('#txtSearchPriceMin, #txtSearchPriceMax, #txtSearchStockMin, #txtSearchStockMax')
+                    .on("keyup change clear", function () {
+                        table.draw();
+                    });
             },
             "paging": true,
             "lengthChange": true,
