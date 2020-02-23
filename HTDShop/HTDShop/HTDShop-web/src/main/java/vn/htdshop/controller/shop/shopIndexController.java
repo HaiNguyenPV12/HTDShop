@@ -38,9 +38,6 @@ public class shopIndexController {
     @EJB(mappedName = "PreBuiltFacade")
     PreBuiltFacadeLocal prebuiltFacade;
 
-    // @EJB(mappedName = "UserFacade")
-    // UserFacadeLocal userFacade;
-
     @EJB(mappedName = "CustomerFacade")
     CustomerFacadeLocal customerFacade;
 
