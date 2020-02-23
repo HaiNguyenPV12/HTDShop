@@ -166,7 +166,8 @@
                                         th:href="${'#pro-details'+(it.index+1)}" data-toggle="tab" role="tab"
                                         th:aria-selected="${it.index==0?'true':'false'}"
                                         style="height:8rem;display: flex;align-items: center;">
-                                        <img th:src="@{/images/__${(img.thumbnailPath!=null && !img.thumbnailPath.isEmpty())? img.thumbnailPath : img.imagePath}__}" alt=""
+                                        <img th:src="@{/images/__${(img.thumbnailPath!=null && !img.thumbnailPath.isEmpty())? img.thumbnailPath : img.imagePath}__}"
+                                            alt=""
                                             th:onerror="'this.onerror=null;this.src=&quot;'+@{/images/noimage.png}+'&quot;'"
                                             style="max-height: 8rem;max-width: 100%;">
                                     </a>
@@ -188,8 +189,7 @@
                                     <div class="tab-pane active show fade"
                                         th:if="${product.productImageCollection.isEmpty()}" id="pro-details1"
                                         role="tabpanel" style="text-align: center;">
-                                        <div class="easyzoom"
-                                            style="display:inline-block;position: relative;height:25rem">
+                                        <div style="display:inline-block;position: relative;height:25rem">
                                             <img th:src="@{/images/noimage.png}" alt=""
                                                 style="width: auto;height:100%;max-height: 25rem;max-width: 100%;object-fit: contain;">
                                         </div>
@@ -232,7 +232,7 @@
                     </div>
                     <div class="col-md-12 col-lg-5 col-12">
                         <div class="product-details-content">
-                            <h3>[[${product.name}]]</h3>
+                            <h3 th:text="${product.name}"></h3>
                             <div class="rating-number">
                                 <span>
                                     <th:block
@@ -270,7 +270,7 @@
                                         th:max="${product.stock}">
                                 </div>
                                 <div class="mt-3">
-                                    &ThickSpace;/ [[${product.stock}]]
+                                    &ThickSpace;/ <th:block th:text="${product.stock}"></th:block>
                                 </div>
                                 <div class="quickview-btn-cart">
                                     <a class="btn-hover-black"
@@ -362,7 +362,8 @@
                             <div class="product-details-cati-tag mt-35">
                                 <ul>
                                     <li class="categories-title">Categories :</li>
-                                    <li><a href="#">[[${product.category.name}]]</a></li>
+                                    <li><a th:href="@{/search?(category=${product.category.id})}"
+                                            th:text="${product.category.name}"></a></li>
                                 </ul>
                             </div>
 

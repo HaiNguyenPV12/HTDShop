@@ -8,10 +8,94 @@
 
 <body>
     <div layout:fragment="content">
-        <div class="row">
+        <div class="row mb-2">
             <div class="col-lg-6">
                 Hi <span class="font-weight-bold" th:text="${#session.getAttribute('loggedInStaff').firstName}"></span>!
 
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col-lg-6 col-6" th:if="${statistic.orderToday != null}">
+                <!-- small box -->
+                <div class="small-box bg-info">
+                    <div class="inner row text-center">
+                        <h4 class="col-sm-12 border-bottom pb-2"><strong>ORDERS</strong></h4>
+                        <div class="col-sm-4">
+                            <h3 th:text="${statistic.orderToday}">15</h3>
+                            <p>new today</p>
+                        </div>
+                        <div class="col-sm-4">
+                            <h3 th:text="${statistic.orderThisMonth}">150</h3>
+                            <p>this month</p>
+                        </div>
+                        <div class="col-sm-4">
+                            <h3 th:text="${statistic.orderThisYear}">1500</h3>
+                            <p>this year</p>
+                        </div>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-bag"></i>
+                    </div>
+                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+
+
+            <!-- ./col -->
+            <div class="col-lg-6 col-6" th:if="${statistic.incomeToday != null}">
+                <!-- small box -->
+                <div class="small-box bg-success">
+                    <div class="inner row  text-center">
+                        <h4 class="col-sm-12 border-bottom pb-2"><strong>INCOME</strong></h4>
+                        <div class="col-sm-4">
+                            <h3><th:block th:text="${statistic.incomeToday}"></th:block><sup style="font-size: 20px">$</sup></h3>
+                            <p>today</p>
+                        </div>
+                        <div class="col-sm-4">
+                            <h3><th:block th:text="${statistic.incomeThisMonth}"></th:block><sup style="font-size: 20px">$</sup></h3>
+                            <p>this month</p>
+                        </div>
+                        <div class="col-sm-4">
+                            <h3><th:block th:text="${statistic.incomeThisYear}"></th:block><sup style="font-size: 20px">$</sup></h3>
+                            <p>this year</p>
+                        </div>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-stats-bars"></i>
+                    </div>
+                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+            
+        </div>
+
+        <div class="row">
+            <!-- ./col -->
+            <div class="col-lg-6 col-6">
+                <!-- small box -->
+                <div class="small-box bg-danger">
+                    <div class="inner row text-center">
+                        <h4 class="col-sm-12 border-bottom pb-2"><strong>BEST SELLERS THIS MONTH</strong></h4>
+                        <div class="col-sm-4">
+                            <strong>Product</strong>
+                            <img th:src="@{/images/product/1/0.jpg}" style="width: 100%; object-fit: contain;"/>
+                            <i>AMD Ryzen 5 3600 3.6 GHz 6-Core</i>
+                        </div>
+                        <div class="col-sm-4">
+                            <strong>Manufacturer</strong>
+                            <h4>Gigabyte</h4>
+                        </div>
+                        <div class="col-sm-4">
+                            <strong>Category</strong>
+                            <h4>Mainboard</h4>
+                        </div>
+                    </div>
+                <div class="icon">
+                    <i class="ion ion-person-add"></i>
+                </div>
+                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
             </div>
         </div>
     </div>

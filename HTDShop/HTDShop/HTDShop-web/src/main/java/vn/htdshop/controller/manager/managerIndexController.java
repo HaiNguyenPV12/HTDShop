@@ -5,12 +5,19 @@
  */
 package vn.htdshop.controller.manager;
 
+
+import java.util.Comparator;
+import java.util.Date;
+import java.util.stream.Collectors;
+
 import javax.ejb.EJB;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.joda.time.DateTimeComparator;
+import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,6 +43,12 @@ public class managerIndexController {
     @EJB(mappedName = "StaffFacade")
     StaffFacadeLocal staffFacade;
 
+    @EJB(mappedName = "ProductFacade")
+    ProductFacadeLocal productFacade;
+
+    @EJB(mappedName = "Order1Facade")
+    Order1FacadeLocal orderFacade;
+
     @Autowired
     HttpSession session;
 
@@ -58,7 +71,62 @@ public class managerIndexController {
             model.addAttribute("goodAlert", model.asMap().get("goodAlert"));
         }
 
-        // Else, continue to index
+        // Statistic
+        ManagerStatistic statistic = new ManagerStatistic();
+        if (managerService.checkLoginWithRole("order_read")) {
+            // Orders and Income
+            int oToday = 0;
+            int oThisMonth = 0;
+            int oThisYear = 0;
+            double incomeToday = 0d;
+            double incomeThisMonth = 0d;
+            double incomeThisYear = 0d;
+            Date today = new Date();
+            int thisMonth = new LocalDate().getMonthOfYear();
+            int thisYear = new LocalDate().getYear();
+            DateTimeComparator comparator = DateTimeComparator.getDateOnlyInstance();
+            for (Order1 order : orderFacade.findAll().stream().filter(o -> o.getOrderStatus() != 5)
+                    .collect(Collectors.toList())) {
+                double income = 0d;
+                if (new LocalDate(order.getOrderDate()).getYear() == thisYear) {
+                    oThisYear++;
+                    if (order.getOrderStatus() == 4) {
+                        for (OrderDetail od : order.getOrderDetailCollection()) {
+                            income += (od.getPrice() * od.getQuantity());
+                        }
+                        incomeThisYear += income;
+                    }
+                }
+
+                if (new LocalDate(order.getOrderDate()).getMonthOfYear() == thisMonth) {
+                    oThisMonth++;
+                    if (order.getOrderStatus() == 4) {
+                        incomeThisMonth += income;
+                    }
+                }
+
+                if (comparator.compare(order.getOrderDate(), today) == 0) {
+                    oToday++;
+                    if (order.getOrderStatus() == 4) {
+                        incomeThisMonth += income;
+                    }
+                }
+            }
+            statistic.setIncomeToday(incomeToday);
+            statistic.setIncomeThisMonth(incomeThisMonth);
+            statistic.setIncomeThisYear(incomeThisYear);
+            statistic.setOrderToday(oToday);
+            statistic.setOrderThisMonth(oThisMonth);
+            statistic.setOrderThisYear(oThisYear);
+        }
+
+        if (managerService.checkLoginWithRole("product_read")) {
+            
+        }
+
+        model.asMap().put("statistic", statistic);
+
+        // Continue to index
         return "HTDManager/index";
     }
 
@@ -110,7 +178,7 @@ public class managerIndexController {
                 session.setAttribute("loggedInStaff", result);
                 if (remember != null) {
                     Cookie cookie = new Cookie("loggedInStaff", staff.getUsername());
-                    cookie.setMaxAge(60*60*24*7*4);
+                    cookie.setMaxAge(60 * 60 * 24 * 7 * 4);
                     response.addCookie(cookie);
                 }
 
