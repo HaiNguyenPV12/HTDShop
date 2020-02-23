@@ -5,9 +5,9 @@
  */
 package vn.htdshop.controller.manager;
 
-
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
@@ -27,10 +27,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import vn.htdshop.entity.*;
 import vn.htdshop.sb.*;
+import vn.htdshop.utility.ManagerService;
 
 /**
  *
@@ -45,6 +47,12 @@ public class managerIndexController {
 
     @EJB(mappedName = "ProductFacade")
     ProductFacadeLocal productFacade;
+
+    @EJB(mappedName = "CategoryFacade")
+    CategoryFacadeLocal categoryFacade;
+
+    @EJB(mappedName = "OrderDetailFacade")
+    OrderDetailFacadeLocal orderDetailFacade;
 
     @EJB(mappedName = "Order1Facade")
     Order1FacadeLocal orderFacade;
@@ -73,7 +81,7 @@ public class managerIndexController {
 
         // Statistic
         ManagerStatistic statistic = new ManagerStatistic();
-        if (managerService.checkLoginWithRole("order_read")) {
+        if (managerService.checkLoginWithRole("revenue_read")) {
             // Orders and Income
             int oToday = 0;
             int oThisMonth = 0;
@@ -92,7 +100,7 @@ public class managerIndexController {
                     oThisYear++;
                     if (order.getOrderStatus() == 4) {
                         for (OrderDetail od : order.getOrderDetailCollection()) {
-                            income += (od.getPrice() * od.getQuantity());
+                            income += od.getPrice();
                         }
                         incomeThisYear += income;
                     }
@@ -121,13 +129,121 @@ public class managerIndexController {
         }
 
         if (managerService.checkLoginWithRole("product_read")) {
-            
+            // Best seller product
+
+            // Comparator<Product> cByMonth = new Comparator<Product>() {
+            // @Override
+            // public int compare(Product p1, Product p2) {
+            // return Integer.compare(
+            // p1.getOrderDetailCollection().stream()
+            // .filter(o -> o.getOrder1().getOrderStatus() == 4
+            // && new LocalDate(o.getOrder1().getPaidDate())
+            // .getMonthOfYear() == new LocalDate().getMonthOfYear())
+            // .collect(Collectors.toList()).size(),
+            // p2.getOrderDetailCollection().stream()
+            // .filter(o -> o.getOrder1().getOrderStatus() == 4
+            // && new LocalDate(o.getOrder1().getPaidDate())
+            // .getMonthOfYear() == new LocalDate().getMonthOfYear())
+            // .collect(Collectors.toList()).size());
+            // }
+            // };
+            // Product p =
+            // productFacade.findAll().stream().sorted(cByMonth).findFirst().orElse(null);
+            // if (p != null && p.getOrderDetailCollection().stream().filter(o ->
+            // o.getOrder1().getOrderStatus() == 4
+            // && new LocalDate(o.getOrder1().getPaidDate()).getMonthOfYear() == new
+            // LocalDate().getMonthOfYear())
+            // .collect(Collectors.toList()).size() > 0) {
+            // statistic.setProductThisMonth(p.getName());
+            // if (p.getProductImageCollection().size() > 0) {
+            // ProductImage pi = p.getProductImageCollection().stream().filter(img ->
+            // img.getMainImage())
+            // .findFirst().orElse(null);
+            // if (pi == null) {
+            // pi = (ProductImage) p.getProductImageCollection().toArray()[0];
+            // }
+
+            // if (pi.getThumbnailPath() != null && !pi.getThumbnailPath().isEmpty()) {
+            // statistic.setProductImageThisMonth(pi.getThumbnailPath());
+            // } else {
+            // statistic.setProductImageThisMonth(pi.getImagePath());
+            // }
+            // } else {
+            // statistic.setProductImageThisMonth("images/noimage.png");
+            // }
+            // } else {
+            // statistic.setProductThisMonth("No data");
+            // statistic.setProductImageThisMonth("");
+            // }
+
+            Map<Integer, Integer> productMonth = orderDetailFacade.getTopProduct("month", 1);
+            if (!productMonth.isEmpty()) {
+                Product p = productFacade.find(productMonth.entrySet().iterator().next().getKey());
+                statistic.setProductThisMonth(p.getName());
+                if (p.getProductImageCollection().size() > 0) {
+                    ProductImage pi = p.getProductImageCollection().stream().filter(img -> img.getMainImage())
+                            .findFirst().orElse(null);
+                    if (pi == null) {
+                        pi = (ProductImage) p.getProductImageCollection().toArray()[0];
+                    }
+                    if (pi.getThumbnailPath() != null && !pi.getThumbnailPath().isEmpty()) {
+                        statistic.setProductImageThisMonth(pi.getThumbnailPath());
+                    } else {
+                        statistic.setProductImageThisMonth(pi.getImagePath());
+                    }
+                } else {
+                    statistic.setProductImageThisMonth("images/noimage.png");
+                }
+            } else {
+                statistic.setProductThisMonth("No data");
+                statistic.setProductImageThisMonth("");
+            }
+
+            // Best seller category
+            Map<Integer, Integer> categoryMonth = orderDetailFacade.getTopCategory("month", 1);
+            if (!categoryMonth.isEmpty()) {
+                Category c = categoryFacade.find(categoryMonth.entrySet().iterator().next().getKey());
+                statistic.setCategoryThisMonth(c.getName());
+            } else {
+                statistic.setCategoryThisMonth("No data");
+            }
+
+            // Best seller manufacturer
+            Map<String, Integer> manuMonth = orderDetailFacade.getTopManufacturer("month", 1);
+            if (!manuMonth.isEmpty()) {
+                statistic.setManuThisMonth(manuMonth.entrySet().iterator().next().getKey());
+            } else {
+                statistic.setManuThisMonth("No data");
+            }
+
         }
 
         model.asMap().put("statistic", statistic);
 
         // Continue to index
         return "HTDManager/index";
+
+    }
+
+    @RequestMapping(value = "topProduct", method = RequestMethod.GET)
+    public @ResponseBody Object getTopProduct(HttpServletResponse response, @RequestParam String datepart,
+            @RequestParam Integer top) {
+        response.setContentType("application/json");
+        return orderDetailFacade.getTopProduct(datepart, top);
+    }
+
+    @RequestMapping(value = "topCategory", method = RequestMethod.GET)
+    public @ResponseBody Object getTopCategory(HttpServletResponse response, @RequestParam String datepart,
+            @RequestParam Integer top) {
+        response.setContentType("application/json");
+        return orderDetailFacade.getTopCategory(datepart, top);
+    }
+
+    @RequestMapping(value = "topManu", method = RequestMethod.GET)
+    public @ResponseBody Object getTopManu(HttpServletResponse response, @RequestParam String datepart,
+            @RequestParam Integer top) {
+        response.setContentType("application/json");
+        return orderDetailFacade.getTopManufacturer(datepart, top);
     }
 
     @RequestMapping(value = "login", method = RequestMethod.GET)

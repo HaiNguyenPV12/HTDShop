@@ -36,6 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 import vn.htdshop.entity.*;
 import vn.htdshop.sb.*;
 import vn.htdshop.utility.ImageThumbnail;
+import vn.htdshop.utility.ManagerService;
 
 /**
  *

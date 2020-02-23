@@ -25,6 +25,7 @@ import vn.htdshop.entity.Product;
 import vn.htdshop.sb.CategoryFacadeLocal;
 import vn.htdshop.sb.PreBuiltFacadeLocal;
 import vn.htdshop.sb.ProductFacadeLocal;
+import vn.htdshop.utility.ShopService;
 
 /**
  *

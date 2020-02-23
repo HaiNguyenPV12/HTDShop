@@ -5,6 +5,7 @@
  */
 package vn.htdshop.sb;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -107,6 +108,9 @@ public class ProductFacade extends AbstractFacade<Product> implements ProductFac
             return null;
         }
 
+        if (q.getResultList().size() == 0) {
+            return new ArrayList<String>();
+        }
         return (List<String>) q.getResultList();
     }
 

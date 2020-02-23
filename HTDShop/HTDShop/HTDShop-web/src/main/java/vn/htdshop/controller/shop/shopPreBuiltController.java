@@ -28,6 +28,7 @@ import vn.htdshop.sb.PreBuiltFacadeLocal;
 import vn.htdshop.sb.PreBuiltRatingFacadeLocal;
 import vn.htdshop.sb.ProductFacadeLocal;
 import vn.htdshop.sb.PromotionFacadeLocal;
+import vn.htdshop.utility.ShopService;
 
 /**
  *

@@ -72,23 +72,23 @@
 
         <div class="row">
             <!-- ./col -->
-            <div class="col-lg-6 col-6">
+            <div class="col-lg-6 col-6" th:if="${statistic.productThisMonth != null}">
                 <!-- small box -->
                 <div class="small-box bg-danger">
                     <div class="inner row text-center">
                         <h4 class="col-sm-12 border-bottom pb-2"><strong>BEST SELLERS THIS MONTH</strong></h4>
                         <div class="col-sm-4">
                             <strong>Product</strong>
-                            <img th:src="@{/images/product/1/0.jpg}" style="width: 100%; object-fit: contain; max-height: 8rem;"/>
-                            <i>AMD Ryzen 5 3600 3.6 GHz 6-Core</i>
+                            <img th:src="@{/images/__${statistic.productImageThisMonth}__}" style="width: 100%; object-fit: contain; max-height: 8rem;" th:if="${!statistic.productImageThisMonth.isEmpty()}"/>
+                            <p><i th:text="${statistic.productThisMonth}">AMD Ryzen 5 3600 3.6 GHz 6-Core</i></p>
                         </div>
                         <div class="col-sm-4">
                             <strong>Manufacturer</strong>
-                            <h4>Gigabyte</h4>
+                            <h4 th:text="${statistic.manuThisMonth}">Gigabyte</h4>
                         </div>
                         <div class="col-sm-4">
                             <strong>Category</strong>
-                            <h4>Mainboard</h4>
+                            <h4 th:text="${statistic.categoryThisMonth}">Mainboard</h4>
                         </div>
                     </div>
                 <div class="icon">

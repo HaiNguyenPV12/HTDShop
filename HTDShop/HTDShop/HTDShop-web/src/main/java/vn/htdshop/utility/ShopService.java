@@ -1,4 +1,4 @@
-package vn.htdshop.controller.shop;
+package vn.htdshop.utility;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,11 +48,12 @@ public class ShopService {
     @Autowired
     HttpServletRequest request;
 
+    private List<CartItem> cart = null;
+
     public List<CartItem> getCart() {
         // Compare quantity with product's stock
-        List<CartItem> result = (List<CartItem>) session.getAttribute("cart");
-        if (result != null) {
-            for (CartItem item : result) {
+        if (cart != null) {
+            for (CartItem item : cart) {
                 Product p = productFacade.find(item.getId());
                 if (item.getQuan() > p.getStock()) {
                     item.setQuan(p.getStock());
@@ -61,9 +62,10 @@ public class ShopService {
                     item.setQuan(0);
                 }
             }
+        } else {
+            cart = new ArrayList<>();
         }
-        session.setAttribute("cart", result);
-        return result;
+        return cart;
     }
 
     public Double getCartTotal() {

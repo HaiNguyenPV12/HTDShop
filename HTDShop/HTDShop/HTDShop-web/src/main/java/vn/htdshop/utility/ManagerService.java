@@ -1,4 +1,4 @@
-package vn.htdshop.controller.manager;
+package vn.htdshop.utility;
 
 import java.util.Arrays;
 
