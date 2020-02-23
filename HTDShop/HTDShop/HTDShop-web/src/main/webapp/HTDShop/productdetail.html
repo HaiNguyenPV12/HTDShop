@@ -124,6 +124,10 @@
         .tab-pane li {
             list-style: square;
         }
+
+        .border-purple {
+            border-color: #9628f08c !important
+        }
     </style>
 </head>
 
@@ -135,7 +139,8 @@
                 <div class="breadcrumb-content text-center">
                     <ul>
                         <li><a th:href="@{/}">home</a></li>
-                        <li><a th:href="@{/search?category=__${product.category.id}__}">Category: <th:block th:text="${product.category.name}"></th:block></a></li>
+                        <li><a th:href="@{/search?category=__${product.category.id}__}">Category: <th:block
+                                    th:text="${product.category.name}"></th:block></a></li>
                         <li th:text="${product.name}"></li>
                     </ul>
                 </div>
@@ -149,13 +154,14 @@
                             <div class="product-details-tab mr-35 product-details-tab2">
                                 <div class="product-details-small nav mr-10 product-details-2" role=tablist
                                     style="display: block;">
-                                    <a class="active" th:if="${product.productImageCollection.isEmpty()}"
-                                        href="#pro-details1" data-toggle="tab" role="tab" aria-selected="true"
+                                    <a class="border border-purple active"
+                                        th:if="${product.productImageCollection.isEmpty()}" href="#pro-details1"
+                                        data-toggle="tab" role="tab" aria-selected="true"
                                         style="height:8rem; display: flex;align-items: center;">
                                         <img th:src="@{/images/noimage.png}" alt=""
                                             style="max-height: 8rem;width: 100%;">
                                     </a>
-                                    <a class="" th:each="img,it : ${product.productImageCollection}"
+                                    <a class="border border-purple" th:each="img,it : ${product.productImageCollection}"
                                         th:classappend="${it.index==0?'active':''}"
                                         th:href="${'#pro-details'+(it.index+1)}" data-toggle="tab" role="tab"
                                         th:aria-selected="${it.index==0?'true':'false'}"
@@ -177,7 +183,8 @@
                                         <img src="assets/img/product-details/s8.jpg" alt="">
                                     </a> -->
                                 </div>
-                                <div class="product-details-large tab-content" style="width: 100%; max-height: 30rem;">
+                                <div class="border border-purple product-details-large tab-content"
+                                    style="width: 100%; max-height: 30rem;">
                                     <div class="tab-pane active show fade"
                                         th:if="${product.productImageCollection.isEmpty()}" id="pro-details1"
                                         role="tabpanel" style="text-align: center;">
@@ -252,20 +259,23 @@
                                     <span th:if="${product.status == 1 || product.status == 2}"
                                         th:text="${'$'+#numbers.formatDecimal(product.price , 1, 'POINT', 2, 'COMMA')}"></span>
                                 </th:block>
-                                <span th:if="${product.status==3}">Unavailable</span>
-                                <span th:if="${product.status==2}"> - Cooming soon</span>
+                                <span th:if="${product.status == 3}">Unavailable</span>
+                                <span th:if="${product.status == 2}"> - Cooming soon</span>
+                                <span th:if="${product.status == 1 && product.stock == 0}"> - Out of stock</span>
                             </div>
 
                             <div class="quickview-plus-minus" th:if="${product.status==1 && product.stock > 0}">
                                 <div class="cart-plus-minus">
-                                    <input type="text" value="1" name="qtybutton" class="cart-plus-minus-box"
+                                    <input type="text" value="1" name="quan" id="quan" class="cart-plus-minus-box" min=1
                                         th:max="${product.stock}">
                                 </div>
                                 <div class="mt-3">
                                     &ThickSpace;/ [[${product.stock}]]
                                 </div>
                                 <div class="quickview-btn-cart">
-                                    <a class="btn-hover-black" href="#">add to cart</a>
+                                    <a class="btn-hover-black"
+                                        th:onclick="doAddToCart([[${product.id}]], $('#quan').val())"
+                                        style="cursor: pointer;color:#fff">add to cart</a>
                                 </div>
                             </div>
 
@@ -432,7 +442,7 @@
                                         <div class="comment-text">
                                             <span class="username">
                                                 <th:block
-                                                    th:text="${cm.user.customerCollection[0].firstName + ' ' + cm.user.customerCollection[0].lastName}">
+                                                    th:text="${cm.customer.firstName + ' ' + cm.customer.lastName}">
                                                 </th:block>
                                                 <span class="text-muted float-right" th:text="${#dates.format(cm.createdAt, 'dd/MM/yyyy HH:mm')}">8:03 PM Today</span>
                                             </span><!-- /.username -->
@@ -447,7 +457,7 @@
                                     <div class="card-comment" th:each="cmr : ${cm.productCommentReplyCollection}" >
                                         <div class="comment-text">
                                             <span class="username">
-                                                <th:block th:text="${cmr.user != null ? (cmr.user.customerCollection[0].firstName + ' ' + cmr.user.customerCollection[0].lastName) : (cmr.staff.firstName + ' ' + cmr.staff.lastName)}"></th:block>
+                                                <th:block th:text="${cmr.customer != null ? (cmr.customer.firstName + ' ' + cmr.customer.lastName) : (cmr.staff.firstName + ' ' + cmr.staff.lastName)}"></th:block>
                                                 <i class="text-muted" th:if="${cmr.staff != null}">(Staff)</i>
                                                 <span class="text-muted float-right" th:text="${#dates.format(cmr.createdAt, 'dd/MM/yyyy HH:mm')}">8:03 PM Today</span>
                                             </span><!-- /.username -->
@@ -486,9 +496,25 @@
             </div>
         </div>
         <!-- product area start -->
+
+
+        
     </div>
 
-    <script>
+    <script layout:fragment="script">
+        $("#quan").keypress(function (event) {
+            if (event.which == 45 || event.which == 189) {
+                event.preventDefault();
+            }
+        })
+        $("#quan").on("keyup change clear", function () {
+            if (+$(this).val() > +$(this).attr("max")) {
+                $(this).val($(this).attr("max"));
+            }
+            if (+$(this).val() < 1) {
+                $(this).val(1);
+            }
+        });
     </script>
 </body>
 

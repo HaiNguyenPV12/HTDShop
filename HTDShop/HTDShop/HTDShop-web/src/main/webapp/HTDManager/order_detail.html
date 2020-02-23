@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<!--
+    + To use layout, add following attribute in <html> tag: 
+        layout:decorate="~{path_from_java's_webapp_root_folder_and_without_extension}"
+
+    + To change content from layout, add following attribute to correspondly tag:
+        layout:fragment="fragment_name"
+      Declare any unique tag like <title>,... will replace it from layout 
+
+    + Any src / href attribute that using relative url from web, change it all to th:src and th:href
+    like following code:
+        th:src="@{/url_from_context_path_(not_include_context_path)}"
+        th:href="@{/url_from_context_path_(not_include_context_path)}"
+-->
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDManager/layout}">
+
+<head>
+    <title>HTD Manager - Product</title>
+    <!-- Hide default datatable's filter -->
+    <style>
+        .dataTables_filter {
+            float: right !important;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!--
+        
+    -->
+    <span layout:fragment="title">
+        <i class="fas fa-box-open" style="font-size:20px"></i> Order Detail       
+    </span>
+
+    <div layout:fragment="breadcrumb">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a th:href="@{/manager}">Home</a></li>
+            <li class="breadcrumb-item active">Order Details</li>
+        </ol>
+    </div>
+
+    <div layout:fragment="content">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card card-purple card-outline">
+                    <div class="card-body">
+
+                        <table id="tblOrderDetail" class="table table-bordered table-striped table-hover">
+                            <thead class="bg-purple">
+                                <th>ID</th>
+                                <th>Product Name</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                            </thead>
+                            <tbody>                             
+                                <tr th:each = "o : ${order.orderDetailCollection}">
+                                    <td th:text="${o.id}">001</td>
+                                    <td th:text="${o.product.name}">Intel Core i5 8400 3.0 GHz</td>
+                                    <td th:text="${o.quantity}">CPU</td>
+                                    <td th:text="'$'+${o.price}">Intel</td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="bg-purple">
+                                <th>ID</th>
+                                <th>Product Name</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <!--In case using custom script at pages using layout, add th:inline="none" like below-->
+    <script layout:fragment="script" th:inline="none">
+        
+        // Add custom filter for datatable
+        $('#tblOrderDetail tfoot th').each(function () {
+            var title = $(this).text();
+            if (title == "Action" || title == "ID") {
+                // Collum that not using filter
+                $(this).html('');
+            } else {
+                // Collum that using text filter
+                $(this).html('<input id="txtSearch' + title + '" type="text" placeholder="Search ' + title + '" class="form-control" style="width:100%" />');
+            }
+
+        });
+        // Setting up table here
+        var table = $('#tblOrderDetail').DataTable({
+            // Move filter from foot to head
+            initComplete: function () {
+                var r = $('#tblOrderDetail tfoot tr');
+                r.find('th').each(function () {
+                    $(this).css('padding', 8);
+                });
+                $('#tblOrderDetail thead').append(r);
+                $('div.dataTables_length').addClass('form-inline');
+            },
+            "paging": true,
+            "lengthChange": true,
+            "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            "searching": true,
+            "ordering": false,
+            "info": true,
+            "autoWidth": false,
+            // custom collums's width
+            "columns": [
+                { "width": "10%" },
+                { "width": "40%" },
+                { "width": "25%" },
+                { "width": "25%" }
+            ]
+        });
+        // Set up filter action
+        table.columns().every(function () {
+            var thisCol = this;
+            // Set up action listener for text filter
+            $('input', this.footer()).on('keyup change clear', function () {
+                if (thisCol.search() !== this.value) {
+                    thisCol.search(this.value).draw();
+                }
+            });
+            // Set up data for select filter
+            $('select', this.footer()).each(function () {
+                var title = thisCol.header();
+                // Using unique data from table
+                var thisSelect = this;
+                thisCol.data().unique().sort().each(function (d, j) {
+                    $(thisSelect).append("<option value='" + d + "'>" + d + "</option>");
+                });
+                /* Or using customized data
+                if($(title).html()=="Status"){
+                    var thisSelect = this;
+                    $(thisSelect).append("<option value='1'>"+Is selling+"</option>");
+                }*/
+            });
+            // Set up action listener for select filter
+            $('select', this.footer()).on('change', function () {
+                var val = $.fn.dataTable.util.escapeRegex(
+                    $(this).val()
+                );
+                thisCol.search(val ? '^' + val + '$' : '', true, false).draw();
+            });
+
+        });
+
+        // Activate tooltip
+        // To show tooltip add following attributes: data-toggle="tooltip" title="tooltip_content"
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+</body>
+
+</html>

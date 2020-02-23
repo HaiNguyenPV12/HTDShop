@@ -1,0 +1,51 @@
+<ul class="cart-dropdown">
+    <li class="single-product-cart" th:each="c, ite: ${cart}" th:with="product = ${shopSv.getProduct(c.id)}"
+        th:if="${cart != null && ite.index lt 7}">
+        <div class="cart-img">
+            <a th:href="@{/product(id=${c.id})}">
+                <img th:if="${product.productImageCollection.size() > 0}"
+                    th:src="@{/images/__${product.productImageCollection.?[mainImage==true][0].imagePath}__}" alt=""
+                    style="width: 3rem;height: 3rem;object-fit: contain;border: 1px solid #9628f08c;">
+                <img th:if="${product.productImageCollection.size() == 0}" th:src="@{/images/noimage.png}" alt=""
+                    style="width: 3rem;height: 3rem;object-fit: contain;border: 1px solid #9628f08c;">
+            </a>
+        </div>
+        <div class="cart-title">
+            <h5><a th:href="@{/product(id=${c.id})}" th:text="${product.name}">Bits Headphone</a></h5>
+            <i th:if="${c.quan > 0}">
+                <th:block
+                    th:text="${'$' + #numbers.formatDecimal(shopSv.getDiscountPrice(product) , 1, 'POINT', 2, 'COMMA')}">
+                </th:block> x <th:block th:text="${c.quan}">
+                </th:block>
+            </i>
+            <i th:if="${c.quan==0}">
+                Out of stock
+            </i>
+        </div>
+        <div class="cart-delete">
+            <a style="cursor: pointer;" th:onclick="doRemoveFromCart([[${c.id}]])"><i class="ti-trash"></i></a>
+        </div>
+    </li>
+
+    <th:block th:if="${cart != null && cart.size() > 7}">
+        and more... (click VIEW CART to see all)
+    </th:block>
+
+    <th:block th:if="${cart == null || cart.size() == 0}">
+        No items
+    </th:block>
+    <li class="cart-space mt-2">
+        <div class="cart-sub">
+            <h4>Subtotal</h4>
+        </div>
+        <div class="cart-price">
+            <h4 th:text="${'$' + #numbers.formatDecimal(shopSv.getCartTotal() , 1, 'POINT', 2, 'COMMA')}"></h4>
+        </div>
+    </li>
+    <li class="cart-btn-wrapper">
+        <input type="hidden" id="cartNum"
+            th:value="${cart == null || cart.size()==0? '0' : #aggregates.sum(cart.![quan])}" />
+        <a class="cart-btn btn-hover" th:href="@{/cart}">view cart</a>
+        <a class="cart-btn btn-hover" th:href="@{/checkout}">checkout</a>
+    </li>
+</ul>

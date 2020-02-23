@@ -449,8 +449,8 @@
 .single-product-cart {
     border-bottom: 1px solid #f6f6f6;
     display: flex;
-    margin-bottom: 20px;
-    padding-bottom: 20px;
+    margin-bottom: 5px;
+    padding-bottom: 5px;
 }
 .single-product-cart:last-child {
     border-bottom: 0px solid #f6f6f6;
@@ -463,7 +463,7 @@
     justify-content: flex-end;
 }
 .cart-title {
-    margin: 19px 0 0 15px;
+    margin: 5px 0 0 5px;
 }
 .cart-title h5,
 .cart-title h6,
@@ -2219,8 +2219,8 @@ a.banner-book-style-btn:hover {
     border-radius: 5px;
 }
 .categories-search-wrapper.categories-search-wrapper2 {
-    background-color: transparent;
-    border: 2px solid #b4b5bc;
+    background-color: white;
+    border: 2px solid #7906d88c;
 }
 .select-wrapper select {
     -moz-appearance: none;
@@ -3422,7 +3422,7 @@ a.banner-book-style-btn:hover {
     font-size: 36px;
 }
 .footer-services-content > h3 {
-    color: #aaaaaa;
+    color: white;
     font-size: 25px;
     margin-bottom: 9px;
 }

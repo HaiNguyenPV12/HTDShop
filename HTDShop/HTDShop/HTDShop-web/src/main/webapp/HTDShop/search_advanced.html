@@ -1,0 +1,460 @@
+<!-- 
+    =========================================
+    ================= CPU =================== 
+    =========================================
+-->
+<th:block th:if="${cateid == 1}">
+    <h3 class="sidebar-title">CPU Filters</h3>
+
+    <div class="d-flex mb-2">
+        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="manu" id="manu">
+            <option value="" th:selected="${data.manufacturer==null || data.manufacturer == ''}">All Manufacturers
+            </option>
+            <option th:each="manu : ${manuList}" th:value="${manu}" th:text="${manu}"
+                th:selected="${data.manufacturer != null && data.manufacturer == manu}">
+                Manufacturer
+            </option>
+        </select>
+    </div>
+
+    <div class="d-flex mb-2">
+        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="sr" id="sr">
+            <option value="" th:selected="${data.series==null || data.series == ''}">All Series
+            </option>
+            <option th:each="sr : ${srList}" th:value="${sr}" th:text="${sr}"
+                th:selected="${data.series != null && data.series == sr}">
+                Series
+            </option>
+        </select>
+    </div>
+
+    <div class="d-flex mb-2">
+        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="sk" id="sk">
+            <option value="" th:selected="${data.socket==null || data.socket == ''}">All Socket
+            </option>
+            <option th:each="sk : ${skList}" th:value="${sk}" th:text="${sk}"
+                th:selected="${data.socket != null && data.socket == sk}">
+                Socket
+            </option>
+        </select>
+    </div>
+
+    <div class="d-flex mb-2">
+        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="co" id="co">
+            <option value="0" th:selected="${data.core==null || data.core == 0}">All Number of Cores
+            </option>
+            <option th:each="co : ${coList}" th:value="${co}" th:text="${co}"
+                th:selected="${data.core != null && data.core == co}">
+                Number of Cores
+            </option>
+        </select>
+    </div>
+
+    <div class="d-flex mb-2">
+        <form id="filterTdp" class="d-flex">
+            <label class="mt-auto mr-2">TDP: </label>
+            <input type="number" placeholder="From..." th:value="${param.tdpmin!=null?param.tdpmin:'0'}" name="tdpmin"
+                required min=0 max=2000 id="tdpmin" class="form-control mr-2">
+            <i class="fas fa-long-arrow-alt-right mt-3"></i>
+            <input type="number" placeholder="To..." th:value="${param.tdpmax!=null?param.tdpmax:'2000'}" name="tdpmax"
+                required min=10 max=2000 id="tdpmax" class="ml-2 form-control">
+        </form>
+    </div>
+</th:block>
+
+
+<!-- 
+    =========================================
+    ============= MOTHERBOARD =============== 
+    =========================================
+-->
+<th:block th:if="${cateid == 2}">
+    <h3 class="sidebar-title">Motherboard Filters</h3>
+
+    <div class="d-flex mb-2">
+        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="manu" id="manu">
+            <option value="" th:selected="${data.manufacturer==null || data.manufacturer == ''}">All Manufacturers
+            </option>
+            <option th:each="manu : ${manuList}" th:value="${manu}" th:text="${manu}"
+                th:selected="${data.manufacturer != null && data.manufacturer == manu}">
+                Manufacturer
+            </option>
+        </select>
+    </div>
+
+    <div class="d-flex mb-2">
+        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="sk" id="sk">
+            <option value="" th:selected="${data.socket==null || data.socket == ''}">All Socket
+            </option>
+            <option th:each="sk : ${skList}" th:value="${sk}" th:text="${sk}"
+                th:selected="${data.socket != null && data.socket == sk}">
+                Socket
+            </option>
+        </select>
+    </div>
+
+    <div class="d-flex mb-2">
+        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="cs" id="cs">
+            <option value="" th:selected="${data.chipset==null || data.chipset == ''}">All Chipset
+            </option>
+            <option th:each="cs : ${csList}" th:value="${cs}" th:text="${cs}"
+                th:selected="${data.chipset != null && data.chipset == cs}">
+                Chipset
+            </option>
+        </select>
+    </div>
+
+    <div class="d-flex mb-2">
+        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="mt" id="mt">
+            <option value="" th:selected="${data.memoryType==null || data.memoryType == ''}">All Memory Type
+            </option>
+            <option th:each="mt : ${mtList}" th:value="${mt}" th:text="${mt}"
+                th:selected="${data.memoryType != null && data.memoryType == mt}">
+                Memory Type
+            </option>
+        </select>
+    </div>
+
+    <div class="d-flex mb-2">
+        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="ff" id="ff">
+            <option value="" th:selected="${data.formFactor==null || data.formFactor == ''}">All Form Factor
+            </option>
+            <option th:each="ff : ${ffList}" th:value="${ff}" th:text="${ff}"
+                th:selected="${data.formFactor != null && data.formFactor == ff}">
+                Form Factor
+            </option>
+        </select>
+    </div>
+
+    <div class="d-flex mb-2">
+        <label class="mt-auto mr-2">Minimum Memory Slot: </label>
+        <input type="number" placeholder="From..." th:value="${param.mms!=null?param.mms:'0'}" name="mms" required min=0
+            max=20 id="mms" class="form-control mr-2" step="1">
+    </div>
+</th:block>
+
+
+
+<!-- 
+    =========================================
+    ================= GPU =================== 
+    =========================================
+-->
+<th:block th:if="${cateid == 3}">
+    <h3 class="sidebar-title">GPU Filters</h3>
+
+    <div class="d-flex mb-2">
+        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="manu" id="manu">
+            <option value="" th:selected="${data.manufacturer==null || data.manufacturer == ''}">All Manufacturers
+            </option>
+            <option th:each="manu : ${manuList}" th:value="${manu}" th:text="${manu}"
+                th:selected="${data.manufacturer != null && data.manufacturer == manu}">
+                Manufacturer
+            </option>
+        </select>
+    </div>
+
+    <div class="d-flex mb-2">
+        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="cs" id="cs">
+            <option value="" th:selected="${data.chipset==null || data.chipset == ''}">All Chipset
+            </option>
+            <option th:each="cs : ${csList}" th:value="${cs}" th:text="${cs}"
+                th:selected="${data.chipset != null && data.chipset == cs}">
+                Chipset
+            </option>
+        </select>
+    </div>
+
+    <div class="d-flex mb-2">
+        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="mt" id="mt">
+            <option value="" th:selected="${data.memoryType==null || data.memoryType == ''}">All Memory Type
+            </option>
+            <option th:each="mt : ${mtList}" th:value="${mt}" th:text="${mt}"
+                th:selected="${data.memoryType != null && data.memoryType == mt}">
+                Memory Type
+            </option>
+        </select>
+    </div>
+
+    <div class="d-flex mb-2">
+        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="itf" id="itf">
+            <option value="" th:selected="${data.interface1==null || data.interface1 == ''}">All Interface
+            </option>
+            <option th:each="itf : ${itfList}" th:value="${itf}" th:text="${itf}"
+                th:selected="${data.interface1 != null && data.interface1 == itf}">
+                Interface
+            </option>
+        </select>
+    </div>
+
+    <div class="d-flex mb-2">
+        <label class="mt-auto mr-2">Minimum GPU Memory (GB): </label>
+        <input type="number" placeholder="From..." th:value="${data.memory != null ? data.memory : '0'}" name="mm"
+            required min=0 max=100 id="mm" class="form-control mr-2" step="1">
+    </div>
+
+    <div class="d-flex mb-2">
+        <form id="filterTdp" class="d-flex">
+            <label class="mt-auto mr-2">TDP: </label>
+            <input type="number" placeholder="From..." th:value="${param.tdpmin!=null?param.tdpmin:'0'}" name="tdpmin"
+                required min=0 max=2000 id="tdpmin" class="form-control mr-2">
+            <i class="fas fa-long-arrow-alt-right mt-3"></i>
+            <input type="number" placeholder="To..." th:value="${param.tdpmax!=null?param.tdpmax:'2000'}" name="tdpmax"
+                required min=10 max=2000 id="tdpmax" class="ml-2 form-control">
+        </form>
+    </div>
+    
+</th:block>
+
+
+
+<!-- 
+    =========================================
+    ================ MEMORY ================= 
+    =========================================
+-->
+<th:block th:if="${cateid == 4}">
+    <h3 class="sidebar-title">Memory Filters</h3>
+
+    <div class="d-flex mb-2">
+        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="manu" id="manu">
+            <option value="" th:selected="${data.manufacturer==null || data.manufacturer == ''}">All Manufacturers
+            </option>
+            <option th:each="manu : ${manuList}" th:value="${manu}" th:text="${manu}"
+                th:selected="${data.manufacturer != null && data.manufacturer == manu}">
+                Manufacturer
+            </option>
+        </select>
+    </div>
+
+    <div class="d-flex mb-2">
+        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="mt" id="mt">
+            <option value="" th:selected="${data.memoryType==null || data.memoryType == ''}">All Memory Type
+            </option>
+            <option th:each="mt : ${mtList}" th:value="${mt}" th:text="${mt}"
+                th:selected="${data.memoryType != null && data.memoryType == mt}">
+                Memory Type
+            </option>
+        </select>
+    </div>
+
+    <div class="d-flex mb-2">
+        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="mmm" id="mmm">
+            <option value="0" th:selected="${data.memoryModules==null || data.memoryModules == 0}">All Memory Modules
+            </option>
+            <option th:each="mmm : ${mmmList}" th:value="${mmm}" th:text="${mmm}"
+                th:selected="${data.memoryModules != null && data.memoryModules == mmm}">
+                Memory Modules
+            </option>
+        </select>
+    </div>
+
+    <div class="d-flex mb-2">
+        <label class="mt-auto mr-2">Minimum Memory (GB): </label>
+        <input type="number" placeholder="From..." th:value="${data.memory != null ? data.memory : 0}" name="mm"
+            required min=0 max=200 id="mm" class="form-control mr-2" step="1">
+    </div>
+</th:block>
+
+<!-- 
+    =========================================
+    ================= PSU =================== 
+    =========================================
+-->
+<th:block th:if="${cateid == 5}">
+    <h3 class="sidebar-title">PSU Filters</h3>
+
+    <div class="d-flex mb-2">
+        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="manu" id="manu">
+            <option value="" th:selected="${data.manufacturer==null || data.manufacturer == ''}">All Manufacturers
+            </option>
+            <option th:each="manu : ${manuList}" th:value="${manu}" th:text="${manu}"
+                th:selected="${data.manufacturer != null && data.manufacturer == manu}">
+                Manufacturer
+            </option>
+        </select>
+    </div>
+
+    <div class="d-flex mb-2">
+        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="psuf" id="psuf">
+            <option value="" th:selected="${data.pSUFormFactor==null || data.pSUFormFactor == ''}">All PSU Form Factor
+            </option>
+            <option th:each="psuf : ${psufList}" th:value="${psuf}" th:text="${psuf}"
+                th:selected="${data.pSUFormFactor != null && data.pSUFormFactor == psuf}">
+                PSU Form Factor
+            </option>
+        </select>
+    </div>
+
+    <div class="d-flex mb-2">
+        <label class="mt-auto mr-2">Minimum Wattage: </label>
+        <input type="number" placeholder="From..." th:value="${data.pSUWattage != null ? data.pSUWattage : 0}"
+            name="psuw" required min=0 max=200 id="psuw" class="form-control mr-2" step="1">
+    </div>
+</th:block>
+
+
+
+<!-- 
+    =========================================
+    =============== STORAGE ================= 
+    =========================================
+-->
+<th:block th:if="${cateid == 6}">
+    <h3 class="sidebar-title">Storage Filters</h3>
+
+    <div class="d-flex mb-2">
+        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="manu" id="manu">
+            <option value="" th:selected="${data.manufacturer==null || data.manufacturer == ''}">All Manufacturers
+            </option>
+            <option th:each="manu : ${manuList}" th:value="${manu}" th:text="${manu}"
+                th:selected="${data.manufacturer != null && data.manufacturer == manu}">
+                Manufacturer
+            </option>
+        </select>
+    </div>
+
+    <div class="d-flex mb-2">
+        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="st" id="st">
+            <option value="" th:selected="${data.storageType==null || data.storageType == ''}">All Storage Type
+            </option>
+            <option th:each="st : ${stList}" th:value="${st}" th:text="${st}"
+                th:selected="${data.storageType != null && data.storageType == st}">
+                Memory Type
+            </option>
+        </select>
+    </div>
+
+    <div class="d-flex mb-2">
+        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="ff" id="ff">
+            <option value="" th:selected="${data.formFactor==null || data.formFactor == ''}">All Form Factor
+            </option>
+            <option th:each="ff : ${ffList}" th:value="${ff}" th:text="${ff}"
+                th:selected="${data.formFactor != null && data.formFactor == ff}">
+                Form Factor
+            </option>
+        </select>
+    </div>
+
+    <div class="d-flex mb-2">
+        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="itf" id="itf">
+            <option value="" th:selected="${data.interface1==null || data.interface1 == ''}">All Interface
+            </option>
+            <option th:each="itf : ${itfList}" th:value="${itf}" th:text="${itf}"
+                th:selected="${data.interface1 != null && data.interface1 == itf}">
+                Interface
+            </option>
+        </select>
+    </div>
+
+    <div class="d-flex mb-2">
+        <label class="mt-auto mr-2">Minimum Capacity (GB): </label>
+        <input type="number" placeholder="From..." th:value="${data.memory != null ? data.memory : 0}" name="mm"
+            required min=0 max=1000000 id="mm" class="form-control mr-2" step="1">
+    </div>
+</th:block>
+
+
+<!-- 
+    =========================================
+    ============= CPU COOLER ================ 
+    =========================================
+-->
+<th:block th:if="${cateid == 7}">
+    <h3 class="sidebar-title">CPU Cooler Filters</h3>
+
+    <div class="d-flex mb-2">
+        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="manu" id="manu">
+            <option value="" th:selected="${data.manufacturer==null || data.manufacturer == ''}">All Manufacturers
+            </option>
+            <option th:each="manu : ${manuList}" th:value="${manu}" th:text="${manu}"
+                th:selected="${data.manufacturer != null && data.manufacturer == manu}">
+                Manufacturer
+            </option>
+        </select>
+    </div>
+
+</th:block>
+
+
+<!-- 
+    =========================================
+    ================= CASE ================== 
+    =========================================
+-->
+<th:block th:if="${cateid == 8}">
+    <h3 class="sidebar-title">Case Filters</h3>
+
+    <div class="d-flex mb-2">
+        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="manu" id="manu">
+            <option value="" th:selected="${data.manufacturer==null || data.manufacturer == ''}">All Manufacturers
+            </option>
+            <option th:each="manu : ${manuList}" th:value="${manu}" th:text="${manu}"
+                th:selected="${data.manufacturer != null && data.manufacturer == manu}">
+                Manufacturer
+            </option>
+        </select>
+    </div>
+    <div class="d-flex mb-2">
+        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="ff" id="ff">
+            <option value="" th:selected="${data.formFactor==null || data.formFactor == ''}">All Motherboard Form Factor
+            </option>
+            <option th:each="ff : ${ffList}" th:value="${ff}" th:text="${ff}"
+                th:selected="${data.formFactor != null && data.formFactor == ff}">
+                Form Factor
+            </option>
+        </select>
+    </div>
+
+    <div class="d-flex mb-2">
+        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="psuf" id="psuf">
+            <option value="" th:selected="${data.pSUFormFactor==null || data.pSUFormFactor == ''}">All PSU Form Factor
+            </option>
+            <option th:each="psuf : ${psufList}" th:value="${psuf}" th:text="${psuf}"
+                th:selected="${data.pSUFormFactor != null && data.pSUFormFactor == psuf}">
+                PSU Form Factor
+            </option>
+        </select>
+    </div>
+
+</th:block>
+
+
+
+<!-- 
+    =========================================
+    =============== MONITOR ================= 
+    =========================================
+-->
+<th:block th:if="${cateid == 9}">
+    <h3 class="sidebar-title">Monitor Filters</h3>
+
+    <div class="d-flex mb-2">
+        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="manu" id="manu">
+            <option value="" th:selected="${data.manufacturer==null || data.manufacturer == ''}">All Manufacturers
+            </option>
+            <option th:each="manu : ${manuList}" th:value="${manu}" th:text="${manu}"
+                th:selected="${data.manufacturer != null && data.manufacturer == manu}">
+                Manufacturer
+            </option>
+        </select>
+    </div>
+
+    <div class="d-flex mb-2">
+        <select class="select2bs4" data-dropdown-css-class="select2-purple" name="rs" id="rs">
+            <option value="" th:selected="${data.resolution==null || data.resolution == ''}">All Resolution
+            </option>
+            <option th:each="rs : ${rsList}" th:value="${rs}" th:text="${rs}"
+                th:selected="${data.resolution != null && data.resolution == rs}">
+                Resolution
+            </option>
+        </select>
+    </div>
+
+    <div class="d-flex mb-2">
+        <label class="mt-auto mr-2">Minimum Screen Size (inch): </label>
+        <input type="number" placeholder="From..." th:value="${data.screenSize != null ? data.screenSize : 0}" name="ss"
+            required min=0 max=200 id="ss" class="form-control mr-2">
+    </div>
+
+</th:block>

@@ -67,6 +67,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 public class Product implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -190,9 +191,11 @@ public class Product implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
     private Collection<ProductImage> productImageCollection;
+
     @JoinColumn(name = "CateId", referencedColumnName = "Id")
     @ManyToOne(optional = false)
     private Category category;
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
     private Collection<Promotion> promotionCollection;
     @OneToMany(mappedBy = "vga")
