@@ -47,8 +47,9 @@
         }
 
         .select2-container .select2-selection {
-            height: 3rem;
-            overflow: scroll;
+            height: 2rem;
+            overflow-y: scroll;
+            overflow-x: hidden;
         }
     </style>
 
@@ -163,7 +164,7 @@
                 $(this).html('');
             } else if (title == "Status" || title == "Category") {
                 // Collum that using select filter
-                $(this).html('<select id="txtSearch' + title + '" class="form-control select2 multiple" data-dropdown-css-class="select2-purple"></select>');
+                $(this).html('<div class="select2-purple"><select id="txtSearch' + title + '" class="form-control select2" multiple data-dropdown-css-class="select2-purple"></select></div>');
                 // $(this).html('<select id="txtSearch' + title + '" class="form-control select2 multiple"><option value="">All</option></select>');
             } else if (title == "Price") {
                 $(this).html('<div class="d-flex"><input type="number" id="txtSearch' + title + 'Min" placeholder="Min" class="form-control" style="width:100%" value="0"/> - <input type="number" id="txtSearch' + title + 'Max" placeholder="Max" class="form-control" style="width:100%" value="1000000"/></div>');
@@ -299,13 +300,13 @@
             // custom collums's width
             "columns": [
                 { "width": "5%", "data": "id" },
-                { "width": "18%", "data": "name" },
+                { "width": "15%", "data": "name" },
                 { "width": "12%", "data": "category" },
-                { "width": "10%", "data": "manufacturer" },
+                { "width": "8%", "data": "manufacturer" },
                 { "width": "15%", "data": "price" },
                 { "width": "15%", "data": "stock" },
                 { "width": "10%", "data": "imageThumbnail", "className": "text-center" },
-                { "width": "5%", "data": "status" },
+                { "width": "10%", "data": "status" },
                 { "width": "10%", "data": null, "className": "text-center" }
             ],
             "createdRow": function (row, data, dataIndex) {
