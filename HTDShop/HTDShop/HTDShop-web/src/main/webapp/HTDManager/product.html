@@ -233,9 +233,12 @@
                         // );
                         thisCol.search(val ? '^' + val + '$' : '', true, false).draw();
                     });
+                    
                 });
 
                 $('.select2').val(null).trigger('change');
+
+                $('.select2').css("width", "100%");
 
                 $("#events").html('0 item(s) selected');
 

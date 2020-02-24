@@ -159,7 +159,7 @@
                                         data-toggle="tab" role="tab" aria-selected="true"
                                         style="height:8rem; display: flex;align-items: center;">
                                         <img th:src="@{/images/noimage.png}" alt=""
-                                            style="max-height: 8rem;width: 100%;">
+                                            style="max-height: 8rem;max-width: 99%;margin-left: auto;margin-right: auto;">
                                     </a>
                                     <a class="border border-purple" th:each="img,it : ${product.productImageCollection}"
                                         th:classappend="${it.index==0?'active':''}"
@@ -169,7 +169,7 @@
                                         <img th:src="@{/images/__${(img.thumbnailPath!=null && !img.thumbnailPath.isEmpty())? img.thumbnailPath : img.imagePath}__}"
                                             alt=""
                                             th:onerror="'this.onerror=null;this.src=&quot;'+@{/images/noimage.png}+'&quot;'"
-                                            style="max-height: 8rem;max-width: 100%;">
+                                            style="max-height: 8rem;max-width: 99%;margin-left: auto;margin-right: auto;">
                                     </a>
                                     <!-- <a class="mb-10" href="#pro-details2" data-toggle="tab" role="tab"
                                         aria-selected="true">
@@ -191,7 +191,7 @@
                                         role="tabpanel" style="text-align: center;">
                                         <div style="display:inline-block;position: relative;height:25rem">
                                             <img th:src="@{/images/noimage.png}" alt=""
-                                                style="width: auto;height:100%;max-height: 25rem;max-width: 100%;object-fit: contain;">
+                                                style="width: auto;height:100%;max-height: 25rem;max-width: 100%;object-fit: contain;max-width: 99%;">
                                         </div>
                                     </div>
                                     <div class="tab-pane fade" th:each="img,it : ${product.productImageCollection}"
@@ -202,7 +202,7 @@
                                             style="display:inline-block;position: relative;height:25rem;vertical-align: middle;">
                                             <img th:src="@{/images/__${img.imagePath}__}" alt=""
                                                 th:onerror="'this.onerror=null;this.src=&quot;'+@{/images/noimage.png}+'&quot;'"
-                                                style="width: auto;height:100%;max-height: 25rem;max-width: 100%;object-fit: contain;">
+                                                style="width: auto;height:100%;max-height: 25rem;max-width: 100%;object-fit: contain;max-width: 99%;">
                                         </div>
                                     </div>
                                     <!-- <div class="tab-pane fade" id="pro-details2" role="tabpanel">

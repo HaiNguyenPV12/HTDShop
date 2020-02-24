@@ -191,7 +191,7 @@
 
         $("#resetFilter").on("click", function () {
             $("#from").val(0);
-            $("#to").val(10000);
+            $("#to").val(1000000);
             $("#keyword").val("");
             $("#psort").val("default");
             if ($("#cpu").val() != 0) {
@@ -261,6 +261,9 @@
 
             // Shorten url
             var urlparams = "";
+            if (kParam != "") {
+                urlparams += "&keyword=" + encodeURIComponent(kParam);
+            }
             if (fromParam > 0) {
                 urlparams += "&from=" + encodeURIComponent(fromParam);
             }
@@ -300,8 +303,11 @@
             if (monitorParam > 0) {
                 urlparams += "&9=" + encodeURIComponent(monitorParam);
             }
-            searchUrl += "?keyword=" + encodeURIComponent(kParam) + urlparams;
-            href += "?keyword=" + encodeURIComponent(kParam) + urlparams;
+            if (urlparams != "") {
+                searchUrl += "?" + urlparams;
+                href += "?" + urlparams;
+            }
+
             if (history.pushState) {
                 $("#result").animate({ 'opacity': '0.0' }, 200, function () {
                     $.ajax({
@@ -331,10 +337,10 @@
             // Price filter
             if (!$("#searchPrice")[0].checkValidity()) {
                 $("#from").val(0);
-                $("#to").val(10000);
+                $("#to").val(1000000);
             }
             var pricemin = +$("#from").val() || 0;
-            var pricemax = +$("#to").val() || 10000;
+            var pricemax = +$("#to").val() || 1000000;
             if (pricemin > pricemax) {
                 $("#from").val(0);
             }

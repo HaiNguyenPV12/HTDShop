@@ -81,8 +81,9 @@
                                 <h3 class="sidebar-title">Search Products</h3>
                                 <div class="sidebar-search">
                                     <form id="searchKeyword">
-                                        <input placeholder="Search Products..." type="text" th:value="${param.keyword}"
-                                            name="keyword" id="keyword" maxlength="100" class="form-control">
+                                        <input placeholder="Search Products..." type="text"
+                                            th:value="${param.keyword != null? param.keyword : ''}" name="keyword"
+                                            id="keyword" maxlength="100" class="form-control">
                                         <button type="submit"><i class="ti-search"></i></button>
                                     </form>
                                 </div>
@@ -103,11 +104,12 @@
                                 <div class="sidebar-categories">
                                     <select class="select2" data-dropdown-css-class="select2-purple" name="category"
                                         id="category">
-                                        <option value="0" th:selected="${T(Integer).parseInt(param.category) == 0}">All
+                                        <option value="0"
+                                            th:selected="${param.category == null || param.category[0] == '0'}">All
                                         </option>
                                         <option th:each="cate : ${session.categories}" th:value="${cate.id}"
                                             th:text="${cate.name}"
-                                            th:selected="${T(Integer).parseInt(param.category) == cate.id}">
+                                            th:selected="${param.category!=null && T(Integer).parseInt(param.category) == cate.id}">
                                             All Categories
                                         </option>
                                     </select>
@@ -358,6 +360,16 @@
             var advanced = getAdvancedSearchString(cParam, cateChanged);
             // Create url
             var urlparams = "";
+
+            if (cParam != "" && parseInt(cParam) != 0) {
+                urlparams += "category=" + encodeURIComponent(cParam);
+            }
+            if (kParam != "") {
+                urlparams += "&keyword=" + encodeURIComponent(kParam);
+            }
+            if (pageParam != "" && parseInt(pageParam) > 1) {
+                urlparams += "&page=" + encodeURIComponent(pageParam);
+            }
             if (fromParam > 0) {
                 urlparams += "&from=" + encodeURIComponent(fromParam);
             }
@@ -370,8 +382,11 @@
             if (styleParam != "" && styleParam != "grid") {
                 urlparams += "&style=" + encodeURIComponent(styleParam);
             }
-            searchUrl += "?" + "category=" + encodeURIComponent(cParam) + "&keyword=" + encodeURIComponent(kParam) + "&page=" + encodeURIComponent(pageParam) + urlparams + advanced;
-            href += "?" + "category=" + encodeURIComponent(cParam) + "&keyword=" + encodeURIComponent(kParam) + "&page=" + encodeURIComponent(pageParam) + urlparams + advanced;
+            if (urlparams + advanced != "") {
+                searchUrl += "?" + urlparams + advanced;
+                href += "?" + urlparams + advanced;
+            }
+
             if (history.pushState) {
                 $("#result").animate({ 'opacity': '0.0' }, 200, function () {
                     $("#result").html("");
