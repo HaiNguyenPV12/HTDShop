@@ -1,0 +1,576 @@
+<th:block th:if="${curCate == 1}">
+    <div class="col-lg-6" id="specificInfo">
+        <input type="hidden" id="cateName" th:value="${cateName}">
+        <div class="card card-purple">
+            <div class="card-header">
+                <h3 class="card-title">CPU information</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group row">
+                    <label for="series" class="col-sm-3 col-form-label text-right">Series<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-9">
+                        <input class="form-control autocomplete" id="series" placeholder="Series" name="series" required
+                            auto-for="" />
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="seriesError"></ul>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="socket" class="col-sm-3 col-form-label text-right">Socket<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-9">
+                        <input class="form-control autocomplete" id="socket" placeholder="Socket" name="socket" required
+                            th:auto-for="${cateName}" />
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="socketError"></ul>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="chipset" class="col-sm-3 col-form-label text-right">Chipset</label>
+                    <div class="col-sm-9">
+                        <input class="form-control" placeholder="Chipset" name="chipset" />
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="chipsetError"></ul>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="tdp" class="col-sm-3 col-form-label text-right">TDP<i class="text-danger">*</i></label>
+                    <div class="input-group col-sm-9">
+                        <input type="number" class="form-control" id="tdp" placeholder="TDP (W)" name="tdp" required />
+                        <div class="input-group-append">
+                            <span class="input-group-text">W</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="tdpError"></ul>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="core" class="col-sm-3 col-form-label text-right">Cores number<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-3">
+                        <input type="number" class="form-control" id="core" placeholder="Cores" name="core" required />
+                    </div>
+
+                    <label for="thread" class="col-sm-3 col-form-label text-right">Threads number<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-3">
+                        <input type="number" class="form-control" id="thread" placeholder="Threads" name="thread"
+                            required />
+                    </div>
+
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-3">
+                        <ul class="text-danger" id="coreError"></ul>
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-3">
+                        <ul class="text-danger" id="threadError"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+<!-- 
+    =========================
+            CPU - END
+    =========================
+-->
+
+<!-- 
+    =========================
+            Motherboard
+    =========================
+-->
+<th:block th:if="${curCate == 2}">
+    <div class="col-lg-6" id="specificInfo">
+        <input type="hidden" id="cateName" th:value="${cateName}">
+        <div class="card card-purple">
+            <div class="card-header">
+                <h3 class="card-title">Motherboard information</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group row">
+                    <label for="socket" class="col-sm-3 col-form-label text-right">Socket<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-9">
+                        <input class="form-control autocomplete" id="socket" placeholder="Socket" name="socket" required
+                            th:auto-for="${cateName}" />
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="socketError"></ul>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="chipset" class="col-sm-3 col-form-label text-right">Chipset<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-9">
+                        <input class="form-control autocomplete" id="chipset" placeholder="Chipset" name="chipset"
+                            th:auto-for="${cateName}" required />
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="chipsetError"></ul>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="formFactor" class="col-sm-3 col-form-label text-right">Form Factor<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-9">
+                        <input class="form-control autocomplete" id="formFactor" placeholder="Form Factor"
+                            name="formFactor" th:auto-for="${cateName}" required />
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="chipsetError"></ul>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="memoryType" class="col-sm-3 col-form-label text-right">Memory Type<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-3">
+                        <input class="form-control autocomplete" id="memoryType" placeholder="Memory Type"
+                            name="memoryType" required th:auto-for="${cateName}" />
+                    </div>
+
+                    <label for="memorySlot" class="col-sm-3 col-form-label text-right">Memory Slots<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-3">
+                        <input type="number" class="form-control" id="memorySlot" placeholder="Memory Slots"
+                            name="memorySlot" required />
+                    </div>
+
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-3">
+                        <ul class="text-danger" id="memoryTypeError"></ul>
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-3">
+                        <ul class="text-danger" id="memorySlotError"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+<!-- 
+    =========================
+        Motherboard - END
+    =========================
+-->
+
+<!-- 
+    =========================
+                GPU
+    =========================
+-->
+<th:block th:if="${curCate == 3}">
+    <div class="col-lg-6" id="specificInfo">
+        <input type="hidden" id="cateName" th:value="${cateName}">
+        <div class="card card-purple">
+            <div class="card-header">
+                <h3 class="card-title">GPU information</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group row">
+                    <label for="chipset" class="col-sm-3 col-form-label text-right">Chipset<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-9">
+                        <input class="form-control autocomplete" id="chipset" name="chipset" placeholder="Chipset"
+                            required th:auto-for="${cateName}" />
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="chipsetError"></ul>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="interface1" class="col-sm-3 col-form-label text-right">Interface<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-9">
+                        <input class="form-control autocomplete" id="interface1" name="interface1"
+                            placeholder="Interface" required th:auto-for="${cateName}" />
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="interface1Error"></ul>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="tdp" class="col-sm-3 col-form-label text-right">TDP<i class="text-danger">*</i></label>
+                    <div class="input-group col-sm-9">
+                        <input type="number" class="form-control" id="tdp" placeholder="TDP (W)" name="tdp" />
+                        <div class="input-group-append">
+                            <span class="input-group-text">W</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="tdpError"></ul>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="memoryType" class="col-sm-3 col-form-label text-right">Memory Type<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-3">
+                        <input class="form-control autocomplete" id="memoryType" placeholder="Memory Type"
+                            name="memoryType" required th:auto-for="${cateName}" />
+                    </div>
+
+                    <label for="memory" class="col-sm-3 col-form-label text-right">Memory<i
+                            class="text-danger">*</i></label>
+                    <div class="input-group col-sm-3">
+                        <input type="number" class="form-control" id="memory" name="memory" required />
+                        <div class="input-group-append">
+                            <span class="input-group-text">GB</span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-3">
+                        <ul class="text-danger" id="memoryTypeError"></ul>
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-3">
+                        <ul class="text-danger" id="memoryError"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+<!-- 
+    =========================
+            GPU - END
+    =========================
+-->
+
+<!-- 
+    =========================
+            Memory/RAM
+    =========================
+-->
+<th:block th:if="${curCate == 4}">
+    <div class="col-lg-6" id="specificInfo">
+        <input type="hidden" id="cateName" th:value="${cateName}">
+        <div class="card card-purple">
+            <div class="card-header">
+                <h3 class="card-title">Memory information</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group row">
+                    <label for="memoryType" class="col-sm-3 col-form-label text-right">Memory Type<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-3">
+                        <input class="form-control autocomplete" id="memoryType" placeholder="Memory Type"
+                            name="memoryType" required th:auto-for="${cateName}" />
+                    </div>
+
+                    <label for="memory" class="col-sm-3 col-form-label text-right">Capacity<i
+                            class="text-danger">*</i></label>
+                    <div class="input-group col-sm-3">
+                        <input type="number" class="form-control" id="memory" placeholder="Capacity" name="memory"
+                            required />
+                        <div class="input-group-append">
+                            <span class="input-group-text">GB</span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-3">
+                        <ul class="text-danger" id="memoryTypeError"></ul>
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-3">
+                        <ul class="text-danger" id="memoryError"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="memoryModules" class="col-sm-3 col-form-label text-right">Modules<i
+                        class="text-danger">*</i></label>
+                <div class="col-sm-9">
+                    <input type="number" class="form-control" id="memoryModules" placeholder="Modules"
+                        name="memoryModules" required />
+                </div>
+                <div class="col-sm-3"></div>
+                <div class="col-sm-9">
+                    <ul class="text-danger" id="memoryModulesError"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+<!-- 
+    =========================
+        Memory/RAM - END
+    =========================
+-->
+
+<!-- 
+    =========================
+                PSU
+    =========================
+-->
+<th:block th:if="${curCate == 5}">
+    <div class="col-lg-6" id="specificInfo">
+        <input type="hidden" id="cateName" th:value="${cateName}">
+        <div class="card card-purple">
+            <div class="card-header">
+                <h3 class="card-title">PSU information</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group row">
+                    <label for="formFactor" class="col-sm-3 col-form-label text-right">PSU Form Factor<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-9">
+                        <input class="form-control autocomplete" id="pSUFormFactor" placeholder="PSU Form Factor"
+                            name="pSUFormFactor" th:auto-for="${cateName}" />
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="pSUFormFactorError"></ul>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="pSUWattage" class="col-sm-3 col-form-label text-right">Wattages<i
+                            class="text-danger">*</i></label>
+                    <div class="input-group col-sm-9">
+                        <input type="number" class="form-control" id="pSUWattage" placeholder="Wattages"
+                            name="pSUWattage" required />
+                        <div class="input-group-append">
+                            <span class="input-group-text">W</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="pSUWattageError"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+<!-- 
+    =========================
+            PSU - END
+    =========================
+-->
+
+<!-- 
+    =========================
+            Storage
+    =========================
+-->
+<th:block th:if="${curCate == 6}">
+    <div class="col-lg-6" id="specificInfo">
+        <input type="hidden" id="cateName" th:value="${cateName}">
+        <div class="card card-purple">
+            <div class="card-header">
+                <h3 class="card-title">Storage information</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group row">
+                    <label for="interface1" class="col-sm-3 col-form-label text-right">Interface<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-9">
+                        <input class="form-control autocomplete" id="interface1" placeholder="Interface"
+                            name="interface1" required th:auto-for="${cateName}" />
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="interface1Error"></ul>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="formFactor" class="col-sm-3 col-form-label text-right">Form Factor<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-9">
+                        <input class="form-control autocomplete" id="formFactor" placeholder="Form Factor"
+                            name="formFactor" th:auto-for="${cateName}" />
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="formFactorError"></ul>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="storageType" class="col-sm-3 col-form-label text-right">Storage Type<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-3">
+                        <input class="form-control autocomplete" id="storageType" placeholder="Storage Type"
+                            name="storageType" required th:auto-for="${cateName}" />
+                    </div>
+
+                    <label for="memory" class="col-sm-3 col-form-label text-right">Capacity<i
+                            class="text-danger">*</i></label>
+                    <div class="input-group col-sm-3">
+                        <input type="number" class="form-control" id="memory" placeholder="Capacity" name="memory"
+                            required />
+                        <div class="input-group-append">
+                            <span class="input-group-text">GB</span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-3">
+                        <ul class="text-danger" id="storageTypeError"></ul>
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-3">
+                        <ul class="text-danger" id="memoryError"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+<!-- 
+    =========================
+        Storage - END
+    =========================
+-->
+
+<!-- 
+    =========================
+            CPU Cooler
+    =========================
+-->
+<th:block th:if="${curCate == 7}">
+    <div class="col-lg-6" id="specificInfo">
+        <input type="hidden" id="cateName" th:value="${cateName}">
+        <div class="card card-purple">
+            <div class="card-header">
+                <h3 class="card-title">CPU Cooler information</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group row">
+                    <label for="socket" class="col-sm-3 col-form-label text-right">Socket<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-9">
+                        <input class="form-control" id="socket" placeholder="Socket" name="socket" required />
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9" id="socketError">
+                        <ul class="text-danger"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+<!-- 
+    =========================
+        CPU Cooler - END
+    =========================
+-->
+
+<!-- 
+    =========================
+                Case
+    =========================
+-->
+<th:block th:if="${curCate == 8}">
+    <div class="col-lg-6" id="specificInfo">
+        <input type="hidden" id="cateName" th:value="${cateName}">
+        <div class="card card-purple">
+            <div class="card-header">
+                <h3 class="card-title">Case information</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group row">
+                    <label for="formFactor" class="col-sm-3 col-form-label text-right">Motherboard's Form Factor<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-9">
+                        <input class="form-control autocomplete" id="formFactor" placeholder="Form Factor"
+                            name="formFactor" th:auto-for="${cateName}" />
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="formFactorError"></ul>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="pSUFormFactor" class="col-sm-3 col-form-label text-right">PSU's Form Factor<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-9">
+                        <input class="form-control autocomplete" id="pSUFormFactor" placeholder="Form Factor"
+                            name="pSUFormFactor" th:auto-for="${cateName}" />
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="pSUFormFactorError"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+<!-- 
+    =========================
+            Case - END
+    =========================
+-->
+
+<!-- 
+    =========================
+            Monitor
+    =========================
+-->
+<th:block th:if="${curCate == 9}">
+    <div class="col-lg-6" id="specificInfo">
+        <input type="hidden" id="cateName" th:value="${cateName}">
+        <div class="card card-purple">
+            <div class="card-header">
+                <h3 class="card-title">Monitor information</h3>
+            </div>
+            <div class="card-body">
+
+                <div class="form-group row">
+                    <label for="screenSize" class="col-sm-3 col-form-label text-right">Screen Size<i
+                            class="text-danger">*</i></label>
+                    <div class="input-group col-sm-3">
+                        <input type="number" class="form-control" id="screenSize" placeholder="Screen Size"
+                            name="screenSize" required step="0.1" />
+                        <div class="input-group-append">
+                            <span class="input-group-text">inch</span>
+                        </div>
+                    </div>
+
+                    <label for="resolution" class="col-sm-3 col-form-label text-right">Resolution<i
+                            class="text-danger">*</i></label>
+                    <div class="input-group col-sm-3">
+                        <input class="form-control autocomplete" id="resolution" placeholder="Resolution"
+                            name="resolution" required th:auto-for="${cateName}" />
+                    </div>
+
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-3">
+                        <ul class="text-danger" id="screenSizeError"></ul>
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-3">
+                        <ul class="text-danger" id="resolutionError"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+<!-- 
+    =========================
+        Monitor - END
+    =========================
+-->

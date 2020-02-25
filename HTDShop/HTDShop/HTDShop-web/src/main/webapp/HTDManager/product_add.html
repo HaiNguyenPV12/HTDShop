@@ -43,6 +43,16 @@
                 /* add padding to account for vertical scrollbar */
                 padding-right: 20px;
             }
+
+            .is-valid .select2-selection {
+                border: 1px solid #28a745;
+                border-radius: 4px;
+            }
+
+            .is-invalid .select2-selection {
+                border: 1px solid #dc3545;
+                border-radius: 4px;
+            }
         </style>
     </th:block>
 
@@ -64,108 +74,305 @@
     </div>
 
     <div layout:fragment="content">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card card-purple card-outline">
-                    <div class="card-body">
-                        <select class="form-control select2" style="width: 100%;" id="category"
-                            data-dropdown-css-class="select2-purple">
-                            <!-- 
-                            + Specify when "selected" attribute is used by using
-                                th:selected="${condition}"
-                            -->
-                            <option th:selected="${param.cate ==null || param.cate == ''}" disabled>-- Category --
-                            </option>
-                            <!-- 
-                                + Get get parameter data by using:
-                                    param.parameter_name[0]
-                                + Remember to check if that parameter is not null by using:
-                                    param.cate !=null
-                                + Parse integer parameter by using:
-                                    T(Integer).parseInt(value).
-                            -->
-                            <option th:each="cate : ${categories}" th:value="${cate.id}" th:text="${cate.name}"
-                                th:selected="${param.cate != null and T(Integer).parseInt(param.cate[0]) == cate.id}">
-                                CPU
-                            </option>
-                        </select>
+        <form id="frmProductAdd" name="product" th:action="@{/manager/product/__${formUrl}__}" th:object="${product}"
+            method="POST">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card card-purple card-outline">
+                        <div class="card-body">
+                            <select class="form-control select2" style="width: 100%;" id="category" name="category.id"
+                                data-dropdown-css-class="select2-purple">
+                                <option disabled selected>-- Category --</option>
+                                <option th:each="cate : ${categories}" th:value="${cate.id}" th:text="${cate.name}">
+                                    CPU
+                                </option>
+                            </select>
+                            <ul id="categoryError" class="text-danger"></ul>
+                        </div>
                     </div>
                 </div>
             </div>
-            <!-- 
-            + Use th:with to declare or set variable use in that tag:
-                th:with = "variable_name = variable_value"
-        -->
-        </div>
-        <th:block th:if="${param.cate == null}">
-            <div class="card card-purple">
-                <div class="card-body">
-                    <div id="main">
-                        Please choose category...
+
+            <input type="hidden" th:field="*{id}" th:if="${update!=null}">
+            <input type="hidden" th:field="*{category.id}" th:if="${update!=null}">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card card-purple">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                Images
+                                <div class="file btn btn-info" style="position:relative;overflow:hidden;">
+                                    <i class="fas fa-plus-square"></i>
+                                    <input type="file"
+                                        style="position: absolute;font-size:50px;opacity: 0;right: 0;top: 0;cursor: pointer;"
+                                        id="btnUploadImage" multiple="multiple" accept="image/*">
+                                </div>
+
+                            </h3>
+                        </div>
+                        <div class="card-body row" id="uploadimg">
+                            <th:block th:if="${session.addProductImage != null && session.addProductImage.size() > 0}">
+                                <label class="col-sm-1 text-center uploadimg"
+                                    th:each="img : ${session.addProductImage}">
+                                    <input type="radio" name="uploadradio">
+                                    <img th:src="@{/images/__${img.thumbnailPath}__}">
+                                </label>
+                            </th:block>
+                        </div>
                     </div>
                 </div>
+                <!-- Include basic info part -->
+
+                <div class="col-lg-6">
+                    <div class="card card-purple">
+                        <div class="card-header">
+                            <h3 class="card-title">Basic information</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group row">
+
+                                <label for="name" class="col-sm-3 col-form-label text-center">Product name<i
+                                        class="text-danger">*</i></label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" id="name" placeholder="Product name"
+                                        th:field="*{name}" />
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9">
+                                    <ul class="text-danger" id="nameError">
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="manufacturer" class="col-sm-3 col-form-label text-center">Manufacturer<i
+                                        class="text-danger">*</i></label>
+                                <div class="col-sm-9">
+                                    <input class="form-control autocomplete" id="manufacturer"
+                                        placeholder="Manufacturer" th:field="*{manufacturer}"
+                                        th:auto-for="${cateName == null? '' : cateName}" />
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9">
+                                    <ul class="text-danger" id="manufacturerError"></ul>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="warrantyPeriod" class="col-sm-3 col-form-label text-right">Warranty
+                                    Period<i class="text-danger">*</i></label>
+                                <div class="input-group col-sm-9">
+                                    <input type="number" class="form-control" id="warrantyPeriod"
+                                        placeholder="Warranty Period" th:field="*{warrantyPeriod}" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">months</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9">
+                                    <ul class="text-danger" id="warrantyPeriodError"></ul>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="price" class="col-sm-2 col-form-label text-right">Price<i
+                                        class="text-danger">*</i></label>
+                                <div class="col-sm-4">
+                                    <input type="number" class="form-control" id="price" placeholder="Price"
+                                        th:field="*{price}" step="0.01" />
+                                </div>
+                                <label for="stock" class="col-sm-2 col-form-label text-right">Stock<i
+                                        class="text-danger">*</i></label>
+                                <div class="col-sm-4">
+                                    <input type="number" class="form-control" id="stock" placeholder="Stock"
+                                        th:field="*{stock}" />
+                                </div>
+                                <div class="col-sm-2"></div>
+                                <div class="col-sm-4">
+                                    <ul class="text-danger" id="priceError"></ul>
+                                </div>
+                                <div class="col-sm-2"></div>
+                                <div class="col-sm-4">
+                                    <ul class="text-danger" id="stockError"></ul>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="color" class="col-sm-2 col-form-label text-right">Color<i
+                                        class="text-danger">*</i></label>
+                                <div class="col-sm-4">
+                                    <select class="form-control select2" id="color" th:field="*{color}"
+                                        th:classappend="${(#fields.hasErrors('color')?'is-invalid':'') + (submited != null and !#fields.hasErrors('color')?'is-valid':'')}"
+                                        required>
+                                        <option value="" disabled selected>-- Choose color --</option>
+                                        <option value="None">None</option>
+                                        <option value="Red" class="bg-red font-weight-bold">Red</option>
+                                        <option value="Blue" class="bg-blue font-weight-bold">Blue
+                                        </option>
+                                        <option value="Green" class="bg-green font-weight-bold">Green
+                                        </option>
+                                        <option value="Yellow" class="bg-yellow font-weight-bold">Yellow
+                                        </option>
+                                        <option value="White" class="bg-white font-weight-bold">White
+                                        </option>
+                                        <option value="Black" class="bg-dark font-weight-bold">Black
+                                        </option>
+                                        <option value="Gray" class="bg-gray font-weight-bold">Gray
+                                        </option>
+                                        <option value="Silver" class="bg-gray font-weight-bold">Silver
+                                        </option>
+                                    </select>
+                                </div>
+                                <label for="status" class="col-sm-2 col-form-label text-right">Status<i
+                                        class="text-danger">*</i></label>
+                                <div class="col-sm-4">
+                                    <div class="custom-control custom-radio">
+                                        <input class="custom-control-input" type="radio" value="1" th:field="*{status}"
+                                            th:selected="${product.status==1}" id="status1" required />
+                                        <label for="status1" class="custom-control-label">Selling</label>
+                                    </div>
+                                    <div class="custom-control custom-radio">
+                                        <input class="custom-control-input" type="radio" value="2" th:field="*{status}"
+                                            th:selected="${product.status==2}" id="status2" />
+                                        <label for="status2" class="custom-control-label">Upcoming</label>
+                                    </div>
+                                    <div class="custom-control custom-radio" th:if="${update!=null}">
+                                        <input class="custom-control-input" type="radio" value="3" th:field="*{status}"
+                                            th:selected="${product.status==3}" id="status3" />
+                                        <label for="status3" class="custom-control-label">Not selling</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-2"></div>
+                                <div class="col-sm-4" th:if="${#fields.hasErrors('color')}">
+                                    <ul class="text-danger">
+                                        <li th:each="err : ${#fields.errors('color')}" th:text="${err}">Name Error</li>
+                                    </ul> 
+                                </div>
+                                <div class="col-sm-2"></div>
+                                <div class="col-sm-4" th:if="${#fields.hasErrors('status')}">
+                                    <ul class="text-danger">
+                                        <li th:each="err : ${#fields.errors('status')}" th:text="${err}">Name Error</li>
+                                    </ul> 
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                <!-- Start specific info part -->
+                <div id="specificInfo">
+
+                </div>
+            
+                <!-- Description part -->
+                <div class="col-lg-12">
+                    <div class="card card-purple">
+                        <div class="card-header">
+                            <h3 class="card-title">More detail</h3>
+                        </div>
+                        <div class="card-body">
+                            <textarea class="textarea" placeholder="Place some text here"
+                                  style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" th:field="*{description}"></textarea>
+                        </div> 
+                    </div>
+                </div>
+                <!-- Submit button -->
+                <div class="col-lg-12 text-right mb-3">
+                    <input type="submit" class="btn btn-success" th:value="${update==null? 'Add this product' : 'Update this product'}" ></input>
+                </div>
             </div>
-        </th:block>
-        <th:block th:if="${param.cate != null}" th:with="curCate=${param.cate[0]}">
-            <!-- 
-                + Declare fragment (use this in template page only):
-                    <some_tag th:fragment="fragment_name"> tag's_content </some_tag>
-                + Replace current tag with declared tag: 
-                    <current_tag th:replace="~{/path_to_template_without_extension :: fragment_name}"></current_tag>
-                + But above method will show error if fragment is not exists, to replace with blank when fragment is not exists:
-                    <current_tag th:replace="~{/path_to_template_without_extension :: fragment_name} ?: ~{}"></current_tag>
+        </form>
 
-            -->
-            <th:block th:replace="~{/HTDManager/product_template :: template} ?: ~{}" th:if="${product != null}">
-
-            </th:block>
-        </th:block>
     </div>
+
+
+
     <th:block layout:fragment="additionalScript">
         <script th:src="@{/manager_resources/plugins/summernote/summernote-lite.min.js}"></script>
         <script th:src="@{/manager_resources/plugins/jquery-ui/jquery-ui.min.js}"></script>
     </th:block>
     <script layout:fragment="script" th:inline="javascript">
         /*<![CDATA[*/
+        var existImgSize = +/*[[${session.addProductImage == null? 0 : session.addProductImage.size()}]]*/0;
+        var cache = {};
+
         $("#btnUploadImage").on("change", function () {
             if (this.files && this.files[0]) {
-                if (this.files.length > 10) {
-                    //showModal('Warning', 'You can only upload maximum 10 images.', '#', false, true);
+                var filesNum = this.files.length;
+                if ((filesNum + existImgSize) > 10) {
                     Toast.fire({
                         type: 'error',
-                        title: 'You can only upload maximum 10 images.'
+                        title: 'Product can have maximum 10 images.'
                     });
+                    $(this).val("");
                     return;
                 }
-                $("#uploadimg").html("");
+
+                var myFormData = new FormData();
                 for (var i = 0; i < this.files.length; i++) {
-                    var reader = new FileReader();
-                    reader.onload = function (e) {
-                        $("#uploadimg").append('<label class="col-sm-1 text-center uploadimg">'
-                            + '<input type="radio" name="uploadradio">'
-                            + '<img src="' + e.target.result + '">'
-                            + '</label>');
-                    }
-                    reader.readAsDataURL(this.files[i]);
+                    myFormData.append('uploadimg', this.files[i]);
                 }
-            } else {
-                $("#uploadimg").html("");
+
+                $.ajax({
+                    url: /*[[@{/manager/product/doUploadImage}]]*/'',
+                    type: 'POST',
+                    processData: false, // important
+                    contentType: false, // important
+                    data: myFormData,
+                    success: function (result) {
+                        console.log(result);
+                        if (result != null && result.length) {
+                            $("#uploadimg").html("");
+                            var imgUrl = /*[[@{/images/}]]*/"";
+                            result.forEach(e => {
+                                $("#uploadimg").append('<label class="col-sm-1 text-center uploadimg">'
+                                    + '<input type="radio" name="uploadradio">'
+                                    + '<img src="' + imgUrl + e.thumbnailPath + '">'
+                                    + '</label>');
+                            });
+                            existImgSize += filesNum;
+                        } else {
+                            Toast.fire({
+                                type: 'error',
+                                title: result,
+                                timer: 5000
+                            });
+                        }
+                    }
+                });
             }
+            $(this).val("");
+        });
+
+        $("#btnClearUploadImage").on("click", function () {
+            $.post(/*[[@{/manager/product/clearUploadImage}]]*/"", function (result) {
+                $("#uploadimg").html("");
+                existImgSize = +0;
+            });
         });
 
         $('#category').on('change', function () {
-            var val = $(this).val();
-            if (val == "") {
-                window.location.href = "add";
-            } else {
-                window.location.href = "add?cate=" + val;
+            var cateId = $(this).val();
+            if (cateId != "") {
+                $.ajax({
+                    url: /*[[@{/manager/product/template}]]*/"",
+                    type: 'POST',
+                    data: { "category": $(this).val() },
+                    success: function (data) {
+                        $("#specificInfo").replaceWith(data);
+                        $("#specificInfo").find("input.autocomplete").each(function (i, e) {
+                            var attr = $(this).attr("id");
+                            var cate = $(this).attr("auto-for");
+                            makeAutoList(this, cate, attr);
+                        });
+                        $("#category.id").val(cateId);
+                        makeAutoList($("#manufacturer"), $("#cateName").val(), "manu");
+                    }
+                });
             }
-            /*
-            $.post("product-add-" + val+".html", function(result, text,jqXHR){
-                console.log(result);
-            });
-            */
         });
+
+        makeAutoList($("#manufacturer"), "", "manu");
+
         //Initialize Select2 Elements
         $('.select2').select2();
 
@@ -176,32 +383,103 @@
 
         $('.textarea').summernote({ height: 150 });
 
-        $("input.autocomplete").each(function (i, e) {
-            var attr = $(this).attr("id");
-            var cate = $(this).attr("auto-for");
-            var searchUrl = /*[[@{/manager/product/autolist}]]*/'';
 
+        function makeAutoList(element, cate, attr) {
+            var searchUrl = /*[[@{/manager/product/autolist}]]*/'';
             if (attr == "manufacturer") {
                 attr = "manu";
             }
             searchUrl += "?attr=" + attr + "&cate=" + cate;
-            var data = $.ajax({
-                url: searchUrl,
-                method: 'POST',
-                success: function (result) {
-                    return result;
-                }
-            });
-
-            $(this).autocomplete({
+            $(element).autocomplete({
                 source: function (request, response) {
-                    $.post(searchUrl, request, response);
+                    var term = request.term + attr + cate;
+                    if (term in cache) {
+                        response(cache[term]);
+                        return;
+                    }
+
+                    $.post(searchUrl, request, function (data, status, xhr) {
+                        cache[term] = data;
+                        response(data);
+                    });
                 },
                 minLength: 0
             }).focus(function () {
                 $(this).data("uiAutocomplete").search($(this).val());
             });
+        }
+
+        $("#frmProductAdd").submit(function (e) {
+            e.preventDefault();
+            var formData = new FormData($(this)[0]);
+            $.ajax({
+                url: $(this).attr("action"),
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    $("ul.text-danger").html("");
+                    $("#frmProductAdd").find("select, input, textarea").each(function (i, e) {
+                        if ($(e).prop("tagName") == "SELECT") {
+                            $(e).next().removeClass("is-valid");
+                            $(e).next().removeClass("is-invalid");
+                        } else {
+                            $(e).removeClass("is-valid");
+                            $(e).removeClass("is-invalid");
+                        }
+                        if (!$(e).hasClass("is-valid")) {
+                            if ($(e).prop("tagName") == "SELECT") {
+                                $(e).next().addClass("is-valid");
+                            } else {
+                                $(e).addClass("is-valid");
+                            }
+                        }
+                    });
+                    if (data.length) {
+                        data.forEach(e => {
+                            var input = $("#" + e.field);
+                            if (input.prop("tagName") == "SELECT" && input.next().hasClass("is-valid")) {
+                                input.next().removeClass("is-valid");
+                            } else {
+                                input.removeClass("is-valid");
+                            }
+                            if (input.prop("tagName") == "SELECT") {
+                                input.next().addClass("is-invalid");
+                            } else {
+                                input.addClass("is-invalid");
+                            }
+
+                            $("#" + e.field + "Error").append("<li>" + e.defaultMessage + "</li>")
+                        });
+                    } else {
+                        $("#frmProductAdd").trigger("reset");
+                        $.post(/*[[@{/manager/product/clearUploadImage}]]*/"", function (result) { });
+                        $("#uploadimg").html("");
+                        existImgSize = +0;
+                        $("#frmProductAdd").find("select, input, textarea").each(function (i, e) {
+                            if ($(e).prop("tagName") == "SELECT") {
+                                $(e).next().removeClass("is-valid");
+                                $(e).next().removeClass("is-invalid");
+                            } else {
+                                $(e).removeClass("is-valid");
+                                $(e).removeClass("is-invalid");
+                            }
+                        });
+                        $('.textarea').summernote('reset');
+                        Toast.fire({
+                            type: 'success',
+                            title: 'Successfully added!'
+                        });
+                    }
+
+                }
+            });
         });
+
+        $(window).on("beforeunload", function () {
+            $.post(/*[[@{/manager/product/clearUploadImage}]]*/"", function (result) { });
+        })
         /*]]>*/
     </script>
 </body>
