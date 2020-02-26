@@ -233,7 +233,7 @@
                         // );
                         thisCol.search(val ? '^' + val + '$' : '', true, false).draw();
                     });
-                    
+
                 });
 
                 $('.select2').val(null).trigger('change');
@@ -387,6 +387,12 @@
                         $("#txtSearchStockMin").val(0);
                         $("#txtSearchStockMax").val(10000).change();
                         $("#txtSearchStatus").val("").change();
+                    }
+                },
+                {
+                    text: "Reload table",
+                    action: function () {
+                        table.ajax.reload(null, false);
                     }
                 }
             ],

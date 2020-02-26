@@ -419,16 +419,17 @@
                         <div class="tab-pane active show fade" id="pro-dec" role="tabpanel" style="margin-left: 10rem;">
                             <p th:utext="${(product.description == null || product.description.isEmpty()) ? '(No description)' : product.description}"></p>
                         </div>
-                        <div class="tab-pane fade overflow-auto text-left border border-secondary" id="pro-review"
-                            role="tabpanel" style="height: 20em;overflow-y: scroll;">
+                        <div class="tab-pane fade text-left border border-secondary" id="pro-review"
+                            role="tabpanel" style="height: 30rem;overflow-y: scroll !important;">
                             <div class="card border-bottom border-secondary" th:if="${session.loggedInCustomer != null}"
-                            style="background-color: lightyellow;">
+                                style="background-color: lightyellow;">
                                 <div class="card-body border-bottom border-warning">
                                     <form action="product/doComment" method="post" enctype="application/x-www-form-urlencoded">
                                         <div class="d-flex">
                                             <input type="hidden" name="productid" th:value="${product.id}"/>
-                                            <input type="text" class="form-control form-control-sm" name="comment"
-                                                placeholder="Comment on this product" required/>
+                                            <textarea type="text" class="form-control form-control" name="comment"
+                                                placeholder="Comment on this product" required style="resize: none;"></textarea>
+                                            <!-- <div class="g-recaptcha" data-sitekey="6LdeYdoUAAAAAHL11wXzM80G7X_dNVEQAYp_V9JN" data-callback="checked"></div> -->
                                             <button type="submit" class="btn btn-secondary" style="height: auto;"><i class="fas fa-comment"></i></button>
                                         </div>
                                     </form>
@@ -448,6 +449,7 @@
                                                 <span class="text-muted float-right" th:text="${#dates.format(cm.createdAt, 'dd/MM/yyyy HH:mm')}">8:03 PM Today</span>
                                             </span><!-- /.username -->
                                             <th:block th:text="${cm.content}"></th:block>
+                                            <button type="button" class="btn btn-secondary" style="height: auto;" th:data-target="${cm.id}" th:if="${session.loggedInCustomer != null}" onclick="toggleReply(this)"><i class="fas fa-reply"></i></button>
                                         </div>
                                         <!-- /.comment-text -->
                                     </div>
@@ -466,7 +468,7 @@
                                         </div>
                                         <!-- /.comment-text -->
                                     </div>
-                                    <div class="card-comment" th:if="${session.loggedInCustomer != null}">
+                                    <div class="card-comment" th:if="${session.loggedInCustomer != null}" th:id="${cm.id}" style="display: none;">
                                         <form action="product/doReply" method="post" enctype="application/x-www-form-urlencoded">
                                             <div class="comment-text">
                                                 <span class="username">
@@ -475,6 +477,7 @@
                                                 <div class="d-flex">
                                                     <input type="hidden" name="productid" th:value="${product.id}"/>
                                                     <input type="hidden" name="commentid" th:value="${cm.id}"/>
+                                                    <div class="captcha"></div>
                                                     <input type="text" class="form-control form-control-sm"
                                                         placeholder="Reply to this comment." required name="reply">
                                                     <button type="submit" class="btn btn-secondary" style="height: auto;"><i class="fas fa-reply"></i></button>
@@ -498,11 +501,49 @@
         </div>
         <!-- product area start -->
 
+        <div class="modal fade" id="modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header" id='modalHeader'>
+                        <h4 class="modal-title" id="modalTitle">Confirm deletion</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="modalBody">
+                        <div id="g-recaptcha" class="g-recaptcha" data-sitekey="6LdeYdoUAAAAAHL11wXzM80G7X_dNVEQAYp_V9JN" data-callback="checked"></div>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" id='modalClose'>Cancel</button>
+                        <a class="btn btn-danger" id="modalButton">Yes, delete this</a>
+                    </div>
+                </div>
+            <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
 
-        
+
+        <script>
+            function onloadCallback() {
+                $("#pro-review").css("overflow-y", "scroll !important");
+            }
+        </script>
     </div>
 
+    <th:block layout:fragment="additionalScript">
+        <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
+    </th:block>
+
     <script layout:fragment="script">
+        var check = false;
+        var form = null;
+        function showModal(title) {
+            $('#modalButton').attr('style', 'display:none;');
+            $('#modalTitle').html(title);
+            $('#modal').modal('show');
+        }
+
         $("#quan").keypress(function (event) {
             if (event.which == 45 || event.which == 189) {
                 event.preventDefault();
@@ -516,6 +557,85 @@
                 $(this).val(1);
             }
         });
+        $("form").on("submit", function (e) {
+            e.preventDefault();
+            form = $(this);
+            if ($("#g-recaptcha-response").length) {
+                grecaptcha.reset();
+            } else {
+                grecaptcha.render("g-recaptcha", { "sitekey": "6LdeYdoUAAAAAHL11wXzM80G7X_dNVEQAYp_V9JN", "callback": "checked" });
+            }
+            showModal("Confirm Captcha");
+            // if (check) {
+            //     var formData = new FormData($(this)[0]);
+            //     $.ajax({
+            //         url: $(this).attr("action"),
+            //         type: 'POST',
+            //         data: formData,
+            //         contentType: false,
+            //         processData: false,
+            //         success: function (data) {
+            //             if (data == true) {
+            //                 // grecaptcha.reset();
+            //                 // check = false;
+            //                 window.location.reload(true)
+            //             } else {
+            //                 grecaptcha.reset();
+            //                 check = false;
+            //                 Toast.fire({
+            //                     type: 'error',
+            //                     title: "Captcha error, please try again!",
+            //                     timer: 5000
+            //                 });
+            //             }
+            //         }
+            //     });
+
+            // } else {
+            //     Toast.fire({
+            //         type: 'error',
+            //         title: "Please confirm recaptcha!",
+            //         timer: 5000
+            //     });
+            // }
+        });
+        function checked() {
+            var formData = new FormData($(form)[0]);
+            var gcaptcha = $("#g-recaptcha-response");
+            formData.append(gcaptcha.attr("name"), gcaptcha.val());
+            $.ajax({
+                url: $(form).attr("action"),
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    if (data == true) {
+                        // grecaptcha.reset();
+                        // check = false;
+                        window.location.reload(true)
+                    } else {
+                        grecaptcha.reset();
+                        $('#modal').modal('hide');
+                        Toast.fire({
+                            type: 'error',
+                            title: "Captcha error, please try again!",
+                            timer: 5000
+                        });
+                    }
+                }
+            });
+        }
+        function toggleReply(button) {
+            var id = $(button).attr("data-target");
+            $("#" + id).css("display", "block");
+            $(button).css("display", "none");
+
+        }
+        // grecaptcha.render(
+        //     container,
+        //     parameters
+        // )
     </script>
 </body>
 

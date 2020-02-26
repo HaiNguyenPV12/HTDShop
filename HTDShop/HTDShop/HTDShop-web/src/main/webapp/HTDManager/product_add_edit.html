@@ -26,9 +26,9 @@
             }
 
             /* CHECKED STYLES */
-            .uploadimg>[type=radio]:checked+img {
+            /* .uploadimg>[type=radio]:checked+img {
                 outline: 2px solid #f00;
-            }
+            } */
 
             .uploadimg>img {
                 width: 100%;
@@ -74,12 +74,12 @@
     </div>
 
     <div layout:fragment="content">
-        <form id="frmProductAdd" name="product" th:action="@{/manager/product/__${formUrl}__}" th:object="${product}"
+        <form id="frmProduct" name="product" th:action="@{/manager/product/__${formUrl}__}" th:object="${product}"
             method="POST">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card card-purple card-outline">
-                        <div class="card-body">
+                        <div class="card-body" th:if="${update == null}">
                             <select class="form-control select2" style="width: 100%;" id="category" name="category.id"
                                 data-dropdown-css-class="select2-purple">
                                 <option disabled selected>-- Category --</option>
@@ -89,12 +89,16 @@
                             </select>
                             <ul id="categoryError" class="text-danger"></ul>
                         </div>
+                        <div class="card-body" th:if="${update != null}">
+                            Category: <span class="font-weight-bold" th:text="${product.category.name}"></span>
+                            <input type="hidden" th:field="*{category.id}">
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <input type="hidden" th:field="*{id}" th:if="${update!=null}">
-            <input type="hidden" th:field="*{category.id}" th:if="${update!=null}">
+            <input type="hidden" th:field="*{id}" th:if="${update != null}">
+
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card card-purple">
@@ -107,15 +111,17 @@
                                         style="position: absolute;font-size:50px;opacity: 0;right: 0;top: 0;cursor: pointer;"
                                         id="btnUploadImage" multiple="multiple" accept="image/*">
                                 </div>
-
+                                <a class="btn btn-danger" id="btnClearUploadImage" title="Clear all"
+                                    style="cursor: pointer;"><i class="fas fa-trash"></i></a>
                             </h3>
                         </div>
                         <div class="card-body row" id="uploadimg">
-                            <th:block th:if="${session.addProductImage != null && session.addProductImage.size() > 0}">
+                            <th:block th:if="${update != null}">
                                 <label class="col-sm-1 text-center uploadimg"
-                                    th:each="img : ${session.addProductImage}">
+                                    th:each="img : ${product.productImageCollection}">
                                     <input type="radio" name="uploadradio">
-                                    <img th:src="@{/images/__${img.thumbnailPath}__}">
+                                    <img th:src="@{/images/__${img.thumbnailPath != null? img.thumbnailPath : img.imagePath}__}"
+                                        th:onclick="deleteUploadImage([[${img.imagePath}]])">
                                 </label>
                             </th:block>
                         </div>
@@ -259,10 +265,14 @@
                     </div>
                 </div>
                 <!-- Start specific info part -->
-                <div id="specificInfo">
-
+                <div id="specificInfo" th:if="${update == null}">
+                    
                 </div>
-            
+                <th:block th:with="curCate = ${product.category.id}" th:if="${update != null}">
+                    <th:block th:replace="~{/HTDManager/product_template} ?: ~{}">
+                    </th:block>
+                </th:block>
+                
                 <!-- Description part -->
                 <div class="col-lg-12">
                     <div class="card card-purple">
@@ -292,9 +302,9 @@
     </th:block>
     <script layout:fragment="script" th:inline="javascript">
         /*<![CDATA[*/
-        var existImgSize = +/*[[${session.addProductImage == null? 0 : session.addProductImage.size()}]]*/0;
+        var existImgSize = +/*[[${update == null? 0 : product.productImageCollection.size()}]]*/0;
         var cache = {};
-
+        var update = /*[[${update == null ? false : true}]]*/false;
         $("#btnUploadImage").on("change", function () {
             if (this.files && this.files[0]) {
                 var filesNum = this.files.length;
@@ -320,23 +330,7 @@
                     data: myFormData,
                     success: function (result) {
                         console.log(result);
-                        if (result != null && result.length) {
-                            $("#uploadimg").html("");
-                            var imgUrl = /*[[@{/images/}]]*/"";
-                            result.forEach(e => {
-                                $("#uploadimg").append('<label class="col-sm-1 text-center uploadimg">'
-                                    + '<input type="radio" name="uploadradio">'
-                                    + '<img src="' + imgUrl + e.thumbnailPath + '">'
-                                    + '</label>');
-                            });
-                            existImgSize += filesNum;
-                        } else {
-                            Toast.fire({
-                                type: 'error',
-                                title: result,
-                                timer: 5000
-                            });
-                        }
+                        viewUploadImage(result);
                     }
                 });
             }
@@ -344,11 +338,33 @@
         });
 
         $("#btnClearUploadImage").on("click", function () {
-            $.post(/*[[@{/manager/product/clearUploadImage}]]*/"", function (result) {
+            $.post(/*[[@{/manager/product/deleteAllUploadImage}]]*/"", function (result) {
                 $("#uploadimg").html("");
                 existImgSize = +0;
             });
         });
+
+        function deleteUploadImage(imgPath) {
+            $.post(/*[[@{/manager/product/deleteUploadImage}]]*/"", { imgPath: imgPath }, function (result) {
+                viewUploadImage(result);
+            });
+        }
+
+        function viewUploadImage(result) {
+            if (result != null && result.length) {
+                $("#uploadimg").html("");
+                var imgUrl = /*[[@{/images/}]]*/"";
+                result.forEach(e => {
+                    $("#uploadimg").append('<label class="col-sm-1 text-center uploadimg">'
+                        + '<input type="radio" name="uploadradio">'
+                        + '<img src="' + imgUrl + e.thumbnailPath + '" onclick="deleteUploadImage(\'' + e.imagePath + '\')">'
+                        + '</label>');
+                });
+                existImgSize = result.length;;
+            } else {
+                $("#uploadimg").html("");
+            }
+        }
 
         $('#category').on('change', function () {
             var cateId = $(this).val();
@@ -371,18 +387,14 @@
             }
         });
 
-        makeAutoList($("#manufacturer"), "", "manu");
-
-        //Initialize Select2 Elements
-        $('.select2').select2();
-
-        //Initialize Select2 Elements
-        $('.select2bs4').select2({
-            theme: 'bootstrap4'
-        });
-
-        $('.textarea').summernote({ height: 150 });
-
+        makeAutoList($("#manufacturer"), /*[[${cateName == null? '' : cateName}]]*/"", "manu");
+        if (update) {
+            $("#specificInfo").find("input.autocomplete").each(function (i, e) {
+                var attr = $(this).attr("id");
+                var cate = $(this).attr("auto-for");
+                makeAutoList(this, cate, attr);
+            });
+        }
 
         function makeAutoList(element, cate, attr) {
             var searchUrl = /*[[@{/manager/product/autolist}]]*/'';
@@ -409,7 +421,7 @@
             });
         }
 
-        $("#frmProductAdd").submit(function (e) {
+        $("#frmProduct").submit(function (e) {
             e.preventDefault();
             var formData = new FormData($(this)[0]);
             $.ajax({
@@ -420,7 +432,7 @@
                 processData: false,
                 success: function (data) {
                     $("ul.text-danger").html("");
-                    $("#frmProductAdd").find("select, input, textarea").each(function (i, e) {
+                    $("#frmProduct").find("select, input, textarea").each(function (i, e) {
                         if ($(e).prop("tagName") == "SELECT") {
                             $(e).next().removeClass("is-valid");
                             $(e).next().removeClass("is-invalid");
@@ -453,11 +465,7 @@
                             $("#" + e.field + "Error").append("<li>" + e.defaultMessage + "</li>")
                         });
                     } else {
-                        $("#frmProductAdd").trigger("reset");
-                        $.post(/*[[@{/manager/product/clearUploadImage}]]*/"", function (result) { });
-                        $("#uploadimg").html("");
-                        existImgSize = +0;
-                        $("#frmProductAdd").find("select, input, textarea").each(function (i, e) {
+                        $("#frmProduct").find("select, input, textarea").each(function (i, e) {
                             if ($(e).prop("tagName") == "SELECT") {
                                 $(e).next().removeClass("is-valid");
                                 $(e).next().removeClass("is-invalid");
@@ -466,20 +474,41 @@
                                 $(e).removeClass("is-invalid");
                             }
                         });
-                        $('.textarea').summernote('reset');
-                        Toast.fire({
-                            type: 'success',
-                            title: 'Successfully added!'
-                        });
+                        if (!update) {
+                            $("#frmProduct").trigger("reset");
+                            $("#uploadimg").html("");
+                            existImgSize = +0;
+                            $('.textarea').summernote('reset');
+                            Toast.fire({
+                                type: 'success',
+                                title: 'Successfully added!'
+                            });
+                        } else {
+                            Toast.fire({
+                                type: 'success',
+                                title: 'Successfully updated!'
+                            });
+                        }
                     }
 
                 }
             });
         });
 
+        //Initialize Select2 Elements
+        $('.select2').select2();
+
+        //Initialize Select2 Elements
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        });
+
+        $('.textarea').summernote({ height: 150 });
+
         $(window).on("beforeunload", function () {
             $.post(/*[[@{/manager/product/clearUploadImage}]]*/"", function (result) { });
         })
+
         /*]]>*/
     </script>
 </body>
