@@ -16,6 +16,9 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import vn.htdshop.entity.PreBuilt;
+import vn.htdshop.sb.CategoryFacadeLocal;
+import vn.htdshop.sb.PreBuiltFacadeLocal;
 import vn.htdshop.entity.Customer;
 import vn.htdshop.sb.CategoryFacadeLocal;
 import vn.htdshop.sb.CustomerFacadeLocal;
@@ -31,6 +34,9 @@ public class shopIndexController {
 
     @EJB(mappedName = "CategoryFacade")
     CategoryFacadeLocal categoryFacade;
+
+    @EJB(mappedName = "PreBuiltFacade")
+    PreBuiltFacadeLocal prebuiltFacade;
 
     @EJB(mappedName = "CustomerFacade")
     CustomerFacadeLocal customerFacade;
