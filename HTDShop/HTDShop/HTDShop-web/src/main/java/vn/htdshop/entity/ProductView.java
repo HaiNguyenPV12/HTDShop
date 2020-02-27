@@ -1,9 +1,6 @@
 package vn.htdshop.entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * ProductView
@@ -24,6 +21,8 @@ public class ProductView implements Serializable {
 
     private String image;
 
+    private String imageThumbnail;
+
     private Integer imageMore;
 
     private String category;
@@ -39,30 +38,45 @@ public class ProductView implements Serializable {
         this.price = p.getPrice();
         this.stock = p.getStock();
         switch (p.getStatus()) {
-        case 1:
-            this.status = "Is selling";
-            break;
-        case 2:
-            this.status = "Upcoming";
-            break;
-        default:
-            this.status = "Unavailable";
-            break;
+            case 1:
+                this.status = "Is selling";
+                break;
+            case 2:
+                this.status = "Upcoming";
+                break;
+            default:
+                this.status = "Unavailable";
+                break;
         }
-        if (p.getProductImageCollection().size() > 0) {
-            if (p.getProductImageCollection().stream().filter(i -> i.getMainImage() == true)
-                    .collect(Collectors.toList()).size() > 0) {
-                this.image = ((ProductImage) (p.getProductImageCollection().stream()
-                        .filter(i -> i.getMainImage() == true).collect(Collectors.toList()).toArray()[0]))
-                                .getImagePath();
-                
-            } else {
-                this.image = ((ProductImage) (p.getProductImageCollection().toArray()[0])).getImagePath();
+
+        if (p.getProductImageCollection() != null && p.getProductImageCollection().size() > 0) {
+            int count = 0;
+            for (ProductImage pi : p.getProductImageCollection()) {
+                if (count == 0) {
+                    this.image = pi.getImagePath();
+                    if (pi.getThumbnailPath() != null && !pi.getThumbnailPath().isEmpty()) {
+                        this.imageThumbnail = pi.getThumbnailPath();
+                    } else {
+                        this.imageThumbnail = pi.getImagePath();
+                    }
+                } else {
+                    if (pi.getMainImage()) {
+                        this.image = pi.getImagePath();
+                        if (pi.getThumbnailPath() != null && !pi.getThumbnailPath().isEmpty()) {
+                            this.imageThumbnail = pi.getThumbnailPath();
+                        } else {
+                            this.imageThumbnail = pi.getImagePath();
+                        }
+                    }
+                }
+
+                count++;
             }
             this.imageMore = p.getProductImageCollection().size() - 1;
         } else {
             this.imageMore = 0;
             this.image = "";
+            this.imageThumbnail = "";
         }
         this.category = p.getCategory().getName();
     }
@@ -177,6 +191,20 @@ public class ProductView implements Serializable {
      */
     public void setImage(String image) {
         this.image = image;
+    }
+
+    /**
+     * @return the image
+     */
+    public String getImageThumbnail() {
+        return imageThumbnail;
+    }
+
+    /**
+     * @param image the image to set
+     */
+    public void setImageThumbnail(String imageThumbnail) {
+        this.imageThumbnail = imageThumbnail;
     }
 
     /**

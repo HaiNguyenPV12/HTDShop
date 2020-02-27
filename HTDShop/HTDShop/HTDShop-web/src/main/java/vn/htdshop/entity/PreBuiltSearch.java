@@ -30,6 +30,9 @@ public class PreBuiltSearch {
     public PreBuiltSearch (Map<String, String> params) {
         // Keyword
         this.keyword = params.get("keyword");
+        if (this.keyword == null) {
+            this.keyword = "";
+        }
         // Style
         this.style = params.get("style");
         // Sort
@@ -146,7 +149,7 @@ public class PreBuiltSearch {
             }
         }
         if (params.get("to") == null) {
-            this.to = 10000d;
+            this.to = 1000000d;
         } else {
             try {
                 this.to = Double.parseDouble(params.get("to"));

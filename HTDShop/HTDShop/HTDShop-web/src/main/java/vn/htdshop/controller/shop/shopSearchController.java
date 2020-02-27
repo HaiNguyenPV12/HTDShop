@@ -5,7 +5,6 @@
  */
 package vn.htdshop.controller.shop;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +24,7 @@ import vn.htdshop.entity.Product;
 import vn.htdshop.entity.Search;
 import vn.htdshop.sb.CategoryFacadeLocal;
 import vn.htdshop.sb.ProductFacadeLocal;
+import vn.htdshop.utility.ShopService;
 
 /**
  *

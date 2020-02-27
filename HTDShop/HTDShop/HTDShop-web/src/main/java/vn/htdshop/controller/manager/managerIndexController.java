@@ -5,12 +5,18 @@
  */
 package vn.htdshop.controller.manager;
 
+import java.util.Date;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import javax.ejb.EJB;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.joda.time.DateTimeComparator;
+import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,10 +26,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import vn.htdshop.entity.*;
 import vn.htdshop.sb.*;
+import vn.htdshop.utility.ManagerService;
 
 /**
  *
@@ -35,6 +43,18 @@ public class managerIndexController {
 
     @EJB(mappedName = "StaffFacade")
     StaffFacadeLocal staffFacade;
+
+    @EJB(mappedName = "ProductFacade")
+    ProductFacadeLocal productFacade;
+
+    @EJB(mappedName = "CategoryFacade")
+    CategoryFacadeLocal categoryFacade;
+
+    @EJB(mappedName = "OrderDetailFacade")
+    OrderDetailFacadeLocal orderDetailFacade;
+
+    @EJB(mappedName = "Order1Facade")
+    Order1FacadeLocal orderFacade;
 
     @Autowired
     HttpSession session;
@@ -58,8 +78,171 @@ public class managerIndexController {
             model.addAttribute("goodAlert", model.asMap().get("goodAlert"));
         }
 
-        // Else, continue to index
+        // Statistic
+        ManagerStatistic statistic = new ManagerStatistic();
+        if (managerService.checkLoginWithRole("revenue_read")) {
+            // Orders and Income
+            int oToday = 0;
+            int oThisMonth = 0;
+            int oThisYear = 0;
+            double incomeToday = 0d;
+            double incomeThisMonth = 0d;
+            double incomeThisYear = 0d;
+            Date today = new Date();
+            int thisMonth = new LocalDate().getMonthOfYear();
+            int thisYear = new LocalDate().getYear();
+            DateTimeComparator comparator = DateTimeComparator.getDateOnlyInstance();
+            for (Order1 order : orderFacade.findAll().stream().filter(o -> o.getOrderStatus() != 5)
+                    .collect(Collectors.toList())) {
+                double income = 0d;
+                if (new LocalDate(order.getOrderDate()).getYear() == thisYear) {
+                    oThisYear++;
+                    if (order.getOrderStatus() == 4) {
+                        for (OrderDetail od : order.getOrderDetailCollection()) {
+                            income += od.getPrice();
+                        }
+                        incomeThisYear += income;
+                    }
+                }
+
+                if (new LocalDate(order.getOrderDate()).getMonthOfYear() == thisMonth) {
+                    oThisMonth++;
+                    if (order.getOrderStatus() == 4) {
+                        incomeThisMonth += income;
+                    }
+                }
+
+                if (comparator.compare(order.getOrderDate(), today) == 0) {
+                    oToday++;
+                    if (order.getOrderStatus() == 4) {
+                        incomeThisMonth += income;
+                    }
+                }
+            }
+            statistic.setIncomeToday(incomeToday);
+            statistic.setIncomeThisMonth(incomeThisMonth);
+            statistic.setIncomeThisYear(incomeThisYear);
+            statistic.setOrderToday(oToday);
+            statistic.setOrderThisMonth(oThisMonth);
+            statistic.setOrderThisYear(oThisYear);
+        }
+
+        if (managerService.checkLoginWithRole("product_read")) {
+            // Best seller product
+
+            // Comparator<Product> cByMonth = new Comparator<Product>() {
+            // @Override
+            // public int compare(Product p1, Product p2) {
+            // return Integer.compare(
+            // p1.getOrderDetailCollection().stream()
+            // .filter(o -> o.getOrder1().getOrderStatus() == 4
+            // && new LocalDate(o.getOrder1().getPaidDate())
+            // .getMonthOfYear() == new LocalDate().getMonthOfYear())
+            // .collect(Collectors.toList()).size(),
+            // p2.getOrderDetailCollection().stream()
+            // .filter(o -> o.getOrder1().getOrderStatus() == 4
+            // && new LocalDate(o.getOrder1().getPaidDate())
+            // .getMonthOfYear() == new LocalDate().getMonthOfYear())
+            // .collect(Collectors.toList()).size());
+            // }
+            // };
+            // Product p =
+            // productFacade.findAll().stream().sorted(cByMonth).findFirst().orElse(null);
+            // if (p != null && p.getOrderDetailCollection().stream().filter(o ->
+            // o.getOrder1().getOrderStatus() == 4
+            // && new LocalDate(o.getOrder1().getPaidDate()).getMonthOfYear() == new
+            // LocalDate().getMonthOfYear())
+            // .collect(Collectors.toList()).size() > 0) {
+            // statistic.setProductThisMonth(p.getName());
+            // if (p.getProductImageCollection().size() > 0) {
+            // ProductImage pi = p.getProductImageCollection().stream().filter(img ->
+            // img.getMainImage())
+            // .findFirst().orElse(null);
+            // if (pi == null) {
+            // pi = (ProductImage) p.getProductImageCollection().toArray()[0];
+            // }
+
+            // if (pi.getThumbnailPath() != null && !pi.getThumbnailPath().isEmpty()) {
+            // statistic.setProductImageThisMonth(pi.getThumbnailPath());
+            // } else {
+            // statistic.setProductImageThisMonth(pi.getImagePath());
+            // }
+            // } else {
+            // statistic.setProductImageThisMonth("images/noimage.png");
+            // }
+            // } else {
+            // statistic.setProductThisMonth("No data");
+            // statistic.setProductImageThisMonth("");
+            // }
+
+            Map<Integer, Integer> productMonth = orderDetailFacade.getTopProduct("month", 1);
+            if (!productMonth.isEmpty()) {
+                Product p = productFacade.find(productMonth.entrySet().iterator().next().getKey());
+                statistic.setProductThisMonth(p.getName());
+                if (p.getProductImageCollection().size() > 0) {
+                    ProductImage pi = p.getProductImageCollection().stream().filter(img -> img.getMainImage())
+                            .findFirst().orElse(null);
+                    if (pi == null) {
+                        pi = (ProductImage) p.getProductImageCollection().toArray()[0];
+                    }
+                    if (pi.getThumbnailPath() != null && !pi.getThumbnailPath().isEmpty()) {
+                        statistic.setProductImageThisMonth(pi.getThumbnailPath());
+                    } else {
+                        statistic.setProductImageThisMonth(pi.getImagePath());
+                    }
+                } else {
+                    statistic.setProductImageThisMonth("images/noimage.png");
+                }
+            } else {
+                statistic.setProductThisMonth("No data");
+                statistic.setProductImageThisMonth("");
+            }
+
+            // Best seller category
+            Map<Integer, Integer> categoryMonth = orderDetailFacade.getTopCategory("month", 1);
+            if (!categoryMonth.isEmpty()) {
+                Category c = categoryFacade.find(categoryMonth.entrySet().iterator().next().getKey());
+                statistic.setCategoryThisMonth(c.getName());
+            } else {
+                statistic.setCategoryThisMonth("No data");
+            }
+
+            // Best seller manufacturer
+            Map<String, Integer> manuMonth = orderDetailFacade.getTopManufacturer("month", 1);
+            if (!manuMonth.isEmpty()) {
+                statistic.setManuThisMonth(manuMonth.entrySet().iterator().next().getKey());
+            } else {
+                statistic.setManuThisMonth("No data");
+            }
+
+        }
+
+        model.asMap().put("statistic", statistic);
+
+        // Continue to index
         return "HTDManager/index";
+
+    }
+
+    @RequestMapping(value = "topProduct", method = RequestMethod.GET)
+    public @ResponseBody Object getTopProduct(HttpServletResponse response, @RequestParam String datepart,
+            @RequestParam Integer top) {
+        response.setContentType("application/json");
+        return orderDetailFacade.getTopProduct(datepart, top);
+    }
+
+    @RequestMapping(value = "topCategory", method = RequestMethod.GET)
+    public @ResponseBody Object getTopCategory(HttpServletResponse response, @RequestParam String datepart,
+            @RequestParam Integer top) {
+        response.setContentType("application/json");
+        return orderDetailFacade.getTopCategory(datepart, top);
+    }
+
+    @RequestMapping(value = "topManu", method = RequestMethod.GET)
+    public @ResponseBody Object getTopManu(HttpServletResponse response, @RequestParam String datepart,
+            @RequestParam Integer top) {
+        response.setContentType("application/json");
+        return orderDetailFacade.getTopManufacturer(datepart, top);
     }
 
     @RequestMapping(value = "login", method = RequestMethod.GET)
@@ -110,7 +293,7 @@ public class managerIndexController {
                 session.setAttribute("loggedInStaff", result);
                 if (remember != null) {
                     Cookie cookie = new Cookie("loggedInStaff", staff.getUsername());
-                    cookie.setMaxAge(60*60*24*7*4);
+                    cookie.setMaxAge(60 * 60 * 24 * 7 * 4);
                     response.addCookie(cookie);
                 }
 

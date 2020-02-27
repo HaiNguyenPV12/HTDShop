@@ -1,8 +1,6 @@
 package vn.htdshop.controller;
 
-import java.util.Arrays;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import vn.htdshop.controller.manager.ManagerService;
+
+import vn.htdshop.utility.ManagerService;
 
 @Controller
 public class ErrorController {

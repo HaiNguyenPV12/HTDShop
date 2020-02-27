@@ -3,40 +3,46 @@
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDManager/layout}">
 
 <head>
-    <title>HTD Manager - Add new product</title>
+    <title>HTD Manager - Update product</title>
     <th:block layout:fragment="additionalCss">
         <link rel="stylesheet" th:href="@{/manager_resources/plugins/summernote/summernote-lite.css}" />
         <link rel="stylesheet" th:href="@{/manager_resources/plugins/jquery-ui/jquery-ui.min.css}" />
         <link rel="stylesheet" th:href="@{/manager_resources/plugins/jquery-ui/jquery-ui.theme.min.css}" />
     </th:block>
-    <th:block layout:fragment="css">
-        <style>
-            /* HIDE RADIO */
-            .uploadimg>[type=radio] {
-                position: absolute;
-                opacity: 0;
-                width: 0;
-                height: 0;
-            }
+    <style>
+        /* HIDE RADIO */
+        .uploadimg>[type=radio] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
 
-            /* IMAGE STYLES */
-            .uploadimg>img,
-            i {
-                cursor: pointer;
-            }
+        /* IMAGE STYLES */
+        .uploadimg>img,
+        i {
+            cursor: pointer;
+        }
 
-            /* CHECKED STYLES */
-            .uploadimg>[type=radio]:checked+img {
-                outline: 2px solid #f00;
-            }
+        /* CHECKED STYLES */
+        .uploadimg>[type=radio]:checked+img {
+            outline: 2px solid #f00;
+        }
 
-            .uploadimg>img {
-                width: 100%;
-                height: 100%;
-            }
-        </style>
-    </th:block>
+        .uploadimg>img {
+            width: 100%;
+            height: 100%;
+        }
 
+        .ui-autocomplete {
+            max-height: 200px;
+            overflow-y: auto;
+            /* prevent horizontal scrollbar */
+            overflow-x: hidden;
+            /* add padding to account for vertical scrollbar */
+            padding-right: 20px;
+        }
+    </style>
 </head>
 
 <body>
@@ -44,7 +50,7 @@
         <a th:href="@{/manager/product}">
             <i class="fas fa-box-open" style="font-size:20px"></i> Product
         </a>
-        > Add new Product
+        > Update product: "<span th:text="${product.name}"></span>"
     </span>
 
     <div layout:fragment="breadcrumb">
@@ -59,27 +65,7 @@
             <div class="col-lg-12">
                 <div class="card card-purple card-outline">
                     <div class="card-body">
-                        <select class="form-control select2" style="width: 100%;" id="category"
-                            data-dropdown-css-class="select2-purple">
-                            <!-- 
-                            + Specify when "selected" attribute is used by using
-                                th:selected="${condition}"
-                            -->
-                            <option th:selected="${param.cate ==null || param.cate == ''}" disabled>-- Category --
-                            </option>
-                            <!-- 
-                                + Get get parameter data by using:
-                                    param.parameter_name[0]
-                                + Remember to check if that parameter is not null by using:
-                                    param.cate !=null
-                                + Parse integer parameter by using:
-                                    T(Integer).parseInt(value).
-                            -->
-                            <option th:each="cate : ${categories}" th:value="${cate.id}" th:text="${cate.name}"
-                                th:selected="${param.cate != null and T(Integer).parseInt(param.cate[0]) == cate.id}">
-                                CPU
-                            </option>
-                        </select>
+                        Category: <span class="font-weight-bold" th:text="${category}"></span>
                     </div>
                 </div>
             </div>
@@ -88,16 +74,7 @@
                 th:with = "variable_name = variable_value"
         -->
         </div>
-        <th:block th:if="${param.cate == null}">
-            <div class="card card-purple">
-                <div class="card-body">
-                    <div id="main">
-                        Please choose category...
-                    </div>
-                </div>
-            </div>
-        </th:block>
-        <th:block th:if="${param.cate != null}" th:with="curCate=${param.cate[0]}">
+        <th:block th:with="curCate=${curCate}">
             <!-- 
                 + Declare fragment (use this in template page only):
                     <some_tag th:fragment="fragment_name"> tag's_content </some_tag>
@@ -107,7 +84,7 @@
                     <current_tag th:replace="~{/path_to_template_without_extension :: fragment_name} ?: ~{}"></current_tag>
 
             -->
-            <th:block th:replace="~{/HTDManager/product_template :: template} ?: ~{}" th:if="${product != null}">
+            <th:block th:replace="~{/HTDManager/product_template_old :: template} ?: ~{}" th:if="${product != null}">
 
             </th:block>
         </th:block>
@@ -144,20 +121,6 @@
             }
         });
 
-        $('#category').on('change', function () {
-            var val = $(this).val();
-            console.log($(this).val());
-            if (val == "") {
-                window.location.href = "add";
-            } else {
-                window.location.href = "add?cate=" + val;
-            }
-            /*
-            $.post("product-add-" + val+".html", function(result, text,jqXHR){
-                console.log(result);
-            });
-            */
-        });
         //Initialize Select2 Elements
         $('.select2').select2();
 

@@ -83,20 +83,22 @@
                                 th:with="cate = ${new String[]{'cpu', 'motherboard', 'gpu', 'memory', 'psu', 'storage', 'cpucooler', 'case', 'monitor'}}"
                                 id="parts">
                                 <h3 class="sidebar-title">Parts</h3>
-                                <div class="sidebar-categories mb-2" th:each="c, it : ${cate}">
-                                    <select class="select2bs4" data-dropdown-css-class="select2-purple" th:name="${c}"
-                                        th:id="${c}">
-                                        <option value="0"
-                                            th:selected="${param.__${c}__!=null && T(Integer).parseInt(param.__${c}__) == 0}">
-                                            All <th:block th:text="${#strings.capitalize(c == 'cpucooler'?'Cpu Cooler' : c)}"></th:block>
-                                        </option>
-                                        <option th:each="p : ${products.?[category.id== __${it.index + 1}__]}"
-                                            th:value="${p.id}" th:text="${p.name}"
-                                            th:selected="${param.__${c}__!=null && T(Integer).parseInt(param.__${c}__) == p.id}">
-                                            CPU
-                                        </option>
-                                    </select>
-                                </div>
+                                <form>
+                                    <div class="sidebar-categories mb-2" th:each="c, it : ${cate}">
+                                        <select class="form-control select2" data-dropdown-css-class="select2-purple"
+                                            th:name="${c}" th:id="${c}">
+                                            <option value="0"
+                                                th:selected="${param.__${c}__!=null && T(Integer).parseInt(param.__${c}__) == 0}">
+                                                All <th:block th:text="${#strings.capitalize(c == 'cpucooler'?'Cpu Cooler' : c)}"></th:block>
+                                            </option>
+                                            <option th:each="p : ${products.?[category.id== __${it.index + 1}__]}"
+                                                th:value="${p.id}" th:text="${p.name}"
+                                                th:selected="${param.__${c}__!=null && T(Integer).parseInt(param.__${c}__) == p.id}">
+                                                CPU
+                                            </option>
+                                        </select>
+                                    </div>
+                                </form>
                             </div>
                             <div class="sidebar-widget mb-40">
                                 <h3 class="sidebar-title">Filter by Price</h3>
@@ -189,7 +191,7 @@
 
         $("#resetFilter").on("click", function () {
             $("#from").val(0);
-            $("#to").val(10000);
+            $("#to").val(1000000);
             $("#keyword").val("");
             $("#psort").val("default");
             if ($("#cpu").val() != 0) {
@@ -249,7 +251,7 @@
             if (searched > 0) {
                 sortParam = $("#psort").val();
             }
-            
+
             if (sort != null) {
                 sortParam = sort;
             }
@@ -259,6 +261,9 @@
 
             // Shorten url
             var urlparams = "";
+            if (kParam != "") {
+                urlparams += "&keyword=" + encodeURIComponent(kParam);
+            }
             if (fromParam > 0) {
                 urlparams += "&from=" + encodeURIComponent(fromParam);
             }
@@ -298,8 +303,11 @@
             if (monitorParam > 0) {
                 urlparams += "&9=" + encodeURIComponent(monitorParam);
             }
-            searchUrl += "?keyword=" + encodeURIComponent(kParam) + urlparams;
-            href += "?keyword=" + encodeURIComponent(kParam) + urlparams;
+            if (urlparams != "") {
+                searchUrl += "?" + urlparams;
+                href += "?" + urlparams;
+            }
+
             if (history.pushState) {
                 $("#result").animate({ 'opacity': '0.0' }, 200, function () {
                     $.ajax({
@@ -312,7 +320,7 @@
                             renderPaging(parseInt($("#result").find("#totalPage").val()), pageParam);
                             $("#result").animate({ 'opacity': '1.0' }, 200);
                             $("#searchLabel").html("Search Pre-built PC: " + (kParam == "" ? "All with filters" : ("\"" + kParam + "\"")));
-                            history.pushreplaceState('', 'HTD Shop - Search Pre-built PC', href);
+                            history.pushState('', 'HTD Shop - Search Pre-built PC', href);
                         }
                     });
                 });
@@ -329,10 +337,10 @@
             // Price filter
             if (!$("#searchPrice")[0].checkValidity()) {
                 $("#from").val(0);
-                $("#to").val(10000);
+                $("#to").val(1000000);
             }
             var pricemin = +$("#from").val() || 0;
-            var pricemax = +$("#to").val() || 10000;
+            var pricemax = +$("#to").val() || 1000000;
             if (pricemin > pricemax) {
                 $("#from").val(0);
             }

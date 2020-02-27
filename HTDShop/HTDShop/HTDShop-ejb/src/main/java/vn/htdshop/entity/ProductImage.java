@@ -47,6 +47,10 @@ public class ProductImage implements Serializable {
     @Column(name = "ImagePath")
     private String imagePath;
     @Basic(optional = false)
+    @Size(max = 255)
+    @Column(name = "ThumbnailPath")
+    private String thumbnailPath;
+    @Basic(optional = false)
     @NotNull
     @Column(name = "MainImage")
     private boolean mainImage;
@@ -81,6 +85,14 @@ public class ProductImage implements Serializable {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public String getThumbnailPath() {
+        return thumbnailPath;
+    }
+
+    public void setThumbnailPath(String thumbnailPath) {
+        this.thumbnailPath = thumbnailPath;
     }
 
     public boolean getMainImage() {

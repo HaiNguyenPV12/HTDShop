@@ -5,16 +5,12 @@
  */
 package vn.htdshop.controller.manager;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Comparator;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletContext;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -24,11 +20,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.thymeleaf.expression.Calendars;
 
 import vn.htdshop.entity.*;
 import vn.htdshop.sb.*;
+import vn.htdshop.utility.ManagerService;
 
 /**
  *
@@ -39,9 +34,6 @@ import vn.htdshop.sb.*;
 public class managerOrderController {
     private final String redirectOrderHome = "redirect:/manager/order";
     private final String redirectHome = "redirect:/manager";
-    private final String redirectLogin = "redirect:/manager/login";
-
-    
 
     @EJB(mappedName = "Order1Facade")
     Order1FacadeLocal order1Facade;

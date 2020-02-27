@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDManager/layout}">
+
+<head>
+    <title>HTD Manager - Add new product</title>
+    <th:block layout:fragment="additionalCss">
+        <link rel="stylesheet" th:href="@{/manager_resources/plugins/summernote/summernote-lite.css}" />
+        <link rel="stylesheet" th:href="@{/manager_resources/plugins/jquery-ui/jquery-ui.min.css}" />
+        <link rel="stylesheet" th:href="@{/manager_resources/plugins/jquery-ui/jquery-ui.theme.min.css}" />
+    </th:block>
+    <th:block layout:fragment="css">
+        <style>
+            /* HIDE RADIO */
+            .uploadimg>[type=radio] {
+                position: absolute;
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+            /* IMAGE STYLES */
+            .uploadimg>img,
+            i {
+                cursor: pointer;
+            }
+
+            /* CHECKED STYLES */
+            /* .uploadimg>[type=radio]:checked+img {
+                outline: 2px solid #f00;
+            } */
+
+            .uploadimg>img {
+                width: 100%;
+                height: 100%;
+            }
+
+            .ui-autocomplete {
+                max-height: 200px;
+                overflow-y: auto;
+                /* prevent horizontal scrollbar */
+                overflow-x: hidden;
+                /* add padding to account for vertical scrollbar */
+                padding-right: 20px;
+            }
+
+            .is-valid .select2-selection {
+                border: 1px solid #28a745;
+                border-radius: 4px;
+            }
+
+            .is-invalid .select2-selection {
+                border: 1px solid #dc3545;
+                border-radius: 4px;
+            }
+        </style>
+    </th:block>
+
+</head>
+
+<body>
+    <span layout:fragment="title">
+        <a th:href="@{/manager/product}">
+            <i class="fas fa-box-open" style="font-size:20px"></i> Product
+        </a>
+        > Add new Product
+    </span>
+
+    <div layout:fragment="breadcrumb">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a th:href="@{/manager}">Home</a></li>
+            <li class="breadcrumb-item active"><a th:href="@{/manager/product}">Product</a></li>
+        </ol>
+    </div>
+
+    <div layout:fragment="content">
+        <form id="frmProduct" name="product" th:action="@{/manager/product/__${formUrl}__}" th:object="${product}"
+            method="POST">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card card-purple card-outline">
+                        <div class="card-body" th:if="${update == null}">
+                            <select class="form-control select2" style="width: 100%;" id="category" name="category.id"
+                                data-dropdown-css-class="select2-purple">
+                                <option disabled selected>-- Category --</option>
+                                <option th:each="cate : ${categories}" th:value="${cate.id}" th:text="${cate.name}">
+                                    CPU
+                                </option>
+                            </select>
+                            <ul id="categoryError" class="text-danger"></ul>
+                        </div>
+                        <div class="card-body" th:if="${update != null}">
+                            Category: <span class="font-weight-bold" th:text="${product.category.name}"></span>
+                            <input type="hidden" th:field="*{category.id}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <input type="hidden" th:field="*{id}" th:if="${update != null}">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card card-purple">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                Images
+                                <div class="file btn btn-info" style="position:relative;overflow:hidden;">
+                                    <i class="fas fa-plus-square"></i>
+                                    <input type="file"
+                                        style="position: absolute;font-size:50px;opacity: 0;right: 0;top: 0;cursor: pointer;"
+                                        id="btnUploadImage" multiple="multiple" accept="image/*">
+                                </div>
+                                <a class="btn btn-danger" id="btnClearUploadImage" title="Clear all"
+                                    style="cursor: pointer;"><i class="fas fa-trash"></i></a>
+                            </h3>
+                        </div>
+                        <div class="card-body row" id="uploadimg">
+                            <th:block th:if="${update != null}">
+                                <label class="col-sm-1 text-center uploadimg"
+                                    th:each="img : ${product.productImageCollection}">
+                                    <input type="radio" name="uploadradio">
+                                    <img th:src="@{/images/__${img.thumbnailPath != null? img.thumbnailPath : img.imagePath}__}"
+                                        th:onclick="deleteUploadImage([[${img.imagePath}]])">
+                                </label>
+                            </th:block>
+                        </div>
+                    </div>
+                </div>
+                <!-- Include basic info part -->
+
+                <div class="col-lg-6">
+                    <div class="card card-purple">
+                        <div class="card-header">
+                            <h3 class="card-title">Basic information</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group row">
+
+                                <label for="name" class="col-sm-3 col-form-label text-center">Product name<i
+                                        class="text-danger">*</i></label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" id="name" placeholder="Product name"
+                                        th:field="*{name}" />
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9">
+                                    <ul class="text-danger" id="nameError">
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="manufacturer" class="col-sm-3 col-form-label text-center">Manufacturer<i
+                                        class="text-danger">*</i></label>
+                                <div class="col-sm-9">
+                                    <input class="form-control autocomplete" id="manufacturer"
+                                        placeholder="Manufacturer" th:field="*{manufacturer}"
+                                        th:auto-for="${cateName == null? '' : cateName}" />
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9">
+                                    <ul class="text-danger" id="manufacturerError"></ul>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="warrantyPeriod" class="col-sm-3 col-form-label text-right">Warranty
+                                    Period<i class="text-danger">*</i></label>
+                                <div class="input-group col-sm-9">
+                                    <input type="number" class="form-control" id="warrantyPeriod"
+                                        placeholder="Warranty Period" th:field="*{warrantyPeriod}" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">months</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9">
+                                    <ul class="text-danger" id="warrantyPeriodError"></ul>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="price" class="col-sm-2 col-form-label text-right">Price<i
+                                        class="text-danger">*</i></label>
+                                <div class="col-sm-4">
+                                    <input type="number" class="form-control" id="price" placeholder="Price"
+                                        th:field="*{price}" step="0.01" />
+                                </div>
+                                <label for="stock" class="col-sm-2 col-form-label text-right">Stock<i
+                                        class="text-danger">*</i></label>
+                                <div class="col-sm-4">
+                                    <input type="number" class="form-control" id="stock" placeholder="Stock"
+                                        th:field="*{stock}" />
+                                </div>
+                                <div class="col-sm-2"></div>
+                                <div class="col-sm-4">
+                                    <ul class="text-danger" id="priceError"></ul>
+                                </div>
+                                <div class="col-sm-2"></div>
+                                <div class="col-sm-4">
+                                    <ul class="text-danger" id="stockError"></ul>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="color" class="col-sm-2 col-form-label text-right">Color<i
+                                        class="text-danger">*</i></label>
+                                <div class="col-sm-4">
+                                    <select class="form-control select2" id="color" th:field="*{color}"
+                                        th:classappend="${(#fields.hasErrors('color')?'is-invalid':'') + (submited != null and !#fields.hasErrors('color')?'is-valid':'')}"
+                                        required>
+                                        <option value="" disabled selected>-- Choose color --</option>
+                                        <option value="None">None</option>
+                                        <option value="Red" class="bg-red font-weight-bold">Red</option>
+                                        <option value="Blue" class="bg-blue font-weight-bold">Blue
+                                        </option>
+                                        <option value="Green" class="bg-green font-weight-bold">Green
+                                        </option>
+                                        <option value="Yellow" class="bg-yellow font-weight-bold">Yellow
+                                        </option>
+                                        <option value="White" class="bg-white font-weight-bold">White
+                                        </option>
+                                        <option value="Black" class="bg-dark font-weight-bold">Black
+                                        </option>
+                                        <option value="Gray" class="bg-gray font-weight-bold">Gray
+                                        </option>
+                                        <option value="Silver" class="bg-gray font-weight-bold">Silver
+                                        </option>
+                                    </select>
+                                </div>
+                                <label for="status" class="col-sm-2 col-form-label text-right">Status<i
+                                        class="text-danger">*</i></label>
+                                <div class="col-sm-4">
+                                    <div class="custom-control custom-radio">
+                                        <input class="custom-control-input" type="radio" value="1" th:field="*{status}"
+                                            th:selected="${product.status==1}" id="status1" required />
+                                        <label for="status1" class="custom-control-label">Selling</label>
+                                    </div>
+                                    <div class="custom-control custom-radio">
+                                        <input class="custom-control-input" type="radio" value="2" th:field="*{status}"
+                                            th:selected="${product.status==2}" id="status2" />
+                                        <label for="status2" class="custom-control-label">Upcoming</label>
+                                    </div>
+                                    <div class="custom-control custom-radio" th:if="${update!=null}">
+                                        <input class="custom-control-input" type="radio" value="3" th:field="*{status}"
+                                            th:selected="${product.status==3}" id="status3" />
+                                        <label for="status3" class="custom-control-label">Not selling</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-2"></div>
+                                <div class="col-sm-4" th:if="${#fields.hasErrors('color')}">
+                                    <ul class="text-danger">
+                                        <li th:each="err : ${#fields.errors('color')}" th:text="${err}">Name Error</li>
+                                    </ul> 
+                                </div>
+                                <div class="col-sm-2"></div>
+                                <div class="col-sm-4" th:if="${#fields.hasErrors('status')}">
+                                    <ul class="text-danger">
+                                        <li th:each="err : ${#fields.errors('status')}" th:text="${err}">Name Error</li>
+                                    </ul> 
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                <!-- Start specific info part -->
+                <div id="specificInfo" th:if="${update == null}">
+                    
+                </div>
+                <th:block th:with="curCate = ${product.category.id}" th:if="${update != null}">
+                    <th:block th:replace="~{/HTDManager/product_template} ?: ~{}">
+                    </th:block>
+                </th:block>
+                
+                <!-- Description part -->
+                <div class="col-lg-12">
+                    <div class="card card-purple">
+                        <div class="card-header">
+                            <h3 class="card-title">More detail</h3>
+                        </div>
+                        <div class="card-body">
+                            <textarea class="textarea" placeholder="Place some text here"
+                                  style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" th:field="*{description}"></textarea>
+                        </div> 
+                    </div>
+                </div>
+                <!-- Submit button -->
+                <div class="col-lg-12 text-right mb-3">
+                    <input type="submit" class="btn btn-success" th:value="${update==null? 'Add this product' : 'Update this product'}" ></input>
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+
+
+    <th:block layout:fragment="additionalScript">
+        <script th:src="@{/manager_resources/plugins/summernote/summernote-lite.min.js}"></script>
+        <script th:src="@{/manager_resources/plugins/jquery-ui/jquery-ui.min.js}"></script>
+    </th:block>
+    <script layout:fragment="script" th:inline="javascript">
+        /*<![CDATA[*/
+        var existImgSize = +/*[[${update == null? 0 : product.productImageCollection.size()}]]*/0;
+        var cache = {};
+        var update = /*[[${update == null ? false : true}]]*/false;
+        $("#btnUploadImage").on("change", function () {
+            if (this.files && this.files[0]) {
+                var filesNum = this.files.length;
+                if ((filesNum + existImgSize) > 10) {
+                    Toast.fire({
+                        type: 'error',
+                        title: 'Product can have maximum 10 images.'
+                    });
+                    $(this).val("");
+                    return;
+                }
+
+                var myFormData = new FormData();
+                for (var i = 0; i < this.files.length; i++) {
+                    myFormData.append('uploadimg', this.files[i]);
+                }
+
+                $.ajax({
+                    url: /*[[@{/manager/product/doUploadImage}]]*/'',
+                    type: 'POST',
+                    processData: false, // important
+                    contentType: false, // important
+                    data: myFormData,
+                    success: function (result) {
+                        console.log(result);
+                        viewUploadImage(result);
+                    }
+                });
+            }
+            $(this).val("");
+        });
+
+        $("#btnClearUploadImage").on("click", function () {
+            $.post(/*[[@{/manager/product/deleteAllUploadImage}]]*/"", function (result) {
+                $("#uploadimg").html("");
+                existImgSize = +0;
+            });
+        });
+
+        function deleteUploadImage(imgPath) {
+            $.post(/*[[@{/manager/product/deleteUploadImage}]]*/"", { imgPath: imgPath }, function (result) {
+                viewUploadImage(result);
+            });
+        }
+
+        function viewUploadImage(result) {
+            if (result != null && result.length) {
+                $("#uploadimg").html("");
+                var imgUrl = /*[[@{/images/}]]*/"";
+                result.forEach(e => {
+                    $("#uploadimg").append('<label class="col-sm-1 text-center uploadimg">'
+                        + '<input type="radio" name="uploadradio">'
+                        + '<img src="' + imgUrl + e.thumbnailPath + '" onclick="deleteUploadImage(\'' + e.imagePath + '\')">'
+                        + '</label>');
+                });
+                existImgSize = result.length;;
+            } else {
+                $("#uploadimg").html("");
+            }
+        }
+
+        $('#category').on('change', function () {
+            var cateId = $(this).val();
+            if (cateId != "") {
+                $.ajax({
+                    url: /*[[@{/manager/product/template}]]*/"",
+                    type: 'POST',
+                    data: { "category": $(this).val() },
+                    success: function (data) {
+                        $("#specificInfo").replaceWith(data);
+                        $("#specificInfo").find("input.autocomplete").each(function (i, e) {
+                            var attr = $(this).attr("id");
+                            var cate = $(this).attr("auto-for");
+                            makeAutoList(this, cate, attr);
+                        });
+                        $("#category.id").val(cateId);
+                        makeAutoList($("#manufacturer"), $("#cateName").val(), "manu");
+                    }
+                });
+            }
+        });
+
+        makeAutoList($("#manufacturer"), /*[[${cateName == null? '' : cateName}]]*/"", "manu");
+        if (update) {
+            $("#specificInfo").find("input.autocomplete").each(function (i, e) {
+                var attr = $(this).attr("id");
+                var cate = $(this).attr("auto-for");
+                makeAutoList(this, cate, attr);
+            });
+        }
+
+        function makeAutoList(element, cate, attr) {
+            var searchUrl = /*[[@{/manager/product/autolist}]]*/'';
+            if (attr == "manufacturer") {
+                attr = "manu";
+            }
+            searchUrl += "?attr=" + attr + "&cate=" + cate;
+            $(element).autocomplete({
+                source: function (request, response) {
+                    var term = request.term + attr + cate;
+                    if (term in cache) {
+                        response(cache[term]);
+                        return;
+                    }
+
+                    $.post(searchUrl, request, function (data, status, xhr) {
+                        cache[term] = data;
+                        response(data);
+                    });
+                },
+                minLength: 0
+            }).focus(function () {
+                $(this).data("uiAutocomplete").search($(this).val());
+            });
+        }
+
+        $("#frmProduct").submit(function (e) {
+            e.preventDefault();
+            var formData = new FormData($(this)[0]);
+            $.ajax({
+                url: $(this).attr("action"),
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    $("ul.text-danger").html("");
+                    $("#frmProduct").find("select, input, textarea").each(function (i, e) {
+                        if ($(e).prop("tagName") == "SELECT") {
+                            $(e).next().removeClass("is-valid");
+                            $(e).next().removeClass("is-invalid");
+                        } else {
+                            $(e).removeClass("is-valid");
+                            $(e).removeClass("is-invalid");
+                        }
+                        if (!$(e).hasClass("is-valid")) {
+                            if ($(e).prop("tagName") == "SELECT") {
+                                $(e).next().addClass("is-valid");
+                            } else {
+                                $(e).addClass("is-valid");
+                            }
+                        }
+                    });
+                    if (data.length) {
+                        data.forEach(e => {
+                            var input = $("#" + e.field);
+                            if (input.prop("tagName") == "SELECT" && input.next().hasClass("is-valid")) {
+                                input.next().removeClass("is-valid");
+                            } else {
+                                input.removeClass("is-valid");
+                            }
+                            if (input.prop("tagName") == "SELECT") {
+                                input.next().addClass("is-invalid");
+                            } else {
+                                input.addClass("is-invalid");
+                            }
+
+                            $("#" + e.field + "Error").append("<li>" + e.defaultMessage + "</li>")
+                        });
+                    } else {
+                        $("#frmProduct").find("select, input, textarea").each(function (i, e) {
+                            if ($(e).prop("tagName") == "SELECT") {
+                                $(e).next().removeClass("is-valid");
+                                $(e).next().removeClass("is-invalid");
+                            } else {
+                                $(e).removeClass("is-valid");
+                                $(e).removeClass("is-invalid");
+                            }
+                        });
+                        if (!update) {
+                            $("#frmProduct").trigger("reset");
+                            $("#uploadimg").html("");
+                            existImgSize = +0;
+                            $('.textarea').summernote('reset');
+                            Toast.fire({
+                                type: 'success',
+                                title: 'Successfully added!'
+                            });
+                        } else {
+                            Toast.fire({
+                                type: 'success',
+                                title: 'Successfully updated!'
+                            });
+                        }
+                    }
+
+                }
+            });
+        });
+
+        //Initialize Select2 Elements
+        $('.select2').select2();
+
+        //Initialize Select2 Elements
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        });
+
+        $('.textarea').summernote({ height: 150 });
+
+        $(window).on("beforeunload", function () {
+            $.post(/*[[@{/manager/product/clearUploadImage}]]*/"", function (result) { });
+        })
+
+        /*]]>*/
+    </script>
+</body>
+
+</html>
