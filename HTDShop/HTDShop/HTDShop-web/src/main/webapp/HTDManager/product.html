@@ -264,7 +264,7 @@
             "paging": true,
             "lengthChange": true,
             "lengthMenu": [
-                [5, 10, 25, 50, 100, 500, -1], [5, 10, 25, 50, 100, 500, "All"]
+                [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]
             ],
             "searching": true,
             "ordering": false,
@@ -294,7 +294,7 @@
                     var productlink = /*[[@{/manager/product}]]*/'';
                     var id = row.id;
                     var str = "";
-                    str += '<a class="btn btn-info btn-sm" href="' + productlink + '/image?id=' + id + '" data-toggle="tooltip" title = "Images" > <i class="fas fa-images" ></i></a>';
+                    // str += '<a class="btn btn-info btn-sm" href="' + productlink + '/image?id=' + id + '" data-toggle="tooltip" title = "Images" > <i class="fas fa-images" ></i></a>';
                     str += '<a class="btn btn-warning btn-sm" href="' + productlink + '/edit?id=' + id + '" data-toggle="tooltip" title = "Edit" > <i class="fas fa-pencil-alt" ></i></a>';
                     str += '<button class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete" onclick=\"confirmDelete(\'' + row.name.replace("\"", "&quot;") + '\',\'' + productlink + '/doDelete?id=' + id + '\')\"><i class="fas fa-trash"></i></button>';
                     return str;
@@ -349,7 +349,7 @@
                     text: 'Selected items\'s action',
                     buttons: [
                         {
-                            text: 'Disable selected items',
+                            text: 'Set status "Unavailable"',
                             action: function () {
                                 var myFormData = new FormData();
                                 table.rows({ selected: true }).every(function (rowId) {
@@ -357,11 +357,11 @@
                                 });
                                 myFormData.append("status", '3');
                                 var url = /*[[@{/manager/product/setStatus}]]*/'';
-                                doAjax(url, myFormData, 'Successfully disabled item(s).');
+                                doAjax(url, myFormData, 'Successfully set status item(s).');
                             }
                         },
                         {
-                            text: 'Enable selected items',
+                            text: 'Set status "Is selling"',
                             action: function () {
                                 var myFormData = new FormData();
                                 table.rows({ selected: true }).every(function (rowId) {
@@ -369,7 +369,7 @@
                                 });
                                 myFormData.append("status", '1');
                                 var url = /*[[@{/manager/product/setStatus}]]*/'';
-                                doAjax(url, myFormData, 'Successfully enabled item(s).');
+                                doAjax(url, myFormData, 'Successfully set status item(s).');
                             }
                         }
                     ],
