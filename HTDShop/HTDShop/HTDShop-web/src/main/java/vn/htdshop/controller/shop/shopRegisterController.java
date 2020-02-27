@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import vn.htdshop.entity.*;
 import vn.htdshop.sb.*;
+import vn.htdshop.utility.ShopService;
 /**
  * shopRegisterController
  */

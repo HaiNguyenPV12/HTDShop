@@ -21,12 +21,21 @@ public class Search {
     public Search(Map<String, String> params) {
         // Keyword
         this.keyword = params.get("keyword");
+        if (this.keyword == null) {
+            this.keyword = "";
+        }
         // Style
         this.style = params.get("style");
+        if (this.style == null) {
+            this.style = "grid";
+        }
         // Sort
         this.sort = params.get("sort");
+        if (this.sort == null) {
+            this.sort = "default";
+        }
         // Category
-        if (params.get("category") == null) {
+        if (params.get("category") == null || params.get("category").isEmpty()) {
             this.category = 0;
         } else {
             try {
@@ -56,7 +65,7 @@ public class Search {
             }
         }
         if (params.get("to") == null) {
-            this.to = 10000d;
+            this.to = 1000000d;
         } else {
             try {
                 this.to = Double.parseDouble(params.get("to"));
@@ -64,7 +73,7 @@ public class Search {
                 this.to = 0d;
             }
         }
-        
+
     }
 
     public Search(Integer category, String keyword, Integer page, String style, Double from, Double to, String sort) {

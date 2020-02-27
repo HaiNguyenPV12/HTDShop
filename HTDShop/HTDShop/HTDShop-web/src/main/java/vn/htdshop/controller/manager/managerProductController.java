@@ -9,8 +9,10 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -22,8 +24,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -37,6 +40,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import vn.htdshop.entity.*;
 import vn.htdshop.sb.*;
+import vn.htdshop.utility.ImageThumbnail;
+import vn.htdshop.utility.ManagerService;
 
 /**
  *
@@ -48,9 +53,6 @@ public class managerProductController {
 
     private final String redirectProductHome = "redirect:/manager/product";
     private final String redirectHome = "redirect:/manager";
-
-    @EJB(mappedName = "StaffFacade")
-    StaffFacadeLocal staffFacade;
 
     @EJB(mappedName = "ProductFacade")
     ProductFacadeLocal productFacade;
@@ -92,11 +94,12 @@ public class managerProductController {
             model.addAttribute("badAlert", model.asMap().get("badAlert"));
         }
 
-        // Pass product list to session
-        model.asMap().put("products",
-                productFacade.findAll().stream().sorted(Comparator.comparingInt(Product::getStatus))
-                        .sorted(Comparator.comparing(Product::getId, Comparator.reverseOrder()))
-                        .collect(Collectors.toList()));
+        // Pass product list to session -- No need for now (using ajax)
+        // model.asMap().put("products",
+        // productFacade.findAll().stream().sorted(Comparator.comparingInt(Product::getStatus))
+        // .sorted(Comparator.comparing(Product::getId, Comparator.reverseOrder()))
+        // .collect(Collectors.toList()));
+
         // Add indicator attribute for sidemenu highlight
         model.asMap().put("menu", "product");
         return "HTDManager/product";
@@ -110,16 +113,46 @@ public class managerProductController {
         if (!managerService.checkLoginWithRole("product_read")) {
             return new ArrayList<ProductView>();
         }
-        List<Product> productList = productFacade.findAll().stream().sorted(Comparator.comparingInt(Product::getStatus))
-                .sorted(Comparator.comparing(Product::getId, Comparator.reverseOrder())).collect(Collectors.toList());
+        List<Product> productList = productFacade.findAll().stream()
+                .sorted(Comparator.comparing(Product::getId, Comparator.reverseOrder()))
+                .sorted(Comparator.comparingInt(Product::getStatus)).collect(Collectors.toList());
         List<ProductView> result = new ArrayList<>();
+        // For testing
+        // for (int i = 0; i < 15; i++) {
+        // for (Product product : productList) {
+        // result.add(new ProductView(product));
+        // }
+        // }
         for (Product product : productList) {
             result.add(new ProductView(product));
         }
         return result;
     }
 
-    // ==== PRODUCT LIST ==== \\
+    // ==== PRODUCT - SET STATUS MULTIPLE PRODUCTS ==== \\
+    @RequestMapping(value = "setStatus", method = RequestMethod.POST)
+    public @ResponseBody String setStatus(Model model, HttpServletResponse response,
+            @RequestParam(value = "id", required = false) Integer[] id,
+            @RequestParam(value = "status", required = false) Integer status) {
+        response.setContentType("application/json");
+        // Check login with role
+        if (!managerService.checkLoginWithRole("product_edit")) {
+            return "No permission.";
+        }
+
+        if (id == null || id.length <= 0 || status == null) {
+            return "Error submiting form.";
+        }
+
+        for (Integer i : id) {
+            Product p = productFacade.find(i);
+            p.setStatus(status);
+            productFacade.edit(p);
+        }
+        return "ok";
+    }
+
+    // ==== PRODUCT AUTOCOMPLETE LIST ==== \\
     @RequestMapping(value = "autolist", method = RequestMethod.POST)
     public @ResponseBody List<String> getAutoList(Model model, HttpServletResponse response,
             @RequestParam(required = false) Map<String, String> params) {
@@ -128,19 +161,218 @@ public class managerProductController {
         if (!managerService.checkLoginWithRole("product_read")) {
             return new ArrayList<String>();
         }
-        if (params.get("attr") == null || params.get("cate") == null) {
+        if (params.get("attr") == null) {
             return new ArrayList<String>();
         }
-
+        String category = params.get("cate");
+        if (category == null) {
+            category = "";
+        }
         List<String> result = new ArrayList<String>();
-        result = productFacade.getStringList(params.get("attr") + params.get("cate"));
+        result = productFacade.getStringList(params.get("attr") + category);
         return result;
     }
 
     // ==== PRODUCT ADD - VIEW ==== \\
     @RequestMapping(value = "add", method = RequestMethod.GET)
+    public String viewAdd(Model model) {
+        if (!managerService.checkLoginWithRole("product_add")) {
+            return redirectProductHome;
+        }
+        // Prepare product model
+        Category c = new Category();
+        Product p = new Product();
+
+        p.setCategory(c);
+        p.setStatus(1);
+        model.addAttribute("product", p);
+
+        // Prepare form url for form submit
+        // model.addAttribute("formUrl", "doAdd" + category);
+        model.addAttribute("formUrl", "doAdd");
+
+        // Pass category list to view
+        model.asMap().put("categories", categoryFacade.findAll());
+        // Add indicator attribute for sidemenu highlight
+        model.asMap().put("menu", "product");
+        // Continue to login page
+        return "HTDManager/product_add_edit";
+    }
+
+    // ==== PRODUCT ADD AJAX - PROCESS ==== \\
+    @RequestMapping(value = "doAdd", method = RequestMethod.POST)
+    public @ResponseBody Object doAdd(@Valid @ModelAttribute("product") Product product, BindingResult error,
+            Model model) {
+        if (!managerService.checkLoginWithRole("product_add")) {
+            return null;
+        }
+        if (product.getCategory() == null) {
+            error.rejectValue("category", "product", "Please choose category");
+        }
+
+        if (!error.hasErrors()) {
+            productFacade.create(product);
+
+            // Image
+            String folderPath = System.getProperty("catalina.base") + "/img/product/" + product.getId();
+            File checkPath = new File(folderPath);
+            // Check if path is not exists, create path to it
+            if (!checkPath.exists()) {
+                checkPath.mkdirs();
+            }
+            // Move image from temp to product folder
+            try {
+                for (ProductImage img : managerService.getTempImages()) {
+                    managerService.moveTempImageToProduct(img, product.getId());
+                    ProductImage pi = new ProductImage();
+                    pi.setImagePath("product/" + product.getId() + "/" + FilenameUtils.getName(img.getImagePath()));
+                    pi.setThumbnailPath(
+                            "product/" + product.getId() + "/" + FilenameUtils.getName(img.getThumbnailPath()));
+                    pi.setMainImage(img.getMainImage());
+                    pi.setProduct(product);
+                    productImageFacade.create(pi);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            managerService.deleteAllTempImage(false);
+        }
+
+        // Map<String, String> errorMap = error.getFieldErrors().stream()
+        // .collect(Collectors.toMap(e -> e.getField(), e -> e.toString()));
+        return error.getAllErrors();
+    }
+
+    // ==== PRODUCT TEMPLATE - CATEGORY ==== \\
+    @RequestMapping(value = "template", method = RequestMethod.POST)
+    public String getTempCate(Model model, @RequestParam(value = "category", required = false) Integer category) {
+        model.asMap().put("curCate", category);
+        model.asMap().put("cateName", managerService.getCateName(category));
+        // Continue to login page
+        return "HTDManager/product_template";
+    }
+
+    @RequestMapping(value = "doUploadImage", method = RequestMethod.POST)
+    public @ResponseBody List<ProductImage> uploadImages(@RequestParam("uploadimg") MultipartFile[] uploadimg) {
+        if (!managerService.checkLoginWithRole("product_add")) {
+            return null;
+        }
+        return managerService.uploadTempImages(uploadimg);
+    }
+
+    @RequestMapping(value = "getUploadImage", method = RequestMethod.POST)
+    public @ResponseBody List<ProductImage> getUploadImages() {
+        if (!managerService.checkLoginWithRole("product_add")) {
+            return null;
+        }
+        return managerService.getTempImages();
+    }
+
+    @RequestMapping(value = "deleteUploadImage", method = RequestMethod.POST)
+    public @ResponseBody List<ProductImage> doDeleteUploadImage(@RequestParam("imgPath") String imgPath) {
+        if (!managerService.checkLoginWithRole("product_add")) {
+            return null;
+        }
+        managerService.deleteTempImage(imgPath);
+        return managerService.getTempImages();
+    }
+
+    @RequestMapping(value = "clearUploadImage", method = RequestMethod.POST)
+    public @ResponseBody List<ProductImage> doClearUploadImage() {
+        if (!managerService.checkLoginWithRole("product_add")) {
+            return null;
+        }
+        managerService.deleteAllTempImage(false);
+        return managerService.getTempImages();
+    }
+
+    @RequestMapping(value = "deleteAllUploadImage", method = RequestMethod.POST)
+    public @ResponseBody List<ProductImage> doDeleteAllUploadImage() {
+        if (!managerService.checkLoginWithRole("product_add")) {
+            return null;
+        }
+        managerService.deleteAllTempImage(true);
+        return managerService.getTempImages();
+    }
+
+    // ==== PRODUCT EDIT - VIEW 2 ==== \\
+    @RequestMapping(value = "edit", method = RequestMethod.GET)
+    public String viewEdit(Model model, @RequestParam(value = "id") Integer id) {
+        if (!managerService.checkLoginWithRole("product_edit")) {
+            return redirectProductHome;
+        }
+        // Prepare product model
+        Product p = null;
+        if (id != null) {
+            p = productFacade.find(id);
+            if (p == null) {
+                return redirectProductHome;
+            }
+        } else {
+            return redirectProductHome;
+        }
+
+        model.addAttribute("product", p);
+        managerService.setTempImages(p.getProductImageCollection());
+        // Prepare form url for form submit
+        // model.addAttribute("formUrl", "doAdd" + category);
+        model.addAttribute("formUrl", "doEdit");
+        model.asMap().put("cateName", managerService.getCateName(p.getCategory().getId()));
+        // Add indicator attribute for sidemenu highlight
+        model.asMap().put("menu", "product");
+        model.addAttribute("update", "update");
+        // Continue to login page
+        return "HTDManager/product_add_edit";
+    }
+
+    // ==== PRODUCT EDIT AJAX - PROCESS ==== \\
+    @RequestMapping(value = "doEdit", method = RequestMethod.POST)
+    public @ResponseBody Object doEdit2(@Valid @ModelAttribute("product") Product product, BindingResult error,
+            Model model) {
+        if (!managerService.checkLoginWithRole("product_add")) {
+            return null;
+        }
+
+        if (!error.hasErrors()) {
+            productFacade.edit(product);
+
+            // Image
+            String folderPath = System.getProperty("catalina.base") + "/img/product/" + product.getId();
+            File checkPath = new File(folderPath);
+            // Check if path is not exists, create path to it
+            if (!checkPath.exists()) {
+                checkPath.mkdirs();
+            }
+            // Move image from temp to product folder
+            try {
+                for (ProductImage img : managerService.getTempImages()) {
+                    managerService.moveTempImageToProduct(img, product.getId());
+                    if (img.getId() == null) {
+                        ProductImage pi = new ProductImage();
+                        pi.setImagePath("product/" + product.getId() + "/" + FilenameUtils.getName(img.getImagePath()));
+                        pi.setThumbnailPath(
+                                "product/" + product.getId() + "/" + FilenameUtils.getName(img.getThumbnailPath()));
+                        pi.setMainImage(img.getMainImage());
+                        pi.setProduct(product);
+                        productImageFacade.create(pi);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            managerService.deleteAllTempImage(false);
+            managerService.setTempImages(productFacade.find(product.getId()).getProductImageCollection());
+        }
+
+        // Map<String, String> errorMap = error.getFieldErrors().stream()
+        // .collect(Collectors.toMap(e -> e.getField(), e -> e.toString()));
+        return error.getAllErrors();
+    }
+
+    // ==== PRODUCT ADD OLD - VIEW ==== \\
+    @RequestMapping(value = "addOld", method = RequestMethod.GET)
     // Adding optional "cate" parameter by using @RequestParam(required = false)
-    public String viewAdd(HttpSession session, Model model, @RequestParam(required = false) Integer cate) {
+    public String viewAddOld(HttpSession session, Model model, @RequestParam(required = false) Integer cate) {
 
         if (!managerService.checkLoginWithRole("product_add")) {
             return redirectProductHome;
@@ -202,12 +434,12 @@ public class managerProductController {
         // Add indicator attribute for sidemenu highlight
         model.asMap().put("menu", "product");
         // Continue to login page
-        return "HTDManager/product_add";
+        return "HTDManager/product_add_old";
     }
 
-    // ==== PRODUCT ADD - PROCESS ==== \\
-    @RequestMapping(value = "doAdd", method = RequestMethod.POST)
-    public String doAdd(@Valid @ModelAttribute("product") Product product, BindingResult error, HttpSession session,
+    // ==== PRODUCT ADD OLD - PROCESS ==== \\
+    @RequestMapping(value = "doAddOld", method = RequestMethod.POST)
+    public String doAddOld(@Valid @ModelAttribute("product") Product product, BindingResult error, HttpSession session,
             Model model, @RequestParam(value = "uploadimg", required = false) MultipartFile[] uploadimg,
             RedirectAttributes redirect) {
         if (!managerService.checkLoginWithRole("product_add")) {
@@ -250,12 +482,12 @@ public class managerProductController {
         // Add indicator attribute for sidemenu highlight
         model.asMap().put("menu", "product");
         // Redirect to add page
-        return "redirect:/manager/product/add?cate=" + product.getCategory().getId();
+        return "redirect:/manager/product/addOld?cate=" + product.getCategory().getId();
     }
 
-    // ==== PRODUCT EDIT - VIEW ==== \\
-    @RequestMapping(value = "edit", method = RequestMethod.GET)
-    public String viewEdit(HttpSession session, Model model, @RequestParam(required = true) Integer id) {
+    // ==== PRODUCT EDIT OLD - VIEW ==== \\
+    @RequestMapping(value = "editOld", method = RequestMethod.GET)
+    public String viewEditOld(HttpSession session, Model model, @RequestParam(required = true) Integer id) {
         if (!managerService.checkLoginWithRole("product_edit")) {
             return redirectProductHome;
         }
@@ -331,12 +563,12 @@ public class managerProductController {
         // Add indicator attribute for sidemenu highlight
         model.asMap().put("menu", "product");
         // Continue to login page
-        return "HTDManager/product_edit";
+        return "HTDManager/product_edit_old";
     }
 
-    // ==== PRODUCT EDIT - PROCESS ==== \\
-    @RequestMapping(value = "doEdit", method = RequestMethod.POST)
-    public String doEditCPU(@Valid @ModelAttribute("product") Product product, BindingResult error, Model model,
+    // ==== PRODUCT EDIT OLD - PROCESS ==== \\
+    @RequestMapping(value = "doEditOld", method = RequestMethod.POST)
+    public String doEditOld(@Valid @ModelAttribute("product") Product product, BindingResult error, Model model,
             @RequestParam(value = "uploadimg", required = false) MultipartFile[] uploadimg,
             RedirectAttributes redirect) {
         if (!managerService.checkLoginWithRole("product_edit")) {
@@ -374,7 +606,7 @@ public class managerProductController {
         // Add indicator attribute for sidemenu highlight
         model.asMap().put("menu", "product");
         // Redirect to add page
-        return "redirect:/manager/product/edit?id=" + product.getId();
+        return "redirect:/manager/product/editOld?id=" + product.getId();
     }
 
     // ==== PRODUCT DELETE - PROCESS ==== \\
@@ -397,7 +629,7 @@ public class managerProductController {
             if (!p.getPreBuiltCPUCollection().isEmpty()) {
                 exists += "prebuilt-cpu|";
             }
-            if (!p.getPreBuiltCPUCollection().isEmpty()) {
+            if (!p.getPreBuiltCPUCoolerCollection().isEmpty()) {
                 exists += "prebuilt-cpucooler|";
             }
             if (!p.getPreBuiltCaseCollection().isEmpty()) {
@@ -419,7 +651,7 @@ public class managerProductController {
                 exists += "prebuilt-storage|";
             }
             if (!p.getPreBuiltVGACollection().isEmpty()) {
-                exists += "prebuilt-vga|";
+                exists += "prebuilt-gpu|";
             }
             if (!p.getProductCommentCollection().isEmpty()) {
                 exists += "have comments|";
@@ -431,12 +663,17 @@ public class managerProductController {
                 // First, delete product's images
                 for (ProductImage img : p.getProductImageCollection()) {
                     File deleteFile = new File(System.getProperty("catalina.home") + "/img/" + img.getImagePath());
-                    if (deleteFile.delete()) {
-                        System.out.println("Deleted image: " + deleteFile.getPath());
-                    } else {
-                        System.out.println("Cannot delete image: " + deleteFile.getPath());
-                    }
+                    File deleteThumbnailFile = new File(
+                            System.getProperty("catalina.home") + "/img/" + img.getThumbnailPath());
+                    deleteFile.delete();
+                    deleteThumbnailFile.delete();
                     productImageFacade.remove(img);
+                }
+                try {
+                    File deleteFolder = new File(System.getProperty("catalina.home") + "/img/" + id + "/");
+                    FileUtils.deleteDirectory(deleteFolder);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
                 // Then, delete product's promotion
@@ -474,6 +711,9 @@ public class managerProductController {
                     } else {
                         System.out.println("Cannot delete image: " + deleteFile.getPath());
                     }
+                    File deleteThumbnailFile = new File(
+                            System.getProperty("catalina.home") + "/img/" + img.getThumbnailPath());
+                    deleteThumbnailFile.delete();
                     // Then, delete record in database
                     productImageFacade.remove(img);
                 }
@@ -487,18 +727,23 @@ public class managerProductController {
             if (!checkPath.exists()) {
                 checkPath.mkdirs();
             }
+
             // With each of file, do following
             int count = 0;
             for (MultipartFile multipartFile : uploadimg) {
                 // File name: [count].[extension]
-                // TODO: check extensions
-                String fileName = count + multipartFile.getOriginalFilename()
-                        .substring(multipartFile.getOriginalFilename().lastIndexOf("."));
+                String originName = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
+                String ext = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
+                String fileName = originName + "." + ext;
+                String thumbnailFileName = originName + "_th." + ext;
                 // file path:
                 // Path_to_glassfish/domains/domain_name/img/product/product_id/count.extension
                 String filePath = folderPath + "/" + fileName;
+                String thumbnailFilePath = folderPath + "/" + thumbnailFileName;
                 // Use Files to copy multipartFile's input stream to declared path
                 Files.copy(multipartFile.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(ImageThumbnail.getImageThumbnail(multipartFile), Paths.get(thumbnailFilePath),
+                        StandardCopyOption.REPLACE_EXISTING);
 
                 // Create image data in database
                 ProductImage pimg = new ProductImage();
@@ -508,15 +753,16 @@ public class managerProductController {
                     pimg.setMainImage(false);
                 }
                 pimg.setImagePath("product/" + product.getId() + "/" + fileName);
+                pimg.setThumbnailPath("product/" + product.getId() + "/" + thumbnailFileName);
                 pimg.setProduct(product);
                 productImageFacade.create(pimg);
                 count++;
             }
-
             return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
     }
+
 }

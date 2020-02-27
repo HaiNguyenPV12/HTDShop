@@ -5,6 +5,7 @@
  */
 package vn.htdshop.sb;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -55,6 +56,8 @@ public class ProductFacade extends AbstractFacade<Product> implements ProductFac
             q = em.createNativeQuery("SELECT DISTINCT CAST(Socket AS VARCHAR(MAX)) FROM Product WHERE CateId = 1");
         } else if (attr.equals("series") || attr.equals("seriesCpu")) {
             q = em.createNativeQuery("SELECT DISTINCT Series FROM Product WHERE CateId = 1");
+        } else if (attr.equals("manu") || attr.equals("manuAll")) {
+            q = em.createNativeQuery("SELECT DISTINCT Manufacturer FROM Product");
         } else if (attr.equals("manuCpu")) {
             q = em.createNativeQuery("SELECT DISTINCT Manufacturer FROM Product WHERE CateId = 1");
         } else if (attr.equals("manuMotherboard")) {
@@ -107,6 +110,9 @@ public class ProductFacade extends AbstractFacade<Product> implements ProductFac
             return null;
         }
 
+        if (q.getResultList().size() == 0) {
+            return new ArrayList<String>();
+        }
         return (List<String>) q.getResultList();
     }
 

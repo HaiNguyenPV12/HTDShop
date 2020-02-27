@@ -46,6 +46,14 @@
         .select2 {
             width: 100%;
         }
+
+        .product-img a img {
+            max-height: 10rem;
+            height: 100%;
+            width: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
     </style>
 </head>
 
@@ -73,8 +81,9 @@
                                 <h3 class="sidebar-title">Search Products</h3>
                                 <div class="sidebar-search">
                                     <form id="searchKeyword">
-                                        <input placeholder="Search Products..." type="text" th:value="${param.keyword}"
-                                            name="keyword" id="keyword" maxlength="100" class="form-control">
+                                        <input placeholder="Search Products..." type="text"
+                                            th:value="${param.keyword != null? param.keyword : ''}" name="keyword"
+                                            id="keyword" maxlength="100" class="form-control">
                                         <button type="submit"><i class="ti-search"></i></button>
                                     </form>
                                 </div>
@@ -93,13 +102,14 @@
                             <div class="sidebar-widget mb-5">
                                 <h3 class="sidebar-title">Categories</h3>
                                 <div class="sidebar-categories">
-                                    <select class="select2bs4" data-dropdown-css-class="select2-purple" name="category"
+                                    <select class="select2" data-dropdown-css-class="select2-purple" name="category"
                                         id="category">
-                                        <option value="0" th:selected="${T(Integer).parseInt(param.category) == 0}">All
+                                        <option value="0"
+                                            th:selected="${param.category == null || param.category[0] == '0'}">All
                                         </option>
                                         <option th:each="cate : ${session.categories}" th:value="${cate.id}"
                                             th:text="${cate.name}"
-                                            th:selected="${T(Integer).parseInt(param.category) == cate.id}">
+                                            th:selected="${param.category!=null && T(Integer).parseInt(param.category) == cate.id}">
                                             All Categories
                                         </option>
                                     </select>
@@ -112,11 +122,11 @@
                                     <form id="searchPrice" class="d-flex">
                                         <input type="number" placeholder="From..."
                                             th:value="${param.from!=null?param.from:'0'}" name="from" required min=0
-                                            max=10000 id="from" class="form-control mr-2">
+                                            max=1000000 id="from" class="form-control mr-2">
                                         <i class="fas fa-long-arrow-alt-right mt-3"></i>
                                         <input type="number" placeholder="To..."
-                                            th:value="${param.to!=null?param.to:'10000'}" name="to" required min=10
-                                            max=10000 id="to" class="ml-2 form-control">
+                                            th:value="${param.to!=null?param.to:'1000000'}" name="to" required min=10
+                                            max=1000000 id="to" class="ml-2 form-control">
                                     </form>
                                 </div>
                             </div>
@@ -125,7 +135,7 @@
 
                             </div>
 
-                            
+
 
 
 
@@ -311,7 +321,7 @@
 
         $("#resetFilter").on("click", function () {
             $("#from").val(0);
-            $("#to").val(10000);
+            $("#to").val(1000000);
             $("#keyword").val("");
             $("#psort").val("default");
             $("#category").val(0).trigger("change");
@@ -350,10 +360,20 @@
             var advanced = getAdvancedSearchString(cParam, cateChanged);
             // Create url
             var urlparams = "";
+
+            if (cParam != "" && parseInt(cParam) != 0) {
+                urlparams += "category=" + encodeURIComponent(cParam);
+            }
+            if (kParam != "") {
+                urlparams += "&keyword=" + encodeURIComponent(kParam);
+            }
+            if (pageParam != "" && parseInt(pageParam) > 1) {
+                urlparams += "&page=" + encodeURIComponent(pageParam);
+            }
             if (fromParam > 0) {
                 urlparams += "&from=" + encodeURIComponent(fromParam);
             }
-            if (toParam < 10000) {
+            if (toParam < 1000000) {
                 urlparams += "&to=" + encodeURIComponent(toParam);
             }
             if (sortParam != "default") {
@@ -362,8 +382,11 @@
             if (styleParam != "" && styleParam != "grid") {
                 urlparams += "&style=" + encodeURIComponent(styleParam);
             }
-            searchUrl += "?" + "category=" + encodeURIComponent(cParam) + "&keyword=" + encodeURIComponent(kParam) + "&page=" + encodeURIComponent(pageParam) + urlparams + advanced;
-            href += "?" + "category=" + encodeURIComponent(cParam) + "&keyword=" + encodeURIComponent(kParam) + "&page=" + encodeURIComponent(pageParam) + urlparams + advanced;
+            if (urlparams + advanced != "") {
+                searchUrl += "?" + urlparams + advanced;
+                href += "?" + urlparams + advanced;
+            }
+
             if (history.pushState) {
                 $("#result").animate({ 'opacity': '0.0' }, 200, function () {
                     $("#result").html("");
@@ -401,7 +424,7 @@
                 $("#to").val(2000);
             }
             var pricemin = +$("#from").val() || 0;
-            var pricemax = +$("#to").val() || 10000;
+            var pricemax = +$("#to").val() || 1000000;
             if (pricemin > pricemax) {
                 $("#from").val(0);
             }
@@ -495,6 +518,7 @@
                         $("#filters").find('.select2bs4').select2({
                             theme: 'bootstrap4'
                         });
+                        $("#filters").find('.select2').select2();
                         $("#filters .select2").css("width", "100%");
                     }
                 });

@@ -1,919 +1,579 @@
-<!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-
-<body>
-    <!-- 
-        =========================
-                Template 
-        =========================
-    -->
-    <th:block th:fragment="template" th:if="${product != null}">
-        <form action="" th:action="@{/manager/product/__${formUrl}__}" th:object="${product}" method="POST"
-            enctype="multipart/form-data">
-            <div class="row">
-                <div class="col-lg-12 mb-3" th:if="${#fields.hasErrors('global')}">
-                    <p class="alert alert-danger">
-                        <i class="fas fa-exclamation-circle"></i> 
-                        <span th:errors="*{global}">Name Error</span>
-                    </p>
-                </div>
-
-                <div class="col-lg-12">
-                    <div class="card card-purple">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                Images
-                                <div class="file btn btn-info" style="position:relative;overflow:hidden;">
-                                    <i class="fas fa-plus-square"></i> 
-                                    <input type="file" style="position: absolute;font-size:50px;opacity: 0;right: 0;top: 0;cursor: pointer;" id="btnUploadImage" multiple="multiple" name="uploadimg" accept="image/*">
-                                </div>
-                                
-                            </h3>
-                        </div>
-                        <div class="card-body row" id="uploadimg">
-                            <span th:if="${update!=null}" class="text-danger">Choose new image here will replace all of old images. To manage more detail, please choose [Image] button of this product in list.</span>
-                            <!--
-                            <label class="col-sm-1 text-center uploadimg">
-                                <input type="radio" name="test" value="small" checked="">
-                                <img src="http://placehold.it/60x60/0bf/fff&amp;text=A">
-                                <i class="font-weight-light text-muted text-small">Img.png</i>
-                            </label> 
-                            <label class="col-sm-1 text-center uploadimg">
-                                <input type="radio" name="test" value="small" checked="">
-                                <img src="http://placehold.it/60x60/0bf/fff&amp;text=B">
-                                <i class="font-weight-light text-muted text-small">Img.png</i>
-                            </label>
-                        -->
-                        </div>
-                        
-                    </div>
-                </div>
-                <!-- Include basic info part -->
-                <th:block th:replace="this :: basic"></th:block>
-                <!-- Start specific info part -->
-                <th:block th:replace="this :: __${curCate}__"></th:block>
-                <!-- Description part -->
-                <th:block th:replace="this :: description"></th:block>
-                <!-- Submit button -->
-                <th:block th:replace="this :: submit"></th:block>
+<th:block th:if="${curCate == 1}">
+    <div class="col-lg-6" id="specificInfo">
+        <input type="hidden" id="cateName" th:value="${cateName}">
+        <div class="card card-purple">
+            <div class="card-header">
+                <h3 class="card-title">CPU information</h3>
             </div>
-        </form>
-    </th:block>
-    <!-- 
-        =========================
-                Template - END
-        =========================
-    -->
-
-    <!-- 
-        =========================
-                    Basic 
-        This is basic information
-        that every product must
-        have, so make this one 
-        an include-able part
-        =========================
-    -->
-    <th:block th:fragment="basic">
-        <input type="hidden" th:field="*{id}" th:if="${update!=null}">
-        <input type="hidden" th:field="*{category.id}">
-        <div class="col-lg-6">
-            <div class="card card-purple">
-                <div class="card-header">
-                    <h3 class="card-title">Basic information</h3>
+            <div class="card-body">
+                <div class="form-group row">
+                    <label for="series" class="col-sm-3 col-form-label text-right">Series<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-9">
+                        <input class="form-control autocomplete" id="series" placeholder="Series" name="series" required
+                            auto-for="" th:value="${update != null? product.series : ''}" />
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="seriesError"></ul>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <div class="form-group row">
-
-                        <label for="name" class="col-sm-3 col-form-label text-center">Product name<i
-                                class="text-danger">*</i></label>
-                        <div class="col-sm-9">
-                            <input class="form-control" id="name" placeholder="Product name" th:field="*{name}"
-                                th:classappend="${(#fields.hasErrors('name')?'is-invalid':'') + (submited != null and !#fields.hasErrors('name')?'is-valid':'')}" required/>
-                        </div>
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-9" th:if="${#fields.hasErrors('name')}">
-                            <ul class="text-danger">
-                                <li th:each="err : ${#fields.errors('name')}" th:text="${err}">Name Error</li>
-                            </ul> 
-                        </div>
+                <div class="form-group row">
+                    <label for="socket" class="col-sm-3 col-form-label text-right">Socket<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-9">
+                        <input class="form-control autocomplete" id="socket" placeholder="Socket" name="socket" required
+                            th:auto-for="${cateName}" th:value="${update != null? product.socket : ''}" />
                     </div>
-                    <div class="form-group row">
-                        <label for="manufacturer" class="col-sm-3 col-form-label text-center">Manufacturer<i
-                            class="text-danger">*</i></label>
-                        <div class="col-sm-9">
-                            <input class="form-control autocomplete" id="manufacturer" placeholder="Manufacturer"
-                                    th:field="*{manufacturer}"
-                                    th:classappend="${(#fields.hasErrors('manufacturer')?'is-invalid':'') + (submited != null and !#fields.hasErrors('manufacturer')?'is-valid':'')}" required th:auto-for="${cateName}"/>
-                        </div>
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-9" th:if="${#fields.hasErrors('manufacturer')}">
-                            <ul class="text-danger">
-                                <li th:each="err : ${#fields.errors('manufacturer')}" th:text="${err}">Name Error</li>
-                            </ul> 
-                        </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="socketError"></ul>
                     </div>
-                    <div class="form-group row">
-                        <label for="warrantyPeriod" class="col-sm-3 col-form-label text-right">Warranty
-                            Period<i
-                            class="text-danger">*</i></label>
-                        <div class="input-group col-sm-9">
-                            <input type="number" class="form-control" id="warrantyPeriod"
-                                    placeholder="Warranty Period" th:field="*{warrantyPeriod}"
-                                    th:classappend="${(#fields.hasErrors('warrantyPeriod')?'is-invalid':'') + (submited != null and !#fields.hasErrors('warrantyPeriod')?'is-valid':'')}" required/>
-                            <div class="input-group-append">
-                                <span class="input-group-text">months</span>
-                            </div>
-                        </div>
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-9" th:if="${#fields.hasErrors('warrantyPeriod')}">
-                            <ul class="text-danger">
-                                <li th:each="err : ${#fields.errors('warrantyPeriod')}" th:text="${err}">Name Error</li>
-                            </ul> 
-                        </div>
-                    </div>
-                    
-                    <div class="form-group row">
-                        <label for="price" class="col-sm-2 col-form-label text-right">Price<i
-                            class="text-danger">*</i></label>
-                        <div class="col-sm-4">
-                            <input type="number" class="form-control" id="price" placeholder="Price"
-                                    th:field="*{price}"
-                                    th:classappend="${(#fields.hasErrors('price')?'is-invalid':'') + (submited != null and !#fields.hasErrors('price')?'is-valid':'')}" required step="0.01"/>
-                        </div>
-                        <label for="stock" class="col-sm-2 col-form-label text-right">Stock<i
-                            class="text-danger">*</i></label>
-                        <div class="col-sm-4">
-                            <input type="number" class="form-control" id="stock" placeholder="Stock"
-                                    th:field="*{stock}"
-                                    th:classappend="${(#fields.hasErrors('stock')?'is-invalid':'') + (submited != null and !#fields.hasErrors('stock')?'is-valid':'')}" required/>
-                        </div>
-                        <div class="col-sm-2"></div>
-                        <div class="col-sm-4">
-                            <ul class="text-danger" th:if="${#fields.hasErrors('price')}">
-                                <li th:each="err : ${#fields.errors('price')}" th:text="${err}">Name Error</li>
-                            </ul> 
-                        </div>
-                        <div class="col-sm-2"></div>
-                        <div class="col-sm-4">
-                            <ul class="text-danger" th:if="${#fields.hasErrors('stock')}">
-                                <li th:each="err : ${#fields.errors('stock')}" th:text="${err}">Name Error</li>
-                            </ul> 
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label for="color" class="col-sm-2 col-form-label text-right">Color<i
-                            class="text-danger">*</i></label>
-                        <div class="col-sm-4">
-                            <select class="form-control select2" id="color" th:field="*{color}"
-                            th:classappend="${(#fields.hasErrors('color')?'is-invalid':'') + (submited != null and !#fields.hasErrors('color')?'is-valid':'')}" required>
-                                <option value="" disabled selected>-- Choose color --</option>
-                                <option value="None">None</option>
-                                <option value="Red" class="bg-red font-weight-bold">Red</option>
-                                <option value="Blue" class="bg-blue font-weight-bold">Blue
-                                </option>
-                                <option value="Green" class="bg-green font-weight-bold">Green
-                                </option>
-                                <option value="Yellow" class="bg-yellow font-weight-bold">Yellow
-                                </option>
-                                <option value="White" class="bg-white font-weight-bold">White
-                                </option>
-                                <option value="Black" class="bg-dark font-weight-bold">Black
-                                </option>
-                                <option value="Gray" class="bg-gray font-weight-bold">Gray
-                                </option>
-                                <option value="Silver" class="bg-gray font-weight-bold">Gray
-                                </option>
-                            </select>
-                        </div>
-                        <label for="status" class="col-sm-2 col-form-label text-right">Status<i
-                            class="text-danger">*</i></label>
-                        <div class="col-sm-4">
-                            <div class="custom-control custom-radio">
-                                <input class="custom-control-input" type="radio" value="1" th:field="*{status}"
-                                th:selected="${product.status==1}" id="status1" required/>
-                                <label for="status1" class="custom-control-label">Selling</label>
-                            </div>
-                            <div class="custom-control custom-radio">
-                                <input class="custom-control-input" type="radio" value="2" th:field="*{status}"
-                                th:selected="${product.status==2}" id="status2"/>
-                                <label for="status2" class="custom-control-label">Upcoming</label>
-                            </div>
-                            <div class="custom-control custom-radio" th:if="${update!=null}">
-                                <input class="custom-control-input" type="radio" value="3" th:field="*{status}"
-                                th:selected="${product.status==3}" id="status3"/>
-                                <label for="status3" class="custom-control-label">Not selling</label>
-                            </div>
-                        </div>
-
-                        <div class="col-sm-2"></div>
-                        <div class="col-sm-4" th:if="${#fields.hasErrors('color')}">
-                            <ul class="text-danger">
-                                <li th:each="err : ${#fields.errors('color')}" th:text="${err}">Name Error</li>
-                            </ul> 
-                        </div>
-                        <div class="col-sm-2"></div>
-                        <div class="col-sm-4" th:if="${#fields.hasErrors('status')}">
-                            <ul class="text-danger">
-                                <li th:each="err : ${#fields.errors('status')}" th:text="${err}">Name Error</li>
-                            </ul> 
-                        </div>
-                    </div>
-                    
                 </div>
-            </div>
-        </div>
-    </th:block>
-    <!-- 
-        =========================
-                Basic - END
-        =========================
-    -->
-
-
-    <!-- 
-        =========================
-                Description 
-        =========================
-    -->
-    <th:block th:fragment="description">
-        <div class="col-lg-12">
-            <div class="card card-purple">
-                <div class="card-header">
-                    <h3 class="card-title">More detail</h3>
+                <div class="form-group row">
+                    <label for="chipset" class="col-sm-3 col-form-label text-right">Chipset</label>
+                    <div class="col-sm-9">
+                        <input class="form-control" placeholder="Chipset" name="chipset"
+                            th:value="${update != null? product.chipset : ''}" />
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="chipsetError"></ul>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <textarea class="textarea" placeholder="Place some text here"
-                          style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" th:field="*{description}"></textarea>
-                </div> 
-            </div>
-        </div>
-    </th:block>
-    <!-- 
-        =========================
-            Description - END
-        =========================
-    -->
-    
-    <!-- 
-        =========================
-                Sumit
-        =========================
-    -->
-    <th:block th:fragment="submit">
-        <div class="col-lg-12 text-right mb-3">
-            <input type="submit" class="btn btn-success" value="Add this product" th:if="${update==null}"></input>
-            <input type="submit" class="btn btn-success" value="Update this product" th:if="${update!=null}"></input>
-        </div>
-    </th:block>
-    <!-- 
-        =========================
-                Submit - END
-        =========================
-    -->
-
-    <!-- 
-        =========================
-                CPU 
-        =========================
-    -->
-    <th:block th:fragment="1">
-        <div class="col-lg-6">
-            <div class="card card-purple">
-                <div class="card-header">
-                    <h3 class="card-title">CPU information</h3>
+                <div class="form-group row">
+                    <label for="tdp" class="col-sm-3 col-form-label text-right">TDP<i class="text-danger">*</i></label>
+                    <div class="input-group col-sm-9">
+                        <input type="number" class="form-control" id="tdp" placeholder="TDP (W)" name="tdp" required
+                            th:value="${update != null? product.tdp : ''}" />
+                        <div class="input-group-append">
+                            <span class="input-group-text">W</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="tdpError"></ul>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <div class="form-group row">
-                        <label for="series" class="col-sm-3 col-form-label text-right">Series<i
+                <div class="form-group row">
+                    <label for="core" class="col-sm-3 col-form-label text-right">Cores number<i
                             class="text-danger">*</i></label>
-                        <div class="col-sm-9">
-                            <input class="form-control autocomplete" id="series" placeholder="Series"  th:field="*{series}"
-                            th:classappend="${(#fields.hasErrors('series')?'is-invalid':'') + (submited != null and !#fields.hasErrors('series')?'is-valid':'')}" required auto-for=""/>
-                        </div>
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-9" th:if="${#fields.hasErrors('series')}">
-                            <ul class="text-danger">
-                                <li th:each="err : ${#fields.errors('series')}" th:text="${err}">Name Error</li>
-                            </ul>
-                        </div>
+                    <div class="col-sm-3">
+                        <input type="number" class="form-control" id="core" placeholder="Cores" name="core" required
+                            th:value="${update != null? product.core : ''}" />
                     </div>
-                    <div class="form-group row">
-                        <label for="socket" class="col-sm-3 col-form-label text-right">Socket<i
-                            class="text-danger">*</i></label>
-                        <div class="col-sm-9">
-                            <input class="form-control autocomplete" id="socket" placeholder="Socket"  th:field="*{socket}"
-                            th:classappend="${(#fields.hasErrors('socket')?'is-invalid':'') + (submited != null and !#fields.hasErrors('socket')?'is-valid':'')}" required th:auto-for="${cateName}"/>
-                        </div>
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-9" th:if="${#fields.hasErrors('socket')}">
-                            <ul class="text-danger">
-                                <li th:each="err : ${#fields.errors('socket')}" th:text="${err}">Name Error</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="chipset" class="col-sm-3 col-form-label text-right">Chipset</label>
-                        <div class="col-sm-9">
-                            <input class="form-control" id="chipset" placeholder="Chipset"  th:field="*{chipset}"
-                            th:classappend="${(#fields.hasErrors('chipset')?'is-invalid':'') + (submited != null and !#fields.hasErrors('chipset')?'is-valid':'')}"/>
-                        </div>
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-9" th:if="${#fields.hasErrors('chipset')}">
-                            <ul class="text-danger">
-                                <li th:each="err : ${#fields.errors('chipset')}" th:text="${err}">Name Error</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="tdp" class="col-sm-3 col-form-label text-right">TDP<i
-                            class="text-danger">*</i></label>
-                        <div class="input-group col-sm-9">
-                            <input type="number" class="form-control" id="tdp" placeholder="TDP (W)"  th:field="*{tdp}"
-                            th:classappend="${(#fields.hasErrors('tdp')?'is-invalid':'') + (submited != null and !#fields.hasErrors('tdp')?'is-valid':'')}" required/>
-                            <div class="input-group-append">
-                                <span class="input-group-text">W</span>
-                            </div>
-                        </div>
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-9" th:if="${#fields.hasErrors('tdp')}">
-                            <ul class="text-danger">
-                                <li th:each="err : ${#fields.errors('tdp')}" th:text="${err}">Name Error</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="core" class="col-sm-3 col-form-label text-right">Cores number<i
-                            class="text-danger">*</i></label>
-                        <div class="col-sm-3">
-                            <input type="number" class="form-control" id="core" placeholder="Cores"  th:field="*{core}"
-                            th:classappend="${(#fields.hasErrors('core')?'is-invalid':'') + (submited != null and !#fields.hasErrors('core')?'is-valid':'')}" required/>
-                        </div>
 
-                        <label for="thread" class="col-sm-3 col-form-label text-right">Threads number<i
+                    <label for="thread" class="col-sm-3 col-form-label text-right">Threads number<i
                             class="text-danger">*</i></label>
-                        <div class="col-sm-3">
-                            <input type="number" class="form-control" id="thread" placeholder="Threads"  th:field="*{thread}"
-                            th:classappend="${(#fields.hasErrors('thread')?'is-invalid':'') + (submited != null and !#fields.hasErrors('thread')?'is-valid':'')}" required/>
-                        </div>
+                    <div class="col-sm-3">
+                        <input type="number" class="form-control" id="thread" placeholder="Threads" name="thread"
+                            required th:value="${update != null? product.thread : ''}" />
+                    </div>
 
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-3">
-                            <ul class="text-danger" th:if="${#fields.hasErrors('core')}">
-                                <li th:each="err : ${#fields.errors('core')}" th:text="${err}">Name Error</li>
-                            </ul>
-                        </div>
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-3">
-                            <ul class="text-danger" th:if="${#fields.hasErrors('thread')}">
-                                <li th:each="err : ${#fields.errors('thread')}" th:text="${err}">Name Error</li>
-                            </ul>
-                        </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-3">
+                        <ul class="text-danger" id="coreError"></ul>
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-3">
+                        <ul class="text-danger" id="threadError"></ul>
                     </div>
                 </div>
             </div>
         </div>
-    </th:block>
-    <!-- 
-        =========================
-                CPU - END
-        =========================
-    -->
+    </div>
+</th:block>
+<!-- 
+    =========================
+            CPU - END
+    =========================
+-->
 
-    <!-- 
-        =========================
-                Motherboard
-        =========================
-    -->
-    <th:block th:fragment="2">
-        <div class="col-lg-6">
-            <div class="card card-purple">
-                <div class="card-header">
-                    <h3 class="card-title">Motherboard information</h3>
+<!-- 
+    =========================
+            Motherboard
+    =========================
+-->
+<th:block th:if="${curCate == 2}">
+    <div class="col-lg-6" id="specificInfo">
+        <input type="hidden" id="cateName" th:value="${cateName}">
+        <div class="card card-purple">
+            <div class="card-header">
+                <h3 class="card-title">Motherboard information</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group row">
+                    <label for="socket" class="col-sm-3 col-form-label text-right">Socket<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-9">
+                        <input class="form-control autocomplete" id="socket" placeholder="Socket" name="socket" required
+                            th:auto-for="${cateName}" th:value="${update != null? product.socket : ''}"/>
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="socketError"></ul>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <div class="form-group row">
-                        <label for="socket" class="col-sm-3 col-form-label text-right">Socket<i
+                <div class="form-group row">
+                    <label for="chipset" class="col-sm-3 col-form-label text-right">Chipset<i
                             class="text-danger">*</i></label>
-                        <div class="col-sm-9">
-                            <input class="form-control autocomplete" id="socket" placeholder="Socket"  th:field="*{socket}"
-                            th:classappend="${(#fields.hasErrors('socket')?'is-invalid':'') + (submited != null and !#fields.hasErrors('socket')?'is-valid':'')}" required th:auto-for="${cateName}"/>
-                        </div>
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-9" th:if="${#fields.hasErrors('socket')}">
-                            <ul class="text-danger">
-                                <li th:each="err : ${#fields.errors('socket')}" th:text="${err}">Name Error</li>
-                            </ul>
-                        </div>
+                    <div class="col-sm-9">
+                        <input class="form-control autocomplete" id="chipset" placeholder="Chipset" name="chipset"
+                            th:auto-for="${cateName}" required th:value="${update != null? product.chipset : ''}"/>
                     </div>
-                    <div class="form-group row">
-                        <label for="chipset" class="col-sm-3 col-form-label text-right">Chipset<i
-                            class="text-danger">*</i></label>
-                        <div class="col-sm-9">
-                            <input class="form-control autocomplete" id="chipset" placeholder="Chipset"  th:field="*{chipset}"
-                            th:classappend="${(#fields.hasErrors('chipset')?'is-invalid':'') + (submited != null and !#fields.hasErrors('chipset')?'is-valid':'')}" th:auto-for="${cateName}"/>
-                        </div>
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-9" th:if="${#fields.hasErrors('chipset')}">
-                            <ul class="text-danger">
-                                <li th:each="err : ${#fields.errors('chipset')}" th:text="${err}">Name Error</li>
-                            </ul>
-                        </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="chipsetError"></ul>
                     </div>
-                    <div class="form-group row">
-                        <label for="formFactor" class="col-sm-3 col-form-label text-right">Form Factor<i
+                </div>
+                <div class="form-group row">
+                    <label for="formFactor" class="col-sm-3 col-form-label text-right">Form Factor<i
                             class="text-danger">*</i></label>
-                        <div class="col-sm-9">
-                            <input class="form-control autocomplete" id="formFactor" placeholder="Form Factor"  th:field="*{formFactor}"
-                            th:classappend="${(#fields.hasErrors('formFactor')?'is-invalid':'') + (submited != null and !#fields.hasErrors('formFactor')?'is-valid':'')}" th:auto-for="${cateName}"/>
-                        </div>
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-9" th:if="${#fields.hasErrors('formFactor')}">
-                            <ul class="text-danger">
-                                <li th:each="err : ${#fields.errors('formFactor')}" th:text="${err}">Name Error</li>
-                            </ul>
-                        </div>
+                    <div class="col-sm-9">
+                        <input class="form-control autocomplete" id="formFactor" placeholder="Form Factor"
+                            name="formFactor" th:auto-for="${cateName}" required th:value="${update != null? product.formFactor : ''}"/>
                     </div>
-                    <div class="form-group row">
-                        <label for="memoryType" class="col-sm-3 col-form-label text-right">Memory Type<i
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="chipsetError"></ul>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="memoryType" class="col-sm-3 col-form-label text-right">Memory Type<i
                             class="text-danger">*</i></label>
-                        <div class="col-sm-3">
-                            <input class="form-control autocomplete" id="memoryType" placeholder="Memory Type"  th:field="*{memoryType}"
-                            th:classappend="${(#fields.hasErrors('memoryType')?'is-invalid':'') + (submited != null and !#fields.hasErrors('memoryType')?'is-valid':'')}" required th:auto-for="${cateName}"/>
-                        </div>
+                    <div class="col-sm-3">
+                        <input class="form-control autocomplete" id="memoryType" placeholder="Memory Type"
+                            name="memoryType" required th:auto-for="${cateName}" th:value="${update != null? product.memoryType : ''}"/>
+                    </div>
 
-                        <label for="memorySlot" class="col-sm-3 col-form-label text-right">Memory Slots<i
+                    <label for="memorySlot" class="col-sm-3 col-form-label text-right">Memory Slots<i
                             class="text-danger">*</i></label>
-                        <div class="col-sm-3">
-                            <input type="number" class="form-control" id="memorySlot" placeholder="Memory Slots"  th:field="*{memorySlot}"
-                            th:classappend="${(#fields.hasErrors('memorySlot')?'is-invalid':'') + (submited != null and !#fields.hasErrors('memorySlot')?'is-valid':'')}" required/>
-                        </div>
+                    <div class="col-sm-3">
+                        <input type="number" class="form-control" id="memorySlot" placeholder="Memory Slots"
+                            name="memorySlot" required th:value="${update != null? product.memorySlot : ''}"/>
+                    </div>
 
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-3">
-                            <ul class="text-danger" th:if="${#fields.hasErrors('memoryType')}">
-                                <li th:each="err : ${#fields.errors('memoryType')}" th:text="${err}">Name Error</li>
-                            </ul>
-                        </div>
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-3">
-                            <ul class="text-danger" th:if="${#fields.hasErrors('memorySlot')}">
-                                <li th:each="err : ${#fields.errors('memorySlot')}" th:text="${err}">Name Error</li>
-                            </ul>
-                        </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-3">
+                        <ul class="text-danger" id="memoryTypeError"></ul>
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-3">
+                        <ul class="text-danger" id="memorySlotError"></ul>
                     </div>
                 </div>
             </div>
         </div>
-    </th:block>
-    <!-- 
-        =========================
-            Motherboard - END
-        =========================
-    -->
+    </div>
+</th:block>
+<!-- 
+    =========================
+        Motherboard - END
+    =========================
+-->
 
-    <!-- 
-        =========================
-                    GPU
-        =========================
-    -->
-    <th:block th:fragment="3">
-        <div class="col-lg-6">
-            <div class="card card-purple">
-                <div class="card-header">
-                    <h3 class="card-title">GPU information</h3>
+<!-- 
+    =========================
+                GPU
+    =========================
+-->
+<th:block th:if="${curCate == 3}">
+    <div class="col-lg-6" id="specificInfo">
+        <input type="hidden" id="cateName" th:value="${cateName}">
+        <div class="card card-purple">
+            <div class="card-header">
+                <h3 class="card-title">GPU information</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group row">
+                    <label for="chipset" class="col-sm-3 col-form-label text-right">Chipset<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-9">
+                        <input class="form-control autocomplete" id="chipset" name="chipset" placeholder="Chipset"
+                            required th:auto-for="${cateName}" th:value="${update != null? product.chipset : ''}"/>
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="chipsetError"></ul>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <div class="form-group row">
-                        <label for="chipset" class="col-sm-3 col-form-label text-right">Chipset<i
+                <div class="form-group row">
+                    <label for="interface1" class="col-sm-3 col-form-label text-right">Interface<i
                             class="text-danger">*</i></label>
-                        <div class="col-sm-9">
-                            <input class="form-control autocomplete" id="chipset" placeholder="Chipset"  th:field="*{chipset}"
-                            th:classappend="${(#fields.hasErrors('chipset')?'is-invalid':'') + (submited != null and !#fields.hasErrors('chipset')?'is-valid':'')}" th:auto-for="${cateName}"/>
-                        </div>
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-9" th:if="${#fields.hasErrors('chipset')}">
-                            <ul class="text-danger">
-                                <li th:each="err : ${#fields.errors('chipset')}" th:text="${err}">Name Error</li>
-                            </ul>
+                    <div class="col-sm-9">
+                        <input class="form-control autocomplete" id="interface1" name="interface1"
+                            placeholder="Interface" required th:auto-for="${cateName}" th:value="${update != null? product.interface1 : ''}"/>
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="interface1Error"></ul>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="tdp" class="col-sm-3 col-form-label text-right">TDP<i class="text-danger">*</i></label>
+                    <div class="input-group col-sm-9">
+                        <input type="number" class="form-control" id="tdp" placeholder="TDP (W)" name="tdp" th:value="${update != null? product.tdp : ''}"/>
+                        <div class="input-group-append">
+                            <span class="input-group-text">W</span>
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label for="interface1" class="col-sm-3 col-form-label text-right">Interface<i
-                            class="text-danger">*</i></label>
-                        <div class="col-sm-9">
-                            <input class="form-control autocomplete" id="interface1" placeholder="Interface"  th:field="*{interface1}"
-                            th:classappend="${(#fields.hasErrors('interface1')?'is-invalid':'') + (submited != null and !#fields.hasErrors('interface1')?'is-valid':'')}" required th:auto-for="${cateName}"/>
-                        </div>
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-9" th:if="${#fields.hasErrors('interface1')}">
-                            <ul class="text-danger">
-                                <li th:each="err : ${#fields.errors('interface1')}" th:text="${err}">Name Error</li>
-                            </ul>
-                        </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="tdpError"></ul>
                     </div>
-                    <div class="form-group row">
-                        <label for="tdp" class="col-sm-3 col-form-label text-right">TDP<i
+                </div>
+                <div class="form-group row">
+                    <label for="memoryType" class="col-sm-3 col-form-label text-right">Memory Type<i
                             class="text-danger">*</i></label>
-                        <div class="input-group col-sm-9">
-                            <input type="number" class="form-control" id="tdp" placeholder="TDP (W)"  th:field="*{tdp}"
-                            th:classappend="${(#fields.hasErrors('tdp')?'is-invalid':'') + (submited != null and !#fields.hasErrors('tdp')?'is-valid':'')}" required/>
-                            <div class="input-group-append">
-                                <span class="input-group-text">W</span>
-                            </div>
-                        </div>
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-9" th:if="${#fields.hasErrors('tdp')}">
-                            <ul class="text-danger">
-                                <li th:each="err : ${#fields.errors('tdp')}" th:text="${err}">Name Error</li>
-                            </ul>
-                        </div>
+                    <div class="col-sm-3">
+                        <input class="form-control autocomplete" id="memoryType" placeholder="Memory Type"
+                            name="memoryType" required th:auto-for="${cateName}" th:value="${update != null? product.memoryType : ''}"/>
                     </div>
-                    <div class="form-group row">
-                        <label for="memoryType" class="col-sm-3 col-form-label text-right">Memory Type<i
-                            class="text-danger">*</i></label>
-                        <div class="col-sm-3">
-                            <input class="form-control autocomplete" id="memoryType" placeholder="Memory Type"  th:field="*{memoryType}"
-                            th:classappend="${(#fields.hasErrors('memoryType')?'is-invalid':'') + (submited != null and !#fields.hasErrors('memoryType')?'is-valid':'')}" required th:auto-for="${cateName}"/>
-                        </div>
 
-                        <label for="memory" class="col-sm-3 col-form-label text-right">Memory<i
+                    <label for="memory" class="col-sm-3 col-form-label text-right">Memory<i
                             class="text-danger">*</i></label>
-                        <div class="input-group col-sm-3">
-                            <input type="number" class="form-control" id="memory" placeholder="Memory"  th:field="*{memory}"
-                            th:classappend="${(#fields.hasErrors('memory')?'is-invalid':'') + (submited != null and !#fields.hasErrors('memory')?'is-valid':'')}" required/>
-                            <div class="input-group-append">
-                                <span class="input-group-text">GB</span>
-                            </div>
+                    <div class="input-group col-sm-3">
+                        <input type="number" class="form-control" id="memory" name="memory" required th:value="${update != null? product.memory : ''}"/>
+                        <div class="input-group-append">
+                            <span class="input-group-text">GB</span>
                         </div>
+                    </div>
 
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-3">
-                            <ul class="text-danger" th:if="${#fields.hasErrors('memoryType')}">
-                                <li th:each="err : ${#fields.errors('memoryType')}" th:text="${err}">Name Error</li>
-                            </ul>
-                        </div>
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-3">
-                            <ul class="text-danger" th:if="${#fields.hasErrors('memory')}">
-                                <li th:each="err : ${#fields.errors('memory')}" th:text="${err}">Name Error</li>
-                            </ul>
-                        </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-3">
+                        <ul class="text-danger" id="memoryTypeError"></ul>
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-3">
+                        <ul class="text-danger" id="memoryError"></ul>
                     </div>
                 </div>
             </div>
-        </div> 
-    </th:block>
-    <!-- 
-        =========================
-                GPU - END
-        =========================
-    -->
+        </div>
+    </div>
+</th:block>
+<!-- 
+    =========================
+            GPU - END
+    =========================
+-->
 
-    <!-- 
-        =========================
-                Memory/RAM
-        =========================
-    -->
-    <th:block th:fragment="4">
-        <div class="col-lg-6">
-            <div class="card card-purple">
-                <div class="card-header">
-                    <h3 class="card-title">Memory information</h3>
+<!-- 
+    =========================
+            Memory/RAM
+    =========================
+-->
+<th:block th:if="${curCate == 4}">
+    <div class="col-lg-6" id="specificInfo">
+        <input type="hidden" id="cateName" th:value="${cateName}">
+        <div class="card card-purple">
+            <div class="card-header">
+                <h3 class="card-title">Memory information</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group row">
+                    <label for="memoryType" class="col-sm-3 col-form-label text-right">Memory Type<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-3">
+                        <input class="form-control autocomplete" id="memoryType" placeholder="Memory Type"
+                            name="memoryType" required th:auto-for="${cateName}" th:value="${update != null? product.memoryType : ''}"/>
+                    </div>
+
+                    <label for="memory" class="col-sm-3 col-form-label text-right">Capacity<i
+                            class="text-danger">*</i></label>
+                    <div class="input-group col-sm-3">
+                        <input type="number" class="form-control" id="memory" placeholder="Capacity" name="memory"
+                            required th:value="${update != null? product.memory : ''}"/>
+                        <div class="input-group-append">
+                            <span class="input-group-text">GB</span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-3">
+                        <ul class="text-danger" id="memoryTypeError"></ul>
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-3">
+                        <ul class="text-danger" id="memoryError"></ul>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <div class="form-group row">
-                        <label for="memoryType" class="col-sm-3 col-form-label text-right">Memory Type<i
-                            class="text-danger">*</i></label>
-                        <div class="col-sm-3">
-                            <input class="form-control autocomplete" id="memoryType" placeholder="Memory Type"  th:field="*{memoryType}"
-                            th:classappend="${(#fields.hasErrors('memoryType')?'is-invalid':'') + (submited != null and !#fields.hasErrors('memoryType')?'is-valid':'')}" required th:auto-for="${cateName}"/>
-                        </div>
+            </div>
 
-                        <label for="memory" class="col-sm-3 col-form-label text-right">Capacity<i
-                            class="text-danger">*</i></label>
-                        <div class="input-group col-sm-3">
-                            <input type="number" class="form-control" id="memory" placeholder="Capacity"  th:field="*{memory}"
-                            th:classappend="${(#fields.hasErrors('memory')?'is-invalid':'') + (submited != null and !#fields.hasErrors('memory')?'is-valid':'')}" required/>
-                            <div class="input-group-append">
-                                <span class="input-group-text">GB</span>
-                            </div>
-                        </div>
+            <div class="form-group row">
+                <label for="memoryModules" class="col-sm-3 col-form-label text-right">Modules<i
+                        class="text-danger">*</i></label>
+                <div class="col-sm-9">
+                    <input type="number" class="form-control" id="memoryModules" placeholder="Modules"
+                        name="memoryModules" required th:value="${update != null? product.memoryModules : ''}"/>
+                </div>
+                <div class="col-sm-3"></div>
+                <div class="col-sm-9">
+                    <ul class="text-danger" id="memoryModulesError"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+<!-- 
+    =========================
+        Memory/RAM - END
+    =========================
+-->
 
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-3">
-                            <ul class="text-danger" th:if="${#fields.hasErrors('memoryType')}">
-                                <li th:each="err : ${#fields.errors('memoryType')}" th:text="${err}">Name Error</li>
-                            </ul>
+<!-- 
+    =========================
+                PSU
+    =========================
+-->
+<th:block th:if="${curCate == 5}">
+    <div class="col-lg-6" id="specificInfo">
+        <input type="hidden" id="cateName" th:value="${cateName}">
+        <div class="card card-purple">
+            <div class="card-header">
+                <h3 class="card-title">PSU information</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group row">
+                    <label for="formFactor" class="col-sm-3 col-form-label text-right">PSU Form Factor<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-9">
+                        <input class="form-control autocomplete" id="pSUFormFactor" placeholder="PSU Form Factor"
+                            name="pSUFormFactor" th:auto-for="${cateName}"th:value="${update != null? product.pSUFormFactor : ''}" />
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="pSUFormFactorError"></ul>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="pSUWattage" class="col-sm-3 col-form-label text-right">Wattages<i
+                            class="text-danger">*</i></label>
+                    <div class="input-group col-sm-9">
+                        <input type="number" class="form-control" id="pSUWattage" placeholder="Wattages"
+                            name="pSUWattage" required th:value="${update != null? product.pSUWattage : ''}"/>
+                        <div class="input-group-append">
+                            <span class="input-group-text">W</span>
                         </div>
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-3">
-                            <ul class="text-danger" th:if="${#fields.hasErrors('memory')}">
-                                <li th:each="err : ${#fields.errors('memory')}" th:text="${err}">Name Error</li>
-                            </ul>
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="pSUWattageError"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+<!-- 
+    =========================
+            PSU - END
+    =========================
+-->
+
+<!-- 
+    =========================
+            Storage
+    =========================
+-->
+<th:block th:if="${curCate == 6}">
+    <div class="col-lg-6" id="specificInfo">
+        <input type="hidden" id="cateName" th:value="${cateName}">
+        <div class="card card-purple">
+            <div class="card-header">
+                <h3 class="card-title">Storage information</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group row">
+                    <label for="interface1" class="col-sm-3 col-form-label text-right">Interface<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-9">
+                        <input class="form-control autocomplete" id="interface1" placeholder="Interface"
+                            name="interface1" required th:auto-for="${cateName}" th:value="${update != null? product.interface1 : ''}"/>
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="interface1Error"></ul>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="formFactor" class="col-sm-3 col-form-label text-right">Form Factor<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-9">
+                        <input class="form-control autocomplete" id="formFactor" placeholder="Form Factor"
+                            name="formFactor" th:auto-for="${cateName}" th:value="${update != null? product.formFactor : ''}"/>
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="formFactorError"></ul>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="storageType" class="col-sm-3 col-form-label text-right">Storage Type<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-3">
+                        <input class="form-control autocomplete" id="storageType" placeholder="Storage Type"
+                            name="storageType" required th:auto-for="${cateName}" th:value="${update != null? product.storageType : ''}"/>
+                    </div>
+
+                    <label for="memory" class="col-sm-3 col-form-label text-right">Capacity<i
+                            class="text-danger">*</i></label>
+                    <div class="input-group col-sm-3">
+                        <input type="number" class="form-control" id="memory" placeholder="Capacity" name="memory"
+                            required th:value="${update != null? product.memory : ''}"/>
+                        <div class="input-group-append">
+                            <span class="input-group-text">GB</span>
                         </div>
+                    </div>
+
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-3">
+                        <ul class="text-danger" id="storageTypeError"></ul>
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-3">
+                        <ul class="text-danger" id="memoryError"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+<!-- 
+    =========================
+        Storage - END
+    =========================
+-->
+
+<!-- 
+    =========================
+            CPU Cooler
+    =========================
+-->
+<th:block th:if="${curCate == 7}">
+    <div class="col-lg-6" id="specificInfo">
+        <input type="hidden" id="cateName" th:value="${cateName}">
+        <div class="card card-purple">
+            <div class="card-header">
+                <h3 class="card-title">CPU Cooler information</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group row">
+                    <label for="socket" class="col-sm-3 col-form-label text-right">Socket<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-9">
+                        <input class="form-control" id="socket" placeholder="Socket" name="socket" required th:value="${update != null? product.socket : ''}"/>
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9" id="socketError">
+                        <ul class="text-danger"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+<!-- 
+    =========================
+        CPU Cooler - END
+    =========================
+-->
+
+<!-- 
+    =========================
+                Case
+    =========================
+-->
+<th:block th:if="${curCate == 8}">
+    <div class="col-lg-6" id="specificInfo">
+        <input type="hidden" id="cateName" th:value="${cateName}">
+        <div class="card card-purple">
+            <div class="card-header">
+                <h3 class="card-title">Case information</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group row">
+                    <label for="formFactor" class="col-sm-3 col-form-label text-right">Motherboard's Form Factor<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-9">
+                        <input class="form-control autocomplete" id="formFactor" placeholder="Form Factor"
+                            name="formFactor" th:auto-for="${cateName}" th:value="${update != null? product.formFactor : ''}" />
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="formFactorError"></ul>
                     </div>
                 </div>
 
                 <div class="form-group row">
-                    <label for="memoryModules" class="col-sm-3 col-form-label text-right">Modules<i
-                        class="text-danger">*</i></label>
+                    <label for="pSUFormFactor" class="col-sm-3 col-form-label text-right">PSU's Form Factor<i
+                            class="text-danger">*</i></label>
                     <div class="col-sm-9">
-                        <input type="number" class="form-control" id="memoryModules" placeholder="Modules"  th:field="*{memoryModules}"
-                        th:classappend="${(#fields.hasErrors('memoryModules')?'is-invalid':'') + (submited != null and !#fields.hasErrors('memoryModules')?'is-valid':'')}" required/>
+                        <input class="form-control autocomplete" id="pSUFormFactor" placeholder="Form Factor"
+                            name="pSUFormFactor" th:auto-for="${cateName}" th:value="${update != null? product.pSUFormFactor : ''}"/>
                     </div>
                     <div class="col-sm-3"></div>
-                    <div class="col-sm-9" th:if="${#fields.hasErrors('memoryModules')}">
-                        <ul class="text-danger">
-                            <li th:each="err : ${#fields.errors('memoryModules')}" th:text="${err}">Name Error</li>
-                        </ul>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="pSUFormFactorError"></ul>
                     </div>
                 </div>
             </div>
-        </div> 
-    </th:block>
-    <!-- 
-        =========================
-            Memory/RAM - END
-        =========================
-    -->
+        </div>
+    </div>
+</th:block>
+<!-- 
+    =========================
+            Case - END
+    =========================
+-->
 
-    <!-- 
-        =========================
-                    PSU
-        =========================
-    -->
-    <th:block th:fragment="5">
-        <div class="col-lg-6">
-            <div class="card card-purple">
-                <div class="card-header">
-                    <h3 class="card-title">PSU information</h3>
-                </div>
-                <div class="card-body">
-                    <div class="form-group row">
-                        <label for="formFactor" class="col-sm-3 col-form-label text-right">PSU Form Factor<i
+<!-- 
+    =========================
+            Monitor
+    =========================
+-->
+<th:block th:if="${curCate == 9}">
+    <div class="col-lg-6" id="specificInfo">
+        <input type="hidden" id="cateName" th:value="${cateName}">
+        <div class="card card-purple">
+            <div class="card-header">
+                <h3 class="card-title">Monitor information</h3>
+            </div>
+            <div class="card-body">
+
+                <div class="form-group row">
+                    <label for="screenSize" class="col-sm-3 col-form-label text-right">Screen Size<i
                             class="text-danger">*</i></label>
-                        <div class="col-sm-9">
-                            <input class="form-control autocomplete" id="pSUFormFactor" placeholder="PSU Form Factor"  th:field="*{pSUFormFactor}"
-                            th:classappend="${(#fields.hasErrors('pSUFormFactor')?'is-invalid':'') + (submited != null and !#fields.hasErrors('pSUFormFactor')?'is-valid':'')}" th:auto-for="${cateName}"/>
-                        </div>
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-9" th:if="${#fields.hasErrors('pSUFormFactor')}">
-                            <ul class="text-danger">
-                                <li th:each="err : ${#fields.errors('pSUFormFactor')}" th:text="${err}">Name Error</li>
-                            </ul>
+                    <div class="input-group col-sm-3">
+                        <input type="number" class="form-control" id="screenSize" placeholder="Screen Size"
+                            name="screenSize" required step="0.1" th:value="${update != null? product.screenSize : ''}"/>
+                        <div class="input-group-append">
+                            <span class="input-group-text">inch</span>
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label for="pSUWattage" class="col-sm-3 col-form-label text-right">Wattages<i
+
+                    <label for="resolution" class="col-sm-3 col-form-label text-right">Resolution<i
                             class="text-danger">*</i></label>
-                        <div class="input-group col-sm-9">
-                            <input type="number" class="form-control" id="pSUWattage" placeholder="Wattages"  th:field="*{pSUWattage}"
-                            th:classappend="${(#fields.hasErrors('pSUWattage')?'is-invalid':'') + (submited != null and !#fields.hasErrors('pSUWattage')?'is-valid':'')}" required/>
-                            <div class="input-group-append">
-                                <span class="input-group-text">W</span>
-                            </div>
-                        </div>
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-9" th:if="${#fields.hasErrors('pSUWattage')}">
-                            <ul class="text-danger">
-                                <li th:each="err : ${#fields.errors('pSUWattage')}" th:text="${err}">Name Error</li>
-                            </ul>
-                        </div>
+                    <div class="input-group col-sm-3">
+                        <input class="form-control autocomplete" id="resolution" placeholder="Resolution"
+                            name="resolution" required th:auto-for="${cateName}" th:value="${update != null? product.resolution : ''}"/>
+                    </div>
+
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-3">
+                        <ul class="text-danger" id="screenSizeError"></ul>
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-3">
+                        <ul class="text-danger" id="resolutionError"></ul>
                     </div>
                 </div>
             </div>
-        </div> 
-    </th:block>
-    <!-- 
-        =========================
-                PSU - END
-        =========================
-    -->
-
-    <!-- 
-        =========================
-                Storage
-        =========================
-    -->
-    <th:block th:fragment="6">
-        <div class="col-lg-6">
-            <div class="card card-purple">
-                <div class="card-header">
-                    <h3 class="card-title">Storage information</h3>
-                </div>
-                <div class="card-body">
-                    <div class="form-group row">
-                        <label for="interface1" class="col-sm-3 col-form-label text-right">Interface<i
-                            class="text-danger">*</i></label>
-                        <div class="col-sm-9">
-                            <input class="form-control autocomplete" id="interface1" placeholder="Interface"  th:field="*{interface1}"
-                            th:classappend="${(#fields.hasErrors('interface1')?'is-invalid':'') + (submited != null and !#fields.hasErrors('interface1')?'is-valid':'')}" required th:auto-for="${cateName}"/>
-                        </div>
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-9" th:if="${#fields.hasErrors('interface1')}">
-                            <ul class="text-danger">
-                                <li th:each="err : ${#fields.errors('interface1')}" th:text="${err}">Name Error</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="formFactor" class="col-sm-3 col-form-label text-right">Form Factor<i
-                            class="text-danger">*</i></label>
-                        <div class="col-sm-9">
-                            <input class="form-control autocomplete" id="formFactor" placeholder="Form Factor"  th:field="*{formFactor}"
-                            th:classappend="${(#fields.hasErrors('formFactor')?'is-invalid':'') + (submited != null and !#fields.hasErrors('formFactor')?'is-valid':'')}" th:auto-for="${cateName}"/>
-                        </div>
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-9" th:if="${#fields.hasErrors('formFactor')}">
-                            <ul class="text-danger">
-                                <li th:each="err : ${#fields.errors('formFactor')}" th:text="${err}">Name Error</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="storageType" class="col-sm-3 col-form-label text-right">Storage Type<i
-                            class="text-danger">*</i></label>
-                        <div class="col-sm-3">
-                            <input class="form-control autocomplete" id="storageType" placeholder="Storage Type"  th:field="*{storageType}"
-                            th:classappend="${(#fields.hasErrors('storageType')?'is-invalid':'') + (submited != null and !#fields.hasErrors('storageType')?'is-valid':'')}" required th:auto-for="${cateName}"/>
-                        </div>
-
-                        <label for="memory" class="col-sm-3 col-form-label text-right">Capacity<i
-                            class="text-danger">*</i></label>
-                        <div class="input-group col-sm-3">
-                            <input type="number" class="form-control" id="memory" placeholder="Capacity"  th:field="*{memory}"
-                            th:classappend="${(#fields.hasErrors('memory')?'is-invalid':'') + (submited != null and !#fields.hasErrors('memory')?'is-valid':'')}" required/>
-                            <div class="input-group-append">
-                                <span class="input-group-text">GB</span>
-                            </div>
-                        </div>
-
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-3">
-                            <ul class="text-danger" th:if="${#fields.hasErrors('storageType')}">
-                                <li th:each="err : ${#fields.errors('storageType')}" th:text="${err}">Name Error</li>
-                            </ul>
-                        </div>
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-3">
-                            <ul class="text-danger" th:if="${#fields.hasErrors('memory')}">
-                                <li th:each="err : ${#fields.errors('memory')}" th:text="${err}">Name Error</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> 
-    </th:block>
-    <!-- 
-        =========================
-            Storage - END
-        =========================
-    -->
-
-    <!-- 
-        =========================
-                CPU Cooler
-        =========================
-    -->
-    <th:block th:fragment="7">
-        <div class="col-lg-6">
-            <div class="card card-purple">
-                <div class="card-header">
-                    <h3 class="card-title">CPU Cooler information</h3>
-                </div>
-                <div class="card-body">
-                    <div class="form-group row">
-                        <label for="socket" class="col-sm-3 col-form-label text-right">Socket<i
-                            class="text-danger">*</i></label>
-                        <div class="col-sm-9">
-                            <input class="form-control" id="socket" placeholder="Socket"  th:field="*{socket}"
-                            th:classappend="${(#fields.hasErrors('socket')?'is-invalid':'') + (submited != null and !#fields.hasErrors('socket')?'is-valid':'')}" required/>
-                        </div>
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-9" th:if="${#fields.hasErrors('socket')}">
-                            <ul class="text-danger">
-                                <li th:each="err : ${#fields.errors('socket')}" th:text="${err}">Name Error</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> 
-    </th:block>
-    <!-- 
-        =========================
-            CPU Cooler - END
-        =========================
-    -->
-
-    <!-- 
-        =========================
-                    Case
-        =========================
-    -->
-    <th:block th:fragment="8">
-        <div class="col-lg-6">
-            <div class="card card-purple">
-                <div class="card-header">
-                    <h3 class="card-title">Case information</h3>
-                </div>
-                <div class="card-body">
-                    <div class="form-group row">
-                        <label for="formFactor" class="col-sm-3 col-form-label text-right">Motherboard's Form Factor<i
-                            class="text-danger">*</i></label>
-                        <div class="col-sm-9">
-                            <input class="form-control autocomplete" id="formFactor" placeholder="Form Factor"  th:field="*{formFactor}"
-                            th:classappend="${(#fields.hasErrors('formFactor')?'is-invalid':'') + (submited != null and !#fields.hasErrors('formFactor')?'is-valid':'')}" th:auto-for="${cateName}"/>
-                        </div>
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-9" th:if="${#fields.hasErrors('formFactor')}">
-                            <ul class="text-danger">
-                                <li th:each="err : ${#fields.errors('formFactor')}" th:text="${err}">Name Error</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label for="pSUFormFactor" class="col-sm-3 col-form-label text-right">PSU's Form Factor<i
-                            class="text-danger">*</i></label>
-                        <div class="col-sm-9">
-                            <input class="form-control autocomplete" id="pSUFormFactor" placeholder="Form Factor"  th:field="*{pSUFormFactor}"
-                            th:classappend="${(#fields.hasErrors('pSUFormFactor')?'is-invalid':'') + (submited != null and !#fields.hasErrors('pSUFormFactor')?'is-valid':'')}" th:auto-for="${cateName}"/>
-                        </div>
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-9" th:if="${#fields.hasErrors('pSUFormFactor')}">
-                            <ul class="text-danger">
-                                <li th:each="err : ${#fields.errors('pSUFormFactor')}" th:text="${err}">Name Error</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> 
-    </th:block>
-    <!-- 
-        =========================
-                Case - END
-        =========================
-    -->
-
-    <!-- 
-        =========================
-                Monitor
-        =========================
-    -->
-    <th:block th:fragment="9">
-        <div class="col-lg-6">
-            <div class="card card-purple">
-                <div class="card-header">
-                    <h3 class="card-title">Monitor information</h3>
-                </div>
-                <div class="card-body">
-                    
-                    <div class="form-group row">
-                        <label for="screenSize" class="col-sm-3 col-form-label text-right">Screen Size<i
-                            class="text-danger">*</i></label>
-                        <div class="input-group col-sm-3">
-                            <input type="number" class="form-control" id="screenSize" placeholder="Screen Size"  th:field="*{screenSize}"
-                            th:classappend="${(#fields.hasErrors('screenSize')?'is-invalid':'') + (submited != null and !#fields.hasErrors('screenSize')?'is-valid':'')}" required/>
-                            <div class="input-group-append">
-                                <span class="input-group-text">inch</span>
-                            </div>
-                        </div>
-
-                        <label for="resolution" class="col-sm-3 col-form-label text-right">Resolution<i
-                            class="text-danger">*</i></label>
-                        <div class="input-group col-sm-3">
-                            <input class="form-control autocomplete" id="resolution" placeholder="Resolution"  th:field="*{resolution}"
-                            th:classappend="${(#fields.hasErrors('resolution')?'is-invalid':'') + (submited != null and !#fields.hasErrors('resolution')?'is-valid':'')}" required th:auto-for="${cateName}"/>
-                        </div>
-
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-3">
-                            <ul class="text-danger" th:if="${#fields.hasErrors('screenSize')}">
-                                <li th:each="err : ${#fields.errors('screenSize')}" th:text="${err}">Name Error</li>
-                            </ul>
-                        </div>
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-3">
-                            <ul class="text-danger" th:if="${#fields.hasErrors('resolution')}">
-                                <li th:each="err : ${#fields.errors('resolution')}" th:text="${err}">Name Error</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> 
-    </th:block>
-    <!-- 
-        =========================
-            Monitor - END
-        =========================
-    -->
-</body>
-
-</html>
+        </div>
+    </div>
+</th:block>
+<!-- 
+    =========================
+        Monitor - END
+    =========================
+-->

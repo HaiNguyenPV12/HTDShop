@@ -4,12 +4,13 @@
         <div class="col-lg-6 col-md-6 col-xl-3" th:each="p : ${result}">
             <div class="product-wrapper mb-30">
                 <div class="product-img text-center">
-                    <a th:href="@{/product(id=${p.id})}">
-                        <img th:src="@{/images/__${p.productImageCollection.?[mainImage==true][0].imagePath}__}" alt=""
-                            style="max-height: 10rem;height: 100%;width: auto;max-width: 100%;"
-                            th:if="${p.productImageCollection.size()>0}">
+                    <a th:href="@{/product(id=${p.id})}"
+                        th:with="image = ${p.productImageCollection.?[mainImage==true]}">
+                        <img th:src="@{/images/__${(image[0].thumbnailPath != null && !image[0].thumbnailPath.isEmpty())? image[0].thumbnailPath : image[0].imagePath}__}"
+                            th:if="${p.productImageCollection.size() > 0 && image.size() > 0}">
+                        <img th:src="@{/images/__${(p.productImageCollection[0].thumbnailPath != null && !p.productImageCollection[0].thumbnailPath.isEmpty())? p.productImageCollection[0].thumbnailPath : p.productImageCollection[0].imagePath}__}"
+                            th:if="${p.productImageCollection.size() > 0 && image.size() == 0}">
                         <img th:src="@{/images/noimage.png}" alt=""
-                            style="max-height: 10rem;height: 100%;width: auto;max-width: 100%;"
                             th:if="${p.productImageCollection.size()==0}">
                     </a>
                     <span th:if="${shopSv.getDiscountPrice(p) lt p.price}"><i
@@ -40,7 +41,7 @@
                     </span>
                     <span th:if="${p.status == 1 && p.stock == 0}">
                         <th:block th:text="${'$'+#numbers.formatDecimal(p.price, 1, 'POINT', 2, 'COMMA')}"
-                            class="text-muted"></th:block> 
+                            class="text-muted"></th:block>
                         - Out of stock
                     </span>
                     <span th:if="${p.status == 2}">

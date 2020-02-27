@@ -6,6 +6,7 @@
 package vn.htdshop.controller.shop;
 
 import java.util.Date;
+import java.util.Map;
 
 import javax.ejb.EJB;
 
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.htdshop.entity.Product;
 import vn.htdshop.entity.ProductComment;
@@ -25,6 +27,7 @@ import vn.htdshop.entity.ProductCommentReply;
 import vn.htdshop.sb.ProductCommentFacadeLocal;
 import vn.htdshop.sb.ProductCommentReplyFacadeLocal;
 import vn.htdshop.sb.ProductFacadeLocal;
+import vn.htdshop.utility.ShopService;
 
 /**
  *
@@ -70,28 +73,36 @@ public class shopProductDetailController {
 
     }
 
-    @RequestMapping(value = "doComment", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public String doComment(@RequestBody MultiValueMap<String, String> formData) {
-        ProductComment c = new ProductComment();
-        c.setId(null);
-        c.setCustomer(shopService.getLoggedInCustomer());
-        c.setContent(formData.getFirst("comment"));
-        c.setProduct(new Product(Integer.parseInt(formData.getFirst("productid"))));
-        c.setCreatedAt(new Date());
-        productCommentFacade.create(c);
-        return "redirect:/product?id=" + formData.getFirst("productid");
+    @RequestMapping(value = "doComment", method = RequestMethod.POST)
+    public @ResponseBody Boolean doComment(@RequestParam(required = false) Map<String, String> formData) {
+        if (shopService.verifyReCaptcha(formData.get("g-recaptcha-response"))) {
+            ProductComment c = new ProductComment();
+            c.setId(null);
+            c.setCustomer(shopService.getLoggedInCustomer());
+            c.setContent(formData.get("comment"));
+            c.setProduct(new Product(Integer.parseInt(formData.get("productid"))));
+            c.setCreatedAt(new Date());
+            productCommentFacade.create(c);
+            return true;
+        }
+        return false;
     }
 
-    @RequestMapping(value = "doReply", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public String doReply(@RequestBody MultiValueMap<String, String> formData) {
-        ProductCommentReply r = new ProductCommentReply();
-        r.setId(null);
-        r.setStaff(null);
-        r.setCustomer(shopService.getLoggedInCustomer());
-        r.setContent(formData.getFirst("reply"));
-        r.setProductComment(new ProductComment(Integer.parseInt(formData.getFirst("commentid"))));
-        r.setCreatedAt(new Date());
-        productCommentReplyFacade.create(r);
-        return "redirect:/product?id=" + formData.getFirst("productid");
+    @RequestMapping(value = "doReply", method = RequestMethod.POST)
+    public @ResponseBody Boolean doReply(@RequestParam(required = false) Map<String, String> formData) {
+        if (shopService.verifyReCaptcha(formData.get("g-recaptcha-response"))) {
+            ProductCommentReply r = new ProductCommentReply();
+            r.setId(null);
+            r.setStaff(null);
+            r.setCustomer(shopService.getLoggedInCustomer());
+            r.setContent(formData.get("reply"));
+            r.setProductComment(new ProductComment(Integer.parseInt(formData.get("commentid"))));
+            r.setCreatedAt(new Date());
+            productCommentReplyFacade.create(r);
+            return true;
+        }
+
+        return false;
     }
+
 }

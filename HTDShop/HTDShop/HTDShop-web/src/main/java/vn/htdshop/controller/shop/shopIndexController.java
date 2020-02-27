@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import vn.htdshop.entity.Customer;
 import vn.htdshop.sb.CategoryFacadeLocal;
 import vn.htdshop.sb.CustomerFacadeLocal;
-
+import vn.htdshop.utility.ShopService;
 
 /**
  *
@@ -53,9 +53,6 @@ public class shopIndexController {
         return "HTDShop/test";
     }
 
- 
-    
-
     @RequestMapping(value = "testlogin", method = RequestMethod.GET)
     public String getLogin() {
         Customer c = customerFacade.find(1);
@@ -69,7 +66,7 @@ public class shopIndexController {
 
         session.setAttribute("loggedInCustomer", c);
         Cookie cookie = new Cookie("loggedInCustomer", "" + c.getId());
-        cookie.setMaxAge(60*60*24*7*4);
+        cookie.setMaxAge(60 * 60 * 24 * 7 * 4);
         response.addCookie(cookie);
         return "redirect:";
     }
@@ -83,6 +80,4 @@ public class shopIndexController {
         return "redirect:";
     }
 
-    
-    
 }
