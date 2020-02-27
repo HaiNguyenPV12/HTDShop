@@ -59,6 +59,21 @@ public class shopIndexController {
         return "HTDShop/test";
     }
 
+    @RequestMapping(value = "termsAndServices", method = RequestMethod.GET)
+    public String getTermsAndServices() {
+        return "HTDShop/termsandservices";
+    }
+
+    @RequestMapping(value = "aboutUs", method = RequestMethod.GET)
+    public String getAboutUs() {
+        return "HTDShop/about";
+    }
+
+    @RequestMapping(value = "privacy", method = RequestMethod.GET)
+    public String getPrivacyPolicy() {
+        return "HTDShop/privacy";
+    }
+
     @RequestMapping(value = "testlogin", method = RequestMethod.GET)
     public String getLogin() {
         Customer c = customerFacade.find(1);
