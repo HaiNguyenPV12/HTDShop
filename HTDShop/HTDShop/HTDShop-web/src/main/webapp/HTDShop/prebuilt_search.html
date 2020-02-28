@@ -6,6 +6,8 @@
     <title>HTD Shop - Search Pre-built PC</title>
     <th:block layout:fragment="additionalCss">
         <link rel="stylesheet" th:href="@{/resources/Content/fontawesome-free/css/all.min.css}">
+        <link rel="stylesheet" th:href="@{/resources/Plugins/jquery-ui/jquery-ui.min.css}" />
+        <link rel="stylesheet" th:href="@{/resources/Plugins/jquery-ui/jquery-ui.theme.min.css}" />
     </th:block>
     <style>
         .select2-search__field {
@@ -118,6 +120,7 @@
 
                             <div class="sidebar-widget mb-30">
                                 <h3 class="sidebar-title">Filter by Price</h3>
+                                <div id="priceSlider" class="mb-3"></div>
                                 <div class="d-flex">
                                     <form id="searchPrice" class="d-flex">
                                         <input type="number" placeholder="From..."
@@ -196,6 +199,9 @@
 
     </div>
 
+    <th:block layout:fragment="additionalScript">
+        <script th:src="@{/resources/Plugins/jquery-ui/jquery-ui.min.js}"></script>
+    </th:block>
 
     <script layout:fragment="script" th:inline="javascript">
         /*<![CDATA[*/
@@ -203,6 +209,20 @@
         var searched = +0;
 
         doSearch();
+
+        var priceSlider = $("#priceSlider").slider({
+            range: true,
+            min: 0,
+            max: 10000,
+            values: [$("#from").val(), $("#to").val()],
+            slide: function (event, ui) {
+                $("#from").val(ui.values[0]);
+                $("#to").val(ui.values[1]);
+            },
+            stop: function (event, ui) {
+                doSearch(1, null);
+            }
+        });
 
         $("#searchKeyword").on("submit", function (e) {
             e.preventDefault();
@@ -215,7 +235,8 @@
 
         $("#resetFilter").on("click", function () {
             $("#from").val(0);
-            $("#to").val(1000000);
+            $("#to").val(10000);
+            priceSlider.slider("option", "values", [0, 10000]);
             $("#keyword").val("");
             $("#psort").val("default");
             if ($("#cpu").val() != 0) {
@@ -265,6 +286,7 @@
         });
 
         $("#searchPrice").on("change", function () {
+            priceSlider.slider("option", "values", [$("#from").val(), $("#to").val()]);
             doSearch(1, null);
         });
 
@@ -394,10 +416,10 @@
             // Price filter
             if (!$("#searchPrice")[0].checkValidity()) {
                 $("#from").val(0);
-                $("#to").val(1000000);
+                $("#to").val(10000);
             }
             var pricemin = +$("#from").val() || 0;
-            var pricemax = +$("#to").val() || 1000000;
+            var pricemax = +$("#to").val() || 10000;
             if (pricemin > pricemax) {
                 $("#from").val(0);
             }

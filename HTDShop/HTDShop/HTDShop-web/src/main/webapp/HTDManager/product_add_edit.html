@@ -81,7 +81,7 @@
                     <div class="card card-purple card-outline">
                         <div class="card-body" th:if="${update == null}">
                             <select class="form-control select2" style="width: 100%;" id="category" name="category.id"
-                                data-dropdown-css-class="select2-purple">
+                                data-dropdown-css-class="select2-purple" required>
                                 <option disabled selected>-- Category --</option>
                                 <option th:each="cate : ${categories}" th:value="${cate.id}" th:text="${cate.name}">
                                     CPU
@@ -100,7 +100,7 @@
             <input type="hidden" th:field="*{id}" th:if="${update != null}">
 
             <div class="row">
-                
+
                 <!-- Include basic info part -->
 
                 <div class="col-lg-6">
@@ -114,8 +114,8 @@
                                 <label for="name" class="col-sm-3 col-form-label text-center">Product name<i
                                         class="text-danger">*</i></label>
                                 <div class="col-sm-9">
-                                    <input class="form-control" id="name" placeholder="Product name"
-                                        th:field="*{name}" />
+                                    <input class="form-control" id="name" placeholder="Product name" th:field="*{name}"
+                                        required minlength="3" maxlength="255" />
                                 </div>
                                 <div class="col-sm-3"></div>
                                 <div class="col-sm-9">
@@ -129,7 +129,7 @@
                                 <div class="col-sm-9">
                                     <input class="form-control autocomplete" id="manufacturer"
                                         placeholder="Manufacturer" th:field="*{manufacturer}"
-                                        th:auto-for="${cateName == null? '' : cateName}" />
+                                        th:auto-for="${cateName == null? '' : cateName}" required />
                                 </div>
                                 <div class="col-sm-3"></div>
                                 <div class="col-sm-9">
@@ -141,7 +141,8 @@
                                     Period<i class="text-danger">*</i></label>
                                 <div class="input-group col-sm-9">
                                     <input type="number" class="form-control" id="warrantyPeriod"
-                                        placeholder="Warranty Period" th:field="*{warrantyPeriod}" />
+                                        placeholder="Warranty Period" th:field="*{warrantyPeriod}" required min=1
+                                        value=1 />
                                     <div class="input-group-append">
                                         <span class="input-group-text">months</span>
                                     </div>
@@ -157,13 +158,13 @@
                                         class="text-danger">*</i></label>
                                 <div class="col-sm-4">
                                     <input type="number" class="form-control" id="price" placeholder="Price"
-                                        th:field="*{price}" step="0.01" />
+                                        th:field="*{price}" step="0.01" required value=0 max=10000/>
                                 </div>
                                 <label for="stock" class="col-sm-2 col-form-label text-right">Stock<i
                                         class="text-danger">*</i></label>
                                 <div class="col-sm-4">
                                     <input type="number" class="form-control" id="stock" placeholder="Stock"
-                                        th:field="*{stock}" />
+                                        th:field="*{stock}" required value=0 />
                                 </div>
                                 <div class="col-sm-2"></div>
                                 <div class="col-sm-4">
@@ -302,6 +303,7 @@
     <th:block layout:fragment="additionalScript">
         <script th:src="@{/manager_resources/plugins/summernote/summernote-lite.min.js}"></script>
         <script th:src="@{/manager_resources/plugins/jquery-ui/jquery-ui.min.js}"></script>
+        <script th:src="@{/manager_resources/plugins/jquery-validation/jquery.validate.min.js}"></script>
     </th:block>
     <script layout:fragment="script" th:inline="javascript">
         /*<![CDATA[*/
@@ -424,79 +426,152 @@
             });
         }
 
-        $("#frmProduct").submit(function (e) {
-            e.preventDefault();
-            var formData = new FormData($(this)[0]);
-            $.ajax({
-                url: $(this).attr("action"),
-                type: 'POST',
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function (data) {
-                    $("ul.text-danger").html("");
-                    $("#frmProduct").find("select, input, textarea").each(function (i, e) {
-                        if ($(e).prop("tagName") == "SELECT") {
-                            $(e).next().removeClass("is-valid");
-                            $(e).next().removeClass("is-invalid");
-                        } else {
-                            $(e).removeClass("is-valid");
-                            $(e).removeClass("is-invalid");
-                        }
-                        if (!$(e).hasClass("is-valid")) {
-                            if ($(e).prop("tagName") == "SELECT") {
-                                $(e).next().addClass("is-valid");
-                            } else {
-                                $(e).addClass("is-valid");
-                            }
-                        }
-                    });
-                    if (data.length) {
-                        data.forEach(e => {
-                            var input = $("#" + e.field);
-                            if (input.prop("tagName") == "SELECT" && input.next().hasClass("is-valid")) {
-                                input.next().removeClass("is-valid");
-                            } else {
-                                input.removeClass("is-valid");
-                            }
-                            if (input.prop("tagName") == "SELECT") {
-                                input.next().addClass("is-invalid");
-                            } else {
-                                input.addClass("is-invalid");
-                            }
-
-                            $("#" + e.field + "Error").append("<li>" + e.defaultMessage + "</li>")
-                        });
-                    } else {
-                        $("#frmProduct").find("select, input, textarea").each(function (i, e) {
-                            if ($(e).prop("tagName") == "SELECT") {
-                                $(e).next().removeClass("is-valid");
-                                $(e).next().removeClass("is-invalid");
-                            } else {
-                                $(e).removeClass("is-valid");
-                                $(e).removeClass("is-invalid");
-                            }
-                        });
-                        if (!update) {
-                            $("#frmProduct").trigger("reset");
-                            $("#uploadimg").html("");
-                            existImgSize = +0;
-                            $('.textarea').summernote('reset');
-                            Toast.fire({
-                                type: 'success',
-                                title: 'Successfully added!'
-                            });
-                        } else {
-                            Toast.fire({
-                                type: 'success',
-                                title: 'Successfully updated!'
-                            });
-                        }
-                    }
-
+        $("#frmProduct").validate({
+            ignore: [],
+            errorClass: "is-invalid",
+            validClass: "is-valid",
+            errorPlacement: function (error, element) {
+                error.appendTo('#' + element.attr("id") + "Error");
+            },
+            highlight: function (element, errorClass, validClass) {
+                var elem = $(element);
+                if (elem.hasClass("select2")) {
+                    $(elem).next().addClass(errorClass);
+                    // $("#s2id_" + elem.attr("id") + " ul").addClass(errorClass);
+                } else {
+                    elem.addClass(errorClass);
                 }
-            });
+            },
+
+            unhighlight: function (element, errorClass, validClass) {
+                var elem = $(element);
+                if (elem.hasClass("select2")) {
+                    $(elem).next().removeClass(errorClass);
+                } else {
+                    elem.removeClass(errorClass);
+                }
+            },
+            errorElement: "li",
+            submitHandler: function (form) {
+                console.log("submited");
+                var formData = new FormData($(form)[0]);
+                $.ajax({
+                    url: $(form).attr("action"),
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        console.log(data);
+
+                        if (data.length) {
+
+                        } else {
+                            $("#frmProduct").find("select, input, textarea").each(function (i, e) {
+                                if ($(e).prop("tagName") == "SELECT") {
+                                    $(e).next().removeClass("is-valid");
+                                    $(e).next().removeClass("is-invalid");
+                                } else {
+                                    $(e).removeClass("is-valid");
+                                    $(e).removeClass("is-invalid");
+                                }
+                            });
+                            if (!update) {
+                                $("#frmProduct").trigger("reset");
+                                $("#uploadimg").html("");
+                                existImgSize = +0;
+                                $('.textarea').summernote('reset');
+                                Toast.fire({
+                                    type: 'success',
+                                    title: 'Successfully added!'
+                                });
+                            } else {
+                                Toast.fire({
+                                    type: 'success',
+                                    title: 'Successfully updated!'
+                                });
+                            }
+                        }
+
+                    }
+                });
+            }
         });
+
+        // $("#frmProduct").submit(function (e) {
+        //     e.preventDefault();
+        //     var formData = new FormData($(this)[0]);
+        //     $.ajax({
+        //         url: $(this).attr("action"),
+        //         type: 'POST',
+        //         data: formData,
+        //         contentType: false,
+        //         processData: false,
+        //         success: function (data) {
+        //             console.log(data);
+        //             $("ul.text-danger").html("");
+        //             $("#frmProduct").find("select, input, textarea").each(function (i, e) {
+        //                 if ($(e).prop("tagName") == "SELECT") {
+        //                     $(e).next().removeClass("is-valid");
+        //                     $(e).next().removeClass("is-invalid");
+        //                 } else {
+        //                     $(e).removeClass("is-valid");
+        //                     $(e).removeClass("is-invalid");
+        //                 }
+        //                 if (!$(e).hasClass("is-valid")) {
+        //                     if ($(e).prop("tagName") == "SELECT") {
+        //                         $(e).next().addClass("is-valid");
+        //                     } else {
+        //                         $(e).addClass("is-valid");
+        //                     }
+        //                 }
+        //             });
+        //             if (data.length) {
+        //                 data.forEach(e => {
+        //                     var input = $("#" + e.field);
+        //                     if (input.prop("tagName") == "SELECT" && input.next().hasClass("is-valid")) {
+        //                         input.next().removeClass("is-valid");
+        //                     } else {
+        //                         input.removeClass("is-valid");
+        //                     }
+        //                     if (input.prop("tagName") == "SELECT") {
+        //                         input.next().addClass("is-invalid");
+        //                     } else {
+        //                         input.addClass("is-invalid");
+        //                     }
+
+        //                     $("#" + e.field + "Error").append("<li>" + e.defaultMessage + "</li>")
+        //                 });
+        //             } else {
+        //                 $("#frmProduct").find("select, input, textarea").each(function (i, e) {
+        //                     if ($(e).prop("tagName") == "SELECT") {
+        //                         $(e).next().removeClass("is-valid");
+        //                         $(e).next().removeClass("is-invalid");
+        //                     } else {
+        //                         $(e).removeClass("is-valid");
+        //                         $(e).removeClass("is-invalid");
+        //                     }
+        //                 });
+        //                 if (!update) {
+        //                     $("#frmProduct").trigger("reset");
+        //                     $("#uploadimg").html("");
+        //                     existImgSize = +0;
+        //                     $('.textarea').summernote('reset');
+        //                     Toast.fire({
+        //                         type: 'success',
+        //                         title: 'Successfully added!'
+        //                     });
+        //                 } else {
+        //                     Toast.fire({
+        //                         type: 'success',
+        //                         title: 'Successfully updated!'
+        //                     });
+        //                 }
+        //             }
+
+        //         }
+        //     });
+        // });
 
         //Initialize Select2 Elements
         $('.select2').select2();
