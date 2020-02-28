@@ -420,11 +420,11 @@
                             <p th:utext="${(product.description == null || product.description.isEmpty()) ? '(No description)' : product.description}"></p>
                         </div>
                         <div class="tab-pane fade text-left border border-secondary" id="pro-review"
-                            role="tabpanel" style="height: 30rem;overflow-y: scroll !important;">
+                            role="tabpanel" >
                             <div class="card border-bottom border-secondary" th:if="${session.loggedInCustomer != null}"
                                 style="background-color: lightyellow;">
                                 <div class="card-body border-bottom border-warning">
-                                    <form action="product/doComment" method="post" enctype="application/x-www-form-urlencoded">
+                                    <form class="comment" action="product/doComment" method="post" enctype="application/x-www-form-urlencoded">
                                         <div class="d-flex">
                                             <input type="hidden" name="productid" th:value="${product.id}"/>
                                             <textarea type="text" class="form-control form-control" name="comment"
@@ -449,14 +449,15 @@
                                                 <span class="text-muted float-right" th:text="${#dates.format(cm.createdAt, 'dd/MM/yyyy HH:mm')}">8:03 PM Today</span>
                                             </span><!-- /.username -->
                                             <th:block th:text="${cm.content}"></th:block>
-                                            <button type="button" class="btn btn-secondary" style="height: auto;" th:data-target="${cm.id}" th:if="${session.loggedInCustomer != null}" onclick="toggleReply(this)"><i class="fas fa-reply"></i></button>
+                                            <button type="button" class="btn btn-secondary" style="height: auto;float: right
+                                            ;" th:data-target="${cm.id}" th:if="${session.loggedInCustomer != null}" onclick="toggleReply(this)"><i class="fas fa-reply"></i></button>
                                         </div>
                                         <!-- /.comment-text -->
                                     </div>
                                     <!-- /.card-comment -->
                                 </div>
                                 <!-- /.card-body -->
-                                <div class="card-footer card-comments" th:if="${cm.productCommentReplyCollection.size() > 0 || session.loggedInCustomer != null}">
+                                <div class="card-footer card-comments" th:if="${cm.productCommentReplyCollection.size() > 0}">
                                     <div class="card-comment" th:each="cmr : ${cm.productCommentReplyCollection}" >
                                         <div class="comment-text">
                                             <span class="username">
@@ -468,8 +469,12 @@
                                         </div>
                                         <!-- /.comment-text -->
                                     </div>
-                                    <div class="card-comment" th:if="${session.loggedInCustomer != null}" th:id="${cm.id}" style="display: none;">
-                                        <form action="product/doReply" method="post" enctype="application/x-www-form-urlencoded">
+                                    <!-- /.card-comment -->
+                                </div>
+                                <!-- /.card-footer -->
+                                <div class="card-footer card-comments" th:if="${session.loggedInCustomer != null}" th:id="${cm.id}" style="display: none;">
+                                    <div class="card-comment" th:if="${session.loggedInCustomer != null}"  >
+                                        <form class="comment" action="product/doReply" method="post" enctype="application/x-www-form-urlencoded">
                                             <div class="comment-text">
                                                 <span class="username">
                                                     
@@ -486,10 +491,7 @@
                                             
                                         </form>
                                     </div>
-                                    <!-- /.card-comment -->
                                 </div>
-                                <!-- /.card-footer -->
-                                
                                 <!-- /.card-footer -->
                             </div>
                             
@@ -526,7 +528,7 @@
 
         <script>
             function onloadCallback() {
-                $("#pro-review").css("overflow-y", "scroll !important");
+                // $("#pro-review").css("overflow-y", "scroll !important");
             }
         </script>
     </div>
@@ -557,7 +559,8 @@
                 $(this).val(1);
             }
         });
-        $("form").on("submit", function (e) {
+        
+        $("form.comment").on("submit", function (e) {
             e.preventDefault();
             form = $(this);
             if ($("#g-recaptcha-response").length) {
@@ -599,6 +602,7 @@
             //     });
             // }
         });
+
         function checked() {
             var formData = new FormData($(form)[0]);
             var gcaptcha = $("#g-recaptcha-response");

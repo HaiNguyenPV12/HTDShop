@@ -36,11 +36,10 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "PreBuilt")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "PreBuilt.findAll", query = "SELECT p FROM PreBuilt p")
-    , @NamedQuery(name = "PreBuilt.findById", query = "SELECT p FROM PreBuilt p WHERE p.id = :id")
-    , @NamedQuery(name = "PreBuilt.findByName", query = "SELECT p FROM PreBuilt p WHERE p.name = :name")
-    , @NamedQuery(name = "PreBuilt.findByCreatedAt", query = "SELECT p FROM PreBuilt p WHERE p.createdAt = :createdAt")})
+@NamedQueries({ @NamedQuery(name = "PreBuilt.findAll", query = "SELECT p FROM PreBuilt p"),
+        @NamedQuery(name = "PreBuilt.findById", query = "SELECT p FROM PreBuilt p WHERE p.id = :id"),
+        @NamedQuery(name = "PreBuilt.findByName", query = "SELECT p FROM PreBuilt p WHERE p.name = :name"),
+        @NamedQuery(name = "PreBuilt.findByCreatedAt", query = "SELECT p FROM PreBuilt p WHERE p.createdAt = :createdAt") })
 public class PreBuilt implements Serializable {
 
     @JoinColumn(name = "CustomerId", referencedColumnName = "Id")
@@ -103,6 +102,28 @@ public class PreBuilt implements Serializable {
     private Staff staff;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "preBuilt")
     private Collection<PreBuiltRating> preBuiltRatingCollection;
+    @Basic(optional = false)
+    @Column(name = "Stock")
+    private Integer stock;
+    @Basic(optional = false)
+    @Column(name = "Price")
+    private Double price;
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public Integer getStock() {
+        return stock;
+    }
+
+    public void setStock(Integer stock) {
+        this.stock = stock;
+    }
 
     public PreBuilt() {
     }
@@ -158,8 +179,6 @@ public class PreBuilt implements Serializable {
     public void setPreBuiltImageCollection(Collection<PreBuiltImage> preBuiltImageCollection) {
         this.preBuiltImageCollection = preBuiltImageCollection;
     }
-
-    
 
     public Staff getStaff() {
         return staff;
@@ -336,5 +355,5 @@ public class PreBuilt implements Serializable {
     public void setCustomer(Customer customer) {
         this.customer = customer;
     }
-    
+
 }

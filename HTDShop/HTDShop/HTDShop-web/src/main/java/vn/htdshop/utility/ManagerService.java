@@ -155,9 +155,9 @@ public class ManagerService {
     }
 
     public boolean deleteTempImage(String imgPath) {
-        Iterator itr = tempUploadImage.iterator();
+        Iterator<ProductImage> itr = tempUploadImage.iterator();
         while (itr.hasNext()) {
-            ProductImage img = (ProductImage) itr.next();
+            ProductImage img = itr.next();
             if (img.getImagePath().equals(imgPath)) {
                 File deleteFile = new File(System.getProperty("catalina.home") + "/img/" + img.getImagePath());
                 deleteFile.delete();
@@ -187,9 +187,9 @@ public class ManagerService {
 
     public boolean deleteAllTempImage(boolean deleteAll) {
         if (tempUploadImage != null) {
-            Iterator itr = tempUploadImage.iterator();
+            Iterator<ProductImage> itr = tempUploadImage.iterator();
             while (itr.hasNext()) {
-                ProductImage img = (ProductImage) itr.next();
+                ProductImage img = itr.next();
                 if (!deleteAll && img.getId() != null) {
                     itr.remove();
                 } else {

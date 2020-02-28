@@ -142,4 +142,10 @@ public class ProductFacade extends AbstractFacade<Product> implements ProductFac
         return q.getResultList();
     }
 
+    @Override
+    public Product find(Integer id) {
+        // TODO Auto-generated method stub
+        return em.find(Product.class, id);
+    }
+
 }

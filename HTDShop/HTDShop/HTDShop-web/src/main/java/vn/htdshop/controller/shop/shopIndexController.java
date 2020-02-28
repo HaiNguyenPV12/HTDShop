@@ -7,6 +7,7 @@ package vn.htdshop.controller.shop;
 
 import javax.ejb.EJB;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import vn.htdshop.entity.Customer;
 import vn.htdshop.sb.CategoryFacadeLocal;
@@ -39,6 +41,9 @@ public class shopIndexController {
     HttpSession session;
 
     @Autowired
+    HttpServletRequest request;
+
+    @Autowired
     ShopService shopService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
@@ -54,21 +59,35 @@ public class shopIndexController {
     }
 
     @RequestMapping(value = "testlogin", method = RequestMethod.GET)
-    public String getLogin() {
-        Customer c = customerFacade.find(1);
+    public String getLogin(@RequestParam(value = "id", required = false) Integer id) {
+        Customer c = customerFacade.find(id);
         session.setAttribute("loggedInCustomer", c);
-        return "redirect:";
+        shopService.getLoggedInCart();
+        String referer = request.getHeader("referer");
+        System.out.println(referer);
+        if (referer == null || referer.isEmpty()) {
+            return "redirect:";
+        } else {
+            return "redirect:" + referer;
+        }
+
     }
 
     @RequestMapping(value = "testlogincookie", method = RequestMethod.GET)
-    public String getLoginCookie(HttpServletResponse response) {
-        Customer c = customerFacade.find(1);
-
+    public String getLoginCookie(HttpServletResponse response, @RequestParam(value = "id", required = false) Integer id) {
+        Customer c = customerFacade.find(id);
         session.setAttribute("loggedInCustomer", c);
+        shopService.getLoggedInCart();
         Cookie cookie = new Cookie("loggedInCustomer", "" + c.getId());
         cookie.setMaxAge(60 * 60 * 24 * 7 * 4);
         response.addCookie(cookie);
-        return "redirect:";
+
+        String referer = request.getHeader("Referer");
+        if (referer == null || referer.isEmpty()) {
+            return "redirect:";
+        } else {
+            return referer;
+        }
     }
 
     @RequestMapping(value = "testlogout", method = RequestMethod.GET)
@@ -77,7 +96,13 @@ public class shopIndexController {
         Cookie cookie = new Cookie("loggedInCustomer", null);
         cookie.setMaxAge(0);
         response.addCookie(cookie);
-        return "redirect:";
+        String referer = request.getHeader("Referer");
+        System.out.println(referer);
+        if (referer == null || referer.isEmpty()) {
+            return "redirect:";
+        } else {
+            return "redirect:" + referer;
+        }
     }
 
 }

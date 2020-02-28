@@ -38,6 +38,9 @@
                             th:text="${'$'+#numbers.formatDecimal(shopSv.getPreBuiltDiscountPrice(p), 1, 'POINT', 2, 'COMMA')}">
                         </th:block>
                     </span>
+                    <p><i>
+                        <th:block th:text="${p.staff != null? 'HTD exclusive' : ('Author: ' + p.customer.firstName)}"></th:block>
+                    </i></p>
                 </div>
             </div>
         </div>

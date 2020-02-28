@@ -211,7 +211,7 @@
                                 <span th:if="${discountPrice!=null}">
                                     <i class="text-muted">
                                         <del
-                                            th:text="${'$'+#numbers.formatDecimal(prebuiltprice, 1, 'POINT', 2, 'COMMA')}"></del>
+                                            th:text="${'$'+#numbers.formatDecimal(prebuiltPrice, 1, 'POINT', 2, 'COMMA')}"></del>
                                     </i>
                                     <th:block
                                         th:text="${'$'+#numbers.formatDecimal(discountPrice , 1, 'POINT', 2, 'COMMA')}">
@@ -219,17 +219,17 @@
                                 </span>
                                 <th:block th:if="${discountPrice==null}">
                                     <span
-                                        th:text="${'$'+#numbers.formatDecimal(prebuiltprice , 1, 'POINT', 2, 'COMMA')}"></span>
+                                        th:text="${'$'+#numbers.formatDecimal(prebuiltPrice , 1, 'POINT', 2, 'COMMA')}"></span>
                                 </th:block>
                             </div>
 
                             <div class="quickview-plus-minus">
                                 <div class="cart-plus-minus">
-                                    <input type="text" value="1" name="qtybutton" class="cart-plus-minus-box" max="100"
-                                        min="1" id="quan">
+                                    <input type="text" value="1" name="qtybutton" class="cart-plus-minus-box"
+                                        th:max="${prebuilt.stock != null ? prebuilt.stock : 100}" min="1" id="quan">
                                 </div>
-                                <div class="mt-3">
-
+                                <div class="mt-3" th:if="${prebuilt != null}">
+                                    &ThickSpace;/ <th:block th:text="${prebuilt.stock}"></th:block>
                                 </div>
                                 <div class="quickview-btn-cart">
                                     <a class="btn-hover-black" style="cursor: pointer;color: #fff;"
@@ -350,11 +350,11 @@
                             </p>
                         </div>
                         <div class="tab-pane fade overflow-auto text-left border border-secondary" id="pro-review"
-                            role="tabpanel" style="height: 20em;overflow-y: scroll;">
+                            role="tabpanel">
                             <div class="card border-bottom border-secondary" th:if="${session.loggedInCustomer != null}"
                                 style="background-color: lightyellow;">
                                 <div class="card-body border-bottom border-warning">
-                                    <form action="prebuilt/doRating" method="post"
+                                    <form class="rating" action="prebuilt/doRating" method="post"
                                         enctype="application/x-www-form-urlencoded">
                                         <div class="d-flex">
                                             <input type="hidden" name="prebuiltid" th:value="${prebuilt.id}" />
@@ -411,9 +411,81 @@
             </div>
         </div>
         <!-- product area start -->
+
+        <div class="modal fade" id="modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header" id='modalHeader'>
+                        <h4 class="modal-title" id="modalTitle">Confirm deletion</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="modalBody">
+                        <div id="g-recaptcha" class="g-recaptcha" data-sitekey="6LdeYdoUAAAAAHL11wXzM80G7X_dNVEQAYp_V9JN" data-callback="checked"></div>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" id='modalClose'>Cancel</button>
+                        <a class="btn btn-danger" id="modalButton">Yes, delete this</a>
+                    </div>
+                </div>
+            <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+
     </div>
 
+    <th:block layout:fragment="additionalScript">
+        <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
+    </th:block>
+
     <script layout:fragment="script">
+        function showModal(title) {
+            $('#modalButton').attr('style', 'display:none;');
+            $('#modalTitle').html(title);
+            $('#modal').modal('show');
+        }
+
+        $("form.rating").on("submit", function (e) {
+            e.preventDefault();
+            form = $(this);
+            if ($("#g-recaptcha-response").length) {
+                grecaptcha.reset();
+            } else {
+                grecaptcha.render("g-recaptcha", { "sitekey": "6LdeYdoUAAAAAHL11wXzM80G7X_dNVEQAYp_V9JN", "callback": "checked" });
+            }
+            showModal("Confirm Captcha");
+        });
+
+        function checked() {
+            var formData = new FormData($(form)[0]);
+            var gcaptcha = $("#g-recaptcha-response");
+            formData.append(gcaptcha.attr("name"), gcaptcha.val());
+            $.ajax({
+                url: $(form).attr("action"),
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    if (data == true) {
+                        // grecaptcha.reset();
+                        // check = false;
+                        window.location.reload(true)
+                    } else {
+                        grecaptcha.reset();
+                        $('#modal').modal('hide');
+                        Toast.fire({
+                            type: 'error',
+                            title: "Captcha error, please try again!",
+                            timer: 5000
+                        });
+                    }
+                }
+            });
+        }
+
         $("#quan").keypress(function (event) {
             if (event.which == 45 || event.which == 189) {
                 event.preventDefault();

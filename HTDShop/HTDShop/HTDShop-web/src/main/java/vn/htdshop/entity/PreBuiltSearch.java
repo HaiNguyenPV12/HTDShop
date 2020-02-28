@@ -18,6 +18,7 @@ public class PreBuiltSearch {
     private Integer cpucooler;
     private Integer case1;
     private Integer monitor;
+    private Integer author;
     private String style;
     private Double from;
     private Double to;
@@ -37,6 +38,17 @@ public class PreBuiltSearch {
         this.style = params.get("style");
         // Sort
         this.sort = params.get("sort");
+        // Author
+        if (params.get("auth") == null) {
+            this.author = 0;
+        } else {
+            try {
+                this.author = Integer.parseInt(params.get("auth"));
+            } catch (Exception e) {
+                this.author = 0;
+            }
+        }
+
         // CPU
         if (params.get("1") == null) {
             this.cpu = 0;
@@ -172,6 +184,14 @@ public class PreBuiltSearch {
      */
     public void setKeyword(String keyword) {
         this.keyword = keyword;
+    }
+
+    public Integer getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(Integer author) {
+        this.author = author;
     }
 
     /**
