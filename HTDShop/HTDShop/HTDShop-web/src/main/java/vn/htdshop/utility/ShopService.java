@@ -85,7 +85,6 @@ public class ShopService {
         List<CartItem> userCart = getUserCart();
 
         for (CartItem ci : userCart) {
-            boolean isPrebuilt = false;
             Integer stock = 0;
             Integer status = 0;
             if (ci.getId().substring(0, 1).equals("a")) {
@@ -330,26 +329,65 @@ public class ShopService {
 
     public boolean checkLogin() {
         Boolean result = false;
-        if (session.getAttribute("loggedInCustomer") != null) {
+        if (userSettings == null) {
+            userSettings = new ArrayList<UserSetting>();
+        }
+        Customer customer = (Customer) session.getAttribute("loggedInCustomer");
+        if (customer != null) {
             result = true;
+            if (findUserSetting(customer.getId()) == null) {
+                userSettings.add(new UserSetting(customer.getId()));
+            }
         } else {
             if (request.getCookies() != null) {
                 String cookie = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("loggedInCustomer"))
                         .findFirst().map(Cookie::getValue).orElse(null);
                 if (cookie != null) {
-                    Customer customer = customerFacade.find(Integer.parseInt(cookie));
+                    customer = customerFacade.find(Integer.parseInt(cookie));
                     if (customer != null) {
                         session.setAttribute("loggedInCustomer", customer);
                         result = true;
+                        if (findUserSetting(customer.getId()) == null) {
+                            userSettings.add(new UserSetting(customer.getId()));
+                        }
                     }
                 }
             }
 
         }
+
         if (session.getAttribute("categories") == null) {
             session.setAttribute("categories", categoryFacade.findAll());
         }
+        if (!result) {
+            if (request.getCookies() != null) {
+                String nonUserId = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("JSESSIONID"))
+                        .findFirst().map(Cookie::getValue).orElse(null);
+                if (nonUserId != null && findUserSetting(nonUserId) == null) {
+                    userSettings.add(new UserSetting(nonUserId));
+                }
+            }
+
+        }
         return result;
+    }
+
+    public UserSetting findUserSetting(Integer id) {
+        for (UserSetting us : userSettings) {
+            if (id.equals(us.getCustomerId())) {
+                return us;
+            }
+        }
+        return null;
+    }
+
+    public UserSetting findUserSetting(String sessionid) {
+        for (UserSetting us : userSettings) {
+            if (sessionid.equals(us.getSessionId())) {
+                return us;
+            }
+        }
+        return null;
     }
 
     public Customer getLoggedInCustomer() {

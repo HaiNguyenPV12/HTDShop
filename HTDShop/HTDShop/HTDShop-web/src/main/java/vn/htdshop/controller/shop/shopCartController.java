@@ -116,7 +116,7 @@ public class shopCartController {
 
         if (!isPrebuilt && productFacade.find(Integer.parseInt(id.substring(1))) == null) {
             return "Cannot find this product.";
-        } else if (preBuiltFacade.find(Integer.parseInt(id.substring(1))) == null) {
+        } else if (isPrebuilt && preBuiltFacade.find(Integer.parseInt(id.substring(1))) == null) {
             return "Cannot find this prebuilt.";
         }
 
@@ -187,7 +187,7 @@ public class shopCartController {
             cart = new ArrayList<CartItem>();
         }
 
-        // Check part stock with total quantity
+        // Check stock with total quantity
         String error = "Cannot add ";
         Boolean foundError = false;
         if (p.getStaff() == null) {
@@ -254,6 +254,15 @@ public class shopCartController {
                         foundError = true;
                     }
                     continue;
+                }
+            }
+        } else {
+            for (CartItem cartItem : cart) {
+                if (cartItem.getId().equals("b" + p.getId())) {
+                    if (cartItem.getQuan() + quan > p.getStock()) {
+                        return "Not enough stock! Please try lowering quantity.";
+                    }
+                    break;
                 }
             }
         }
