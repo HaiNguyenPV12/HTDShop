@@ -5,6 +5,9 @@
  */
 package vn.htdshop.controller.shop;
 
+import java.util.Comparator;
+import java.util.stream.Collectors;
+
 import javax.ejb.EJB;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -13,14 +16,17 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import vn.htdshop.entity.Customer;
+import vn.htdshop.entity.ImageSlide;
 import vn.htdshop.sb.CategoryFacadeLocal;
 import vn.htdshop.sb.CustomerFacadeLocal;
+import vn.htdshop.sb.ImageSlideFacadeLocal;
 import vn.htdshop.utility.ShopService;
 
 /**
@@ -36,6 +42,9 @@ public class shopIndexController {
 
     @EJB(mappedName = "CustomerFacade")
     CustomerFacadeLocal customerFacade;
+    
+    @EJB(mappedName = "ImageSlideFacade")
+    ImageSlideFacadeLocal imageSlideFacade;
 
     @Autowired
     HttpSession session;
@@ -47,9 +56,14 @@ public class shopIndexController {
     ShopService shopService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public String getHome(ModelMap modelMap) {
+    public String getHome(Model model) {
         shopService.checkLogin();
-        modelMap.addAttribute("categories", categoryFacade.findAll());
+
+        model.asMap().put("imageslides",
+                imageSlideFacade.findAll().stream().filter(img->img.getStatus())
+                        .sorted(Comparator.comparing(ImageSlide::getOrder, Comparator.nullsLast(Comparator.naturalOrder())))
+                        .collect(Collectors.toList()));
+        // modelMap.addAttribute("categories", categoryFacade.findAll());
         return "HTDShop/index";
     }
 
@@ -74,7 +88,8 @@ public class shopIndexController {
     }
 
     @RequestMapping(value = "testlogincookie", method = RequestMethod.GET)
-    public String getLoginCookie(HttpServletResponse response, @RequestParam(value = "id", required = false) Integer id) {
+    public String getLoginCookie(HttpServletResponse response,
+            @RequestParam(value = "id", required = false) Integer id) {
         Customer c = customerFacade.find(id);
         session.setAttribute("loggedInCustomer", c);
         shopService.getLoggedInCart();
