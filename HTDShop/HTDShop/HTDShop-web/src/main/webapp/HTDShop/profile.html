@@ -3,11 +3,11 @@
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDShop/layout}">
 
 <head>
-    <title>HTD Shop - Register</title>
+    <title>HTD Shop - Profile</title>
     <th:block layout:fragment="additionalCss">
         <link rel="stylesheet" th:href="@{/resources/Content/fontawesome-free/css/all.min.css}">
     </th:block>
-
+    
 </head>
 
 <body>
@@ -25,11 +25,11 @@
         <div class="register-area ptb-100">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-md-12 col-12 col-lg-12 col-xl-6 ml-auto mr-auto">
+                    <div class="col-md-12 col-12 col-lg-6 col-xl-6 ml-auto mr-auto">
                         <div class="login">
                             <div class="login-form-container">
                                 <div class="login-form">
-                                    <form action="register/doAdd" method="post" th:object="${customer}">
+                                    <form action="profile/doEdit" method="POST" th:object="${cust}">
                                         <div class="card-body">
                                             <div class="form-group row">
                                                 <label for="firstName" class="col-sm-3 col-form-label text-right">First
@@ -92,14 +92,14 @@
                                                 <div class="col-sm-9">
                                                     <div class="custom-control custom-radio">
                                                         <input class="custom-control-input" type="radio" value="true"
-                                                            th:field="*{gender}" th:selected="${customer.gender==true}"
+                                                            th:field="*{gender}" th:selected="*{gender==true}"
                                                             id="gender1" />
                                                         <label for="gender1" class="custom-control-label">Male</label>
                                                     </div>
                                                     <div class="custom-control custom-radio">
                                                         <input class="custom-control-input" type="radio" value="false"
-                                                            th:field="*{gender}" th:selected="${customer.gender==false}"
-                                                            id="gender2" />&nbsp;&nbsp;&nbsp;
+                                                            th:field="*{gender}" th:selected="*{.gender==false}"
+                                                            id="gender2" />
                                                         <label for="gender2" class="custom-control-label">Female</label>
                                                     </div>
                                                 </div>
@@ -114,13 +114,13 @@
                                                         <div class="input-group-prepend">
                                                         </div>
                                                         <input type="text" class="form-control float-right" id="date" th:field="${customer.birthday}"
-                                                            name="date">
+                                                            name="date"/>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-3"></div>
                                             </div>
                                             <div class="button-box">
-                                                <button type="submit" class="default-btn floatright">Register</button>
+                                                <button type="submit" class="default-btn floatright">Update Profile</button>
                                             </div>
                                         </div>
                                     </form>
@@ -131,30 +131,14 @@
                 </div>
             </div>
         </div>
-        <!-- register-area end -->
     </div>
+    
     <script th:src="@{/manager_resources/plugins/jquery/jquery.min.js}"></script>
     <!-- Bootstrap 4 -->
     <script th:src="@{/manager_resources/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
     <!-- AdminLTE App -->
     <script th:src="@{/manager_resources/Scripts/adminlte.min.js}"></script>
-
     <script>
-        $(document).ready(function () {
-            $('#date').daterangepicker({
-                "startDate": $("#birthday").val() == "" ? moment() : $("#birthday").val(),
-                singleDatePicker: true,
-                showDropdowns: true,
-                minYear: 1901,
-                maxYear: parseInt(moment().format('YYYY'), 10),
-                locale: {
-                    format: 'DD/MM/YYYY'
-                }
-            }, function (start, end, label) {
-                $("#birthday").val(start.format('DD/MM/YYYY'));
-                console.log($("#date").val());
-            });
-        });
     </script>
 </body>
 

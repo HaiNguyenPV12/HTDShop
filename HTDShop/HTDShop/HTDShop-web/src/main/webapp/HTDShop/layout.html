@@ -72,12 +72,12 @@
                 </div>
                 <div class="electronics-login-register">
                     <ul>
-                        <li th:if="${session.loggedInCustomer != null}"><a href="#"><i class="pe-7s-users"></i>
+                        <li th:if="${session.loggedInCustomer != null}"><a th:href="@{/profile}"><i class="pe-7s-users"></i>
                                 <th:block
                                     th:text="${session.loggedInCustomer.firstName + ' ('+ session.loggedInCustomer.point +')'}">
                                 </th:block>
                             </a></li>
-                        <li th:if="${session.loggedInCustomer == null}"><a href="#"><i class="pe-7s-key"></i>Login</a>
+                        <li th:if="${session.loggedInCustomer == null}"><a th:href="@{/login}"><i class="pe-7s-key"></i>Login</a>
                         </li>
                         <!-- <li><a data-toggle="modal" data-target="#exampleCompare" href="#"><i
                                     class="pe-7s-repeat"></i>Compare</a></li> -->

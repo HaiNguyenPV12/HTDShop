@@ -119,7 +119,7 @@
         // Add custom filter for datatable
         $('#tblOrder tfoot th').each(function () {
             var title = $(this).text();
-            if (title == "Action" || title == "Order Date" || title == "Paid Date"  ) {
+            if (title == "Action" || title == "Order Date" || title == "Paid Date" || title == "ID" ) {
                 // Collum that not using filter
                 $(this).html('');
             } else if (title == "Status") {

@@ -45,4 +45,14 @@ public class CustomerFacade extends AbstractFacade<Customer> implements Customer
         return query.getSingleResult();
     }
 
+    @Override
+    public Customer findByEmail(String email) {
+        Query q = em.createNamedQuery("Customer.findByEmail");
+        q.setParameter("email", email);
+        if (q.getResultList().size() <= 0) {
+            return null;
+        }
+        return (Customer) q.getSingleResult();
+    }
+
 }
