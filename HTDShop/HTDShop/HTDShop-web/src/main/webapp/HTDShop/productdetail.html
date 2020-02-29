@@ -146,7 +146,7 @@
                 </div>
             </div>
         </div>
-        <div class="product-details ptb-100 pb-90">
+        <div class="product-details ptb-50 pb-90">
             <div class="container">
                 <div class="row">
                     <div class="col-md-12 col-lg-7 col-12">
@@ -159,16 +159,17 @@
                                         data-toggle="tab" role="tab" aria-selected="true"
                                         style="height:8rem; display: flex;align-items: center;">
                                         <img th:src="@{/images/noimage.png}" alt=""
-                                            style="max-height: 8rem;width: 100%;">
+                                            style="max-height: 8rem;max-width: 99%;margin-left: auto;margin-right: auto;">
                                     </a>
                                     <a class="border border-purple" th:each="img,it : ${product.productImageCollection}"
                                         th:classappend="${it.index==0?'active':''}"
                                         th:href="${'#pro-details'+(it.index+1)}" data-toggle="tab" role="tab"
                                         th:aria-selected="${it.index==0?'true':'false'}"
                                         style="height:8rem;display: flex;align-items: center;">
-                                        <img th:src="@{/images/__${img.imagePath}__}" alt=""
+                                        <img th:src="@{/images/__${(img.thumbnailPath!=null && !img.thumbnailPath.isEmpty())? img.thumbnailPath : img.imagePath}__}"
+                                            alt=""
                                             th:onerror="'this.onerror=null;this.src=&quot;'+@{/images/noimage.png}+'&quot;'"
-                                            style="max-height: 8rem;max-width: 100%;">
+                                            style="max-height: 8rem;max-width: 99%;margin-left: auto;margin-right: auto;">
                                     </a>
                                     <!-- <a class="mb-10" href="#pro-details2" data-toggle="tab" role="tab"
                                         aria-selected="true">
@@ -188,10 +189,9 @@
                                     <div class="tab-pane active show fade"
                                         th:if="${product.productImageCollection.isEmpty()}" id="pro-details1"
                                         role="tabpanel" style="text-align: center;">
-                                        <div class="easyzoom"
-                                            style="display:inline-block;position: relative;height:25rem">
+                                        <div style="display:inline-block;position: relative;height:25rem">
                                             <img th:src="@{/images/noimage.png}" alt=""
-                                                style="width: auto;height:100%;max-height: 25rem;max-width: 100%;object-fit: contain;">
+                                                style="width: auto;height:100%;max-height: 25rem;max-width: 100%;object-fit: contain;max-width: 99%;">
                                         </div>
                                     </div>
                                     <div class="tab-pane fade" th:each="img,it : ${product.productImageCollection}"
@@ -202,7 +202,7 @@
                                             style="display:inline-block;position: relative;height:25rem;vertical-align: middle;">
                                             <img th:src="@{/images/__${img.imagePath}__}" alt=""
                                                 th:onerror="'this.onerror=null;this.src=&quot;'+@{/images/noimage.png}+'&quot;'"
-                                                style="width: auto;height:100%;max-height: 25rem;max-width: 100%;object-fit: contain;">
+                                                style="width: auto;height:100%;max-height: 25rem;max-width: 100%;object-fit: contain;max-width: 99%;">
                                         </div>
                                     </div>
                                     <!-- <div class="tab-pane fade" id="pro-details2" role="tabpanel">
@@ -232,7 +232,7 @@
                     </div>
                     <div class="col-md-12 col-lg-5 col-12">
                         <div class="product-details-content">
-                            <h3>[[${product.name}]]</h3>
+                            <h3 th:text="${product.name}"></h3>
                             <div class="rating-number">
                                 <span>
                                     <th:block
@@ -270,7 +270,7 @@
                                         th:max="${product.stock}">
                                 </div>
                                 <div class="mt-3">
-                                    &ThickSpace;/ [[${product.stock}]]
+                                    &ThickSpace;/ <th:block th:text="${product.stock}"></th:block>
                                 </div>
                                 <div class="quickview-btn-cart">
                                     <a class="btn-hover-black"
@@ -362,7 +362,8 @@
                             <div class="product-details-cati-tag mt-35">
                                 <ul>
                                     <li class="categories-title">Categories :</li>
-                                    <li><a href="#">[[${product.category.name}]]</a></li>
+                                    <li><a th:href="@{/search?(category=${product.category.id})}"
+                                            th:text="${product.category.name}"></a></li>
                                 </ul>
                             </div>
 
@@ -418,16 +419,17 @@
                         <div class="tab-pane active show fade" id="pro-dec" role="tabpanel" style="margin-left: 10rem;">
                             <p th:utext="${(product.description == null || product.description.isEmpty()) ? '(No description)' : product.description}"></p>
                         </div>
-                        <div class="tab-pane fade overflow-auto text-left border border-secondary" id="pro-review"
-                            role="tabpanel" style="height: 20em;overflow-y: scroll;">
+                        <div class="tab-pane fade text-left border border-secondary" id="pro-review"
+                            role="tabpanel" >
                             <div class="card border-bottom border-secondary" th:if="${session.loggedInCustomer != null}"
-                            style="background-color: lightyellow;">
+                                style="background-color: lightyellow;">
                                 <div class="card-body border-bottom border-warning">
-                                    <form action="product/doComment" method="post" enctype="application/x-www-form-urlencoded">
+                                    <form class="comment" action="product/doComment" method="post" enctype="application/x-www-form-urlencoded">
                                         <div class="d-flex">
                                             <input type="hidden" name="productid" th:value="${product.id}"/>
-                                            <input type="text" class="form-control form-control-sm" name="comment"
-                                                placeholder="Comment on this product" required/>
+                                            <textarea type="text" class="form-control form-control" name="comment"
+                                                placeholder="Comment on this product" required style="resize: none;"></textarea>
+                                            <!-- <div class="g-recaptcha" data-sitekey="6LdeYdoUAAAAAHL11wXzM80G7X_dNVEQAYp_V9JN" data-callback="checked"></div> -->
                                             <button type="submit" class="btn btn-secondary" style="height: auto;"><i class="fas fa-comment"></i></button>
                                         </div>
                                     </form>
@@ -447,13 +449,15 @@
                                                 <span class="text-muted float-right" th:text="${#dates.format(cm.createdAt, 'dd/MM/yyyy HH:mm')}">8:03 PM Today</span>
                                             </span><!-- /.username -->
                                             <th:block th:text="${cm.content}"></th:block>
+                                            <button type="button" class="btn btn-secondary" style="height: auto;float: right
+                                            ;" th:data-target="${cm.id}" th:if="${session.loggedInCustomer != null}" onclick="toggleReply(this)"><i class="fas fa-reply"></i></button>
                                         </div>
                                         <!-- /.comment-text -->
                                     </div>
                                     <!-- /.card-comment -->
                                 </div>
                                 <!-- /.card-body -->
-                                <div class="card-footer card-comments" th:if="${cm.productCommentReplyCollection.size() > 0 || session.loggedInCustomer != null}">
+                                <div class="card-footer card-comments" th:if="${cm.productCommentReplyCollection.size() > 0}">
                                     <div class="card-comment" th:each="cmr : ${cm.productCommentReplyCollection}" >
                                         <div class="comment-text">
                                             <span class="username">
@@ -465,8 +469,12 @@
                                         </div>
                                         <!-- /.comment-text -->
                                     </div>
-                                    <div class="card-comment" th:if="${session.loggedInCustomer != null}">
-                                        <form action="product/doReply" method="post" enctype="application/x-www-form-urlencoded">
+                                    <!-- /.card-comment -->
+                                </div>
+                                <!-- /.card-footer -->
+                                <div class="card-footer card-comments" th:if="${session.loggedInCustomer != null}" th:id="${cm.id}" style="display: none;">
+                                    <div class="card-comment" th:if="${session.loggedInCustomer != null}"  >
+                                        <form class="comment" action="product/doReply" method="post" enctype="application/x-www-form-urlencoded">
                                             <div class="comment-text">
                                                 <span class="username">
                                                     
@@ -474,6 +482,7 @@
                                                 <div class="d-flex">
                                                     <input type="hidden" name="productid" th:value="${product.id}"/>
                                                     <input type="hidden" name="commentid" th:value="${cm.id}"/>
+                                                    <div class="captcha"></div>
                                                     <input type="text" class="form-control form-control-sm"
                                                         placeholder="Reply to this comment." required name="reply">
                                                     <button type="submit" class="btn btn-secondary" style="height: auto;"><i class="fas fa-reply"></i></button>
@@ -482,10 +491,7 @@
                                             
                                         </form>
                                     </div>
-                                    <!-- /.card-comment -->
                                 </div>
-                                <!-- /.card-footer -->
-                                
                                 <!-- /.card-footer -->
                             </div>
                             
@@ -497,11 +503,49 @@
         </div>
         <!-- product area start -->
 
+        <div class="modal fade" id="modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header" id='modalHeader'>
+                        <h4 class="modal-title" id="modalTitle">Confirm deletion</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="modalBody">
+                        <div id="g-recaptcha" class="g-recaptcha" data-sitekey="6LdeYdoUAAAAAHL11wXzM80G7X_dNVEQAYp_V9JN" data-callback="checked"></div>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" id='modalClose'>Cancel</button>
+                        <a class="btn btn-danger" id="modalButton">Yes, delete this</a>
+                    </div>
+                </div>
+            <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
 
-        
+
+        <script>
+            function onloadCallback() {
+                // $("#pro-review").css("overflow-y", "scroll !important");
+            }
+        </script>
     </div>
 
+    <th:block layout:fragment="additionalScript">
+        <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
+    </th:block>
+
     <script layout:fragment="script">
+        var check = false;
+        var form = null;
+        function showModal(title) {
+            $('#modalButton').attr('style', 'display:none;');
+            $('#modalTitle').html(title);
+            $('#modal').modal('show');
+        }
+
         $("#quan").keypress(function (event) {
             if (event.which == 45 || event.which == 189) {
                 event.preventDefault();
@@ -515,6 +559,87 @@
                 $(this).val(1);
             }
         });
+        
+        $("form.comment").on("submit", function (e) {
+            e.preventDefault();
+            form = $(this);
+            if ($("#g-recaptcha-response").length) {
+                grecaptcha.reset();
+            } else {
+                grecaptcha.render("g-recaptcha", { "sitekey": "6LdeYdoUAAAAAHL11wXzM80G7X_dNVEQAYp_V9JN", "callback": "checked" });
+            }
+            showModal("Confirm Captcha");
+            // if (check) {
+            //     var formData = new FormData($(this)[0]);
+            //     $.ajax({
+            //         url: $(this).attr("action"),
+            //         type: 'POST',
+            //         data: formData,
+            //         contentType: false,
+            //         processData: false,
+            //         success: function (data) {
+            //             if (data == true) {
+            //                 // grecaptcha.reset();
+            //                 // check = false;
+            //                 window.location.reload(true)
+            //             } else {
+            //                 grecaptcha.reset();
+            //                 check = false;
+            //                 Toast.fire({
+            //                     type: 'error',
+            //                     title: "Captcha error, please try again!",
+            //                     timer: 5000
+            //                 });
+            //             }
+            //         }
+            //     });
+
+            // } else {
+            //     Toast.fire({
+            //         type: 'error',
+            //         title: "Please confirm recaptcha!",
+            //         timer: 5000
+            //     });
+            // }
+        });
+
+        function checked() {
+            var formData = new FormData($(form)[0]);
+            var gcaptcha = $("#g-recaptcha-response");
+            formData.append(gcaptcha.attr("name"), gcaptcha.val());
+            $.ajax({
+                url: $(form).attr("action"),
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    if (data == true) {
+                        // grecaptcha.reset();
+                        // check = false;
+                        window.location.reload(true)
+                    } else {
+                        grecaptcha.reset();
+                        $('#modal').modal('hide');
+                        Toast.fire({
+                            type: 'error',
+                            title: "Captcha error, please try again!",
+                            timer: 5000
+                        });
+                    }
+                }
+            });
+        }
+        function toggleReply(button) {
+            var id = $(button).attr("data-target");
+            $("#" + id).css("display", "block");
+            $(button).css("display", "none");
+
+        }
+        // grecaptcha.render(
+        //     container,
+        //     parameters
+        // )
     </script>
 </body>
 

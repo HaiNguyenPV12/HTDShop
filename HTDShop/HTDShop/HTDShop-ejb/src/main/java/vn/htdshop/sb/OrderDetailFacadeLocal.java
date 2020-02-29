@@ -6,6 +6,8 @@
 package vn.htdshop.sb;
 
 import java.util.List;
+import java.util.Map;
+
 import javax.ejb.Local;
 import vn.htdshop.entity.OrderDetail;
 
@@ -29,5 +31,11 @@ public interface OrderDetailFacadeLocal {
     List<OrderDetail> findRange(int[] range);
 
     int count();
+
+    Map<Integer, Integer> getTopProduct(String datepart, Integer top);
+
+    Map<Integer, Integer> getTopCategory(String datepart, Integer top);
+
+    Map<String, Integer> getTopManufacturer(String datepart, Integer top);
     
 }

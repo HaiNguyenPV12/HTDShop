@@ -15,8 +15,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
@@ -25,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,6 +35,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import vn.htdshop.entity.*;
 import vn.htdshop.sb.*;
+import vn.htdshop.utility.ImageThumbnail;
+import vn.htdshop.utility.ManagerService;
 
 /**
  *
@@ -44,8 +45,6 @@ import vn.htdshop.sb.*;
 @Controller
 @RequestMapping("manager/product/image")
 public class managerProductImageController {
-
-    private final String redirectProductImageHome = "redirect:/manager/product/image";
     private final String redirectProductHome = "redirect:/manager/product";
     private final String redirectHome = "redirect:/manager";
 
@@ -179,7 +178,7 @@ public class managerProductImageController {
         if (!managerService.checkLoginWithRole("product_edit")) {
             return false;
         }
-        
+
         ProductImage pi = null;
         if (id != null) {
             pi = productImageFacade.find(id);
@@ -191,10 +190,15 @@ public class managerProductImageController {
         }
         Product product = pi.getProduct();
 
+        File deleteFile = new File(System.getProperty("catalina.home") + "/img/" + pi.getImagePath());
+        File deleteThumbnailFile = new File(System.getProperty("catalina.home") + "/img/" + pi.getThumbnailPath());
+        deleteFile.delete();
+        deleteThumbnailFile.delete();
+
         productImageFacade.remove(pi);
 
         if (pi.getMainImage() == true && !product.getProductImageCollection().isEmpty()) {
-            ProductImage pimain = ((ProductImage)product.getProductImageCollection().toArray()[0]);
+            ProductImage pimain = ((ProductImage) product.getProductImageCollection().toArray()[0]);
             pimain.setMainImage(true);
             productImageFacade.edit(pimain);
         }
@@ -230,7 +234,7 @@ public class managerProductImageController {
 
         // Process images
         if (uploadimg != null && uploadimg.length > 0) {
-            if (uploadImages(uploadimg, product, false)) {
+            if (uploadImages(uploadimg, product)) {
                 return "ok";
             } else {
                 return "Error while uploading images.";
@@ -241,22 +245,8 @@ public class managerProductImageController {
         }
     }
 
-    private Boolean uploadImages(MultipartFile[] uploadimg, Product product, boolean deleteOldImages) {
+    private Boolean uploadImages(MultipartFile[] uploadimg, Product product) {
         try {
-            // Remove image
-            if (deleteOldImages) {
-                for (ProductImage img : productFacade.find(product.getId()).getProductImageCollection()) {
-                    // First, delete real file.
-                    File deleteFile = new File(System.getProperty("catalina.home") + "/img/" + img.getImagePath());
-                    if (deleteFile.delete()) {
-                        System.out.println("Deleted image: " + deleteFile.getPath());
-                    } else {
-                        System.out.println("Cannot delete image: " + deleteFile.getPath());
-                    }
-                    // Then, delete record in database
-                    productImageFacade.remove(img);
-                }
-            }
 
             // System.getProperty("catalina.base") : Path_to_glassfish/domains/domain_name/
             // Initialize folder path
@@ -268,14 +258,19 @@ public class managerProductImageController {
             }
             // With each of file, do following
             for (MultipartFile multipartFile : uploadimg) {
-                String originName = product.getId() + new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
-                String fileName = originName + multipartFile.getOriginalFilename()
-                        .substring(multipartFile.getOriginalFilename().lastIndexOf("."));
+                String originName = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
+                String ext = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
+                String fileName = originName + "." + ext;
+                String thumbnailFileName = originName + "_th." + ext;
+
                 // file path:
                 // Path_to_glassfish/domains/domain_name/img/product/product_id/filename.extension
                 String filePath = folderPath + "/" + fileName;
+                String thumbnailFilePath = folderPath + "/" + thumbnailFileName;
                 // Use Files to copy multipartFile's input stream to declared path
                 Files.copy(multipartFile.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(ImageThumbnail.getImageThumbnail(multipartFile), Paths.get(thumbnailFilePath),
+                        StandardCopyOption.REPLACE_EXISTING);
 
                 // Create image data in database
                 ProductImage pimg = new ProductImage();
@@ -285,6 +280,7 @@ public class managerProductImageController {
                     pimg.setMainImage(false);
                 }
                 pimg.setImagePath("product/" + product.getId() + "/" + fileName);
+                pimg.setThumbnailPath("product/" + product.getId() + "/" + thumbnailFileName);
                 pimg.setProduct(product);
                 productImageFacade.create(pimg);
             }

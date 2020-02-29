@@ -18,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.htdshop.entity.PreBuilt;
 import vn.htdshop.entity.PreBuiltRating;
@@ -28,10 +29,11 @@ import vn.htdshop.sb.PreBuiltFacadeLocal;
 import vn.htdshop.sb.PreBuiltRatingFacadeLocal;
 import vn.htdshop.sb.ProductFacadeLocal;
 import vn.htdshop.sb.PromotionFacadeLocal;
+import vn.htdshop.utility.ShopService;
 
 /**
  *
- * @author Hai
+ * @author Thien
  */
 @Controller
 @RequestMapping("prebuilt")
@@ -74,7 +76,7 @@ public class shopPreBuiltController {
         if (discount < shopService.getPreBuiltPrice(prebuilt)) {
             model.asMap().put("discountPrice", discount);
         }
-        model.asMap().put("prebuiltprice", shopService.getPreBuiltPrice(prebuilt));
+        model.asMap().put("prebuiltPrice", shopService.getPreBuiltPrice(prebuilt));
         List<Promotion> promolist = promotionFacade.findAll();
         promolist = promolist.stream().filter(p -> p.getPromotionDetail().getIsDisabled() == false)
                 .filter(p -> p.getPreBuiltTarget() != null).filter(p -> p.getPromotionDetail().getIsAlways()
@@ -89,22 +91,27 @@ public class shopPreBuiltController {
     }
 
     @RequestMapping(value = "doRating", method = RequestMethod.POST)
-    public String doRating(@RequestParam(value = "prebuiltid", required = false) Integer prebuiltid,
+    public @ResponseBody Boolean doRating(@RequestParam(value = "prebuiltid", required = false) Integer prebuiltid,
             @RequestParam(value = "comment", required = false) String comment,
-            @RequestParam(value = "rating", required = false) Double rating) {
+            @RequestParam(value = "rating", required = false) Double rating,
+            @RequestParam(value = "g-recaptcha-response", required = false) String grecaptcha) {
         try {
-            PreBuiltRating r = new PreBuiltRating();
-            r.setId(null);
-            r.setCustomer(shopService.getLoggedInCustomer());
-            r.setComment(comment);
-            r.setRating(rating);
-            r.setPreBuilt(new PreBuilt(prebuiltid));
-            r.setCreatedAt(new Date());
-            preBuiltRatingFacade.create(r);
+            if (shopService.verifyReCaptcha(grecaptcha)) {
+                PreBuiltRating r = new PreBuiltRating();
+                r.setId(null);
+                r.setCustomer(shopService.getLoggedInCustomer());
+                r.setComment(comment);
+                r.setRating(rating);
+                r.setPreBuilt(new PreBuilt(prebuiltid));
+                r.setCreatedAt(new Date());
+                preBuiltRatingFacade.create(r);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
-        return "redirect:/prebuilt?id=" + prebuiltid;
+        return true;
     }
 
     @RequestMapping(value = "search", method = RequestMethod.GET)
@@ -135,6 +142,12 @@ public class shopPreBuiltController {
 
         // Create list
         List<PreBuilt> result = preBuiltFacade.search(search.getKeyword());
+        if (search.getAuthor() == 1) {
+            result = result.stream().filter(p -> p.getStaff() != null).collect(Collectors.toList());
+        }
+        if (search.getAuthor() == 2) {
+            result = result.stream().filter(p -> p.getCustomer() != null).collect(Collectors.toList());
+        }
         // Filter parts
         if (search.getCpu() > 0) {
             result = result.stream().filter(p -> p.getCpu().getId() == search.getCpu()).collect(Collectors.toList());

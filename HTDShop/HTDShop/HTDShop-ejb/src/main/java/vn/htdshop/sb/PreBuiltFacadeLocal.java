@@ -22,7 +22,7 @@ public interface PreBuiltFacadeLocal {
 
     void remove(PreBuilt preBuilt);
 
-    PreBuilt find(Object id);
+    PreBuilt find(Integer id);
 
     List<PreBuilt> findAll();
 

@@ -41,4 +41,10 @@ public class PreBuiltFacade extends AbstractFacade<PreBuilt> implements PreBuilt
         return query.getResultList();
     }
 
+    @Override
+    public PreBuilt find(Integer id) {
+        // TODO Auto-generated method stub
+        return em.find(PreBuilt.class, id);
+    }
+
 }
