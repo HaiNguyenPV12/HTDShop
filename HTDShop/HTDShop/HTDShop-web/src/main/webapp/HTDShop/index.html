@@ -24,7 +24,7 @@
 
 <body>
     <div layout:fragment="slide">
-        <div id="imageSlide" class="carousel slide">
+        <div id="imageSlide" class="carousel slide" data-ride="carousel">
             <ol class="carousel-indicators">
                 <li th:each="img, it : ${imageslides}" data-target="#imageSlide" th:data-slide-to="${it.index}"
                     th:classappend="${it.index == 0 ? 'active' : ''}"></li>
