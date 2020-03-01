@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDShop/layout}">
+
+<head>
+    <title>Build Your PC</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-4">
+                    <h2>System Builder</h2>
+                </div>
+            </div>
+            <div class="row">
+                <table class="table table-striped table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Component</th>
+                            <th>Selection</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- CPU ROW -->
+                        <tr>
+                            <td>CPU</td>
+                            <td>
+                                <a href="" th:href="@{/build/cpu}" class="btn btn-primary">
+                                    <i class="ti-plus"></i> Choose a CPU
+                                </a>
+                            </td>
+                            <td>
+                                Price
+                            </td>
+                        </tr>
+                        <!-- CPU COOLER ROW -->
+                        <tr>
+                            <td>CPU Cooler</td>
+                            <td>
+                                <a href="" th:href="@{/}" class="btn btn-primary">
+                                    <i class="ti-plus"></i> Choose a CPU cooler
+                                </a>
+                            </td>
+                            <td>
+                                Price
+                            </td>
+                        </tr>
+                        <!-- MOTHERBOARD ROW -->
+                        <tr>
+                            <td>Motherboard</td>
+                            <td>
+                                <a href="" th:href="@{/}" class="btn btn-primary">
+                                    <i class="ti-plus"></i> Choose a motherboard
+                                </a>
+                            </td>
+                            <td>
+                                Price
+                            </td>
+                        </tr>
+                        <!-- MEMORY ROW -->
+                        <tr>
+                            <td>Memory</td>
+                            <td>
+                                <a href="" th:href="@{/}" class="btn btn-primary">
+                                    <i class="ti-plus"></i> Choose memory
+                                </a>
+                            </td>
+                            <td>
+                                Price
+                            </td>
+                        </tr>
+                        <!-- STORAGE ROW -->
+                        <tr>
+                            <td>Storage</td>
+                            <td>
+                                <a href="" th:href="@{/}" class="btn btn-primary">
+                                    <i class="ti-plus"></i> Choose storage
+                                </a>
+                            </td>
+                            <td>
+                                Price
+                            </td>
+                        </tr>
+                        <!-- VIDEO CARD ROW -->
+                        <tr>
+                            <td>Video Card</td>
+                            <td>
+                                <a href="" th:href="@{/}" class="btn btn-primary">
+                                    <i class="ti-plus"></i> Choose a video card
+                                </a>
+                            </td>
+                            <td>
+                                Price
+                            </td>
+                        </tr>
+                        <!-- CASE ROW -->
+                        <tr>
+                            <td>Case</td>
+                            <td>
+                                <a href="" th:href="@{/}" class="btn btn-primary">
+                                    <i class="ti-plus"></i> Choose a case
+                                </a>
+                            </td>
+                            <td>
+                                Price
+                            </td>
+                        </tr>
+                        <!-- PSU ROW -->
+                        <tr>
+                            <td>Power Supply</td>
+                            <td>
+                                <a href="" th:href="@{/}" class="btn btn-primary">
+                                    <i class="ti-plus"></i> Choose a PSU
+                                </a>
+                            </td>
+                            <td>
+                                Price
+                            </td>
+                        </tr>
+                        <!-- MONITOR ROW -->
+                        <tr>
+                            <td>Monitor</td>
+                            <td>
+                                <a href="" th:href="@{/}" class="btn btn-primary">
+                                    <i class="ti-plus"></i> Choose a Monitor
+                                </a>
+                            </td>
+                            <td>
+                                Price
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="row justify-content-end">
+                    <a href="" th:href="@{/}" class="btn btn-primary mx-1">
+                        Share Build
+                    </a>
+                    <a href="" th:href="@{/}" class="btn btn-success mx-1">
+                        Add build to cart
+                    </a>
+            </div>
+            <p>
+                <a th:href="@{/}" class="button btn-primary py-1">Back to Home</a>
+                <a th:href="@{/}" class="btn btn-primary py-1 mb-4">Back to Home</a>
+                <a th:href="@{/}" class="btn btn-danger py-1 mb-4">Back to Home</a>
+                <a th:href="@{/}" class="button btn-hover-black py-1">Back to Home</a>
+            </p>
+        </div>
+    </div>
+</body>
+
+</html>
