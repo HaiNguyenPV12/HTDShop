@@ -64,11 +64,24 @@
                                                 <th:block th:if="${promo.exactSaleOff!=null}"
                                                     th:text="${'$'+promo.exactSaleOff}"></th:block>
                                                 <th:block th:if="${promo.exactSaleOff==null}">[[${promo.percentage +
-                                                    '%'}]] [[${promo.maxSaleOff!=null?'(Max: $'+promo.maxSaleOff+')':''}]]</th:block>
+                                                    '%'}]] [[${promo.maxSaleOff!=null?'(Max:
+                                                    $'+promo.maxSaleOff+')':''}]]</th:block>
                                                 for
-                                                <th:block th:if="${promo.category!=null}" th:text="${promo.category.name}"></th:block><th:block th:if="${promo.product!=null}" th:text="${promo.product.name}"></th:block><th:block th:if="${promo.preBuiltTarget!=null}" th:text="${promo.preBuiltTarget==0?'All pre-built PC':'HTD pre-built PC'}"></th:block>
-                                                <th:block th:if="${promo.limitedQuantity!=null}" th:text="${'|Limited: '+promo.limitedQuantity+'|'}"></th:block><th:block th:if="${promo.minQuantity!=null}" th:text="${'|Min: '+promo.minQuantity+'|'}"></th:block><th:block th:if="${promo.maxQuantity!=null}" th:text="${'|Max: '+promo.maxQuantity+'|'}"></th:block>
-                                                <th:block th:if="${promo.quantityLeft!=null}" th:text="${'|Left: '+promo.quantityLeft+'|'}"></th:block>
+                                                <th:block th:if="${promo.category!=null}"
+                                                    th:text="${promo.category.name}"></th:block>
+                                                <th:block th:if="${promo.product!=null}"
+                                                    th:text="${promo.product.name}"></th:block>
+                                                <th:block th:if="${promo.preBuiltTarget!=null}"
+                                                    th:text="${promo.preBuiltTarget==0?'All pre-built PC':'HTD pre-built PC'}">
+                                                </th:block>
+                                                <th:block th:if="${promo.limitedQuantity!=null}"
+                                                    th:text="${'|Limited: '+promo.limitedQuantity+'|'}"></th:block>
+                                                <th:block th:if="${promo.minQuantity!=null}"
+                                                    th:text="${'|Min: '+promo.minQuantity+'|'}"></th:block>
+                                                <th:block th:if="${promo.maxQuantity!=null}"
+                                                    th:text="${'|Max: '+promo.maxQuantity+'|'}"></th:block>
+                                                <th:block th:if="${promo.quantityLeft!=null}"
+                                                    th:text="${'|Left: '+promo.quantityLeft+'|'}"></th:block>
 
                                             </li>
                                         </ul>
@@ -94,6 +107,9 @@
                                             th:href="@{/manager/promotion/edit(id=${p.id})}" data-toggle='tooltip'
                                             title="Edit">
                                             <i class="fas fa-pencil-alt"></i>
+                                        </a>
+                                        <a class="btn btn-info btn-sm" data-toggle='tooltip' title="Make Image Slide" th:onclick="createImageSlide([[${p.id}]])" th:if="${p.isDisabled==false}">
+                                            <i class="fas fa-photo-video"></i>
                                         </a>
                                         <a class="btn btn-danger btn-sm" href="#" data-toggle="tooltip" title="Delete"
                                             th:onclick='confirmDelete([[${p.name}]],[[@{/manager/promotion/doDelete(id=${p.id})}]])'>
@@ -122,14 +138,37 @@
 
     </div>
 
-    <script layout:fragment="script" th:inline="none">
-
+    <script layout:fragment="script" th:inline="javascript">
+        /*<![CDATA[*/
         function confirmDelete(title, url) {
             showModal('Confirm deletion',
                 'Are you sure to delete "' + title + '" ?',
                 url,
                 true,
                 true);
+        }
+
+        function createImageSlide(id) {
+            $.ajax({
+                url: /*[[@{/manager/promotion/doCreateImageSlide}]]*/"",
+                type: 'POST',
+                processData: true,
+                data: { id: id },
+                success: function (data) {
+                    if (data == "ok") {
+                        Toast.fire({
+                            type: 'success',
+                            title: "Successfully create image slide."
+                        });
+                    } else {
+                        Toast.fire({
+                            type: 'error',
+                            title: data,
+                            timer: 5000
+                        });
+                    }
+                }
+            });
         }
 
         // Add custom filter for datatable
@@ -160,7 +199,10 @@
             },
             "paging": true,
             "lengthChange": true,
-            "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            "lengthMenu": [
+                [
+                    5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]
+            ],
             "searching": true,
             "ordering": false,
             "info": true,
@@ -209,6 +251,7 @@
         $(function () {
             $('[data-toggle="tooltip"]').tooltip();
         });
+        /*]]>*/
     </script>
 </body>
 

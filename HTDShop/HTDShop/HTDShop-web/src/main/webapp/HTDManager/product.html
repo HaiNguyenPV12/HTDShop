@@ -88,7 +88,7 @@
                                 <th>Manufacturer</th>
                                 <th>Price</th>
                                 <th>Stock</th>
-                                <th>Image</th>
+                                <!-- <th>Image</th> -->
                                 <th>Status</th>
                                 <th>Action</th>
                             </thead>
@@ -133,7 +133,7 @@
                                 <th>Manufacturer</th>
                                 <th>Price</th>
                                 <th>Stock</th>
-                                <th>Image</th>
+                                <!-- <th>Image</th> -->
                                 <th>Status</th>
                                 <th>Action</th>
                             </tfoot>
@@ -272,45 +272,48 @@
             "autoWidth": false,
             ajax: { url:/*[[@{/manager/product/list}]]*/"", dataSrc: "", type: "POST" },
             "deferRender": true,
-            "columnDefs": [{
-                "targets": 6,
-                "render": function (data, type, row, meta) {
-                    var img = /*[[@{/images/}]]*/'';
-                    var productlink = /*[[@{/manager/product}]]*/'';
-                    var str = "";
-                    if (data != "") {
-                        str += "<img src='" + img + data + "' class='product-img' onclick=\"showModal(\'" + row.name.replace("\"", "&quot;") + "\', \'<img src=" + img + row.image + " style=width:100%; />\', null, false, false);\"></img>";
-                    } else {
-                        str += "<a href='" + productlink + "/image?id=" + row.id + "'><img src='" + img + "noimage.png' class='product-img'></img></a>";
+            "columnDefs": [
+                // {
+                //     "targets": 6,
+                //     "render": function (data, type, row, meta) {
+                //         var img = /*[[@{/images/}]]*/'';
+                //         var productlink = /*[[@{/manager/product}]]*/'';
+                //         var str = "";
+                //         if (data != "") {
+                //             str += "<img src='" + img + data + "' class='product-img' onclick=\"showModal(\'" + row.name.replace("\"", "&quot;") + "\', \'<img src=" + img + row.image + " style=width:100%; />\', null, false, false);\"></img>";
+                //         } else {
+                //             str += "<a href='" + productlink + "/image?id=" + row.id + "'><img src='" + img + "noimage.png' class='product-img'></img></a>";
+                //         }
+                //         if (row.imageMore > 0) {
+                //             str += "<br><a href='" + productlink + "/image?id=" + row.id + "'>(" + row.imageMore + " more...)</a>";
+                //         }
+                //         return str;
+                //     }
+                // },
+                {
+                    "targets": 7,
+                    "render": function (data, type, row, meta) {
+                        var productlink = /*[[@{/manager/product}]]*/'';
+                        var id = row.id;
+                        var str = "";
+                        str += '<a class="btn btn-info btn-sm" href="' + productlink + '/image?id=' + id + '" data-toggle="tooltip" title = "Images" > <i class="fas fa-images" ></i></a>';
+                        str += '<a class="btn btn-warning btn-sm" href="' + productlink + '/edit?id=' + id + '" data-toggle="tooltip" title = "Edit" > <i class="fas fa-pencil-alt" ></i></a>';
+                        str += '<button class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete" onclick=\"confirmDelete(\'' + row.name.replace("\"", "&quot;") + '\',\'' + productlink + '/doDelete?id=' + id + '\')\"><i class="fas fa-trash"></i></button>';
+                        return str;
                     }
-                    if (row.imageMore > 0) {
-                        str += "<br><a href='" + productlink + "/image?id=" + row.id + "'>(" + row.imageMore + " more...)</a>";
-                    }
-                    return str;
                 }
-            }, {
-                "targets": 8,
-                "render": function (data, type, row, meta) {
-                    var productlink = /*[[@{/manager/product}]]*/'';
-                    var id = row.id;
-                    var str = "";
-                    // str += '<a class="btn btn-info btn-sm" href="' + productlink + '/image?id=' + id + '" data-toggle="tooltip" title = "Images" > <i class="fas fa-images" ></i></a>';
-                    str += '<a class="btn btn-warning btn-sm" href="' + productlink + '/edit?id=' + id + '" data-toggle="tooltip" title = "Edit" > <i class="fas fa-pencil-alt" ></i></a>';
-                    str += '<button class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete" onclick=\"confirmDelete(\'' + row.name.replace("\"", "&quot;") + '\',\'' + productlink + '/doDelete?id=' + id + '\')\"><i class="fas fa-trash"></i></button>';
-                    return str;
-                }
-            }],
+            ],
             // custom collums's width
             "columns": [
                 { "width": "5%", "data": "id" },
-                { "width": "15%", "data": "name" },
+                { "width": "20%", "data": "name" },
                 { "width": "12%", "data": "category" },
                 { "width": "8%", "data": "manufacturer" },
                 { "width": "15%", "data": "price" },
                 { "width": "15%", "data": "stock" },
-                { "width": "10%", "data": "imageThumbnail", "className": "text-center" },
-                { "width": "10%", "data": "status" },
-                { "width": "10%", "data": null, "className": "text-center" }
+                // { "width": "10%", "data": "imageThumbnail", "className": "text-center" },
+                { "width": "12%", "data": "status" },
+                { "width": "13%", "data": null, "className": "text-center" }
             ],
             "createdRow": function (row, data, dataIndex) {
                 if (data.status == 'Upcoming') {

@@ -488,7 +488,8 @@
         <script th:src="@{/manager_resources/plugins/moment/moment.min.js}"></script> 
         <script th:src="@{/manager_resources/plugins/daterangepicker/daterangepicker.js}"></script> 
     </th:block>
-    <script layout:fragment="script" th:inline="none">
+    <script layout:fragment="script" th:inline="javascript">
+        /*<![CDATA[*/
         // Condition proccess
         $("#btnAddCondition").on("click", function () {
             showCondition(false, null);
@@ -788,7 +789,9 @@
             }
         });
         $(document).ready(function () {
+            var isUpdate = /*[[${update != null ? true : false}]]*/false;
             $('#date').daterangepicker({
+                "minDate": isUpdate == true ? $("#startDate").val() : moment(),
                 "startDate": $("#startDate").val() == "" ? moment() : $("#startDate").val(),
                 "endDate": $("#endDate").val() == "" ? moment() : $("#endDate").val(),
                 locale: {
@@ -807,7 +810,7 @@
                 theme: 'bootstrap4'
             });
         });
-
+    /*]]>*/
     </script>
 </body>
 

@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -63,6 +65,9 @@ public class managerPromotionController {
 
     @EJB(mappedName = "PreBuiltFacade")
     PreBuiltFacadeLocal preBuiltFacade;
+
+    @EJB(mappedName = "ImageSlideFacade")
+    ImageSlideFacadeLocal imageSlideFacade;
 
     @Autowired
     ServletContext context;
@@ -101,6 +106,47 @@ public class managerPromotionController {
         // Add indicator attribute for sidemenu highlight
         model.asMap().put("menu", "promotion");
         return "HTDManager/promotion";
+    }
+
+    @RequestMapping(value = "doCreateImageSlide", method = RequestMethod.POST)
+    public @ResponseBody String doReply(@RequestParam(value = "id", required = false) Integer id) {
+        if (!managerService.checkLoginWithRole("imageslide_add")) {
+            return "No permission.";
+        }
+        if (id == null) {
+            return "Promotion not found!";
+        }
+        PromotionDetail promo = promotionDetailFacade.find(id);
+        // Create data
+        ImageSlide img = new ImageSlide();
+        img.setTitle(promo.getName());
+        img.setDescription(promo.getDetail());
+        img.setStatus(true);
+        img.setOrder(null);
+        img.setLink("promotion?id=" + id);
+        imageSlideFacade.create(img);
+
+        // Copy image
+        try {
+            String folderPath = System.getProperty("catalina.base") + "/img/imageslide";
+            File folderCheck = new File(folderPath);
+            if (!folderCheck.exists()) {
+                folderCheck.mkdirs();
+            }
+            String ext = FilenameUtils.getExtension(promo.getImage());
+            String fileName = img.getId() + "." + ext;
+            String originPath = System.getProperty("catalina.base") + "/img/" + promo.getImage();
+            String filePath = folderPath + "/" + fileName;
+            Files.copy(Paths.get(originPath), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
+
+            img.setImage("imageslide/" + fileName);
+            imageSlideFacade.edit(img);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Cannot copy image: " + e.getMessage();
+        }
+
+        return "ok";
     }
 
     // ==== PROMOTION ADD - VIEW ==== \\
