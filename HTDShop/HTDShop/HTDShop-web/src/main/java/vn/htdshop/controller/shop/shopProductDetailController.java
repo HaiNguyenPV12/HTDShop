@@ -65,6 +65,7 @@ public class shopProductDetailController {
             model.asMap().put("discountPrice", discount);
         }
 
+        model.asMap().put("shopSv", shopService);
         model.asMap().put("product", product);
         return "HTDShop/productdetail";
 

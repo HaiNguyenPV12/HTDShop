@@ -102,9 +102,7 @@
                                 </tr>
                                 will be rendered when attribute "products" is null or empty
                             -->
-                                <tr th:if="${products eq null or products.empty}">
-                                    <td colspan="9">No products</td>
-                                </tr>
+                                
                                 <!--
                                 + To get data from controller through model, use:
                                     th:each="child_item_name : ${attribute_from_controller's_name}"

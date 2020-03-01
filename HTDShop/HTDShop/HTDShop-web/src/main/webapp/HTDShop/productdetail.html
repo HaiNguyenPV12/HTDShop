@@ -278,17 +278,15 @@
                                         style="cursor: pointer;color:#fff">add to cart</a>
                                 </div>
                             </div>
-
                             <div class="alert alert-warning mt-3"
-                                th:if="${(product.status == 1 || product.status == 2) && ( (product.promotionCollection.size() > 0 && product.promotionCollection.?[promotionDetail.endDate.after(#dates.createNow())].size() > 0) || (product.category.promotionCollection.size() > 0 && product.category.promotionCollection.?[promotionDetail.endDate.after(#dates.createNow())].size() > 0) )}">
-                                <strong class="">Promotion</strong>
+                                th:if="${(product.status == 1 || product.status == 2) && ( (product.promotionCollection.size() > 0 && product.promotionCollection.?[promotionDetail.endDate.compareTo(#dates.createToday()) >= 0].size() > 0) || (product.category.promotionCollection.size() > 0 && product.category.promotionCollection.?[promotionDetail.endDate.compareTo(#dates.createToday()) >= 0].size() > 0) )}">
+                                <a th:href="@{/promotion}"><strong class="">Promotion</strong></a>
                                 <ul>
                                     <li
-                                        th:each="promo : ${product.promotionCollection.?[promotionDetail.isDisabled==false].?[promotionDetail.isAlways==true or promotionDetail.endDate.after(#dates.createNow())]}">
+                                        th:each="promo : ${product.promotionCollection.?[promotionDetail.isDisabled==false].?[promotionDetail.isAlways==true or promotionDetail.endDate.compareTo(#dates.createToday()) >= 0]}">
                                         <i class="fas fa-gift fa-lg"></i>
-                                        <th:block th:text="${'&quot;' + promo.promotionDetail.name + '&quot;:'}">
-                                        </th:block>
-                                        <th:block th:text="${' ' + product.name + ' '}">
+                                        <a th:href="@{/promotion?(id=${promo.promotionDetail.id})}" th:text="${'&quot;' + promo.promotionDetail.name + '&quot;'}"></a>
+                                        <th:block th:text="${': ' + product.name + ' '}">
                                         </th:block>
                                         <strong
                                             th:text="${' discount ' + (promo.percentage != null ? (promo.percentage + '%') : ('$' + #numbers.formatDecimal(promo.exactSaleOff , 0, 'POINT', 0, 'COMMA')))}">
@@ -313,11 +311,10 @@
                                         </i>
                                     </li>
                                     <li
-                                        th:each="promo : ${product.category.promotionCollection.?[promotionDetail.isDisabled==false].?[promotionDetail.isAlways==true or promotionDetail.endDate.after(#dates.createNow())]}">
+                                        th:each="promo : ${product.category.promotionCollection.?[promotionDetail.isDisabled==false].?[promotionDetail.isAlways==true or promotionDetail.endDate.compareTo(#dates.createToday()) >= 0]}">
                                         <i class="fas fa-gift fa-lg"></i>
-                                        <th:block th:text="${'&quot;' + promo.promotionDetail.name + '&quot;:'}">
-                                        </th:block>
-                                        <th:block th:text="${' All ' + product.category.name + ' '}">
+                                        <a th:href="@{/promotion?(id=${promo.promotionDetail.id})}" th:text="${'&quot;' + promo.promotionDetail.name + '&quot;'}"></a>
+                                        <th:block th:text="${': All ' + product.category.name + ' '}">
                                         </th:block>
                                         <strong
                                             th:text="${' discount ' + (promo.percentage != null ? (promo.percentage + '%') : ('$' + #numbers.formatDecimal(promo.exactSaleOff , 0, 'POINT', 0, 'COMMA')))}">

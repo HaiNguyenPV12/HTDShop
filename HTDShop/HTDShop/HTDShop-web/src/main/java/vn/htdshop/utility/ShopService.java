@@ -21,6 +21,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -68,6 +69,14 @@ public class ShopService {
     private final String recaptchaSecret = "6LdeYdoUAAAAALcq3j6DUTz05OSoeXjcwqy4irFP";
 
     private final String SITE_VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify";
+
+    public boolean isBeforeOrNow(Date date) {
+        return date.compareTo(new LocalDate().toDate()) >= 0;
+    }
+
+    public Date localToday() {
+        return new LocalDate().toDate();
+    }
 
     public List<CartItem> getCart() {
         if (checkLogin()) {
@@ -413,7 +422,7 @@ public class ShopService {
                         continue;
                     }
                     if (!(promo.getPromotionDetail().getIsAlways())
-                            && (promo.getPromotionDetail().getEndDate().compareTo(new Date()) < 0)) {
+                            && (promo.getPromotionDetail().getEndDate().compareTo(new LocalDate().toDate()) < 0)) {
                         continue;
                     }
                     Double percentageDiscount = 0d;
@@ -448,7 +457,7 @@ public class ShopService {
                         continue;
                     }
                     if (!(promo.getPromotionDetail().getIsAlways())
-                            && (promo.getPromotionDetail().getEndDate().compareTo(new Date()) < 0)) {
+                            && (promo.getPromotionDetail().getEndDate().compareTo(new LocalDate().toDate()) < 0)) {
                         continue;
                     }
                     Double percentageDiscount = 0d;
@@ -526,7 +535,7 @@ public class ShopService {
                     continue;
                 }
                 if (!(promo.getPromotionDetail().getIsAlways())
-                        && (promo.getPromotionDetail().getEndDate().compareTo(new Date()) < 0)) {
+                        && (promo.getPromotionDetail().getEndDate().compareTo(new LocalDate().toDate()) < 0)) {
                     continue;
                 }
                 if (promo.getPreBuiltTarget() == 1 && prebuilt.getStaff() == null) {

@@ -66,7 +66,7 @@
                                     <td colspan="6">No image slides</td>
                                 </tr>
 
-                                <tr th:each="i : ${imageslides}" th:classappend="${i.status==false?'bg-danger':''}">
+                                <tr th:each="i : ${imageslides}" th:classappend="${i.status==false?'bg-secondary':''}">
                                     <td style="text-align: center;">
                                         <a th:onclick='showModal([[${i.title}]],
                                         &apos;&lt;img src=[[@{/images/__${i.image}__}]] style=&quot;;width: 100%;&quot; /&gt;&apos;
