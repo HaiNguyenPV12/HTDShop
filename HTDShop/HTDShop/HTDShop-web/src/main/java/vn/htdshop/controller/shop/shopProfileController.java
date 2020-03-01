@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import vn.htdshop.entity.*;
 import vn.htdshop.sb.*;
+import vn.htdshop.utility.ShopService;
+
 /**
  * shopRegisterController
  */
@@ -33,8 +35,7 @@ public class shopProfileController {
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String viewProfile(Model model, ModelMap modelMap, HttpSession session) {
-        shopService.checkLogin();
-        model.asMap().put("cust", session.getAttribute("loggedInCustomer"));       
+        shopService.checkLogin();     
         return "redirect:/profile";
     }
 

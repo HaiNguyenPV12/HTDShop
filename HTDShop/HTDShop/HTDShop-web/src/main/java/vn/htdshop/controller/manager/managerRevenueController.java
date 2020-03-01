@@ -29,6 +29,7 @@ import org.thymeleaf.expression.Calendars;
 
 import vn.htdshop.entity.*;
 import vn.htdshop.sb.*;
+import vn.htdshop.utility.ManagerService;
 
 /**
  *
@@ -68,7 +69,7 @@ public class managerRevenueController {
     //===Revenue Index===\\
 
     @RequestMapping(value = {"","index"},method = RequestMethod.GET)
-    public String getHome(HttpSession session, Model model){
+    public String getHome(final HttpSession session, Model model) {
          // Check login with role
         if (!managerService.checkLoginWithRole("revenue_read")) {
             return redirectHome;
