@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDShop/layout}">
+
+<head>
+    <title>HTD Shop - Promotion</title>
+    <th:block layout:fragment="additionalCss">
+        <link rel="stylesheet" th:href="@{/resources/Content/fontawesome-free/css/all.min.css}">
+    </th:block>
+    <style>
+        .promo-row-even {
+            background-image: linear-gradient(to right, rgba(51, 51, 51, 0.9) 5%, rgba(51, 51, 51, 0.8) 30%, rgba(51, 51, 51, 0.1) 40%, rgba(51, 51, 51, 0) 95%);
+        }
+
+        .promo-row-odd {
+            background-image: linear-gradient(to left, rgba(51, 51, 51, 0.9) 5%, rgba(51, 51, 51, 0.8) 30%, rgba(51, 51, 51, 0.1) 40%, rgba(51, 51, 51, 0) 95%);
+        }
+
+        img.promo-img {
+            width: 100%;
+            height: 20rem;
+            object-fit: contain;
+            cursor: pointer;
+        }
+
+        .promo-container {
+            height: 20rem;
+            /* background-image: linear-gradient(rgba(51, 51, 51, 0) 5%, rgba(51, 51, 51, 0.5), rgba(51, 51, 51, 0) 95%); */
+            /* background: rgba(25, 25, 25, 0.6); */
+            overflow-y: auto;
+        }
+
+        .promo-name {
+            margin-top: 2rem;
+            color: gold;
+            font-weight: bolder;
+            cursor: pointer;
+        }
+
+        .promo-detail {
+            margin-top: 1rem;
+            color: #fff;
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+
+        .promo-detail>p {
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="breadcrumb-area pt-10 pb-10"
+            style="background-image: linear-gradient(141deg, #7906d88c 0%, #fff 51%, #7906d88c 75%);">
+            <div class="container">
+                <div class="breadcrumb-content text-center">
+                    <ul>
+                        <li><a th:href="@{/}">home</a></li>
+                        <li>Promotion</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 py-2" th:if="${promolist.size() > 0}" style="background-color: #f3e7fd;">
+            <div class="row py-2 mb-3" th:each="promo, itr : ${promolist}"
+                th:classappend="${itr.index % 2 == 0 ? 'promo-row-even' : 'promo-row-odd'}" th:id="${promo.id}">
+                <div th:if="${itr.index % 2 == 0}" class="col-lg-4 promo-container">
+                    <div class="promo-detail">
+                        <h3 class="promo-name" th:text="${promo.name}" th:onclick="goTo([[${promo.id}]])"></h3>
+                        <p class="promo-detail" th:text="${promo.detail}"></p>
+                    </div>
+
+                </div>
+                <div th:if="${itr.index % 2 == 0}" class="col-lg-8">
+                    <img th:src="@{/images/__${promo.image}__}" class="promo-img" th:onclick="goTo([[${promo.id}]])">
+                </div>
+                <div th:if="${itr.index % 2 != 0}" class="col-lg-8">
+                    <img th:src="@{/images/__${promo.image}__}" class="promo-img" th:onclick="goTo([[${promo.id}]])">
+                </div>
+                <div th:if="${itr.index % 2 != 0}" class="col-lg-4 promo-container">
+                    <div class="promo-detail">
+                        <h3 class="promo-name" th:text="${promo.name}" th:onclick="goTo([[${promo.id}]])"></h3>
+                        <p class="promo-detail" th:text="${promo.detail}"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <th:block layout:fragment="additionalScript">
+
+    </th:block>
+
+    <script layout:fragment="script" th:inline="javascript">
+        /*<![CDATA[*/
+        var initId = /*[[${(param.id != null && param.id[0] != null) ? param.id[0] : null}]]*/null;
+        if (initId != null && $("#" + initId).length) {
+            $([document.documentElement, document.body]).animate({
+                scrollTop: $("#" + initId).offset().top
+            }, 500);
+        }
+
+        function goTo(id) {
+            var href = /*[[@{/promotion}]]*/'';
+            href += "?id=" + id;
+            if (history.replaceState) {
+                $([document.documentElement, document.body]).animate({
+                    scrollTop: $("#" + id).offset().top
+                }, 500);
+                history.replaceState('', 'HTD Shop - Promotion', href);
+            } else {
+                location.href = href;
+            }
+        }
+
+        /*]]>*/
+    </script>
+</body>
+
+</html>

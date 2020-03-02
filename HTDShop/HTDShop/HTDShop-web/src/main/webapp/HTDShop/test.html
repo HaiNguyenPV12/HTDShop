@@ -11,7 +11,18 @@
 
 <body>
     <div layout:fragment="content">
-        <a th:href="@{/}">back to home</a>
+        <form th:action="@{/testlogin?id=1}" method="post">
+            <button>Test login</button>
+        </form><br>
+        <form th:action="@{/testlogincookie?id=1}" method="post">
+            <button>Test login cookie</button>
+        </form><br>
+        <form th:action="@{/testlogout}" method="post">
+            <button>Test logout</button>
+        </form><br>
+
+        <a th:href="@{/}">back to home</a><br>
+
     </div>
 </body>
 

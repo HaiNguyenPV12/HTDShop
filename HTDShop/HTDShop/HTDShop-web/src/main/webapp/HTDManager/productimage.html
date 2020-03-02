@@ -74,36 +74,11 @@
                             </thead>
 
                             <tbody>
-                                <!--
-                                + th:if will render it's tag if conditions is reached
-                                Like below, the 
-                                <tr>
-                                    <td colspan="9">No products</td>
-                                </tr>
-                                will be rendered when attribute "products" is null or empty
-                            -->
+
                                 <tr th:if="${productImages eq null or productImages.empty}">
                                     <td colspan="2">No products</td>
                                 </tr>
-                                <!--
-                                + To get data from controller through model, use:
-                                    th:each="child_item_name : ${attribute_from_controller's_name}"
-
-                                + After that, to show data in tags (like td/span/p/...), add following attribute in that tag
-                                    th:text="${child_item_name.child_item's_attribute}"
-                                 All of that tag content will be repace with content from th:text
-
-                                + th:classappend will add class if conditions is reached (using shorthand condition)
-                                We can use multiple condition: 
-                                    th:classappend="${(condition_1)+(condition_2)}""
-
-                                + Thymeleaf may not use intellisense or autocomplete, so we just follow object's class attribute.
-                                For example, to check if the RightDetail's Tag from RoleRights's list from Role of the loggedInStaff
-                                in session contains the 'product_read' or not:
-                                    th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('product_read')}"
-                                For more example, check layout.html in HTDManager section
-
-                            -->
+                                
 
                             </tbody>
                             <tfoot class="bg-purple">

@@ -6,6 +6,8 @@
     <title>HTD Shop - Search Pre-built PC</title>
     <th:block layout:fragment="additionalCss">
         <link rel="stylesheet" th:href="@{/resources/Content/fontawesome-free/css/all.min.css}">
+        <link rel="stylesheet" th:href="@{/resources/Plugins/jquery-ui/jquery-ui.min.css}" />
+        <link rel="stylesheet" th:href="@{/resources/Plugins/jquery-ui/jquery-ui.theme.min.css}" />
     </th:block>
     <style>
         .select2-search__field {
@@ -53,12 +55,12 @@
                 </div>
             </div>
         </div>
-        <div class="shop-page-wrapper shop-page-padding ptb-100">
+        <div class="shop-page-wrapper shop-page-padding ptb-50">
             <div class="container-fluid">
                 <div class="row" id="scrollHere">
                     <div class="col-lg-3">
                         <div class="shop-sidebar mr-50">
-                            <div class="sidebar-widget mb-50">
+                            <div class="sidebar-widget mb-30">
                                 <h3 class="sidebar-title">Search Pre-built PC</h3>
                                 <div class="sidebar-search">
                                     <form id="searchKeyword">
@@ -69,21 +71,36 @@
                                 </div>
                             </div>
 
-                            <div class="sidebar-widget mb-40">
-                                <div class="d-flex mb-2">
-                                    <button type="button" id="filter" class="py-2" style="width:100%">Filter</button>
-                                </div>
-                                <div class="d-flex">
-                                    <button type="button" id="resetFilter" class="py-2" style="width:100%">Reset all
-                                        filter</button>
-                                </div>
+                            <div class="sidebar-widget mb-30"
+                                th:with="cate = ${new String[]{'cpu', 'motherboard', 'gpu', 'memory', 'psu', 'storage', 'cpucooler', 'case', 'monitor'}}"
+                                id="parts">
+                                <h3 class="sidebar-title">Author</h3>
+                                <form id="partFilter">
+                                    <div class="sidebar-categories mb-2">
+                                        <select class="form-control select2" data-dropdown-css-class="select2-purple"
+                                            th:name="auth" id="auth">
+                                            <option value="0"
+                                                th:selected="${param.auth !=null && T(Integer).parseInt(param.auth[0]) == 0}">
+                                                Any Author
+                                            </option>
+                                            <option value="1"
+                                                th:selected="${param.auth !=null && T(Integer).parseInt(param.auth[0]) == 1}">
+                                                HTD Shop
+                                            </option>
+                                            <option value="2"
+                                                th:selected="${param.auth !=null && T(Integer).parseInt(param.auth[0]) == 2}">
+                                                User
+                                            </option>
+                                        </select>
+                                    </div>
+                                </form>
                             </div>
 
-                            <div class="sidebar-widget mb-45"
+                            <div class="sidebar-widget mb-30"
                                 th:with="cate = ${new String[]{'cpu', 'motherboard', 'gpu', 'memory', 'psu', 'storage', 'cpucooler', 'case', 'monitor'}}"
                                 id="parts">
                                 <h3 class="sidebar-title">Parts</h3>
-                                <form>
+                                <form id="partFilter">
                                     <div class="sidebar-categories mb-2" th:each="c, it : ${cate}">
                                         <select class="form-control select2" data-dropdown-css-class="select2-purple"
                                             th:name="${c}" th:id="${c}">
@@ -100,22 +117,32 @@
                                     </div>
                                 </form>
                             </div>
-                            <div class="sidebar-widget mb-40">
+
+                            <div class="sidebar-widget mb-30">
                                 <h3 class="sidebar-title">Filter by Price</h3>
+                                <div id="priceSlider" class="mb-3"></div>
                                 <div class="d-flex">
                                     <form id="searchPrice" class="d-flex">
                                         <input type="number" placeholder="From..."
                                             th:value="${param.from!=null?param.from:'0'}" name="from" required min=0
-                                            max=10000 id="from" class="form-control mr-2">
+                                            max=1000000 id="from" class="form-control mr-2">
                                         <i class="fas fa-long-arrow-alt-right mt-3"></i>
                                         <input type="number" placeholder="To..."
-                                            th:value="${param.to!=null?param.to:'10000'}" name="to" required min=10
-                                            max=10000 id="to" class="ml-2 form-control">
+                                            th:value="${param.to!=null?param.to:'1000000'}" name="to" required min=10
+                                            max=1000000 id="to" class="ml-2 form-control">
                                     </form>
                                 </div>
                             </div>
-
                             
+                            <div class="sidebar-widget mb-40">
+                                <div class="d-flex mb-2">
+                                    <button type="button" id="filter" class="py-2" style="width:100%">Filter</button>
+                                </div>
+                                <div class="d-flex">
+                                    <button type="button" id="resetFilter" class="py-2" style="width:100%">Reset all
+                                        filter</button>
+                                </div>
+                            </div>
                             
                         </div>
                     </div>
@@ -172,6 +199,9 @@
 
     </div>
 
+    <th:block layout:fragment="additionalScript">
+        <script th:src="@{/resources/Plugins/jquery-ui/jquery-ui.min.js}"></script>
+    </th:block>
 
     <script layout:fragment="script" th:inline="javascript">
         /*<![CDATA[*/
@@ -179,6 +209,20 @@
         var searched = +0;
 
         doSearch();
+
+        var priceSlider = $("#priceSlider").slider({
+            range: true,
+            min: 0,
+            max: 10000,
+            values: [$("#from").val(), $("#to").val()],
+            slide: function (event, ui) {
+                $("#from").val(ui.values[0]);
+                $("#to").val(ui.values[1]);
+            },
+            stop: function (event, ui) {
+                doSearch(1, null);
+            }
+        });
 
         $("#searchKeyword").on("submit", function (e) {
             e.preventDefault();
@@ -191,7 +235,8 @@
 
         $("#resetFilter").on("click", function () {
             $("#from").val(0);
-            $("#to").val(1000000);
+            $("#to").val(10000);
+            priceSlider.slider("option", "values", [0, 10000]);
             $("#keyword").val("");
             $("#psort").val("default");
             if ($("#cpu").val() != 0) {
@@ -221,8 +266,28 @@
             if ($("#monitor").val() != 0) {
                 $("#monitor").val(0).trigger('change');
             }
+            if ($("#auth").val() != 0) {
+                $("#auth").val(0).trigger("change");
+            }
 
             doSearch(1, "default");
+        });
+
+        $("#psort").on("change", function () {
+            doSearch(1, $(this).val());
+        });
+
+        $("#auth").on("change", function () {
+            doSearch(1, null);
+        });
+
+        $("#partFilter").on("change", function () {
+            doSearch(1, null);
+        });
+
+        $("#searchPrice").on("change", function () {
+            priceSlider.slider("option", "values", [$("#from").val(), $("#to").val()]);
+            doSearch(1, null);
         });
 
         function doSearch(page, sort) {
@@ -233,23 +298,34 @@
             var searchUrl = /*[[@{/prebuilt/result}]]*/'';
             var href =  /*[[@{/prebuilt/search}]]*/'';
             var kParam = $("#keyword").val().trim();
-            var cpuParam = $("#cpu").val();
-            var motherboardParam = $("#motherboard").val();
-            var gpuParam = $("#gpu").val();
-            var memoryParam = $("#memory").val();
-            var psuParam = $("#psu").val();
-            var storageParam = $("#storage").val();
-            var cpucoolerParam = $("#cpucooler").val();
-            var caseParam = $("#case").val();
-            var monitorParam = $("#monitor").val();
+            var cpuParam = +/*[[${#httpServletRequest.getParameter('1') != null ? #httpServletRequest.getParameter('1') : 0}]]*/'';
+            var motherboardParam = +/*[[${#httpServletRequest.getParameter('2') != null ? #httpServletRequest.getParameter('2') : 0}]]*/'';
+            var gpuParam = +/*[[${#httpServletRequest.getParameter('3') != null ? #httpServletRequest.getParameter('3') : 0}]]*/'';
+            var memoryParam = +/*[[${#httpServletRequest.getParameter('4') != null ? #httpServletRequest.getParameter('4') : 0}]]*/'';
+            var psuParam = +/*[[${#httpServletRequest.getParameter('5') != null ? #httpServletRequest.getParameter('5') : 0}]]*/'';
+            var storageParam = +/*[[${#httpServletRequest.getParameter('6') != null ? #httpServletRequest.getParameter('6') : 0}]]*/'';
+            var cpucoolerParam = +/*[[${#httpServletRequest.getParameter('7') != null ? #httpServletRequest.getParameter('7') : 0}]]*/'';
+            var caseParam = +/*[[${#httpServletRequest.getParameter('8') != null ? #httpServletRequest.getParameter('8') : 0}]]*/'';
+            var monitorParam = +/*[[${#httpServletRequest.getParameter('9') != null ? #httpServletRequest.getParameter('9') : 0}]]*/'';
             var styleParam = /*[[${param.style!=null?param.style:''}]]*/"";
-            var pageParam = /*[[${param.page!=null? param.page : 1 }]]*/1;
+            var pageParam = +/*[[${param.page!=null? param.page : 1 }]]*/1;
             var fromParam = $("#from").val();
             var toParam = $("#to").val();
             var sortParam = /*[[${param.sort!=null?param.sort:'default'}]]*/"";
+            var authParam = +/*[[${param.auth != null ? param.auth[0] : 0}]]*/"";
 
             if (searched > 0) {
                 sortParam = $("#psort").val();
+                cpuParam = $("#cpu").val();
+                motherboardParam = $("#motherboard").val();
+                gpuParam = $("#gpu").val();
+                memoryParam = $("#memory").val();
+                psuParam = $("#psu").val();
+                storageParam = $("#storage").val();
+                cpucoolerParam = $("#cpucooler").val();
+                caseParam = $("#case").val();
+                monitorParam = $("#monitor").val();
+                authParam = $("#auth").val();
             }
 
             if (sort != null) {
@@ -267,7 +343,7 @@
             if (fromParam > 0) {
                 urlparams += "&from=" + encodeURIComponent(fromParam);
             }
-            if (toParam < 10000) {
+            if (toParam < 1000000) {
                 urlparams += "&to=" + encodeURIComponent(toParam);
             }
             if (sortParam != "default") {
@@ -303,6 +379,9 @@
             if (monitorParam > 0) {
                 urlparams += "&9=" + encodeURIComponent(monitorParam);
             }
+            if (authParam > 0) {
+                urlparams += "&auth=" + encodeURIComponent(authParam);;
+            }
             if (urlparams != "") {
                 searchUrl += "?" + urlparams;
                 href += "?" + urlparams;
@@ -337,10 +416,10 @@
             // Price filter
             if (!$("#searchPrice")[0].checkValidity()) {
                 $("#from").val(0);
-                $("#to").val(1000000);
+                $("#to").val(10000);
             }
             var pricemin = +$("#from").val() || 0;
-            var pricemax = +$("#to").val() || 1000000;
+            var pricemax = +$("#to").val() || 10000;
             if (pricemin > pricemax) {
                 $("#from").val(0);
             }

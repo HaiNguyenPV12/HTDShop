@@ -22,7 +22,7 @@ public interface ProductFacadeLocal {
 
     void remove(Product product);
 
-    Product find(Object id);
+    Product find(Integer id);
 
     List<Product> findAll();
 
