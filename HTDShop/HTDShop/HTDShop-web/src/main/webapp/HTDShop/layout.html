@@ -137,7 +137,7 @@
                     <a href="#">
                         <i class="ti-shopping-cart"></i>My Cart
                         <!-- items in cart -->
-                        <span>0</span>
+                        <span id="cartSize">0</span>
                     </a>
                     <span id="cartList">
 
@@ -582,9 +582,9 @@
         /*<![CDATA[*/
         $(".category-heading-2").hover(
             function () {
-                $('.category-menu-list').slideToggle(100);
+                $('.category-menu-list').slideToggle(16);
             }, function () {
-                $('.category-menu-list').slideToggle(100);
+                $('.category-menu-list').slideToggle(16);
             }
         );
 
@@ -592,7 +592,7 @@
 
         function getCart() {
             var quickCartUrl = /*[[@{/cart/quick}]]*/'';
-            $("#cartList").animate({ 'opacity': '0.0' }, 200, function () {
+            $("#cartList").animate({ 'opacity': '0.0' }, 16, function () {
                 $.ajax({
                     url: quickCartUrl,
                     method: 'POST',
@@ -600,7 +600,7 @@
                     success: function (data) {
                         $("#cartList").html(data);
                         $("#cartSize").html($("#cartNum").val());
-                        $("#cartList").animate({ 'opacity': '1.0' }, 200);
+                        $("#cartList").animate({ 'opacity': '1.0' }, 16);
                     }
                 });
             });
