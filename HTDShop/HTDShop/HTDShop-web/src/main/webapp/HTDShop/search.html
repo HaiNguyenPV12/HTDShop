@@ -79,21 +79,19 @@
                 <div class="row" id="scrollHere">
                     <div class="col-lg-3">
                         <div class="shop-sidebar mr-50">
-                            <div class="sidebar-widget mb-5">
+                            <div class="sidebar-widget mb-4">
                                 <h3 class="sidebar-title">Search Products</h3>
-                                <div class="sidebar-search">
-                                    <form id="searchKeyword">
+                                <div class="px-3">
+                                    <form id="searchKeyword" class="row">
                                         <input placeholder="Search Products..." type="text"
                                             th:value="${param.keyword != null? param.keyword : ''}" name="keyword"
-                                            id="keyword" maxlength="100" class="form-control">
-                                        <button type="submit"><i class="ti-search"></i></button>
+                                            id="keyword" maxlength="100" class="form-control col-10">
+                                        <button type="submit" class="col-2"><i class="ti-search"></i></button>
                                     </form>
                                 </div>
                             </div>
 
-
-
-                            <div class="sidebar-widget mb-5">
+                            <div class="sidebar-widget mb-4">
                                 <h3 class="sidebar-title">Categories</h3>
                                 <div class="sidebar-categories">
                                     <select class="select2" data-dropdown-css-class="select2-purple" name="category"
@@ -110,7 +108,24 @@
                                 </div>
                             </div>
 
-                            <div class="sidebar-widget mb-5">
+                            <!-- <div class="sidebar-widget mb-4">
+                                <h3 class="sidebar-title">Promotions filter</h3>
+                                <div class="sidebar-categories">
+                                    <select class="select2" data-dropdown-css-class="select2-purple" name="promotion"
+                                        id="promotion">
+                                        <option value="-1"
+                                            th:selected="${param.promo == null || param.promo[0] == '0'}">All
+                                        </option>
+                                        <option th:each="cate : ${session.categories}" th:value="${cate.id}"
+                                            th:text="${cate.name}"
+                                            th:selected="${param.promo!=null && T(Integer).parseInt(param.promo[0]) == cate.id}">
+                                            All Categories
+                                        </option>
+                                    </select>
+                                </div>
+                            </div> -->
+
+                            <div class="sidebar-widget mb-4">
                                 <h3 class="sidebar-title">Filter by Price</h3>
                                 <div id="priceSlider" class="mb-3"></div>
                                 <div class="d-flex">
@@ -130,7 +145,7 @@
 
 
 
-                            <div class="sidebar-widget mb-5" id="filters">
+                            <div class="sidebar-widget mb-4" id="filters">
 
                             </div>
 
