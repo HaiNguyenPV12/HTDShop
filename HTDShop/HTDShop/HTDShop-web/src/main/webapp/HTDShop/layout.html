@@ -592,18 +592,18 @@
 
         function getCart() {
             var quickCartUrl = /*[[@{/cart/quick}]]*/'';
-            $("#cartList").animate({ 'opacity': '0.0' }, 16, function () {
-                $.ajax({
-                    url: quickCartUrl,
-                    method: 'POST',
-                    cache: false,
-                    success: function (data) {
-                        $("#cartList").html(data);
-                        $("#cartSize").html($("#cartNum").val());
-                        $("#cartList").animate({ 'opacity': '1.0' }, 16);
-                    }
-                });
+            $.ajax({
+                url: quickCartUrl,
+                method: 'POST',
+                cache: false,
+                success: function (data) {
+                    $("#cartList").html(data);
+                    $("#cartSize").html($("#cartNum").val());
+                    //$("#cartList").animate({ 'opacity': '1.0' }, 16);
+                }
             });
+            // $("#cartList").animate({ 'opacity': '0.0' }, 16, function () {
+            // });
         }
         function doAddToCart(id, quan) {
             var addToCartUrl = /*[[@{/cart/add}]]*/'';
