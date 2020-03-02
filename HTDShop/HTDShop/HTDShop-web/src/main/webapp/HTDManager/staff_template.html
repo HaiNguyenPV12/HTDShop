@@ -174,7 +174,7 @@
                                 <label for="phone" class="col-sm-3 col-form-label text-right">Phone<i
                                         class="text-danger">*</i></label>
                                 <div class="col-sm-9">
-                                    <input class="form-control" id="phone" th:field="*{phone}" type="tel" placeholder="Phone number"
+                                    <input class="form-control" id="phone" th:field="*{phone}" type="number" placeholder="Phone number"
                                         th:classappend="${(#fields.hasErrors('phone')?'is-invalid':'') + (submited != null and !#fields.hasErrors('phone')?'is-valid':'')}" required/>
                                 </div>
                                 <div class="col-sm-3"></div>
