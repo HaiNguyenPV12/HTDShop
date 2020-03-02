@@ -23,8 +23,8 @@
         }
 
         .product-wrapper {
-            height: 15rem;
-            overflow: hidden;
+            max-height: 15rem;
+            height: 100%;
         }
     </style>
 </head>
@@ -86,7 +86,7 @@
                             <div class="best-selling-left">
                                 <div class="product-wrapper">
                                     <div class="product-img-4">
-                                        <a href="#"><img th:src="@{/images/noimage.png}" alt=""></a>
+                                        <a href="#"><img th:src="@{/images/product/1/1.jpg}" alt=""></a>
                                         <div class="product-action-right">
                                             <!-- TODO add to current cart on click -->
                                             <a class="animate-top" title="Add To Cart" href="#">
@@ -114,11 +114,12 @@
                             <div class="best-selling-right">
                                 <div class="custom-container">
                                     <div class="coustom-row-3">
+                                        <!-- FOREACH STARTS HERE -->
                                         <div class="custom-col-style-3 custom-col-3">
                                             <div class="product-wrapper mb-6">
                                                 <div class="product-img-4">
                                                     <a href="#">
-                                                        <img src="img/product/electro/10.jpg" alt="">
+                                                        <img th:src="@{/images/product/1/1.jpg}" alt="">
                                                     </a>
                                                     <div class="product-action-right">
                                                         <a class="animate-top" title="Add To Cart" href="#">
@@ -142,11 +143,12 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <!-- FOREACH ENDS HERE -->
                                         <div class="custom-col-style-3 custom-col-3">
                                             <div class="product-wrapper mb-6">
                                                 <div class="product-img-4">
                                                     <a href="#">
-                                                        <img src="img/product/electro/11.jpg" alt="">
+                                                        <img th:src="@{/images/product/1/1.jpg}" alt="">
                                                     </a>
                                                     <div class="product-action-right">
                                                         <a class="animate-top" title="Add To Cart" href="#">
@@ -174,7 +176,7 @@
                                             <div class="product-wrapper mb-6">
                                                 <div class="product-img-4">
                                                     <a href="#">
-                                                        <img src="img/product/electro/12.jpg" alt="">
+                                                        <img th:src="@{/images/product/1/1.jpg}" alt="">
                                                     </a>
                                                     <div class="product-action-right">
                                                         <a class="animate-top" title="Add To Cart" href="#">
@@ -202,7 +204,7 @@
                                             <div class="product-wrapper mb-6">
                                                 <div class="product-img-4">
                                                     <a href="#">
-                                                        <img src="img/product/electro/13.jpg" alt="">
+                                                        <img th:src="@{/images/product/1/1.jpg}" alt="">
                                                     </a>
                                                     <div class="product-action-right">
                                                         <a class="animate-top" title="Add To Cart" href="#">
@@ -230,7 +232,7 @@
                                             <div class="product-wrapper mb-6">
                                                 <div class="product-img-4">
                                                     <a href="#">
-                                                        <img src="img/product/electro/14.jpg" alt="">
+                                                        <img th:src="@{/images/product/1/1.jpg}" alt="">
                                                     </a>
                                                     <div class="product-action-right">
                                                         <a class="animate-top" title="Add To Cart" href="#">
@@ -258,7 +260,7 @@
                                             <div class="product-wrapper mb-6">
                                                 <div class="product-img-4">
                                                     <a href="#">
-                                                        <img src="img/product/electro/15.jpg" alt="">
+                                                        <img th:src="@{/images/product/1/1.jpg}" alt="">
                                                     </a>
                                                     <div class="product-action-right">
                                                         <a class="animate-top" title="Add To Cart" href="#">
