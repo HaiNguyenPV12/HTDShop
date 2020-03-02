@@ -1,28 +1,29 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <!-- Title này sẽ được thay thế nếu như file chính có tag title có nội dung -->
-        <title layout:fragment="title">Layout title</title>
-        <!-- th:href, th:src,... dùng giá trị nằm trong @{/đường_dẫn_đi_từ_gốc} -->
-        <!-- Như ở dưới thì đường dẫn được render ra là (tên project)/resources/index.css (nhớ tạo file index.css này để test) -->
-        <link rel="stylesheet" th:href="@{/resources/index.css}"/>
-    </head>
-    <body>
-        <!-- Khai báo fragment tên header, nếu như ở file chính có 1 cái header có fragment tên header thì cái này sẽ được thay thế bằng cái bên file chính -->
-        <header layout:fragment="header">
-            This is layout header
-        </header>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <!-- Title này sẽ được thay thế nếu như file chính có tag title có nội dung -->
+    <title layout:fragment="title">Layout title</title>
+    <!-- th:href, th:src,... dùng giá trị nằm trong @{/đường_dẫn_đi_từ_gốc} -->
+    <!-- Như ở dưới thì đường dẫn được render ra là (tên project)/resources/index.css (nhớ tạo file index.css này để test) -->
+    <link rel="stylesheet" th:href="@{/resources/index.css}" />
+</head>
 
-        <!-- Cũng tương tự như phần header -->
-        <div layout:fragment="content">
-            This is layout content
-        </div>
+<body>
+    <!-- Khai báo fragment tên header, nếu như ở file chính có 1 cái header có fragment tên header thì cái này sẽ được thay thế bằng cái bên file chính -->
+    <header layout:fragment="header">
+        This is layout header
+    </header>
 
-        <footer layout:fragment="footer">
-            This is layout footer
-        </footer>
-    </body>
+    <!-- Cũng tương tự như phần header -->
+    <div layout:fragment="content">
+        This is layout content
+    </div>
+
+    <footer layout:fragment="footer">
+        This is layout footer
+    </footer>
+</body>
+
 </html>
