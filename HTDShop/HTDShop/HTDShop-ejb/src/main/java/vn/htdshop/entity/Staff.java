@@ -26,6 +26,8 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 /**
  *
  * @author Hai
@@ -33,18 +35,17 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "Staff")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Staff.findAll", query = "SELECT s FROM Staff s")
-    , @NamedQuery(name = "Staff.findByUsername", query = "SELECT s FROM Staff s WHERE s.username = :username")
-    , @NamedQuery(name = "Staff.findByPassword", query = "SELECT s FROM Staff s WHERE s.password = :password")
-    , @NamedQuery(name = "Staff.findByFirstName", query = "SELECT s FROM Staff s WHERE s.firstName = :firstName")
-    , @NamedQuery(name = "Staff.findByLastName", query = "SELECT s FROM Staff s WHERE s.lastName = :lastName")
-    , @NamedQuery(name = "Staff.findByGender", query = "SELECT s FROM Staff s WHERE s.gender = :gender")
-    , @NamedQuery(name = "Staff.findByBirthday", query = "SELECT s FROM Staff s WHERE s.birthday = :birthday")
-    , @NamedQuery(name = "Staff.findByEmail", query = "SELECT s FROM Staff s WHERE s.email = :email")
-    , @NamedQuery(name = "Staff.findByAddress", query = "SELECT s FROM Staff s WHERE s.address = :address")
-    , @NamedQuery(name = "Staff.findByPhone", query = "SELECT s FROM Staff s WHERE s.phone = :phone")
-    , @NamedQuery(name = "Staff.findByImage", query = "SELECT s FROM Staff s WHERE s.image = :image")})
+@NamedQueries({ @NamedQuery(name = "Staff.findAll", query = "SELECT s FROM Staff s"),
+        @NamedQuery(name = "Staff.findByUsername", query = "SELECT s FROM Staff s WHERE s.username = :username"),
+        @NamedQuery(name = "Staff.findByPassword", query = "SELECT s FROM Staff s WHERE s.password = :password"),
+        @NamedQuery(name = "Staff.findByFirstName", query = "SELECT s FROM Staff s WHERE s.firstName = :firstName"),
+        @NamedQuery(name = "Staff.findByLastName", query = "SELECT s FROM Staff s WHERE s.lastName = :lastName"),
+        @NamedQuery(name = "Staff.findByGender", query = "SELECT s FROM Staff s WHERE s.gender = :gender"),
+        @NamedQuery(name = "Staff.findByBirthday", query = "SELECT s FROM Staff s WHERE s.birthday = :birthday"),
+        @NamedQuery(name = "Staff.findByEmail", query = "SELECT s FROM Staff s WHERE s.email = :email"),
+        @NamedQuery(name = "Staff.findByAddress", query = "SELECT s FROM Staff s WHERE s.address = :address"),
+        @NamedQuery(name = "Staff.findByPhone", query = "SELECT s FROM Staff s WHERE s.phone = :phone"),
+        @NamedQuery(name = "Staff.findByImage", query = "SELECT s FROM Staff s WHERE s.image = :image") })
 public class Staff implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -77,8 +78,11 @@ public class Staff implements Serializable {
     @NotNull
     @Column(name = "Birthday")
     @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     private Date birthday;
-    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
+    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?",
+    // message="Invalid email")//if the field contains email address consider using
+    // this annotation to enforce field validation
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
@@ -89,7 +93,10 @@ public class Staff implements Serializable {
     @Size(min = 1, max = 255)
     @Column(name = "Address")
     private String address;
-    // @Pattern(regexp="^\\(?(\\d{3})\\)?[- ]?(\\d{3})[- ]?(\\d{4})$", message="Invalid phone/fax format, should be as xxx-xxx-xxxx")//if the field contains phone or fax number consider using this annotation to enforce field validation
+    // @Pattern(regexp="^\\(?(\\d{3})\\)?[- ]?(\\d{3})[- ]?(\\d{4})$",
+    // message="Invalid phone/fax format, should be as xxx-xxx-xxxx")//if the field
+    // contains phone or fax number consider using this annotation to enforce field
+    // validation
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 20)
@@ -117,7 +124,8 @@ public class Staff implements Serializable {
         this.username = username;
     }
 
-    public Staff(String username, String password, String firstName, String lastName, boolean gender, Date birthday, String email, String address, String phone, String image) {
+    public Staff(String username, String password, String firstName, String lastName, boolean gender, Date birthday,
+            String email, String address, String phone, String image) {
         this.username = username;
         this.password = password;
         this.firstName = firstName;
@@ -259,7 +267,8 @@ public class Staff implements Serializable {
             return false;
         }
         Staff other = (Staff) object;
-        if ((this.username == null && other.username != null) || (this.username != null && !this.username.equals(other.username))) {
+        if ((this.username == null && other.username != null)
+                || (this.username != null && !this.username.equals(other.username))) {
             return false;
         }
         return true;
@@ -269,5 +278,5 @@ public class Staff implements Serializable {
     public String toString() {
         return "vn.htdshop.entity.Staff[ username=" + username + " ]";
     }
-    
+
 }

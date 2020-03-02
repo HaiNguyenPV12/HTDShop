@@ -33,6 +33,9 @@
     -->
     <span layout:fragment="title">
         <i class="nav-icon fas fa-users" style="font-size:20px"></i> Staff
+        <a class="btn btn-success" th:href="@{/manager/staff/add}">
+            <i class="fas fa-plus-square fa-lg mr-2"></i> Add new staff
+        </a>
     </span>
 
     <div layout:fragment="breadcrumb">
@@ -62,26 +65,22 @@
                                 <tr th:if="${staffs eq null or staffs.empty}">
                                     <td colspan="9">No Staffs to list</td>
                                 </tr>
-                                <tr th:each="s : ${staffs}" th:classappend="${s.password == null?'bg-gray':''}">
+                                <tr th:each="s : ${staffs}">
                                     <td th:text="${s.firstName}">F Name</td>
                                     <td th:text="${s.lastName}">L Name</td>
                                     <td th:text="${s.email}">Email</td>
                                     <td th:text="${s.phone}">Phone No.</td>
                                     <td th:text="${s.username}">Username</td>
-                                    <td th:text="${s.role}">Role</td>
+                                    <td th:text="${s.role.name}">Role</td>
                                     <td>
                                         <a class="btn btn-warning btn-sm"
                                             th:href="@{/manager/staff/edit(id=${s.username})}" data-toggle='tooltip'
                                             title="Edit">
                                             <i class="fas fa-pencil-alt"></i>
                                         </a>
-                                        <button class="btn btn-secondary btn-sm" th:if="${c.password==null}"
-                                            data-toggle='tooltip' title="User Details">
-                                            <i class="nav-icon fas fa-receipt"></i>
-                                        </button>
                                         <a class="btn btn-info btn-sm"
-                                            th:href="@{/manager/staff/details(id=${s.username})}"
-                                            th:if="${s.password!=null}" data-toggle='tooltip' title="User Details">
+                                            th:href="@{/manager/staff/details(id=${s.username})}" data-toggle='tooltip'
+                                            title="Details">
                                             <i class="nav-icon fas fa-receipt"></i>
                                         </a>
                                     </td>

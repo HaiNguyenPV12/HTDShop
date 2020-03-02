@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDManager/layout}">
+
+<head>
+    <title>HTD Manager - Staff</title>
+    <th:block layout:fragment="additionalCss">
+        <link th:href="@{/manager_resources/plugins/icheck-bootstrap/icheck-bootstrap.min.css}" rel="stylesheet">
+    </th:block>
+
+</head>
+
+<body>
+
+    <span layout:fragment="title">
+        <a th:href="@{/manager/staff}">
+            <i class="fas fa-balance-scale" style="font-size:20px"></i> Staff Details
+        </a>
+    </span>
+
+    <div layout:fragment="breadcrumb">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a th:href="@{/manager}">Home</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/manager/staff}">Staff</a></li>
+            <li class="breadcrumb-item active"><a th:text="${staff.username}" disabled></a></li>
+        </ol>
+    </div>
+
+    <div layout:fragment="content">
+        <div class="row">
+            <div class="col-lg-12 mb-3">
+            </div>
+            <div class="col-lg-12">
+                <div class="card card-purple">
+                    <div class="card-header">
+                        <h3 class="card-title">Information</h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- USERNAME -->
+                        <div class="form-group row">
+                            <label for="username" class="col-sm-3 col-form-label text-right">Username</label>
+                            <div class="col-sm-9">
+                                <th:block th:text="${staff.username}" />
+                            </div>
+                            <div class="col-sm-3"></div>
+                        </div>
+                        <!-- FIRST NAME -->
+                        <div class="form-group row">
+                            <label for="firstName" class="col-sm-3 col-form-label text-right">First Name</label>
+                            <div class="col-sm-9">
+                                <th:block th:text="${staff.firstName}" />
+                            </div>
+                            <div class="col-sm-3"></div>
+                        </div>
+                        <!-- LAST NAME -->
+                        <div class="form-group row">
+                            <label for="lastName" class="col-sm-3 col-form-label text-right">Last Name</label>
+                            <div class="col-sm-9">
+                                <th:block th:text="${staff.lastName}" />
+                            </div>
+                            <div class="col-sm-3"></div>
+                        </div>
+                        <!-- GENDER -->
+                        <div class="form-group row">
+                            <label for="gender" class="col-sm-3 col-form-label text-right">Gender</label>
+                            <div class="col-sm-9">
+                                <th:block th:text="${staff.gender eq true ? 'Male' : 'Female'}" />
+                            </div>
+                            <div class="col-sm-3"></div>
+                        </div>
+                        <!-- BIRTHDAY -->
+                        <div class="form-group row">
+                            <label for="birthday" class="col-sm-3 col-form-label text-right">Birthday</label>
+                            <div class="col-sm-9">
+                                <th:block th:text="${staff.birthday}" />
+                            </div>
+                            <div class="col-sm-3"></div>
+                        </div>
+                        <!-- EMAIL -->
+                        <div class="form-group row">
+                            <label for="email" class="col-sm-3 col-form-label text-right">Email</label>
+                            <div class="col-sm-9">
+                                <th:block th:text="${staff.email}" />
+                            </div>
+                            <div class="col-sm-3"></div>
+                        </div>
+                        <!-- ADRESS -->
+                        <div class="form-group row">
+                            <label for="address" class="col-sm-3 col-form-label text-right">Address</label>
+                            <div class="col-sm-9">
+                                <th:block th:text="${staff.address}" />
+                            </div>
+                            <div class="col-sm-3"></div>
+                        </div>
+                        <!-- PHONE -->
+                        <div class="form-group row">
+                            <label for="phone" class="col-sm-3 col-form-label text-right">Phone</label>
+                            <div class="col-sm-9">
+                                <th:block th:text="${staff.phone}" />
+                            </div>
+                            <div class="col-sm-3"></div>
+                        </div>
+                        <!-- IMAGE -->
+                        <div class="form-group row">
+                            <label for="image" class="col-sm-3 col-form-label text-right">Image</label>
+                            <div class="col-sm-9">
+                                <img th:src="@{/images/__${staff.image}__}" alt="staff image" class="img-fluid">
+                            </div>
+                            <div class="col-sm-3"></div>
+                        </div>
+                        <!-- ROLE -->
+                        <div class="form-group row">
+                            <label for="role" class="col-sm-3 col-form-label text-right">Role</label>
+                            <div class="col-sm-9">
+                                <th:block th:text="${staff.role.name}" />
+                            </div>
+                            <div class="col-sm-3"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Edit button -->
+            <div class="col-lg-12 text-right mb-3">
+                <a th:href="@{/manager/staff/edit(id=${staff.username})}" class="btn btn-primary">Edit</a>
+            </div>
+        </div>
+    </div>
+
+    <script layout:fragment="script" th:inline="none">
+
+
+        $(document).ready(function () {
+
+        });
+    </script>
+</body>
+
+</html>
