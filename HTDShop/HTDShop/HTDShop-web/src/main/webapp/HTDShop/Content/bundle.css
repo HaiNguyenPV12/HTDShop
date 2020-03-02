@@ -53,13 +53,13 @@ a,
     -o-transition: all 0.3s ease-out 0s;
     transition: all 0.3s ease-out 0s;
 }
-.btn {
+/* .btn {
     border-radius: 0px;
     font-size: 14px;
     padding: 0px 15px;
     height: 30px;
     line-height: 30px;
-}
+} */
 a:focus,
 .btn:focus {
     text-decoration: none;
@@ -510,12 +510,12 @@ a.button-small:hover::after { width: 100% }
 input {
     background: #eceff8;
     border: 2px solid #eceff8;
-    height: 45px;
+    /* height: 45px; */
     box-shadow: none;
     padding-left: 10px;
     font-size: 14px;
     color: #626262;
-    width: 100%;
+    /* width: 100%; */
 }
 select {
     width: 100%;

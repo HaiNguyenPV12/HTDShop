@@ -21,6 +21,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import vn.htdshop.entity.PreBuilt;
+import vn.htdshop.sb.CategoryFacadeLocal;
+import vn.htdshop.sb.PreBuiltFacadeLocal;
 import vn.htdshop.entity.Customer;
 import vn.htdshop.entity.ImageSlide;
 import vn.htdshop.sb.CategoryFacadeLocal;
@@ -38,6 +41,9 @@ public class shopIndexController {
 
     @EJB(mappedName = "CategoryFacade")
     CategoryFacadeLocal categoryFacade;
+
+    @EJB(mappedName = "PreBuiltFacade")
+    PreBuiltFacadeLocal prebuiltFacade;
 
     @EJB(mappedName = "CustomerFacade")
     CustomerFacadeLocal customerFacade;
@@ -69,6 +75,21 @@ public class shopIndexController {
     @RequestMapping(value = "test", method = RequestMethod.GET)
     public String getTest() {
         return "HTDShop/test";
+    }
+
+    @RequestMapping(value = "termsAndServices", method = RequestMethod.GET)
+    public String getTermsAndServices() {
+        return "HTDShop/termsandservices";
+    }
+
+    @RequestMapping(value = "aboutUs", method = RequestMethod.GET)
+    public String getAboutUs() {
+        return "HTDShop/about";
+    }
+
+    @RequestMapping(value = "privacy", method = RequestMethod.GET)
+    public String getPrivacyPolicy() {
+        return "HTDShop/privacy";
     }
 
     @RequestMapping(value = "testlogin", method = RequestMethod.GET)
