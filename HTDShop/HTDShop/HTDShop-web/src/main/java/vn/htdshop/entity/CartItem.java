@@ -4,29 +4,35 @@ package vn.htdshop.entity;
  * CartItem
  */
 public class CartItem {
-    private Integer id;
+    private String id;
     private Integer quan;
 
     public CartItem() {
     }
 
-    public CartItem(Integer id, Integer quan) {
+    // public CartItem(Integer id, Integer quan) {
+    //     this.id = id;
+    //     this.quan = quan;
+    //     this.isPrebuilt = false;
+    // }
+
+    public CartItem(String id, Integer quan) {
         this.id = id;
         this.quan = quan;
     }
-    
+
 
     /**
      * @return the id
      */
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
     /**
      * @param id the id to set
      */
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -44,5 +50,4 @@ public class CartItem {
         this.quan = quan;
     }
 
-    
 }

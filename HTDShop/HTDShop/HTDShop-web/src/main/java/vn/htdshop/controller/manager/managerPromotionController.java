@@ -12,6 +12,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -64,6 +67,9 @@ public class managerPromotionController {
     @EJB(mappedName = "PreBuiltFacade")
     PreBuiltFacadeLocal preBuiltFacade;
 
+    @EJB(mappedName = "ImageSlideFacade")
+    ImageSlideFacadeLocal imageSlideFacade;
+
     @Autowired
     ServletContext context;
 
@@ -92,6 +98,45 @@ public class managerPromotionController {
             model.addAttribute("badAlert", model.asMap().get("badAlert"));
         }
 
+        // Add indicator attribute for sidemenu highlight
+        model.asMap().put("menu", "promotion");
+        return "HTDManager/promotion";
+    }
+
+    // ==== PROMOTION INDEX ==== \\
+    @RequestMapping(value = "doDisable", method = RequestMethod.POST)
+    public @ResponseBody Boolean doDisable(@RequestParam(value = "id", required = false) Integer id) {
+        if (!managerService.checkLoginWithRole("promotion_edit")) {
+            return false;
+        }
+        if (id == null) {
+            return false;
+        }
+        PromotionDetail promo = promotionDetailFacade.find(id);
+        if (promo == null) {
+            return false;
+        }
+        promo.setIsDisabled(true);
+        promotionDetailFacade.edit(promo);
+        return true;
+    }
+
+    // ==== PROMOTION INDEX OLD ==== \\
+    @RequestMapping(value = "old", method = RequestMethod.GET)
+    public String getHomeOld(HttpSession session, Model model) {
+        // Check login session with role
+        if (!managerService.checkLoginWithRole("promotion_read")) {
+            return redirectHome;
+        }
+
+        // Check for any alert
+        if (model.asMap().containsKey("goodAlert")) {
+            model.addAttribute("goodAlert", model.asMap().get("goodAlert"));
+        }
+        if (model.asMap().containsKey("badAlert")) {
+            model.addAttribute("badAlert", model.asMap().get("badAlert"));
+        }
+
         // Pass promotion detail list to session
         model.asMap().put("promotions",
                 promotionDetailFacade.findAll().stream()
@@ -100,7 +145,78 @@ public class managerPromotionController {
 
         // Add indicator attribute for sidemenu highlight
         model.asMap().put("menu", "promotion");
-        return "HTDManager/promotion";
+        return "HTDManager/promotion_old";
+    }
+
+    @RequestMapping(value = "list", method = RequestMethod.POST)
+    public @ResponseBody List<PromotionView> getPromotionList(
+            @RequestParam(value = "status", required = false) Integer status) {
+        // Check login session with role
+        if (!managerService.checkLoginWithRole("promotion_read")) {
+            return new ArrayList<>();
+        }
+        if (status == null || (0 != status && 1 != status)) {
+            return new ArrayList<>();
+        }
+        List<PromotionView> result = new ArrayList<PromotionView>();
+
+        // Pass promotion detail list to session
+        Collection<PromotionDetail> promolist = promotionDetailFacade.findAll();
+        if (status == 1) {
+            promolist = promolist.stream().filter(p -> p.getIsDisabled() == false)
+                    .sorted(Comparator.comparing(PromotionDetail::getId, Comparator.reverseOrder()))
+                    .collect(Collectors.toList());
+        } else {
+            promolist = promolist.stream().filter(p -> p.getIsDisabled() == true)
+                    .sorted(Comparator.comparing(PromotionDetail::getId, Comparator.reverseOrder()))
+                    .collect(Collectors.toList());
+        }
+        for (PromotionDetail promo : promolist) {
+            result.add(new PromotionView(promo));
+        }
+
+        return result;
+    }
+
+    @RequestMapping(value = "doCreateImageSlide", method = RequestMethod.POST)
+    public @ResponseBody String doReply(@RequestParam(value = "id", required = false) Integer id) {
+        if (!managerService.checkLoginWithRole("imageslide_add")) {
+            return "No permission.";
+        }
+        if (id == null) {
+            return "Promotion not found!";
+        }
+        PromotionDetail promo = promotionDetailFacade.find(id);
+        // Create data
+        ImageSlide img = new ImageSlide();
+        img.setTitle(promo.getName());
+        img.setDescription(promo.getDetail());
+        img.setStatus(true);
+        img.setOrder(null);
+        img.setLink("promotion?id=" + id);
+        imageSlideFacade.create(img);
+
+        // Copy image
+        try {
+            String folderPath = System.getProperty("catalina.base") + "/img/imageslide";
+            File folderCheck = new File(folderPath);
+            if (!folderCheck.exists()) {
+                folderCheck.mkdirs();
+            }
+            String ext = FilenameUtils.getExtension(promo.getImage());
+            String fileName = img.getId() + "." + ext;
+            String originPath = System.getProperty("catalina.base") + "/img/" + promo.getImage();
+            String filePath = folderPath + "/" + fileName;
+            Files.copy(Paths.get(originPath), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
+
+            img.setImage("imageslide/" + fileName);
+            imageSlideFacade.edit(img);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Cannot copy image: " + e.getMessage();
+        }
+
+        return "ok";
     }
 
     // ==== PROMOTION ADD - VIEW ==== \\

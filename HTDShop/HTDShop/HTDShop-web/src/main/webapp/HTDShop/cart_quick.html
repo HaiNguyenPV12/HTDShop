@@ -1,9 +1,19 @@
 <ul class="cart-dropdown">
-    <li class="single-product-cart" th:each="c, ite: ${cart}" th:with="product = ${shopSv.getProduct(c.id)}"
+    <li class="single-product-cart" th:each="c, ite: ${cart}" th:with="product = ${shopSv.getCartInfo(c.id)}"
         th:if="${cart != null && ite.index lt 7}">
         <div class="cart-img">
-            <a th:href="@{/product(id=${c.id})}">
-                <img th:if="${product.productImageCollection.size() > 0}"
+            <a th:href="@{/prebuilt(id=${#strings.substring(c.id, 1)})}" th:if="${#strings.substring(c.id, 0, 1).equals('b')}">
+                <img th:if="${product.preBuiltImageCollection.size() > 0}"
+                    th:src="@{/images/__${product.preBuiltImageCollection[0].path}__}" alt=""
+                    class="quick-cart-item">
+                <img th:if="${product.preBuiltImageCollection.size() == 0}" th:src="@{/images/noimage.png}" alt=""
+                    class="quick-cart-item">
+            </a>
+            <a th:href="@{/product(id=${#strings.substring(c.id, 1)})}" th:if="${#strings.substring(c.id, 0, 1).equals('a')}">
+                <img th:if="${product.productImageCollection.?[mainImage==true].size() > 0}"
+                    th:src="@{/images/__${product.productImageCollection.?[mainImage==true][0].imagePath}__}" alt=""
+                    class="quick-cart-item">
+                <img th:if="${product.productImageCollection.?[mainImage==true].size() == 0 && product.productImageCollection.size() > 0}"
                     th:src="@{/images/__${product.productImageCollection.?[mainImage==true][0].imagePath}__}" alt=""
                     class="quick-cart-item">
                 <img th:if="${product.productImageCollection.size() == 0}" th:src="@{/images/noimage.png}" alt=""
@@ -11,11 +21,19 @@
             </a>
         </div>
         <div class="cart-title">
-            <h5><a th:href="@{/product(id=${c.id})}" th:text="${product.name}">Bits Headphone</a></h5>
+            <h5>
+                <a th:href="@{/product(id=${#strings.substring(c.id, 1)})}" th:text="${product.name}" th:if="${#strings.substring(c.id, 0, 1).equals('a')}">Bits Headphone</a>
+                <a th:href="@{/prebuilt(id=${#strings.substring(c.id, 1)})}" th:text="${product.name}" th:if="${#strings.substring(c.id, 0, 1).equals('b')}">Bits Headphone</a>
+            </h5>
             <i th:if="${c.quan > 0}">
-                <th:block
+                <th:block th:if="${#strings.substring(c.id, 0, 1).equals('a')}"
                     th:text="${'$' + #numbers.formatDecimal(shopSv.getDiscountPrice(product) , 1, 'POINT', 2, 'COMMA')}">
-                </th:block> x <th:block th:text="${c.quan}">
+                </th:block>
+                <th:block th:if="${#strings.substring(c.id, 0, 1).equals('b')}"
+                    th:text="${'$' + #numbers.formatDecimal(shopSv.getPreBuiltDiscountPrice(product) , 1, 'POINT', 2, 'COMMA')}">
+                </th:block>
+                 x 
+                <th:block th:text="${c.quan}">
                 </th:block>
             </i>
             <i th:if="${c.quan==0}">
@@ -28,7 +46,7 @@
     </li>
 
     <th:block th:if="${cart != null && cart.size() > 7}">
-        and more... (click VIEW CART to see all)
+        and <th:block th:text="${cart.size() - 7}"></th:block> more... (click VIEW CART to see all)
     </th:block>
 
     <th:block th:if="${cart == null || cart.size() == 0}">
@@ -44,7 +62,7 @@
     </li>
     <li class="cart-btn-wrapper">
         <input type="hidden" id="cartNum"
-            th:value="${cart == null || cart.size()==0? '0' : #aggregates.sum(cart.![quan])}" />
+            th:value="${cart == null || cart.size() == 0? '0' : #aggregates.sum(cart.![quan])}" />
         <a class="cart-btn btn-hover" th:href="@{/cart}">view cart</a>
         <a class="cart-btn btn-hover" th:href="@{/checkout}">checkout</a>
     </li>

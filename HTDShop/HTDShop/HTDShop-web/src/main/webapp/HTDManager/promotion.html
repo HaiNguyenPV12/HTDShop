@@ -9,7 +9,6 @@
     <style>
         .dataTables_filter {
             float: right !important;
-            display: none;
         }
     </style>
 </head>
@@ -33,87 +32,69 @@
     <div layout:fragment="content">
         <div class="row">
             <div class="col-lg-12">
-                <div class="card card-purple card-outline">
+                <div class="card card-purple card-outline card-outline-tabs">
+                    <div class="card-header p-0 pt-1 border-bottom-0">
+                        <ul class="nav nav-tabs" id="promotion-tab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="promotion-active-tab" data-toggle="pill"
+                                    href="#promotion-active" role="tab" aria-controls="promotion-active"
+                                    aria-selected="true">Active Promotion</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="promotion-disabled-tab" data-toggle="pill"
+                                    href="#promotion-disabled" role="tab" aria-controls="promotion-disabled"
+                                    aria-selected="false">Disabled Promotion</a>
+                            </li>
+                        </ul>
+                    </div>
                     <div class="card-body">
+                        <div class="tab-content" id="promotion-tabContent">
+                            <div class="tab-pane fade show active" id="promotion-active" role="tabpanel"
+                                aria-labelledby="promotion-active-tab">
+                                <table id="tblPromotion" class="table table-bordered table-striped table-hover">
+                                    <thead class="bg-purple">
+                                        <th>Name</th>
+                                        <th>Detail</th>
+                                        <th>Date</th>
+                                        <th>Image</th>
+                                        <th>Action</th>
+                                    </thead>
+                                    <tbody>
 
-                        <table id="tblPromotion" class="table table-bordered table-striped table-hover">
-                            <thead class="bg-purple">
-                                <th>Name</th>
-                                <th>Detail</th>
-                                <th>Conditions</th>
-                                <th>Date</th>
-                                <th>Image</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </thead>
-                            <tbody>
-                                <tr th:if="${promotions eq null or promotions.empty}">
-                                    <td colspan="2">No promotions</td>
-                                </tr>
+                                    </tbody>
+                                    <tfoot class="bg-purple">
+                                        <th>Name</th>
+                                        <th>Detail</th>
+                                        <th>Date</th>
+                                        <th>Image</th>
+                                        <th>Action</th>
+                                    </tfoot>
+                                </table>
+                            </div>
+                            <div class="tab-pane fade" id="promotion-disabled" role="tabpanel"
+                                aria-labelledby="promotion-disabled-tab">
+                                <table id="tblDisabledPromotion" class="table table-bordered table-striped table-hover">
+                                    <thead class="bg-purple">
+                                        <th>Name</th>
+                                        <th>Detail</th>
+                                        <th>Date</th>
+                                        <th>Image</th>
+                                        <th>Action</th>
+                                    </thead>
+                                    <tbody>
 
-                                <tr th:each="p : ${promotions}" th:classappend="${p.isDisabled?'bg-danger':''}">
-                                    <td>
-                                        <th:block th:text="${p.name}"></th:block><br />
-                                        <i class="text-muted" th:text="${p.target==0?'[All]':'[Member]'}"></i>
-                                    </td>
-                                    <td th:text="${p.detail}"></td>
-                                    <td>
-                                        <ul>
-                                            <li th:each="promo: ${p.promotionCollection}">
-                                                Discount
-                                                <th:block th:if="${promo.exactSaleOff!=null}"
-                                                    th:text="${'$'+promo.exactSaleOff}"></th:block>
-                                                <th:block th:if="${promo.exactSaleOff==null}">[[${promo.percentage +
-                                                    '%'}]] [[${promo.maxSaleOff!=null?'(Max: $'+promo.maxSaleOff+')':''}]]</th:block>
-                                                for
-                                                <th:block th:if="${promo.category!=null}" th:text="${promo.category.name}"></th:block><th:block th:if="${promo.product!=null}" th:text="${promo.product.name}"></th:block><th:block th:if="${promo.preBuiltTarget!=null}" th:text="${promo.preBuiltTarget==0?'All pre-built PC':'HTD pre-built PC'}"></th:block>
-                                                <th:block th:if="${promo.limitedQuantity!=null}" th:text="${'|Limited: '+promo.limitedQuantity+'|'}"></th:block><th:block th:if="${promo.minQuantity!=null}" th:text="${'|Min: '+promo.minQuantity+'|'}"></th:block><th:block th:if="${promo.maxQuantity!=null}" th:text="${'|Max: '+promo.maxQuantity+'|'}"></th:block>
-                                                <th:block th:if="${promo.quantityLeft!=null}" th:text="${'|Left: '+promo.quantityLeft+'|'}"></th:block>
+                                    </tbody>
+                                    <tfoot class="bg-purple">
+                                        <th>Name</th>
+                                        <th>Detail</th>
+                                        <th>Date</th>
+                                        <th>Image</th>
+                                        <th>Action</th>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
 
-                                            </li>
-                                        </ul>
-                                    </td>
-                                    <td>
-                                        <th:block th:if="${p.isAlways}">Always</th:block>
-                                        <th:block th:if="${!p.isAlways}">
-                                            From: <span th:text="${#dates.format(p.startDate,'dd/MM/yyyy')}"></span><br />
-                                            To: <span th:text="${#dates.format(p.endDate,'dd/MM/yyyy')}"></span><br />
-                                        </th:block>
-                                    </td>
-                                    <td style="text-align: center;">
-                                        <a th:onclick='showModal([[${p.name}]],
-                                        &apos;&lt;img src=[[@{/images/__${p.image}__}]] style=&quot;;width: 100%;&quot; /&gt;&apos;
-                                        ,null,false,false)'>
-                                            <img th:src="@{/images/__${p.image}__}"
-                                                style="width: 100%;max-width:150px;cursor:pointer;" />
-                                        </a>
-                                    </td>
-                                    <td th:text="${p.isDisabled?'Disabled':'Enabled'}"></td>
-                                    <td class="text-center">
-                                        <a class="btn btn-warning btn-sm"
-                                            th:href="@{/manager/promotion/edit(id=${p.id})}" data-toggle='tooltip'
-                                            title="Edit">
-                                            <i class="fas fa-pencil-alt"></i>
-                                        </a>
-                                        <a class="btn btn-danger btn-sm" href="#" data-toggle="tooltip" title="Delete"
-                                            th:onclick='confirmDelete([[${p.name}]],[[@{/manager/promotion/doDelete(id=${p.id})}]])'>
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-
-                                    </td>
-                                </tr>
-
-                            </tbody>
-                            <tfoot class="bg-purple">
-                                <th>Name</th>
-                                <th>Detail</th>
-                                <th>Conditions</th>
-                                <th>Date</th>
-                                <th>Image</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tfoot>
-                        </table>
                     </div>
                 </div>
             </div>
@@ -121,9 +102,11 @@
 
 
     </div>
-
-    <script layout:fragment="script" th:inline="none">
-
+    <th:block layout:fragment="additionalScript">
+        <script th:src="@{/manager_resources/plugins/moment/moment.min.js}"></script>
+    </th:block>
+    <script layout:fragment="script" th:inline="javascript">
+        /*<![CDATA[*/
         function confirmDelete(title, url) {
             showModal('Confirm deletion',
                 'Are you sure to delete "' + title + '" ?',
@@ -132,76 +115,215 @@
                 true);
         }
 
-        // Add custom filter for datatable
-        $('#tblPromotion tfoot th').each(function () {
-            var title = $(this).text();
-            if (title == "Action") {
-                // Collum that not using filter
-                $(this).html('');
-            } else if (title == "Status") {
-                // Collum that using select filter
-                $(this).html('<select class="form-control"><option value="">All</option></select>');
-            } else {
-                // Collum that using text filter
-                $(this).html('<input id="txtSearch' + title + '" type="text" placeholder="Search ' + title + '" class="form-control" style="width:100%" />');
-            }
+        function createImageSlide(id) {
+            $.ajax({
+                url: /*[[@{/manager/promotion/doCreateImageSlide}]]*/"",
+                type: 'POST',
+                processData: true,
+                data: { id: id },
+                success: function (data) {
+                    if (data == "ok") {
+                        Toast.fire({
+                            type: 'success',
+                            title: "Successfully create image slide."
+                        });
+                    } else {
+                        Toast.fire({
+                            type: 'error',
+                            title: data,
+                            timer: 5000
+                        });
+                    }
+                }
+            });
+        }
 
-        });
-        // Setting up table here
+        function doDisable(id) {
+            $.ajax({
+                url: /*[[@{/manager/promotion/doDisable}]]*/"",
+                type: 'POST',
+                processData: true,
+                data: { id: id },
+                success: function (data) {
+                    if (data == true) {
+                        Toast.fire({
+                            type: 'success',
+                            title: "Successfully disabled promotion."
+                        });
+                        table.ajax.reload(null, false);
+                        tableDisabled.ajax.reload(null, false);
+                    } else {
+                        Toast.fire({
+                            type: 'error',
+                            title: "Error while disabling this promotion",
+                            timer: 5000
+                        });
+                    }
+                }
+            });
+        }
+
+
         var table = $('#tblPromotion').DataTable({
-            // Move filter from foot to head
             initComplete: function () {
-                var r = $('#tblPromotion tfoot tr');
-                r.find('th').each(function () {
-                    $(this).css('padding', 8);
-                });
-                $('#tblPromotion thead').append(r);
-                $('div.dataTables_length').addClass('form-inline');
+                $('div.dataTables_length').addClass('form-inline mt-3');
             },
             "paging": true,
             "lengthChange": true,
-            "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            "lengthMenu": [
+                [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]
+            ],
             "searching": true,
             "ordering": false,
             "info": true,
+            ajax: { url:/*[[@{/manager/promotion/list(status=1)}]]*/"", dataSrc: "", type: "POST" },
             "autoWidth": false,
+            "deferRender": true,
+            "columnDefs": [
+                {
+                    "targets": 0,
+                    "render": function (data, type, row, meta) {
+                        var str = row.name;
+                        str += "<br>" + "<i class='text-muted'>[";
+                        str += row.target + "]</i>";
+                        return str;
+                    }
+                },
+                {
+                    "targets": 2,
+                    "render": function (data, type, row, meta) {
+                        var str = "";
+                        if (row.isAlways == true) {
+                            str += "Always";
+                        } else {
+                            str += "From: " + moment(row.startDate).format("DD/MM/YYYY") + "<br>";
+                            str += "To: " + moment(row.endDate).format("DD/MM/YYYY");
+                        }
+                        return str;
+                    }
+                },
+                {
+                    "targets": 3,
+                    "render": function (data, type, row, meta) {
+                        var imgurl = /*[[@{/images/}]]*/"";
+                        var str = "<img ";
+                        str += "src=\"" + imgurl + row.image + "\"";
+                        str += 'style="width: 100%;max-width:150px;cursor:pointer;"';
+                        str += 'onclick="showModal(\'' + row.name + '\',\'<img src=' + imgurl + row.image + ' style=&quot;width:100%&quot; />\',null,false,false)"';
+                        str += "/>";
+                        return str;
+                    }
+                },
+                {
+                    "targets": 4,
+                    "render": function (data, type, row, meta) {
+                        var promotionlink = /*[[@{/manager/promotion}]]*/'';
+                        var id = row.id;
+                        var str = "";
+                        str += '<a class="btn btn-warning btn-sm" href="' + promotionlink + '/edit?id=' + id + '" data-toggle="tooltip" title = "Edit" > <i class="fas fa-pencil-alt" ></i></a>';
+                        str += '<a class="btn btn-info btn-sm" data-toggle="tooltip" title="Make Image Slide" onclick="createImageSlide(' + id + ')" style="cursor:pointer"><i class="fas fa-photo-video"></i></a>';
+                        str += '<a class="btn btn-danger btn-sm" data-toggle="tooltip" style="cursor:pointer" title="Disable" onclick="doDisable(' + id + ')"> <i class="fas fa-stop-circle" ></i></a>';
+                        str += '<button class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete" onclick=\"confirmDelete(\'' + row.name.replace("\"", "&quot;").replace("\'", "") + '\',\'' + promotionlink + '/doDelete?id=' + id + '\')\"><i class="fas fa-trash"></i></button>';
+                        return str;
+                    }
+                }
+            ],
             // custom collums's width
             "columns": [
-                { "width": "10%" },
-                { "width": "15%" },
-                { "width": "30%" },
-                { "width": "15%" },
-                { "width": "15%" },
-                { "width": "5%" },
-                { "width": "10%" }
-            ]
-        });
-        // Set up filter action
-        table.columns().every(function () {
-            var thisCol = this;
-            // Set up action listener for text filter
-            $('input', this.footer()).on('keyup change clear', function () {
-                if (thisCol.search() !== this.value) {
-                    thisCol.search(this.value).draw();
+                { "width": "15%", "data": null },
+                { "width": "20%", "data": "detail" },
+                { "width": "20%", "data": null },
+                { "width": "20%", "data": null, "className": "text-center" },
+                { "width": "15%", "data": null, "className": "text-center" }
+            ],
+            "createdRow": function (row, data, dataIndex) {
+                if (data.endDate != null && moment(data.endDate).isBefore(moment(), 'date')) {
+                    $(row).addClass('bg-warning');
+                    $(row).attr("data-toggle", "tooltip");
+                    $(row).attr("title", "Promotion is outdated! Please disable or update date.");
                 }
-            });
-            // Set up data for select filter
-            $('select', this.footer()).each(function () {
-                var title = thisCol.header();
-                // Using unique data from table
-                var thisSelect = this;
-                thisCol.data().unique().sort().each(function (d, j) {
-                    $(thisSelect).append("<option value='" + d + "'>" + d + "</option>");
-                });
-            });
-            // Set up action listener for select filter
-            $('select', this.footer()).on('change', function () {
-                var val = $.fn.dataTable.util.escapeRegex(
-                    $(this).val()
-                );
-                thisCol.search(val ? '^' + val + '$' : '', true, false).draw();
-            });
+            },
+            "drawCallback": function (settings) {
+                $('[data-toggle="tooltip"]').tooltip();
+            }
+        });
 
+        var tableDisabled = $('#tblDisabledPromotion').DataTable({
+            initComplete: function () {
+                $('div.dataTables_length').addClass('form-inline mt-3');
+            },
+            "paging": true,
+            "lengthChange": true,
+            "lengthMenu": [
+                [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]
+            ],
+            "searching": true,
+            "ordering": false,
+            "info": true,
+            ajax: { url:/*[[@{/manager/promotion/list(status=0)}]]*/"", dataSrc: "", type: "POST" },
+            "autoWidth": false,
+            "deferRender": true,
+            "columnDefs": [
+                {
+                    "targets": 0,
+                    "render": function (data, type, row, meta) {
+                        var str = row.name;
+                        str += "<br>" + "<i class='text-muted'>[";
+                        str += row.target + "]</i>";
+                        return str;
+                    }
+                },
+                {
+                    "targets": 2,
+                    "render": function (data, type, row, meta) {
+                        var str = "";
+                        if (row.isAlways == true) {
+                            str += "Always";
+                        } else {
+                            str += "From: " + moment(row.startDate).format("DD/MM/YYYY") + "<br>";
+                            str += "To: " + moment(row.endDate).format("DD/MM/YYYY");
+                        }
+                        return str;
+                    }
+                },
+                {
+                    "targets": 3,
+                    "render": function (data, type, row, meta) {
+                        var imgurl = /*[[@{/images/}]]*/"";
+                        var str = "<img ";
+                        str += "src=\"" + imgurl + row.image + "\"";
+                        str += 'style="width: 100%;max-width:150px;cursor:pointer;"';
+                        str += 'onclick="showModal(\'' + row.name + '\',\'<img src=' + imgurl + row.image + ' style=&quot;width:100%&quot; />\',null,false,false)"';
+                        str += "/>";
+                        return str;
+                    }
+                },
+                {
+                    "targets": 4,
+                    "render": function (data, type, row, meta) {
+                        var promotionlink = /*[[@{/manager/promotion}]]*/'';
+                        var id = row.id;
+                        var str = "";
+                        str += '<a class="btn btn-warning btn-sm" href="' + promotionlink + '/edit?id=' + id + '" data-toggle="tooltip" title = "Edit" > <i class="fas fa-pencil-alt" ></i></a>';
+                        str += '<button class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete" onclick=\"confirmDelete(\'' + row.name.replace("\"", "&quot;").replace("\'", "") + '\',\'' + promotionlink + '/doDelete?id=' + id + '\')\"><i class="fas fa-trash"></i></button>';
+                        return str;
+                    }
+                }
+            ],
+            // custom collums's width
+            "columns": [
+                { "width": "15%", "data": null },
+                { "width": "20%", "data": "detail" },
+                { "width": "20%", "data": null },
+                { "width": "20%", "data": null, "className": "text-center" },
+                { "width": "15%", "data": null, "className": "text-center" }
+            ],
+            "createdRow": function (row, data, dataIndex) {
+                $(row).addClass('bg-secondary');
+            },
+            "drawCallback": function (settings) {
+                $('[data-toggle="tooltip"]').tooltip();
+            }
         });
 
         // Activate tooltip
@@ -209,6 +331,7 @@
         $(function () {
             $('[data-toggle="tooltip"]').tooltip();
         });
+        /*]]>*/
     </script>
 </body>
 

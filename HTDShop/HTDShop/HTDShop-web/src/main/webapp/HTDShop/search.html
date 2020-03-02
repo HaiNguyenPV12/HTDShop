@@ -6,6 +6,8 @@
     <title>HTD Shop - Search</title>
     <th:block layout:fragment="additionalCss">
         <link rel="stylesheet" th:href="@{/resources/Content/fontawesome-free/css/all.min.css}">
+        <link rel="stylesheet" th:href="@{/resources/Plugins/jquery-ui/jquery-ui.min.css}" />
+        <link rel="stylesheet" th:href="@{/resources/Plugins/jquery-ui/jquery-ui.theme.min.css}" />
     </th:block>
     <style>
         .select2-search__field {
@@ -72,7 +74,7 @@
                 </div>
             </div>
         </div>
-        <div class="shop-page-wrapper shop-page-padding ptb-100">
+        <div class="shop-page-wrapper shop-page-padding ptb-50">
             <div class="container-fluid">
                 <div class="row" id="scrollHere">
                     <div class="col-lg-3">
@@ -89,15 +91,7 @@
                                 </div>
                             </div>
 
-                            <div class="sidebar-widget mb-40">
-                                <div class="d-flex mb-2">
-                                    <button type="button" id="filter" class="py-2" style="width:100%">Filter</button>
-                                </div>
-                                <div class="d-flex">
-                                    <button type="button" id="resetFilter" class="py-2" style="width:100%">Reset all
-                                        filter</button>
-                                </div>
-                            </div>
+
 
                             <div class="sidebar-widget mb-5">
                                 <h3 class="sidebar-title">Categories</h3>
@@ -118,25 +112,38 @@
 
                             <div class="sidebar-widget mb-5">
                                 <h3 class="sidebar-title">Filter by Price</h3>
+                                <div id="priceSlider" class="mb-3"></div>
                                 <div class="d-flex">
                                     <form id="searchPrice" class="d-flex">
                                         <input type="number" placeholder="From..."
                                             th:value="${param.from!=null?param.from:'0'}" name="from" required min=0
-                                            max=1000000 id="from" class="form-control mr-2">
+                                            max=10000 id="from" class="form-control mr-2">
                                         <i class="fas fa-long-arrow-alt-right mt-3"></i>
                                         <input type="number" placeholder="To..."
-                                            th:value="${param.to!=null?param.to:'1000000'}" name="to" required min=10
-                                            max=1000000 id="to" class="ml-2 form-control">
+                                            th:value="${param.to!=null?param.to:'10000'}" name="to" required min=10
+                                            max=10000 id="to" class="ml-2 form-control">
                                     </form>
+
                                 </div>
+
                             </div>
+
+
 
                             <div class="sidebar-widget mb-5" id="filters">
 
                             </div>
 
 
-
+                            <div class="sidebar-widget mb-40">
+                                <div class="d-flex mb-2">
+                                    <button type="button" id="filter" class="py-2" style="width:100%">Filter</button>
+                                </div>
+                                <div class="d-flex">
+                                    <button type="button" id="resetFilter" class="py-2" style="width:100%">Reset all
+                                        filter</button>
+                                </div>
+                            </div>
 
 
                         </div>
@@ -291,12 +298,30 @@
 
     </div>
 
+    <th:block layout:fragment="additionalScript">
+        <script th:src="@{/resources/Plugins/jquery-ui/jquery-ui.min.js}"></script>
+    </th:block>
 
     <script layout:fragment="script" th:inline="javascript">
         /*<![CDATA[*/
         var searched = +0;
         var oldCate = /*[[${param.category!=null? param.category : 0 }]]*/'';
+
         doSearch();
+
+        var priceSlider = $("#priceSlider").slider({
+            range: true,
+            min: 0,
+            max: 10000,
+            values: [$("#from").val(), $("#to").val()],
+            slide: function (event, ui) {
+                $("#from").val(ui.values[0]);
+                $("#to").val(ui.values[1]);
+            },
+            stop: function (event, ui) {
+                doSearch(1, null, false);
+            }
+        });
 
         $("#category").on("change", function () {
             doSearch(1, null, true);
@@ -307,11 +332,12 @@
             doSearch(1, null);
         });
 
-        $("#searchPrice").on("submit", function (e) {
+        $("#searchPrice").on("change", function (e) {
             e.preventDefault();
             if (+$("#from").val() > +$("#to").val()) {
                 $("#from").val(0);
             }
+            priceSlider.slider("option", "values", [$("#from").val(), $("#to").val()]);
             doSearch();
         });
 
@@ -319,13 +345,17 @@
             doSearch(1, null, null);
         });
 
+        $("#psort").on("change", function () {
+            doSearch(1, $(this).val(), false);
+        });
+
         $("#resetFilter").on("click", function () {
             $("#from").val(0);
-            $("#to").val(1000000);
+            $("#to").val(10000);
+            priceSlider.slider("option", "values", [0, 10000]);
             $("#keyword").val("");
             $("#psort").val("default");
             $("#category").val(0).trigger("change");
-
         });
 
 
@@ -373,7 +403,7 @@
             if (fromParam > 0) {
                 urlparams += "&from=" + encodeURIComponent(fromParam);
             }
-            if (toParam < 1000000) {
+            if (toParam < 10000) {
                 urlparams += "&to=" + encodeURIComponent(toParam);
             }
             if (sortParam != "default") {
@@ -414,6 +444,8 @@
             // }, 500);
         }
 
+
+
         function doValidateFilters() {
             // Keyword
             $("#keyword").val($("#keyword").val().trim());
@@ -421,10 +453,10 @@
             // Price filter
             if (!$("#searchPrice")[0].checkValidity()) {
                 $("#from").val(0);
-                $("#to").val(2000);
+                $("#to").val(10000);
             }
             var pricemin = +$("#from").val() || 0;
-            var pricemax = +$("#to").val() || 1000000;
+            var pricemax = +$("#to").val() || 10000;
             if (pricemin > pricemax) {
                 $("#from").val(0);
             }
@@ -520,6 +552,12 @@
                         });
                         $("#filters").find('.select2').select2();
                         $("#filters .select2").css("width", "100%");
+                        $("#filters select").on("change", function () {
+                            doSearch(1, null, false);
+                        });
+                        $("#filters input").on("keyup clear", function () {
+                            doSearch(1, null, false);
+                        });
                     }
                 });
             }

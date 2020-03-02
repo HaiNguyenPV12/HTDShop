@@ -146,7 +146,7 @@
                 </div>
             </div>
         </div>
-        <div class="product-details ptb-100 pb-90">
+        <div class="product-details ptb-50 pb-90">
             <div class="container">
                 <div class="row">
                     <div class="col-md-12 col-lg-7 col-12">
@@ -278,17 +278,15 @@
                                         style="cursor: pointer;color:#fff">add to cart</a>
                                 </div>
                             </div>
-
                             <div class="alert alert-warning mt-3"
-                                th:if="${(product.status == 1 || product.status == 2) && ( (product.promotionCollection.size() > 0 && product.promotionCollection.?[promotionDetail.endDate.after(#dates.createNow())].size() > 0) || (product.category.promotionCollection.size() > 0 && product.category.promotionCollection.?[promotionDetail.endDate.after(#dates.createNow())].size() > 0) )}">
-                                <strong class="">Promotion</strong>
+                                th:if="${(product.status == 1 || product.status == 2) && ( (product.promotionCollection.size() > 0 && product.promotionCollection.?[promotionDetail.endDate.compareTo(#dates.createToday()) >= 0].size() > 0) || (product.category.promotionCollection.size() > 0 && product.category.promotionCollection.?[promotionDetail.endDate.compareTo(#dates.createToday()) >= 0].size() > 0) )}">
+                                <a th:href="@{/promotion}"><strong class="">Promotion</strong></a>
                                 <ul>
                                     <li
-                                        th:each="promo : ${product.promotionCollection.?[promotionDetail.isDisabled==false].?[promotionDetail.isAlways==true or promotionDetail.endDate.after(#dates.createNow())]}">
+                                        th:each="promo : ${product.promotionCollection.?[promotionDetail.isDisabled==false].?[promotionDetail.isAlways==true or promotionDetail.endDate.compareTo(#dates.createToday()) >= 0]}">
                                         <i class="fas fa-gift fa-lg"></i>
-                                        <th:block th:text="${'&quot;' + promo.promotionDetail.name + '&quot;:'}">
-                                        </th:block>
-                                        <th:block th:text="${' ' + product.name + ' '}">
+                                        <a th:href="@{/promotion?(id=${promo.promotionDetail.id})}" th:text="${'&quot;' + promo.promotionDetail.name + '&quot;'}"></a>
+                                        <th:block th:text="${': ' + product.name + ' '}">
                                         </th:block>
                                         <strong
                                             th:text="${' discount ' + (promo.percentage != null ? (promo.percentage + '%') : ('$' + #numbers.formatDecimal(promo.exactSaleOff , 0, 'POINT', 0, 'COMMA')))}">
@@ -313,11 +311,10 @@
                                         </i>
                                     </li>
                                     <li
-                                        th:each="promo : ${product.category.promotionCollection.?[promotionDetail.isDisabled==false].?[promotionDetail.isAlways==true or promotionDetail.endDate.after(#dates.createNow())]}">
+                                        th:each="promo : ${product.category.promotionCollection.?[promotionDetail.isDisabled==false].?[promotionDetail.isAlways==true or promotionDetail.endDate.compareTo(#dates.createToday()) >= 0]}">
                                         <i class="fas fa-gift fa-lg"></i>
-                                        <th:block th:text="${'&quot;' + promo.promotionDetail.name + '&quot;:'}">
-                                        </th:block>
-                                        <th:block th:text="${' All ' + product.category.name + ' '}">
+                                        <a th:href="@{/promotion?(id=${promo.promotionDetail.id})}" th:text="${'&quot;' + promo.promotionDetail.name + '&quot;'}"></a>
+                                        <th:block th:text="${': All ' + product.category.name + ' '}">
                                         </th:block>
                                         <strong
                                             th:text="${' discount ' + (promo.percentage != null ? (promo.percentage + '%') : ('$' + #numbers.formatDecimal(promo.exactSaleOff , 0, 'POINT', 0, 'COMMA')))}">
@@ -420,11 +417,11 @@
                             <p th:utext="${(product.description == null || product.description.isEmpty()) ? '(No description)' : product.description}"></p>
                         </div>
                         <div class="tab-pane fade text-left border border-secondary" id="pro-review"
-                            role="tabpanel" style="height: 30rem;overflow-y: scroll !important;">
+                            role="tabpanel" >
                             <div class="card border-bottom border-secondary" th:if="${session.loggedInCustomer != null}"
                                 style="background-color: lightyellow;">
                                 <div class="card-body border-bottom border-warning">
-                                    <form action="product/doComment" method="post" enctype="application/x-www-form-urlencoded">
+                                    <form class="comment" action="product/doComment" method="post" enctype="application/x-www-form-urlencoded">
                                         <div class="d-flex">
                                             <input type="hidden" name="productid" th:value="${product.id}"/>
                                             <textarea type="text" class="form-control form-control" name="comment"
@@ -449,14 +446,15 @@
                                                 <span class="text-muted float-right" th:text="${#dates.format(cm.createdAt, 'dd/MM/yyyy HH:mm')}">8:03 PM Today</span>
                                             </span><!-- /.username -->
                                             <th:block th:text="${cm.content}"></th:block>
-                                            <button type="button" class="btn btn-secondary" style="height: auto;" th:data-target="${cm.id}" th:if="${session.loggedInCustomer != null}" onclick="toggleReply(this)"><i class="fas fa-reply"></i></button>
+                                            <button type="button" class="btn btn-secondary" style="height: auto;float: right
+                                            ;" th:data-target="${cm.id}" th:if="${session.loggedInCustomer != null}" onclick="toggleReply(this)"><i class="fas fa-reply"></i></button>
                                         </div>
                                         <!-- /.comment-text -->
                                     </div>
                                     <!-- /.card-comment -->
                                 </div>
                                 <!-- /.card-body -->
-                                <div class="card-footer card-comments" th:if="${cm.productCommentReplyCollection.size() > 0 || session.loggedInCustomer != null}">
+                                <div class="card-footer card-comments" th:if="${cm.productCommentReplyCollection.size() > 0}">
                                     <div class="card-comment" th:each="cmr : ${cm.productCommentReplyCollection}" >
                                         <div class="comment-text">
                                             <span class="username">
@@ -468,8 +466,12 @@
                                         </div>
                                         <!-- /.comment-text -->
                                     </div>
-                                    <div class="card-comment" th:if="${session.loggedInCustomer != null}" th:id="${cm.id}" style="display: none;">
-                                        <form action="product/doReply" method="post" enctype="application/x-www-form-urlencoded">
+                                    <!-- /.card-comment -->
+                                </div>
+                                <!-- /.card-footer -->
+                                <div class="card-footer card-comments" th:if="${session.loggedInCustomer != null}" th:id="${cm.id}" style="display: none;">
+                                    <div class="card-comment" th:if="${session.loggedInCustomer != null}"  >
+                                        <form class="comment" action="product/doReply" method="post" enctype="application/x-www-form-urlencoded">
                                             <div class="comment-text">
                                                 <span class="username">
                                                     
@@ -486,10 +488,7 @@
                                             
                                         </form>
                                     </div>
-                                    <!-- /.card-comment -->
                                 </div>
-                                <!-- /.card-footer -->
-                                
                                 <!-- /.card-footer -->
                             </div>
                             
@@ -526,7 +525,7 @@
 
         <script>
             function onloadCallback() {
-                $("#pro-review").css("overflow-y", "scroll !important");
+                // $("#pro-review").css("overflow-y", "scroll !important");
             }
         </script>
     </div>
@@ -557,7 +556,8 @@
                 $(this).val(1);
             }
         });
-        $("form").on("submit", function (e) {
+        
+        $("form.comment").on("submit", function (e) {
             e.preventDefault();
             form = $(this);
             if ($("#g-recaptcha-response").length) {
@@ -599,6 +599,7 @@
             //     });
             // }
         });
+
         function checked() {
             var formData = new FormData($(form)[0]);
             var gcaptcha = $("#g-recaptcha-response");
