@@ -9,6 +9,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -78,6 +80,61 @@ public class managerImageSlideController {
         if (model.asMap().containsKey("badAlert")) {
             model.addAttribute("badAlert", model.asMap().get("badAlert"));
         }
+        List<ImageSlide> imageslide = imageSlideFacade.findAll();
+        Long lastOrder = imageslide.stream().filter(i -> i.getOrder() != null).count();
+
+        model.asMap().put("lastOrder", lastOrder);
+        // Add indicator attribute for sidemenu highlight
+        model.asMap().put("menu", "imageslide");
+        return "HTDManager/imageslide";
+    }
+
+    @RequestMapping(value = "lastOrder", method = RequestMethod.POST)
+    public @ResponseBody Long getLastOrder() {
+        return imageSlideFacade.findAll().stream().filter(i -> i.getOrder() != null).count();
+    }
+
+    @RequestMapping(value = "list", method = RequestMethod.POST)
+    public @ResponseBody List<ImageSlide> getImageSlideList(
+            @RequestParam(value = "status", required = false) Integer status) {
+        // Check login session with role
+        if (!managerService.checkLoginWithRole("imageslide_read")) {
+            return new ArrayList<>();
+        }
+        if (status == null || (0 != status && 1 != status)) {
+            return new ArrayList<>();
+        }
+
+        // Pass promotion detail list to session
+        List<ImageSlide> slidelist = imageSlideFacade.findAll();
+        if (status == 1) {
+            slidelist = slidelist.stream().filter(p -> p.getStatus())
+                    .sorted(Comparator.comparing(ImageSlide::getOrder, Comparator.nullsLast(Comparator.naturalOrder())))
+                    .collect(Collectors.toList());
+        } else {
+            slidelist = slidelist.stream().filter(p -> p.getStatus() == false)
+                    .sorted(Comparator.comparing(ImageSlide::getOrder, Comparator.nullsLast(Comparator.naturalOrder())))
+                    .collect(Collectors.toList());
+        }
+
+        return slidelist;
+    }
+
+    // ==== IMAGE SLIDE INDEX OLD ==== \\
+    @RequestMapping(value = "old", method = RequestMethod.GET)
+    public String getHomeOld(HttpSession session, Model model) {
+        // Check login session with role
+        if (!managerService.checkLoginWithRole("imageslide_read")) {
+            return redirectHome;
+        }
+
+        // Check for any alert
+        if (model.asMap().containsKey("goodAlert")) {
+            model.addAttribute("goodAlert", model.asMap().get("goodAlert"));
+        }
+        if (model.asMap().containsKey("badAlert")) {
+            model.addAttribute("badAlert", model.asMap().get("badAlert"));
+        }
 
         // Pass image slide list to session
         model.asMap().put("imageslides",
@@ -87,7 +144,7 @@ public class managerImageSlideController {
                         .collect(Collectors.toList()));
         // Add indicator attribute for sidemenu highlight
         model.asMap().put("menu", "imageslide");
-        return "HTDManager/imageslide";
+        return "HTDManager/imageslide_old";
     }
 
     // ==== IMAGE SLIDE ADD - VIEW ==== \\
@@ -304,6 +361,27 @@ public class managerImageSlideController {
         redirect.addFlashAttribute("goodAlert",
                 "Successfully de-activated \"" + imageSlideFacade.find(id).getTitle() + "\"!");
         return redirectImageSlideHome;
+    }
+
+    // ==== IMAGE SLIDE DISABLE - AJAX PROCESS ==== \\
+    @RequestMapping(value = "doDisable", method = RequestMethod.POST)
+    public @ResponseBody Boolean doDisable(@RequestParam(value = "id") Integer id) {
+        if (!managerService.checkLoginWithRole("imageslide_edit")) {
+            return false;
+        }
+        reorder(id, 0, true);
+        return true;
+    }
+
+    // ==== IMAGE SLIDE RE-ORDER - AJAX PROCESS ==== \\
+    @RequestMapping(value = "doReorderAjax", method = RequestMethod.POST)
+    public @ResponseBody Boolean doReorderAjax(@RequestParam(value = "id") Integer id,
+            @RequestParam(value = "order") Integer order) {
+        if (!managerService.checkLoginWithRole("imageslide_edit")) {
+            return false;
+        }
+        reorder(id, order, false);
+        return true;
     }
 
     // ==== IMAGE SLIDE RE-ORDER - PROCESS ==== \\

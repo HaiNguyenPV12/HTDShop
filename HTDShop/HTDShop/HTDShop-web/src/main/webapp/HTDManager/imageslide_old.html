@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<!--
+    + To use layout, add following attribute in <html> tag: 
+        layout:decorate="~{path_from_java's_webapp_root_folder_and_without_extension}"
+
+    + To change content from layout, add following attribute to correspondly tag:
+        layout:fragment="fragment_name"
+      Declare any unique tag like <title>,... will replace it from layout 
+
+    + Any src / href attribute that using relative url from web, change it all to th:src and th:href
+    like following code:
+        th:src="@{/url_from_context_path_(not_include_context_path)}"
+        th:href="@{/url_from_context_path_(not_include_context_path)}"
+-->
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDManager/layout}">
+
+<head>
+    <title>HTD Manager - Image Slide</title>
+    <!-- Hide default datatable's filter -->
+    <style>
+        .dataTables_filter {
+            float: right !important;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!--
+        
+    -->
+    <span layout:fragment="title">
+        <i class="fas fa-images" style="font-size:20px"></i> Image Slide
+        <a class="btn btn-success" th:href="@{/manager/imageslide/add}">
+            <i class="fas fa-plus-square fa-lg mr-2"></i> Add new Slide
+        </a>
+    </span>
+
+    <div layout:fragment="breadcrumb">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a th:href="@{/manager}">Home</a></li>
+            <li class="breadcrumb-item active">Image Slide</li>
+        </ol>
+    </div>
+
+    <div layout:fragment="content">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card card-purple card-outline">
+                    <div class="card-body">
+
+                        <table id="tblImageSlide" class="table table-bordered table-striped table-hover">
+                            <thead class="bg-purple">
+                                <th>Image</th>
+                                <th>Order</th>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Link</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${imageslides eq null or imageslides.empty}">
+                                    <td colspan="6">No image slides</td>
+                                </tr>
+
+                                <tr th:each="i : ${imageslides}" th:classappend="${i.status==false?'bg-secondary':''}">
+                                    <td style="text-align: center;">
+                                        <a th:onclick='showModal([[${i.title}]],
+                                        &apos;&lt;img src=[[@{/images/__${i.image}__}]] style=&quot;;width: 100%;&quot; /&gt;&apos;
+                                        ,null,false,false)'>
+                                            <img th:src="@{/images/__${i.image}__}"
+                                                style="width: 100%;max-width:150px;cursor:pointer;" />
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <!-- <i class="text-muted" th:if="${i.order == null and i.status==false}">Automatically</i> -->
+                                        <select name="order" th:id="${i.id}" th:if="${i.status==true}">
+                                            <option selected="selected" disabled>-- Order --</option>
+                                            <option value="0" th:selected="${i.order==null}">Automatically
+                                            </option>
+                                            <option value="1" th:selected="${i.order==1}">1</option>
+                                            <option th:value="${o.order}" th:text="${o.order}"
+                                                th:each="o:${imageslides.?[order!=null and order>=2]}"
+                                                th:selected="${i.order==o.order}">1</option>
+                                            <th:block th:if="${!imageslides.?[order!=null].empty}"
+                                                th:with="lastImageSlide=${imageslides.?[order!=null][#lists.size(imageslides.?[order!=null]) - 1]},firstImageSlide=${imageslides.?[order!=null][0]}">
+                                                <option
+                                                    th:if="${!#lists.isEmpty(imageslides.?[order!=null]) and i.order==null}"
+                                                    th:value="${lastImageSlide.order}+1">Last</option>
+                                            </th:block>
+                                        </select>
+                                    </td>
+                                    <td th:text="${i.title}"></td>
+                                    <td th:text="${i.description}"></td>
+                                    <td th:text="${i.link}"></td>
+                                    <td>
+                                        <th:block th:if="${i.status==true}">Active</th:block>
+                                        <th:block th:if="${i.status==false}">Inactive</th:block>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-warning btn-sm"
+                                            th:href="@{/manager/imageslide/edit(id=${i.id})}" data-toggle='tooltip'
+                                            title="Edit">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </a>
+                                        <a class="btn btn-danger btn-sm" href="#" data-toggle="tooltip"
+                                            title="De-activate" th:if="${i.status==true}"
+                                            th:href="@{/manager/imageslide/doDeactivate(id=${i.id})}">
+                                            <i class="fas fa-stop-circle"></i>
+                                        </a>
+                                        <a class="btn btn-danger btn-sm" href="#" data-toggle="tooltip" title="Activate"
+                                            th:if="${i.status==false}"
+                                            th:href="@{/manager/imageslide/doActivate(id=${i.id})}">
+                                            <i class="fas fa-play-circle"></i>
+                                        </a>
+                                        <a class="btn btn-danger btn-sm" href="#" data-toggle="tooltip" title="Delete"
+                                            th:onclick='confirmDelete([[${i.title}]],[[@{/manager/imageslide/doDelete(id=${i.id})}]])'>
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                            <tfoot class="bg-purple">
+                                <th>Image</th>
+                                <th>Order</th>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Link</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <!--In case using custom script at pages using layout, add th:inline="none" like below-->
+    <script layout:fragment="script" th:inline="none">
+        function confirmDelete(title, url) {
+            showModal('Confirm deletion',
+                'Are you sure to delete "' + title + '" ?',
+                url,
+                true,
+                true);
+        }
+
+        $("select[name='order']").each(function (i) {
+            var curId = $(this).attr("id");
+            $(this).on("change", function () {
+                window.location.href = "imageslide/doReorder?id=" + curId + "&order=" + $(this).val();
+            });
+        });
+
+        // Add custom filter for datatable
+        $('#tblImageSlide tfoot th').each(function () {
+            var title = $(this).text();
+            if (title == "Action" || title == "Image" || title == "Link" || title == "Description" || title == "Order") {
+                // Collum that not using filter
+                $(this).html('');
+            } else if (title == "Status") {
+                // Collum that using select filter
+                $(this).html('<select class="form-control"><option value="">All</option></select>');
+            } else {
+                // Collum that using text filter
+                $(this).html('<input id="txtSearch' + title + '" type="text" placeholder="Search ' + title + '" class="form-control" style="width:100%" />');
+            }
+
+        });
+        // Setting up table here
+        var table = $('#tblImageSlide').DataTable({
+            // Move filter from foot to head
+            initComplete: function () {
+                var r = $('#tblImageSlide tfoot tr');
+                r.find('th').each(function () {
+                    $(this).css('padding', 8);
+                });
+                $('#tblImageSlide thead').append(r);
+                $('div.dataTables_length').addClass('form-inline');
+            },
+            "paging": true,
+            "lengthChange": true,
+            "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            "searching": true,
+            "ordering": false,
+            "info": true,
+            "autoWidth": false,
+            // custom collums's width
+            "columns": [
+                { "width": "25%" },
+                { "width": "5%" },
+                { "width": "15%" },
+                { "width": "20%" },
+                { "width": "10%" },
+                { "width": "5%" },
+                { "width": "20%" }
+            ]
+        });
+        // Set up filter action
+        table.columns().every(function () {
+            var thisCol = this;
+            // Set up action listener for text filter
+            $('input', this.footer()).on('keyup change clear', function () {
+                if (thisCol.search() !== this.value) {
+                    thisCol.search(this.value).draw();
+                }
+            });
+            // Set up data for select filter
+            $('select', this.footer()).each(function () {
+                var title = thisCol.header();
+                // Using unique data from table
+                var thisSelect = this;
+                thisCol.data().unique().sort().each(function (d, j) {
+                    $(thisSelect).append("<option value='" + d + "'>" + d + "</option>");
+                });
+                /* Or using customized data
+                if($(title).html()=="Status"){
+                    var thisSelect = this;
+                    $(thisSelect).append("<option value='1'>"+Is selling+"</option>");
+                }*/
+            });
+            // Set up action listener for select filter
+            $('select', this.footer()).on('change', function () {
+                var val = $.fn.dataTable.util.escapeRegex(
+                    $(this).val()
+                );
+                thisCol.search(val ? '^' + val + '$' : '', true, false).draw();
+            });
+
+        });
+
+        // Activate tooltip
+        // To show tooltip add following attributes: data-toggle="tooltip" title="tooltip_content"
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+</body>
+
+</html>

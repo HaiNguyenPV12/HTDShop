@@ -307,176 +307,178 @@
         <div class="modal fade" id="conModal">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Condition</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body" id="modalBody">
-                        <!-- Condition target -->
-                        <div class="form-group row">
-                            <label for="conTarget" class="col-sm-3 col-form-label text-right">Condition Target<i
-                                    class="text-danger">*</i></label>
-                            <div class="col-sm-9">
-                                <div class="d-flex">
-                                    <div class="icheck-primary mr-auto"> 
-                                        <input id="conCategoryForm" name="conTargetForm" type="radio" value="category" checked/>
-                                        <label for="conCategoryForm">
-                                            Category
-                                        </label>
-                                    </div>
-                                    <div class="icheck-primary mr-auto"> 
-                                        <input id="conProductForm" type="radio" name="conTargetForm" value="product"/>
-                                        <label for="conProductForm">
-                                            Product
-                                        </label>
-                                    </div>
-                                    <div class="icheck-primary mr-auto"> 
-                                        <input id="conPreBuiltForm" type="radio" name="conTargetForm" value="prebuilt"/>
-                                        <label for="conPreBuiltForm">
-                                            Pre-built
-                                        </label>
+                    <form id="frmCondition">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Condition</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body" id="modalBody">
+                            <!-- Condition target -->
+                            <div class="form-group row">
+                                <label for="conTarget" class="col-sm-3 col-form-label text-right">Condition Target<i
+                                        class="text-danger">*</i></label>
+                                <div class="col-sm-9">
+                                    <div class="d-flex">
+                                        <div class="icheck-primary mr-auto"> 
+                                            <input id="conCategoryForm" name="conTargetForm" type="radio" value="category" checked/>
+                                            <label for="conCategoryForm">
+                                                Category
+                                            </label>
+                                        </div>
+                                        <div class="icheck-primary mr-auto"> 
+                                            <input id="conProductForm" type="radio" name="conTargetForm" value="product"/>
+                                            <label for="conProductForm">
+                                                Product
+                                            </label>
+                                        </div>
+                                        <div class="icheck-primary mr-auto"> 
+                                            <input id="conPreBuiltForm" type="radio" name="conTargetForm" value="prebuilt"/>
+                                            <label for="conPreBuiltForm">
+                                                Pre-built
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9">
+                                    <div id="conCategoryCon" >
+                                        <select id="conCategoryVal" class="form-control select2" data-dropdown-css-class="select2-purple">
+                                            <option th:each="cate : ${categoryList}" th:value="${cate.id}" th:text="${cate.name}"></option>
+                                        </select>
+                                    </div>
+                                    <div id="conProductCon" style="display: none;">
+                                        <select id="conProductVal" class="form-control select2" style="display:none" data-dropdown-css-class="select2-purple">
+                                            <option th:each="p : ${productList}" th:value="${p.id}" th:text="${p.name}"></option>
+                                        </select>
+                                    </div>
+                                    <div id="conPreBuiltCon" style="display: none;">
+                                        <select id="conPreBuiltVal" class="form-control select2" style="display:none" data-dropdown-css-class="select2-purple">
+                                            <option value="0">All pre-built PC</option>
+                                            <option value="1">HTD's exclusive PC</option>
+                                        </select>
+                                    </div>
+                                    
+                                </div> 
                             </div>
-                            <div class="col-sm-3"></div>
-                            <div class="col-sm-9">
-                                <div id="conCategoryCon" >
-                                    <select id="conCategoryVal" class="form-control select2" data-dropdown-css-class="select2-purple">
-                                        <option th:each="cate : ${categoryList}" th:value="${cate.id}" th:text="${cate.name}"></option>
-                                    </select>
+                            <!-- Condition target - End -->
+
+                            <!-- Discount type -->
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label text-right">Discount Type<i
+                                        class="text-danger">*</i></label>
+                                <div class="col-sm-3">
+                                    <div class="">
+                                        <div class="icheck-primary mr-auto"> 
+                                            <input id="conPercentageForm" name="conDiscountTypeForm" type="radio" value="percentage" checked/>
+                                            <label for="conPercentageForm">
+                                                Percentage
+                                            </label>
+                                        </div>
+                                        <div class="icheck-primary mr-auto"> 
+                                            <input id="conExactForm" type="radio" name="conDiscountTypeForm" value="exact"/>
+                                            <label for="conExactForm">
+                                                Exact amount
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div id="conProductCon" style="display: none;">
-                                    <select id="conProductVal" class="form-control select2" style="display:none" data-dropdown-css-class="select2-purple">
-                                        <option th:each="p : ${productList}" th:value="${p.id}" th:text="${p.name}"></option>
-                                    </select>
+                                <div class="col-sm-6">
+                                    <div class="row">
+                                        <div class="col-sm-12" id="conPercentageContainer">
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" id="conPercentageVal" min="0" max="100">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">
+                                                        %
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12" id="conMaxSaleContainer">
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">
+                                                        Max discount: $
+                                                    </span>
+                                                </div>
+                                                <input type="number" class="form-control" id="conMaxSaleVal" min="0">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12" id="conExactContainer" style="display:none">
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">
+                                                        $
+                                                    </span>
+                                                </div>
+                                                <input type="number" class="form-control" id="conExactVal" min="0">
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div id="conPreBuiltCon" style="display: none;">
-                                    <select id="conPreBuiltVal" class="form-control select2" style="display:none" data-dropdown-css-class="select2-purple">
-                                        <option value="0">All pre-built PC</option>
-                                        <option value="1">HTD's exclusive PC</option>
-                                    </select>
+                                <div class="col-sm-3"></div> 
+                                <div class="col-sm-9 text-danger" id="conDiscountTypeError"></div> 
+                            </div>
+                            <!-- Discount type - End -->
+
+                            <!-- Quantity -->
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label text-right">Condition quantity</label>
+                                <div class="col-sm-4">
+                                    <div class="icheck-primary mr-auto"> 
+                                        <input id="conLimitForm" type="checkbox" />
+                                        <label for="conLimitForm">
+                                            Limited quantity
+                                        </label>
+                                    </div>
                                 </div>
+                                <div class="col-sm-5">
+                                    <input type="number" class="form-control" id="conLimitVal" min="0" disabled>
+                                </div>
+                                <div class="col-sm-3"></div> 
+                                <div class="col-sm-9 text-danger" id="conLimitError"></div>
+
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-4">
+                                    <div class="icheck-primary mr-auto"> 
+                                        <input id="conMinForm" type="checkbox" />
+                                        <label for="conMinForm">
+                                            Min quantity to get discount
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-5">
+                                    <input type="number" class="form-control" id="conMinVal" min="0" disabled>
+                                </div>
+                                <div class="col-sm-3"></div> 
+                                <div class="col-sm-9 text-danger" id="conMinError"></div>
+
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-4">
+                                    <div class="icheck-primary mr-auto"> 
+                                        <input id="conMaxForm" type="checkbox"/>
+                                        <label for="conMaxForm">
+                                            Max quantity to get discount
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-5">
+                                    <input type="number" class="form-control" id="conMaxVal" min="0" disabled>
+                                </div>
+                                <div class="col-sm-3"></div> 
+                                <div class="col-sm-9 text-danger" id="conMaxError"></div>
                                 
-                            </div> 
+                            </div>
+                            <!-- Quantity - End -->
                         </div>
-                        <!-- Condition target - End -->
-
-                        <!-- Discount type -->
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right">Discount Type<i
-                                    class="text-danger">*</i></label>
-                            <div class="col-sm-3">
-                                <div class="">
-                                    <div class="icheck-primary mr-auto"> 
-                                        <input id="conPercentageForm" name="conDiscountTypeForm" type="radio" value="percentage" checked/>
-                                        <label for="conPercentageForm">
-                                            Percentage
-                                        </label>
-                                    </div>
-                                    <div class="icheck-primary mr-auto"> 
-                                        <input id="conExactForm" type="radio" name="conDiscountTypeForm" value="exact"/>
-                                        <label for="conExactForm">
-                                            Exact amount
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="row">
-                                    <div class="col-sm-12" id="conPercentageContainer">
-                                        <div class="input-group">
-                                            <input type="number" class="form-control" id="conPercentageVal" min="0" max="100">
-                                            <div class="input-group-append">
-                                                <span class="input-group-text">
-                                                    %
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12" id="conMaxSaleContainer">
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">
-                                                    Max discount: $
-                                                </span>
-                                            </div>
-                                            <input type="number" class="form-control" id="conMaxSaleVal" min="0">
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12" id="conExactContainer" style="display:none">
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">
-                                                    $
-                                                </span>
-                                            </div>
-                                            <input type="number" class="form-control" id="conExactVal" min="0">
-                                            
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-3"></div> 
-                            <div class="col-sm-9 text-danger" id="conDiscountTypeError"></div> 
+                        <div class="modal-footer justify-content-between">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            <button class="btn btn-success" id="conModalConfirm">Done</button>
                         </div>
-                        <!-- Discount type - End -->
-
-                        <!-- Quantity -->
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right">Condition quantity</label>
-                            <div class="col-sm-4">
-                                <div class="icheck-primary mr-auto"> 
-                                    <input id="conLimitForm" type="checkbox" />
-                                    <label for="conLimitForm">
-                                        Limited quantity
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-sm-5">
-                                <input type="number" class="form-control" id="conLimitVal" min="0" disabled>
-                            </div>
-                            <div class="col-sm-3"></div> 
-                            <div class="col-sm-9 text-danger" id="conLimitError"></div>
-
-                            <div class="col-sm-3"></div>
-                            <div class="col-sm-4">
-                                <div class="icheck-primary mr-auto"> 
-                                    <input id="conMinForm" type="checkbox" />
-                                    <label for="conMinForm">
-                                        Min quantity to get discount
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-sm-5">
-                                <input type="number" class="form-control" id="conMinVal" min="0" disabled>
-                            </div>
-                            <div class="col-sm-3"></div> 
-                            <div class="col-sm-9 text-danger" id="conMinError"></div>
-
-                            <div class="col-sm-3"></div>
-                            <div class="col-sm-4">
-                                <div class="icheck-primary mr-auto"> 
-                                    <input id="conMaxForm" type="checkbox"/>
-                                    <label for="conMaxForm">
-                                        Max quantity to get discount
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-sm-5">
-                                <input type="number" class="form-control" id="conMaxVal" min="0" disabled>
-                            </div>
-                            <div class="col-sm-3"></div> 
-                            <div class="col-sm-9 text-danger" id="conMaxError"></div>
-                            
-                        </div>
-                        <!-- Quantity - End -->
-                    </div>
-                    <div class="modal-footer justify-content-between">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                        <button class="btn btn-success" id="conModalConfirm">Done</button>
-                    </div>
+                    </form>
                 </div>
             <!-- /.modal-content -->
             </div> 
@@ -493,6 +495,10 @@
         // Condition proccess
         $("#btnAddCondition").on("click", function () {
             showCondition(false, null);
+        });
+
+        $("#frmCondition").on("submit", function (e) {
+            e.preventDefault();
         });
 
         function showCondition(update, button) {
@@ -661,6 +667,10 @@
             if ($("input[name='conDiscountTypeForm']:checked").val() == "percentage") {
                 if ($("#conPercentageVal").val() == "") {
                     $("#conDiscountTypeError").html("Please enter percentage value.");
+                    valid = false;
+                }
+                if (+$("#conPercentageVal").val() <= 0 || +$("#conPercentageVal").val() > 100) {
+                    $("#conDiscountTypeError").html("Please enter valid percentage value (1 - 100).");
                     valid = false;
                 }
             } else {

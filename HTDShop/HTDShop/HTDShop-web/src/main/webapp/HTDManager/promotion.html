@@ -209,7 +209,7 @@
                         var str = "<img ";
                         str += "src=\"" + imgurl + row.image + "\"";
                         str += 'style="width: 100%;max-width:150px;cursor:pointer;"';
-                        str += 'onclick="showModal(\'' + row.name + '\',\'<img src=' + imgurl + row.image + ' style=&quot;width:100%&quot; />\',null,false,false)"';
+                        str += 'onclick="showModal(\'' + row.name.replace("\"", "&quot;").replace("\'", "") + '\',\'<img src=' + imgurl + row.image + ' style=&quot;width:100%&quot; />\',null,false,false)"';
                         str += "/>";
                         return str;
                     }
@@ -293,7 +293,7 @@
                         var str = "<img ";
                         str += "src=\"" + imgurl + row.image + "\"";
                         str += 'style="width: 100%;max-width:150px;cursor:pointer;"';
-                        str += 'onclick="showModal(\'' + row.name + '\',\'<img src=' + imgurl + row.image + ' style=&quot;width:100%&quot; />\',null,false,false)"';
+                        str += 'onclick="showModal(\'' + row.name.replace("\"", "&quot;").replace("\'", "") + '\',\'<img src=' + imgurl + row.image + ' style=&quot;width:100%&quot; />\',null,false,false)"';
                         str += "/>";
                         return str;
                     }

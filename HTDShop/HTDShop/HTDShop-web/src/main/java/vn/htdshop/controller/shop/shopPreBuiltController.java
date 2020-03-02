@@ -85,6 +85,8 @@ public class shopPreBuiltController {
         if (prebuilt.getCustomer() != null) {
             promolist = promolist.stream().filter(p -> p.getPreBuiltTarget() == 0).collect(Collectors.toList());
         }
+
+        model.asMap().put("avgRating", shopService.getAverageRating(prebuilt));
         model.asMap().put("promolist", promolist);
         model.asMap().put("prebuilt", prebuilt);
         return "HTDShop/prebuiltdetail";
