@@ -109,6 +109,10 @@ public class managerStaffController {
         }
         // prepare model
         Staff staff = staffFacade.find(id);
+        if (staff == null) {
+            System.out.println("Staff is null");
+            return redirectHome;
+        }
         model.addAttribute("staff", staff);
 
         return "HTDManager/staff_details";

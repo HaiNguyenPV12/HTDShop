@@ -82,7 +82,7 @@
                                 <label for="firstName" class="col-sm-3 col-form-label text-right">First Name<i
                                         class="text-danger">*</i></label>
                                 <div class="col-sm-9">
-                                    <input class="form-control" id="firstName" th:field="*{firstName}" placeholder="First Name"
+                                    <input class="form-control" id="firstName" th:field="*{firstName}" placeholder="First Name" type="text"
                                         th:classappend="${(#fields.hasErrors('firstName')?'is-invalid':'') + (submited != null and !#fields.hasErrors('firstName')?'is-valid':'')}" required/>
                                 </div>
                                 <div class="col-sm-3"></div>
@@ -97,7 +97,7 @@
                                 <label for="lastName" class="col-sm-3 col-form-label text-right">Last Name<i
                                         class="text-danger">*</i></label>
                                 <div class="col-sm-9">
-                                    <input class="form-control" id="lastName" th:field="*{lastName}" placeholder="Last Name"
+                                    <input class="form-control" id="lastName" th:field="*{lastName}" placeholder="Last Name" type="text"
                                         th:classappend="${(#fields.hasErrors('lastName')?'is-invalid':'') + (submited != null and !#fields.hasErrors('lastName')?'is-valid':'')}" required/>
                                 </div>
                                 <div class="col-sm-3"></div>
