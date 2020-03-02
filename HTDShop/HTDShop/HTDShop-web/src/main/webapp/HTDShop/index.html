@@ -22,9 +22,54 @@
             color: #fff;
         }
 
-        .product-wrapper {
-            max-height: 15rem;
+        .product-wrapper-big {
+            height: 35rem;
+            display: contents;
+            overflow: unset !important;
+        }
+
+        .product-wrapper-small {
+            max-height: 17rem;
+        }
+
+        .product-img-4 img {
+            width: 100%;
             height: 100%;
+            object-fit: contain;
+        }
+
+        .product-img-big {
+            height: 35rem;
+        }
+
+        .product-img-small {
+            height: 17rem;
+        }
+
+        .product-content-5 {
+            width: 100%;
+            background-color: rgba(39, 39, 39, 0.409);
+        }
+
+        .product-content-6 {
+            width: 100%;
+            background-color: rgba(39, 39, 39, 0.409);
+        }
+
+        .product-content-6>h4 a {
+            color: #fff;
+        }
+
+        .product-content-5>h4 a {
+            color: #fff;
+        }
+
+        .product-content-6>h5 {
+            color: #fff;
+        }
+
+        .product-content-5>h5 {
+            color: #fff;
         }
     </style>
 </head>
@@ -84,9 +129,9 @@
                         <!-- TOP SELLER  (OF TOP 7) -->
                         <div class="col-lg-5">
                             <div class="best-selling-left">
-                                <div class="product-wrapper">
-                                    <div class="product-img-4">
-                                        <a href="#"><img th:src="@{/images/product/1/1.jpg}" alt=""></a>
+                                <div class="product-wrapper product-wrapper-big">
+                                    <div class="product-img-4 product-img-big">
+                                        <a href="#"><img th:src="@{/images/product/1/0.jpg}" alt=""></a>
                                         <div class="product-action-right">
                                             <!-- TODO add to current cart on click -->
                                             <a class="animate-top" title="Add To Cart" href="#">
@@ -116,10 +161,10 @@
                                     <div class="coustom-row-3">
                                         <!-- FOREACH STARTS HERE -->
                                         <div class="custom-col-style-3 custom-col-3">
-                                            <div class="product-wrapper mb-6">
-                                                <div class="product-img-4">
+                                            <div class="product-wrapper product-wrapper-small mb-6">
+                                                <div class="product-img-4 product-img-small">
                                                     <a href="#">
-                                                        <img th:src="@{/images/product/1/1.jpg}" alt="">
+                                                        <img th:src="@{/images/product/6/0.jpg}" alt="">
                                                     </a>
                                                     <div class="product-action-right">
                                                         <a class="animate-top" title="Add To Cart" href="#">
@@ -145,10 +190,10 @@
                                         </div>
                                         <!-- FOREACH ENDS HERE -->
                                         <div class="custom-col-style-3 custom-col-3">
-                                            <div class="product-wrapper mb-6">
-                                                <div class="product-img-4">
+                                            <div class="product-wrapper product-wrapper-small mb-6">
+                                                <div class="product-img-4 product-img-small">
                                                     <a href="#">
-                                                        <img th:src="@{/images/product/1/1.jpg}" alt="">
+                                                        <img th:src="@{/images/product/7/0.jpg}" alt="">
                                                     </a>
                                                     <div class="product-action-right">
                                                         <a class="animate-top" title="Add To Cart" href="#">
@@ -173,10 +218,10 @@
                                             </div>
                                         </div>
                                         <div class="custom-col-style-3 custom-col-3">
-                                            <div class="product-wrapper mb-6">
-                                                <div class="product-img-4">
+                                            <div class="product-wrapper product-wrapper-small mb-6">
+                                                <div class="product-img-4 product-img-small">
                                                     <a href="#">
-                                                        <img th:src="@{/images/product/1/1.jpg}" alt="">
+                                                        <img th:src="@{/images/product/22/0.jpg}" alt="">
                                                     </a>
                                                     <div class="product-action-right">
                                                         <a class="animate-top" title="Add To Cart" href="#">
@@ -201,10 +246,10 @@
                                             </div>
                                         </div>
                                         <div class="custom-col-style-3 custom-col-3">
-                                            <div class="product-wrapper mb-6">
-                                                <div class="product-img-4">
+                                            <div class="product-wrapper product-wrapper-small mb-6">
+                                                <div class="product-img-4 product-img-small">
                                                     <a href="#">
-                                                        <img th:src="@{/images/product/1/1.jpg}" alt="">
+                                                        <img th:src="@{/images/product/29/0.jpg}" alt="">
                                                     </a>
                                                     <div class="product-action-right">
                                                         <a class="animate-top" title="Add To Cart" href="#">
@@ -229,10 +274,10 @@
                                             </div>
                                         </div>
                                         <div class="custom-col-style-3 custom-col-3">
-                                            <div class="product-wrapper mb-6">
-                                                <div class="product-img-4">
+                                            <div class="product-wrapper product-wrapper-small mb-6">
+                                                <div class="product-img-4 product-img-small">
                                                     <a href="#">
-                                                        <img th:src="@{/images/product/1/1.jpg}" alt="">
+                                                        <img th:src="@{/images/product/36/0.jpg}" alt="">
                                                     </a>
                                                     <div class="product-action-right">
                                                         <a class="animate-top" title="Add To Cart" href="#">
@@ -257,10 +302,10 @@
                                             </div>
                                         </div>
                                         <div class="custom-col-style-3 custom-col-3">
-                                            <div class="product-wrapper mb-6">
-                                                <div class="product-img-4">
+                                            <div class="product-wrapper product-wrapper-small mb-6">
+                                                <div class="product-img-4 product-img-small">
                                                     <a href="#">
-                                                        <img th:src="@{/images/product/1/1.jpg}" alt="">
+                                                        <img th:src="@{/images/product/46/0.jpg}" alt="">
                                                     </a>
                                                     <div class="product-action-right">
                                                         <a class="animate-top" title="Add To Cart" href="#">
