@@ -45,6 +45,14 @@ public class BuildService {
 
     boolean isBuilding = false;
 
+    public PreBuilt getSessionPrebuilt() {
+        return (PreBuilt) session.getAttribute("prebuiltSession");
+    }
+
+    public void setSessionPrebuilt(PreBuilt prebuilt) {
+        session.setAttribute("prebuiltSession", prebuilt);
+    }
+
     public void initBuildApp() {
         if (!isBuilding) {
             setProductList();

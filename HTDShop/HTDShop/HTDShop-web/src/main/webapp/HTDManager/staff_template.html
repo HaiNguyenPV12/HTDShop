@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDManager/layout}">
+
+<head>
+    <title>HTD Manager - Staff</title>
+    <th:block layout:fragment="additionalCss">
+        <link th:href="@{/manager_resources/plugins/icheck-bootstrap/icheck-bootstrap.min.css}" rel="stylesheet">
+        <link th:href="@{/manager_resources/plugins/daterangepicker/daterangepicker.css}" rel="stylesheet">
+    </th:block>
+</head>
+
+<body>
+
+    <span layout:fragment="title">
+        <a th:href="@{/manager/staff}">
+            <i class="fas fa-balance-scale" style="font-size:20px"></i> Staff
+        </a>
+        >
+        <th:block th:if="${update==null}">Add new Staff</th:block>
+        <th:block th:if="${update!=null}">Edit Staff: "<th:block th:text="${staff.username}"></th:block>"</th:block>
+    </span>
+
+    <div layout:fragment="breadcrumb">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a th:href="@{/manager}">Home</a></li>
+            <li class="breadcrumb-item active"><a th:href="@{/manager/staff}">Staff</a></li>
+        </ol>
+    </div>
+
+    <div layout:fragment="content">
+        <form action="" th:action="@{/manager/staff/__${formUrl}__}" th:object="${staff}" method="POST"
+            enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-lg-12 mb-3" th:if="${#fields.hasErrors('global')}">
+                    <p class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i> 
+                        <span th:errors="*{global}">Name Error</span>
+                    </p>
+                </div>
+                <div class="col-lg-12">
+                    <div class="card card-purple">
+                        <div class="card-header">
+                            <h3 class="card-title">Information</h3>
+                        </div>
+                        <div class="card-body">
+                            <!-- USERNAME -->
+                            <div class="form-group row">
+                                <label for="username" class="col-sm-3 col-form-label text-right">Username<i
+                                        class="text-danger">*</i></label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" id="username" placeholder="Username" th:field="*{username}" 
+                                        th:classappend="${(#fields.hasErrors('username')?'is-invalid':'') + (submited != null and !#fields.hasErrors('username')?'is-valid':'')}" required/>
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9" th:if="${#fields.hasErrors('username')}">
+                                    <ul class="text-danger">
+                                        <li th:each="err : ${#fields.errors('username')}" th:text="${err}">Username Error</li>
+                                    </ul> 
+                                </div>
+                            </div>
+                            <!-- PASSWORD -->
+                            <div class="form-group row">
+                                <label for="password" class="col-sm-3 col-form-label text-right">Password<i
+                                        class="text-danger">*</i></label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" id="password" th:field="*{password}" type="password"
+                                        th:classappend="${(#fields.hasErrors('password')?'is-invalid':'') + (submited != null and !#fields.hasErrors('password')?'is-valid':'')}" required/>
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9">
+                                    <p style="font-style: italic;">*Leave blank to keep old password</p>
+                                </div>
+                                <div class="col-sm-9" th:if="${#fields.hasErrors('password')}">
+                                    <ul class="text-danger">
+                                        <li th:each="err : ${#fields.errors('password')}" th:text="${err}">Password Error</li>
+                                    </ul> 
+                                </div>
+                            </div>
+                            <!-- FIRST NAME -->
+                            <div class="form-group row">
+                                <label for="firstName" class="col-sm-3 col-form-label text-right">First Name<i
+                                        class="text-danger">*</i></label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" id="firstName" th:field="*{firstName}" placeholder="First Name" type="text"
+                                        th:classappend="${(#fields.hasErrors('firstName')?'is-invalid':'') + (submited != null and !#fields.hasErrors('firstName')?'is-valid':'')}" required/>
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9" th:if="${#fields.hasErrors('firstName')}">
+                                    <ul class="text-danger">
+                                        <li th:each="err : ${#fields.errors('firstName')}" th:text="${err}">Name Error</li>
+                                    </ul> 
+                                </div>
+                            </div>
+                            <!-- LAST NAME -->
+                            <div class="form-group row">
+                                <label for="lastName" class="col-sm-3 col-form-label text-right">Last Name<i
+                                        class="text-danger">*</i></label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" id="lastName" th:field="*{lastName}" placeholder="Last Name" type="text"
+                                        th:classappend="${(#fields.hasErrors('lastName')?'is-invalid':'') + (submited != null and !#fields.hasErrors('lastName')?'is-valid':'')}" required/>
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9" th:if="${#fields.hasErrors('lastName')}">
+                                    <ul class="text-danger">
+                                        <li th:each="err : ${#fields.errors('lastName')}" th:text="${err}">Name Error</li>
+                                    </ul> 
+                                </div>
+                            </div>
+                            <!-- GENDER -->
+                            <div class="form-group row">
+                                <label for="gender" class="col-sm-3 col-form-label text-right">Gender<i
+                                        class="text-danger">*</i></label>
+                                <div class="col-sm-9">
+                                    <select id="gender" th:field=*{gender} class="form-control">
+                                        <option th:value="0" value="0">Female</option>
+                                        <option th:value="1" value="1">Male</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9" th:if="${#fields.hasErrors('gender')}">
+                                    <ul class="text-danger">
+                                        <li th:each="err : ${#fields.errors('gender')}" th:text="${err}">Gender Error</li>
+                                    </ul> 
+                                </div>
+                            </div>
+                            <!-- BIRTHDAY -->
+                            <div class="form-group row">
+                                <label for="birthday" class="col-sm-3 col-form-label text-right">Birthday<i
+                                        class="text-danger">*</i></label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" id="birthday" th:field="*{birthday}" placeholder="Birthday"
+                                        th:classappend="${(#fields.hasErrors('birthday')?'is-invalid':'') + (submited != null and !#fields.hasErrors('birthday')?'is-valid':'')}" required/>
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9" th:if="${#fields.hasErrors('birthday')}">
+                                    <ul class="text-danger">
+                                        <li th:each="err : ${#fields.errors('birthday')}" th:text="${err}">Birthday Error</li>
+                                    </ul> 
+                                </div>
+                            </div>
+                            <!-- EMAIL -->
+                            <div class="form-group row">
+                                <label for="email" class="col-sm-3 col-form-label text-right">Email<i
+                                        class="text-danger">*</i></label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" id="email" th:field="*{email}" type="email" placeholder="Email"
+                                        th:classappend="${(#fields.hasErrors('email')?'is-invalid':'') + (submited != null and !#fields.hasErrors('email')?'is-valid':'')}" required/>
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9" th:if="${#fields.hasErrors('email')}">
+                                    <ul class="text-danger">
+                                        <li th:each="err : ${#fields.errors('email')}" th:text="${err}">Email Error</li>
+                                    </ul> 
+                                </div>
+                            </div>
+                            <!-- ADRESS -->
+                            <div class="form-group row">
+                                <label for="address" class="col-sm-3 col-form-label text-right">Address<i
+                                        class="text-danger">*</i></label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" id="address" th:field="*{address}" placeholder="Address"
+                                        th:classappend="${(#fields.hasErrors('address')?'is-invalid':'') + (submited != null and !#fields.hasErrors('address')?'is-valid':'')}" required/>
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9" th:if="${#fields.hasErrors('address')}">
+                                    <ul class="text-danger">
+                                        <li th:each="err : ${#fields.errors('address')}" th:text="${err}">Address Error</li>
+                                    </ul> 
+                                </div>
+                            </div>
+                            <!-- PHONE -->
+                            <div class="form-group row">
+                                <label for="phone" class="col-sm-3 col-form-label text-right">Phone<i
+                                        class="text-danger">*</i></label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" id="phone" th:field="*{phone}" type="number" placeholder="Phone number"
+                                        th:classappend="${(#fields.hasErrors('phone')?'is-invalid':'') + (submited != null and !#fields.hasErrors('phone')?'is-valid':'')}" required/>
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9" th:if="${#fields.hasErrors('phone')}">
+                                    <ul class="text-danger">
+                                        <li th:each="err : ${#fields.errors('phone')}" th:text="${err}">Phone Error</li>
+                                    </ul> 
+                                </div>
+                            </div>
+                            <!-- IMAGE -->
+                            <div class="form-group row">
+                                <label for="image" class="col-sm-3 col-form-label text-right">Image<i
+                                        class="text-danger">*</i></label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" id="image" th:field="*{image}" type="file"
+                                        th:classappend="${(#fields.hasErrors('image')?'is-invalid':'') + (submited != null and !#fields.hasErrors('image')?'is-valid':'')}" required/>
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9" th:if="${#fields.hasErrors('image')}">
+                                    <ul class="text-danger">
+                                        <li th:each="err : ${#fields.errors('image')}" th:text="${err}">Image Error</li>
+                                    </ul> 
+                                </div>
+                            </div>
+                            <!-- ROLE -->
+                            <div class="form-group row">
+                                <label for="role" class="col-sm-3 col-form-label text-right">Role<i
+                                        class="text-danger">*</i></label>
+                                <div class="col-sm-9">
+                                    <select id="role" class="form-control" th:field="*{role.id}"
+                                    th:classappend="${(#fields.hasErrors('role')?'is-invalid':'') + (submited != null and !#fields.hasErrors('role')?'is-valid':'')}">
+                                        <option value="">Select Role</option>
+                                        <option th:each="r : ${staffRoles}" th:value="${r.id}" th:text="${r.name}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9" th:if="${#fields.hasErrors('role')}">
+                                    <ul class="text-danger">
+                                        <li th:each="err : ${#fields.errors('role')}" th:text="${err}">Role Error</li>
+                                    </ul> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Submit button -->
+                <div class="col-lg-12 text-right mb-3"> 
+                    <input type="submit" class="btn btn-success" value="Add Staff" th:if="${update==null}"></input>
+                    <input type="submit" class="btn btn-success" value="Update Staff" th:if="${update!=null}"></input>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block layout:fragment="additionalScript">
+        <script th:src="@{/manager_resources/plugins/moment/moment.min.js}"></script> 
+        <script th:src="@{/manager_resources/plugins/daterangepicker/daterangepicker.js}"></script> 
+    </th:block>
+    <script layout:fragment="script" th:inline="none">
+
+
+        $(document).ready(function () {
+            $('#birthday').daterangepicker({
+                "singleDatePicker": true,
+                "showDropdowns": true,
+                "minDate": "01/01/1800",
+                "maxDate": moment().format("DD/MM/YYYY")
+            }, function (start, end, label) {
+                console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -73,7 +73,7 @@ public class managerProductImageController {
     ManagerService managerService;
 
     // ==== PRODUCT IMAGE INDEX ==== \\
-    @RequestMapping(value = { "" }, method = RequestMethod.GET)
+    @RequestMapping(value = "", method = RequestMethod.GET)
     public String getHome(Model model, @RequestParam(value = "id", required = false) Integer id) {
         if (!managerService.checkLoginWithRole("product_read")) {
             return redirectHome;

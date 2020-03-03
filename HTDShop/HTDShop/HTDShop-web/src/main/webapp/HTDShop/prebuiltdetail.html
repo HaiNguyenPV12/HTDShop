@@ -200,11 +200,21 @@
                     </div>
                     <div class="col-md-12 col-lg-5 col-12">
                         <div class="product-details-content">
-                            <h3>[[${prebuilt.name}]]</h3>
+                            <h3 th:text="${prebuilt.name}"></h3>
                             <div class="rating-number">
-
                                 <div class="quick-view-number">
-
+                                    <th:block th:each="i : ${#numbers.sequence(1, avgRating)}" th:if="${avgRating > 0}">
+                                        <i th:if="${i != avgRating && i % 2 == 0}" class="fas fa-star"></i>
+                                        <i th:if="${i == avgRating && i % 2 == 0}" class="fas fa-star"></i>
+                                        <i th:if="${i == avgRating && i % 2 != 0}" class="fas fa-star-half-alt"></i>
+                                    </th:block>
+                                    <th:block th:each="i : ${#numbers.sequence(1, 10-avgRating)}" th:if="${avgRating != 10}">
+                                        <i th:if="${i != (10-avgRating) && i % 2 == 0}" class="far fa-star"></i>
+                                        <i th:if="${i == (10-avgRating) && i % 2 == 0}" class="far fa-star"></i>
+                                    </th:block>
+                                </div>
+                                <div class="quick-view-number">
+                                    <span th:text="${prebuilt.preBuiltRatingCollection.size() + ' rating(s)'}"></span>
                                 </div>
                             </div>
                             <div class="details-price">
@@ -358,15 +368,18 @@
                                         enctype="application/x-www-form-urlencoded">
                                         <div class="d-flex">
                                             <input type="hidden" name="prebuiltid" th:value="${prebuilt.id}" />
-                                            <input type="number" class="form-control form-control-sm" name="rating"
-                                                required min=1 max=10 step="1" style="width: 5rem;" />
+                                            <select class="form-control form-control-sm" name="rating" id="" style="width: 5rem;">
+                                                <option th:each="num : ${#numbers.sequence(0, 10)}" th:value="${num}" th:text="${num}"></option>
+                                            </select>
+                                            <!-- <input type="number" class="form-control form-control-sm" name="rating"
+                                                required min=1 max=10 step="1" style="width: 5rem;" /> -->
                                             <input type="text" class="form-control form-control-sm" name="comment"
                                                 placeholder="Comment and rating on this pre-built PC" required />
                                             <button type="submit" class="btn btn-secondary" style="height: auto;"><i
                                                     class="fas fa-comment"></i></button>
                                             <br>
                                         </div>
-                                        <i class="text-muted">Rating is from 1 - 10</i>
+                                        <!-- <i class="text-muted">Rating is from 1 - 10</i> -->
                                     </form>
                                 </div>
                             </div>
@@ -385,7 +398,7 @@
 
                                                 <span class="text-muted float-right" th:text="${#dates.format(r.createdAt, 'dd/MM/yyyy HH:mm')}">8:03 PM Today</span>
                                                 <br>
-                                                <th:block th:each="i : ${#numbers.sequence(1, r.rating)}">
+                                                <th:block th:each="i : ${#numbers.sequence(1, r.rating)}" th:if="${r.rating > 0}">
                                                     <i th:if="${i != r.rating && i % 2 == 0}" class="fas fa-star"></i>
                                                     <i th:if="${i == r.rating && i % 2 == 0}" class="fas fa-star"></i>
                                                     <i th:if="${i == r.rating && i % 2 != 0}" class="fas fa-star-half-alt"></i>

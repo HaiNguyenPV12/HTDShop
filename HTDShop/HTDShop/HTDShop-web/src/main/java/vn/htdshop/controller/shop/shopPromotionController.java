@@ -5,27 +5,20 @@
  */
 package vn.htdshop.controller.shop;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
 
+import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
-import vn.htdshop.entity.Product;
-import vn.htdshop.entity.ProductComment;
-import vn.htdshop.entity.ProductCommentReply;
 import vn.htdshop.entity.PromotionDetail;
-import vn.htdshop.sb.ProductCommentFacadeLocal;
-import vn.htdshop.sb.ProductCommentReplyFacadeLocal;
 import vn.htdshop.sb.ProductFacadeLocal;
 import vn.htdshop.sb.PromotionDetailFacadeLocal;
 import vn.htdshop.sb.PromotionFacadeLocal;
@@ -38,7 +31,7 @@ import vn.htdshop.utility.ShopService;
 @Controller
 @RequestMapping("promotion")
 public class shopPromotionController {
-    final private String redirectHome = "redirect:";
+
     @EJB(mappedName = "ProductFacade")
     ProductFacadeLocal productFacade;
 
@@ -57,7 +50,8 @@ public class shopPromotionController {
 
         List<PromotionDetail> promolist = promotionDetailFacade.findAll().stream()
                 .filter(p -> p.getIsDisabled() == false)
-                .filter(p -> p.getIsAlways() || (!p.getIsAlways() && p.getEndDate().compareTo(new Date()) >= 0))
+                .filter(p -> p.getIsAlways()
+                        || (!p.getIsAlways() && p.getEndDate().compareTo(new LocalDate().toDate()) >= 0))
                 .collect(Collectors.toList());
 
         model.asMap().put("promolist", promolist);

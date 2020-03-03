@@ -12,6 +12,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
@@ -97,6 +98,45 @@ public class managerPromotionController {
             model.addAttribute("badAlert", model.asMap().get("badAlert"));
         }
 
+        // Add indicator attribute for sidemenu highlight
+        model.asMap().put("menu", "promotion");
+        return "HTDManager/promotion";
+    }
+
+    // ==== PROMOTION INDEX ==== \\
+    @RequestMapping(value = "doDisable", method = RequestMethod.POST)
+    public @ResponseBody Boolean doDisable(@RequestParam(value = "id", required = false) Integer id) {
+        if (!managerService.checkLoginWithRole("promotion_edit")) {
+            return false;
+        }
+        if (id == null) {
+            return false;
+        }
+        PromotionDetail promo = promotionDetailFacade.find(id);
+        if (promo == null) {
+            return false;
+        }
+        promo.setIsDisabled(true);
+        promotionDetailFacade.edit(promo);
+        return true;
+    }
+
+    // ==== PROMOTION INDEX OLD ==== \\
+    @RequestMapping(value = "old", method = RequestMethod.GET)
+    public String getHomeOld(HttpSession session, Model model) {
+        // Check login session with role
+        if (!managerService.checkLoginWithRole("promotion_read")) {
+            return redirectHome;
+        }
+
+        // Check for any alert
+        if (model.asMap().containsKey("goodAlert")) {
+            model.addAttribute("goodAlert", model.asMap().get("goodAlert"));
+        }
+        if (model.asMap().containsKey("badAlert")) {
+            model.addAttribute("badAlert", model.asMap().get("badAlert"));
+        }
+
         // Pass promotion detail list to session
         model.asMap().put("promotions",
                 promotionDetailFacade.findAll().stream()
@@ -105,7 +145,37 @@ public class managerPromotionController {
 
         // Add indicator attribute for sidemenu highlight
         model.asMap().put("menu", "promotion");
-        return "HTDManager/promotion";
+        return "HTDManager/promotion_old";
+    }
+
+    @RequestMapping(value = "list", method = RequestMethod.POST)
+    public @ResponseBody List<PromotionView> getPromotionList(
+            @RequestParam(value = "status", required = false) Integer status) {
+        // Check login session with role
+        if (!managerService.checkLoginWithRole("promotion_read")) {
+            return new ArrayList<>();
+        }
+        if (status == null || (0 != status && 1 != status)) {
+            return new ArrayList<>();
+        }
+        List<PromotionView> result = new ArrayList<PromotionView>();
+
+        // Pass promotion detail list to session
+        Collection<PromotionDetail> promolist = promotionDetailFacade.findAll();
+        if (status == 1) {
+            promolist = promolist.stream().filter(p -> p.getIsDisabled() == false)
+                    .sorted(Comparator.comparing(PromotionDetail::getId, Comparator.reverseOrder()))
+                    .collect(Collectors.toList());
+        } else {
+            promolist = promolist.stream().filter(p -> p.getIsDisabled() == true)
+                    .sorted(Comparator.comparing(PromotionDetail::getId, Comparator.reverseOrder()))
+                    .collect(Collectors.toList());
+        }
+        for (PromotionDetail promo : promolist) {
+            result.add(new PromotionView(promo));
+        }
+
+        return result;
     }
 
     @RequestMapping(value = "doCreateImageSlide", method = RequestMethod.POST)
