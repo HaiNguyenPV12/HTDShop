@@ -38,21 +38,21 @@ public class shopRegisterController {
             return "redirect:/";
         }
         model.addAttribute("customer", new Customer());
+        model.addAttribute("formUrl","doAdd");
         if (model.asMap().containsKey("error")) {
-        model.addAttribute("org.springframework.validation.BindingResult.customer",
-        model.asMap().get("error"));
+            model.addAttribute("org.springframework.validation.BindingResult.customer", model.asMap().get("error"));
         }
         return "HTDShop/register";
     }
 
-    //== Add new Customer - Process ==\
+    // == Add new Customer - Process ==\
     @RequestMapping(value = "doAdd", method = RequestMethod.POST)
     public String doAdd(@Valid @ModelAttribute("customer") Customer customer, BindingResult error, HttpSession session,
             Model model, RedirectAttributes redirect) {
-        if (!shopService.checkLogin()) {
+        if (shopService.checkLogin()) {
             return "redirect:/";
         }
-        // Check role name exists
+        // Check email exists
         if (customerFacade.findByEmail(customer.getEmail()) != null) {
             error.rejectValue("email", "customer", "This email is exists.");
         }
@@ -60,20 +60,11 @@ public class shopRegisterController {
         if (!error.hasErrors()) {
             // Insert into database
             customerFacade.create(customer);
-            // Pass alert attribute to notify successful process
-            redirect.addFlashAttribute("goodAlert", "Successfully Created \"" + customer.getEmail() + "\"!");
             return "HTDShop/login";
-        }
-        // Show common error message
-        error.reject("common", "Error adding new role.");
-        // Pass binding result to redirect page (to show errors)
-        redirect.addFlashAttribute("error", error);
-        // Pass current input to redirect page (to keep old input)
-        redirect.addFlashAttribute("customer", customer);
-        // Redirect to add page
+        }        
+        // Pass alert attribute to notify successful process
+        redirect.addFlashAttribute("goodAlert", "Successfully Created \"" + customer.getEmail() + "\"!");
         return "HTDShop/register";
     }
-    
-   
-    
+
 }

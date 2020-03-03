@@ -318,6 +318,31 @@ public class ShopService {
         return result;
     }
 
+    public Double getcartItemPrice(String id, Integer quan) {
+        Double result = 0d;
+        if (id != null) {
+            Product product = null;
+            PreBuilt preBuilt = null;
+            if (id.substring(0, 1).equals("a")) {
+                product = productFacade.find(Integer.parseInt(id.substring(1)));
+                if (product != null) {
+                    result = (getDiscountPrice(product)) * quan;
+                }else{
+                    return result;
+                }
+            } else {
+                preBuilt = preBuiltFacade.find(Integer.parseInt(id.substring(1)));
+                if (preBuilt != null) {
+                    result = (getPreBuiltDiscountPrice(preBuilt)) * quan;
+                }
+                else{
+                    return result;
+                }
+            }
+        }
+        return result;
+    }
+
     public Object getCartInfo(String id) {
         if (id.substring(0, 1).equals("a")) {
             return productFacade.find(Integer.parseInt(id.substring(1)));

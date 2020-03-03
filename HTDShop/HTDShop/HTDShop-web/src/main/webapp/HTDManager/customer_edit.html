@@ -130,7 +130,7 @@
                             <label for="password" class="col-sm-3 col-form-label text-right">Password<i
                                     class="text-danger">*</i></label>
                             <div class="col-sm-9">
-                                <input class="form-control" id="password" placeholder="Password" th:field="*{password}"
+                                <input class="form-control" id="password" placeholder="Password" th:field="*{password}" type="password"
                                     th:classappend="${(#fields.hasErrors('password')?'is-invalid':'') + (submited != null and !#fields.hasErrors('password')?'is-valid':'')}" required/>
                             </div>
                             <div class="col-sm-3"></div>

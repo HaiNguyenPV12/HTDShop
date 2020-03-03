@@ -35,8 +35,11 @@ public class shopProfileController {
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String viewProfile(Model model, ModelMap modelMap, HttpSession session) {
-        shopService.checkLogin();     
-        return "redirect:/profile";
+        if (session.getAttribute("loggedInCustomer") != null) {
+            model.asMap().put("cust", shopService.getLoggedInCustomer());
+            return "redirect:/profile";
+        }
+        return "redirect:/";
     }
 
     @RequestMapping(value = "doEdit", method = RequestMethod.POST)
@@ -46,7 +49,7 @@ public class shopProfileController {
             return "redirect:/";
         }
         model.addAttribute("error", error);
-        
+
         if (!error.hasErrors()) {
             // Update in database
             customerFacade.edit(customer);
@@ -54,5 +57,5 @@ public class shopProfileController {
         }
         redirect.addFlashAttribute("goodAlert", "Successfully updated \"" + customer.getId() + "\"!");
         return "redirect:/profile";
-    }   
+    }
 }

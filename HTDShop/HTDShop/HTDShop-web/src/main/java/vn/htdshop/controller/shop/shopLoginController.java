@@ -45,14 +45,11 @@ public class shopLoginController {
     }
 
     @RequestMapping(value = "doLogin", method = RequestMethod.POST)
-    // Add @Valid before @ModelAttribute to validate base on entity annotation
-    // For example: public String postLogin(@Valid @ModelAttribute("staff") Staff
-    // staff...){}
-    // Here we just have to check username and password, not all so we check
-    // manually
     public String postLogin(@RequestParam(value = "email", required = false) String email,
             @RequestParam(value = "password", required = false) String password, RedirectAttributes redirect,
-            @RequestParam(value = "remember", required = false) String remember, HttpSession session,           
+            @RequestParam(value = "remember", required = false) String remember, 
+            @RequestParam(value = "redirect", required = false) String redirectUrl,
+            HttpSession session,           
             HttpServletResponse response) {
 
         // Check if error exists
@@ -61,13 +58,20 @@ public class shopLoginController {
         if (result != null) {
             // If ok, save staff's session
             session.setAttribute("loggedInCustomer", result);
+            shopService.getLoggedInCart();
             if (remember != null) {
                 Cookie cookie = new Cookie("loggedInCustomer", result.getId().toString());
                 response.addCookie(cookie);
             }
             redirect.addFlashAttribute("goodAlert", "Successfully logged in as \"" + result.getFirstName() + "\".");
+            if (redirectUrl == null || redirectUrl.isEmpty()) {
+                return "redirect:/";
+            }
+            else{
+                return "redirect:/cart/checkout";
+            }
             // Then redirect to index
-            return "redirect:/";
+           
 
         }
         return "HTDShop/login";

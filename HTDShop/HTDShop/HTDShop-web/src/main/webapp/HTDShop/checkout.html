@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDShop/layout}">
+
+<head>
+    <title>HTD Shop - Check out</title>
+    <th:block layout:fragment="additionalCss">
+        <link rel="stylesheet" th:href="@{/resources/Content/fontawesome-free/css/all.min.css}">
+    </th:block>
+
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="breadcrumb-area pt-10 pb-10"
+            style="background-image: linear-gradient(141deg, #7906d88c 0%, #fff 51%, #7906d88c 75%);">
+            <div class="container">
+                <div class="breadcrumb-content text-center">
+                    <ul>
+                        <li><a th:href="@{/}">HOME</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="checkout-area ptb-100">
+            <div class="container">
+                <div class="row" th:if="${session.loggedInCustomer == null}">
+                    <div class="col-md-12">
+                        <div class="coupon-accordion" >
+                            <!-- ACCORDION START -->
+                            <h3><span id="showlogin" >Click here to login</span></h3>
+                            <div id="checkout-login" class="coupon-content">
+                                <div class="coupon-info">
+                                    <form th:action="@{/login/doLogin?redirect=checkout}" method="POST">
+                                        <p class="form-row-first">
+                                            <label>Email <span class="required">*</span></label>
+                                            <input type="email" name="email" placeholder="Email" id="email" required autofocus />
+                                        </p>
+                                        <p class="form-row-last">
+                                            <label>Password <span class="required">*</span></label>
+                                            <input type="password" name="password" placeholder="Password" id="password" required />
+                                        </p>
+                                        <p class="form-row">
+                                            <button type="submit" class="default-btn floatright">Login</button>  
+                                        </p>
+                                    </form>
+                                </div>
+                            </div>
+                            <!-- ACCORDION END -->
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 col-md-12 col-12">
+                        <form th:action="@{/cart/doCheckout}" th:object="${custom}" method="POST" >
+                            <div class="checkbox-form">
+                                <h3>Billing Details</h3>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="checkout-form-list">
+                                            <label>First Name <span class="required">*</span></label>
+                                            <input type="text" placeholder="Enter your First Name"
+                                                th:value="${shopSv.getLoggedInCustomer() == null ? '' : shopSv.getLoggedInCustomer().firstName}"
+                                                th:field="*{firstName}"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="checkout-form-list">
+                                            <label>Last Name <span class="required">*</span></label>
+                                            <input type="text" placeholder="Enter your Last Name"
+                                                th:value="${shopSv.getLoggedInCustomer() == null ? '' : shopSv.getLoggedInCustomer().lastName}"
+                                                th:field="*{lastName}" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="checkout-form-list">
+                                            <label>Address <span class="required">*</span></label>
+                                            <input type="text" placeholder="Enter your address"
+                                                th:value="${shopSv.getLoggedInCustomer() == null ? '' : shopSv.getLoggedInCustomer().address}" 
+                                                th:field="*{address}"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="checkout-form-list">
+                                            <label>Email Address <span class="required">*</span></label>
+                                            <input type="email" placeholder="Enter your email"
+                                                th:value="${shopSv.getLoggedInCustomer() == null ? '' : shopSv.getLoggedInCustomer().email}"
+                                                th:field="*{email}" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="checkout-form-list">
+                                            <label>Phone <span class="required">*</span></label>
+                                            <input type="text" placeholder="Enter your phone"
+                                                th:value="${shopSv.getLoggedInCustomer() == null ? '' : shopSv.getLoggedInCustomer().phone}" 
+                                                th:field="*{phone}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="checkout-form-list create-acc">
+                                            <a th:href=@{/register}>Register?</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="payment-method">
+                                    <div class="payment-accordion">                                        
+                                        <div class="order-button-payment">
+                                            <input type="submit" value="Place order" />
+                                        </div>								
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-12">
+                        <div class="your-order">
+                            <h3>Your order</h3>
+                            <div class="your-order-table table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th class="product-name">Product</th>
+                                            <th class="product-total">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="cart_item" th:each="c : ${cart}"
+                                            th:with="product = ${shopSv.getCartInfo(c.id)}">
+                                            <td class="product-name">
+                                                <span th:text="${product.name}" th:if="${#strings.substring(c.id, 0, 1).equals('a')}">Bits Headphone</span>
+                                                <span th:text="${product.name}" th:if="${#strings.substring(c.id, 0, 1).equals('b')}">Bits Headphone</span>
+                                                x <span></span>
+                                                <strong class="product-quantity" th:text="${c.quan}"></strong>
+                                            </td>
+                                            <td class="product-total">
+                                                <span class="amount" th:text="${'$' + #numbers.formatDecimal(shopSv.getcartItemPrice(c.id,c.quan) , 1, 'POINT', 2, 'COMMA')}">£79.84</span>
+                                            </td>                                            	
+                                        </tr>
+                                                                           	                                        
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="order-total">
+                                            <th>Order Total</th>
+                                            <td><strong><span class="amount" th:text="${'$' + #numbers.formatDecimal(shopSv.getCartTotal() , 1, 'POINT', 2, 'COMMA')}">£152.97‬</span></strong>
+                                            </td>
+                                        </tr>	     
+                                    </tfoot>
+                                </table>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:src="@{/manager_resources/plugins/jquery/jquery.min.js}"></script>
+    <!-- Bootstrap 4 -->
+    <script th:src="@{/manager_resources/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <!-- AdminLTE App -->
+    <script th:src="@{/manager_resources/Scripts/adminlte.min.js}"></script>
+
+    <script>
+        // function doRemoveFromCart(id) {
+        //     var removeFromCartUrl = /*[[@{/cart/remove}]]*/'';
+        //     removeFromCartUrl += "?id=" + id;
+        //     $.ajax({
+        //         url: removeFromCartUrl,
+        //         method: 'POST',
+        //         cache: false,
+        //         success: function (data) {
+        //             if (data == "ok") {
+        //                 getCart();
+        //                 Toast.fire({
+        //                     type: 'success',
+        //                     title: 'Removed from cart.'
+        //                 });
+        //             } else {
+        //                 Toast.fire({
+        //                     type: 'error',
+        //                     title: data,
+        //                     timer: 5000
+        //                 });
+        //             }
+        //         }
+        //     });
+        // }
+    </script>
+</body>
+
+</html>

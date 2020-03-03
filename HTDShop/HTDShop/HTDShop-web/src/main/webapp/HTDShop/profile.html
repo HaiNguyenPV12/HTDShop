@@ -7,7 +7,7 @@
     <th:block layout:fragment="additionalCss">
         <link rel="stylesheet" th:href="@{/resources/Content/fontawesome-free/css/all.min.css}">
     </th:block>
-    
+
 </head>
 
 <body>
@@ -59,13 +59,15 @@
                                                 <div class="col-sm-3"></div>
                                             </div>
                                             <div class="form-group row">
-                                                <label for="password" class="col-sm-3 col-form-label text-right">Password<i
+                                                <label for="password"
+                                                    class="col-sm-3 col-form-label text-right">Password<i
                                                         class="text-danger">*</i></label>
                                                 <div class="col-sm-9">
-                                                    <input class="form-control" id="password" placeholder="Password" th:field="*{password}" required/>
+                                                    <input class="form-control" id="password" placeholder="Password"
+                                                        th:field="*{password}" required />
                                                 </div>
                                                 <div class="col-sm-3"></div>
-                                                
+
                                             </div>
                                             <div class="form-group row">
                                                 <label for="phone" class="col-sm-3 col-form-label text-right">Phone<i
@@ -113,14 +115,15 @@
                                                     <div class="input-group">
                                                         <div class="input-group-prepend">
                                                         </div>
-                                                        <input type="text" class="form-control float-right" id="date" th:field="${customer.birthday}"
-                                                            name="date"/>
+                                                        <input type="text" class="form-control float-right" id="date"
+                                                            th:field="${customer.birthday}" name="date" />
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-3"></div>
                                             </div>
                                             <div class="button-box">
-                                                <button type="submit" class="default-btn floatright">Update Profile</button>
+                                                <button type="submit" class="default-btn floatright">Update
+                                                    Profile</button>
                                             </div>
                                         </div>
                                     </form>
@@ -132,7 +135,7 @@
             </div>
         </div>
     </div>
-    
+
     <script th:src="@{/manager_resources/plugins/jquery/jquery.min.js}"></script>
     <!-- Bootstrap 4 -->
     <script th:src="@{/manager_resources/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
