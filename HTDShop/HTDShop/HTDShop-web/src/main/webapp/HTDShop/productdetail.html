@@ -573,13 +573,13 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header" id='modalHeader'>
-                        <h4 class="modal-title" id="modalTitle">Confirm deletion</h4>
+                        <h4 class="modal-title" id="modalTitle">Confirm captcha</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body" id="modalBody">
-                        <div id="g-recaptcha" class="g-recaptcha" data-sitekey="6LdeYdoUAAAAAHL11wXzM80G7X_dNVEQAYp_V9JN" data-callback="checked"></div>
+                        <div id="g-recaptcha" class="g-recaptcha ml-auto mr-auto" data-sitekey="6LdeYdoUAAAAAHL11wXzM80G7X_dNVEQAYp_V9JN" data-callback="checked"></div>
                     </div>
                     <div class="modal-footer justify-content-between">
                         <button type="button" class="btn btn-default" data-dismiss="modal" id='modalClose'>Cancel</button>
@@ -635,38 +635,7 @@
                 grecaptcha.render("g-recaptcha", { "sitekey": "6LdeYdoUAAAAAHL11wXzM80G7X_dNVEQAYp_V9JN", "callback": "checked" });
             }
             showModal("Confirm Captcha");
-            // if (check) {
-            //     var formData = new FormData($(this)[0]);
-            //     $.ajax({
-            //         url: $(this).attr("action"),
-            //         type: 'POST',
-            //         data: formData,
-            //         contentType: false,
-            //         processData: false,
-            //         success: function (data) {
-            //             if (data == true) {
-            //                 // grecaptcha.reset();
-            //                 // check = false;
-            //                 window.location.reload(true)
-            //             } else {
-            //                 grecaptcha.reset();
-            //                 check = false;
-            //                 Toast.fire({
-            //                     type: 'error',
-            //                     title: "Captcha error, please try again!",
-            //                     timer: 5000
-            //                 });
-            //             }
-            //         }
-            //     });
-
-            // } else {
-            //     Toast.fire({
-            //         type: 'error',
-            //         title: "Please confirm recaptcha!",
-            //         timer: 5000
-            //     });
-            // }
+        
         });
 
         function checked() {
