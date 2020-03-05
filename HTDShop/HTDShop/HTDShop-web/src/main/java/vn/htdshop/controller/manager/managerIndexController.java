@@ -129,52 +129,6 @@ public class managerIndexController {
 
         if (managerService.checkLoginWithRole("product_read")) {
             // Best seller product
-
-            // Comparator<Product> cByMonth = new Comparator<Product>() {
-            // @Override
-            // public int compare(Product p1, Product p2) {
-            // return Integer.compare(
-            // p1.getOrderDetailCollection().stream()
-            // .filter(o -> o.getOrder1().getOrderStatus() == 4
-            // && new LocalDate(o.getOrder1().getPaidDate())
-            // .getMonthOfYear() == new LocalDate().getMonthOfYear())
-            // .collect(Collectors.toList()).size(),
-            // p2.getOrderDetailCollection().stream()
-            // .filter(o -> o.getOrder1().getOrderStatus() == 4
-            // && new LocalDate(o.getOrder1().getPaidDate())
-            // .getMonthOfYear() == new LocalDate().getMonthOfYear())
-            // .collect(Collectors.toList()).size());
-            // }
-            // };
-            // Product p =
-            // productFacade.findAll().stream().sorted(cByMonth).findFirst().orElse(null);
-            // if (p != null && p.getOrderDetailCollection().stream().filter(o ->
-            // o.getOrder1().getOrderStatus() == 4
-            // && new LocalDate(o.getOrder1().getPaidDate()).getMonthOfYear() == new
-            // LocalDate().getMonthOfYear())
-            // .collect(Collectors.toList()).size() > 0) {
-            // statistic.setProductThisMonth(p.getName());
-            // if (p.getProductImageCollection().size() > 0) {
-            // ProductImage pi = p.getProductImageCollection().stream().filter(img ->
-            // img.getMainImage())
-            // .findFirst().orElse(null);
-            // if (pi == null) {
-            // pi = (ProductImage) p.getProductImageCollection().toArray()[0];
-            // }
-
-            // if (pi.getThumbnailPath() != null && !pi.getThumbnailPath().isEmpty()) {
-            // statistic.setProductImageThisMonth(pi.getThumbnailPath());
-            // } else {
-            // statistic.setProductImageThisMonth(pi.getImagePath());
-            // }
-            // } else {
-            // statistic.setProductImageThisMonth("images/noimage.png");
-            // }
-            // } else {
-            // statistic.setProductThisMonth("No data");
-            // statistic.setProductImageThisMonth("");
-            // }
-
             Map<Integer, Integer> productMonth = orderDetailFacade.getTopProduct("month", 1);
             if (!productMonth.isEmpty()) {
                 Product p = productFacade.find(productMonth.entrySet().iterator().next().getKey());
@@ -215,6 +169,7 @@ public class managerIndexController {
                 statistic.setManuThisMonth("No data");
             }
 
+            
         }
 
         model.asMap().put("statistic", statistic);

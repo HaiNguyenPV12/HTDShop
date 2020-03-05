@@ -236,7 +236,7 @@
                             <div class="rating-number">
                                 <span>
                                     <th:block
-                                        th:text="${product.orderDetailCollection.?[order1.orderStatus==4].size()}">
+                                        th:text="${sold}">
                                     </th:block> sold
                                 </span>
                                 <div class="quick-view-number">
@@ -285,7 +285,8 @@
                                     <li
                                         th:each="promo : ${product.promotionCollection.?[promotionDetail.isDisabled==false].?[promotionDetail.isAlways==true or promotionDetail.endDate.compareTo(#dates.createToday()) >= 0]}">
                                         <i class="fas fa-gift fa-lg"></i>
-                                        <a th:href="@{/promotion?(id=${promo.promotionDetail.id})}" th:text="${'&quot;' + promo.promotionDetail.name + '&quot;'}"></a>
+                                        <a th:href="@{/promotion?(id=${promo.promotionDetail.id})}"
+                                            th:text="${'&quot;' + promo.promotionDetail.name + '&quot;'}"></a>
                                         <th:block th:text="${': ' + product.name + ' '}">
                                         </th:block>
                                         <strong
@@ -313,7 +314,8 @@
                                     <li
                                         th:each="promo : ${product.category.promotionCollection.?[promotionDetail.isDisabled==false].?[promotionDetail.isAlways==true or promotionDetail.endDate.compareTo(#dates.createToday()) >= 0]}">
                                         <i class="fas fa-gift fa-lg"></i>
-                                        <a th:href="@{/promotion?(id=${promo.promotionDetail.id})}" th:text="${'&quot;' + promo.promotionDetail.name + '&quot;'}"></a>
+                                        <a th:href="@{/promotion?(id=${promo.promotionDetail.id})}"
+                                            th:text="${'&quot;' + promo.promotionDetail.name + '&quot;'}"></a>
                                         <th:block th:text="${': All ' + product.category.name + ' '}">
                                         </th:block>
                                         <strong
@@ -414,7 +416,7 @@
                     </div>
                     <div class="description-review-text tab-content">
                         <div class="tab-pane active show fade" id="pro-dec" role="tabpanel" style="margin-left: 10rem;">
-                            <p th:utext="${(product.description == null || product.description.isEmpty()) ? '(No description)' : product.description}"></p>
+                            <p th:utext="${(product.description == null || product.description.isEmpty()) ? '&lt;p class=&quot;text-center&quot; &gt;(No description)&lt;/p&gt;' : product.description}"></p>
                         </div>
                         <div class="tab-pane fade text-left border border-secondary" id="pro-review"
                             role="tabpanel" >
@@ -498,7 +500,74 @@
                 </div>
             </div>
         </div>
-        <!-- product area start -->
+        <!-- product area end -->
+
+
+        <!-- Top product in category -->
+        <div class="container">
+            <h3 class="text-dark mb-0">Top product in <th:block th:text="${product.category.name}"></th:block></h3>
+            <div class="text-center mb-5">(There is no products of this category sold yet)</div>
+            <div class="d-flex mb-5" style="overflow-x: scroll; overflow-y: hidden;" th:if="${topProducts.size() > 0}">
+                <div class="col-lg-6 col-md-6 col-xl-3" th:each="p : ${topProducts}">
+                    <div class="product-wrapper mb-30">
+                        <div class="product-img text-center">
+                            <a th:href="@{/product(id=${p.id})}"
+                                th:with="image = ${p.productImageCollection.?[mainImage==true]}">
+                                <img th:src="@{/images/__${(image[0].thumbnailPath != null && !image[0].thumbnailPath.isEmpty())? image[0].thumbnailPath : image[0].imagePath}__}"
+                                    th:if="${p.productImageCollection.size() > 0 && image.size() > 0}">
+                                <img th:src="@{/images/__${(p.productImageCollection[0].thumbnailPath != null && !p.productImageCollection[0].thumbnailPath.isEmpty())? p.productImageCollection[0].thumbnailPath : p.productImageCollection[0].imagePath}__}"
+                                    th:if="${p.productImageCollection.size() > 0 && image.size() == 0}">
+                                <img th:src="@{/images/noimage.png}" alt=""
+                                    th:if="${p.productImageCollection.size()==0}">
+                            </a>
+                            <span th:if="${shopSv.getDiscountPrice(p) lt p.price}"><i
+                                    class="fas fa-gift text-warning"></i></span>
+                            <div class="product-action">
+                                <!-- <a class="animate-left" title="Wishlist" href="#">
+                                                <i class="pe-7s-like"></i>
+                                            </a> -->
+                                <a class="animate-top" title="Add To Cart" style="color: #fff;cursor: pointer;"
+                                    th:onclick="doAddToCart([[${p.id}]], 1)">
+                                    <i class="pe-7s-cart"></i>
+                                </a>
+                                <!-- <a class="animate-right" title="Quick View" data-toggle="modal"
+                                                data-target="#exampleModal" href="#">
+                                                <i class="pe-7s-look"></i>
+                                            </a> -->
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4><a th:href="@{/product(id=${p.id})}" th:text="${p.name}"></a></h4>
+                            <span th:if="${p.status == 1 && p.stock > 0}">
+                                <del th:if="${shopSv.getDiscountPrice(p) lt p.price}"
+                                    th:text="${'$'+#numbers.formatDecimal(p.price, 1, 'POINT', 2, 'COMMA')}"
+                                    class="text-muted"></del>
+                                <th:block
+                                    th:text="${'$'+#numbers.formatDecimal(shopSv.getDiscountPrice(p), 1, 'POINT', 2, 'COMMA')}">
+                                </th:block>
+                            </span>
+                            <span th:if="${p.status == 1 && p.stock == 0}">
+                                <th:block th:text="${'$'+#numbers.formatDecimal(p.price, 1, 'POINT', 2, 'COMMA')}"
+                                    class="text-muted"></th:block>
+                                - Out of stock
+                            </span>
+                            <span th:if="${p.status == 2}">
+                                <del th:if="${shopSv.getDiscountPrice(p) lt p.price}"
+                                    th:text="${'$'+#numbers.formatDecimal(p.price, 1, 'POINT', 2, 'COMMA')}"
+                                    class="text-muted"></del>
+                                <th:block
+                                    th:text="${'$'+#numbers.formatDecimal(shopSv.getDiscountPrice(p), 1, 'POINT', 2, 'COMMA')}">
+                                </th:block>
+                                - Upcoming
+                            </span>
+                            <span th:if="${p.status == 3}">
+                                Unavailable
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="modal fade" id="modal">
             <div class="modal-dialog">
@@ -556,7 +625,7 @@
                 $(this).val(1);
             }
         });
-        
+
         $("form.comment").on("submit", function (e) {
             e.preventDefault();
             form = $(this);
