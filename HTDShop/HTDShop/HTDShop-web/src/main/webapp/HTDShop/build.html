@@ -28,13 +28,13 @@
                         <tr>
                             <td>CPU</td>
                             <td>
-                                <th:block th:if="${prebuiltSession.cpuId == null}">
+                                <th:block th:if="${prebuiltSession.cpu == null}">
                                     <a href="" th:href="@{/build/cpu}" class="btn btn-primary">
                                         <i class="ti-plus"></i> Choose a CPU
                                     </a>
                                 </th:block>
-                                <a href="" th:if="${prebuiltSession.cpuId != null}" th:href=@{/}
-                                    th:text=${prebuiltSession.cpuId.name}></a>
+                                <a href="" th:if="${prebuiltSession.cpu != null}" th:href="@{/}"
+                                    th:text="${prebuiltSession.cpu.name}"></a>
                             </td>
                             <td>
                                 <!-- ITEM PRICE -->

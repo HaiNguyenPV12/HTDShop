@@ -48,8 +48,6 @@ public class shopBuildController {
         // buildService.initBuildApp();
         if (isBuildStarted(session)) {
             buildService.initBuildApp();
-            // session.setAttribute("currentBuild", new PreBuilt());
-            // preBuilt = new PreBuilt();
         }
         // TODO handle build all in session.
         return "HTDShop/build";
