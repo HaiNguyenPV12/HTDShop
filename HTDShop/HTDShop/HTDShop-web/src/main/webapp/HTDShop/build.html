@@ -28,16 +28,27 @@
                         <tr>
                             <td>CPU</td>
                             <td>
-                                <th:block th:if="${prebuiltSession.cpu == null}">
+                                <th:block th:if="${session.prebuiltSession.cpu == null}">
                                     <a href="" th:href="@{/build/cpu}" class="btn btn-primary">
                                         <i class="ti-plus"></i> Choose a CPU
                                     </a>
                                 </th:block>
-                                <a href="" th:if="${prebuiltSession.cpu != null}" th:href="@{/}"
-                                    th:text="${prebuiltSession.cpu.name}"></a>
+                                <a href="" th:if="${session.prebuiltSession.cpu != null}"
+                                    th:href="@{/product?id=__${session.prebuiltSession.cpu.id}__}"
+                                    th:text="${session.prebuiltSession.cpu.name}"></a>
                             </td>
                             <td>
                                 <!-- ITEM PRICE -->
+                                <th:block th:if="${session.prebuiltSession.cpu != null}">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            $ <span th:text="${session.prebuiltSession.cpu.price}"></span>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <a th:href="@{/build/cpu/discardCpu}" class="btn btn-danger">X</a>
+                                        </div>
+                                    </div>
+                                </th:block>
                             </td>
                         </tr>
                         <!-- CPU COOLER ROW -->

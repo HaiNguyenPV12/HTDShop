@@ -64,7 +64,7 @@ public class shopBuildControllerCPU {
     }
 
     @RequestMapping(value = "filterCpu", method = RequestMethod.POST)
-    public String requestMethodName(@ModelAttribute("cpuValues") BuildValues cpuValues, BindingResult error,
+    public String filterCPU(@ModelAttribute("cpuValues") BuildValues cpuValues, BindingResult error,
             RedirectAttributes redirect) {
         if (!cpuValues.getManufacturer().equals("all")) {
             isFilteringCPU = true;
@@ -77,7 +77,7 @@ public class shopBuildControllerCPU {
     }
 
     @RequestMapping(value = "pickCpu", method = RequestMethod.POST)
-    public String requestMethodName(@ModelAttribute("id") Integer id, RedirectAttributes redirect) {
+    public String pickCPU(@ModelAttribute("id") Integer id, RedirectAttributes redirect) {
         // get CPU from ID
         Product cpu = productFacade.find(id);
         // TODO go back to cpu page if there were errors/id isn't a cpu
@@ -89,9 +89,16 @@ public class shopBuildControllerCPU {
         return "redirect:/build";
     }
 
+    @RequestMapping(value = "discardCpu", method = RequestMethod.GET)
+    public String discardCPU(RedirectAttributes redirect) {
+        // remove CPU from session Prebuilt
+        buildService.getSessionPrebuilt().setCpu(null);
+        return "redirect:/build";
+    }
+
     private List<String> cpuSockets() {
-        // TODO check if motherboard is picked.
         List<String> sockets = new ArrayList<>();
+        // TODO check if motherboard is picked.
         // filter manufacturer
         if (!cpuValues.getManufacturer().equals("all")) {
             sockets = buildProductList.stream()
