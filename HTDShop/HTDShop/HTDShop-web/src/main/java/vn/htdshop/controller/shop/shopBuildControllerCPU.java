@@ -30,31 +30,31 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("build/cpu")
 public class shopBuildControllerCPU {
-
+    
     @EJB(mappedName = "ProductFacade")
     ProductFacadeLocal productFacade;
-
+    
     boolean isFilteringCPU = false;
-
+    
     BuildValues cpuValues = null;
-
+    
     PreBuilt preBuiltCPU = null;
-
+    
     List<Product> buildProductList = null;
-
+    
     @Autowired
     BuildService buildService;
-
+    
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String getCPUList(HttpSession session, Model model) {
         buildService.initBuildApp();
         buildProductList = buildService.getProductList();
-
+        
         if (cpuValues == null || !cpuValues.getPartCategory().equals("cpu")) {
             cpuValues = new BuildValues();
             initFilterValues();
         }
-
+        
         model.addAttribute("cpuSocketList", cpuSockets());
         model.addAttribute("cpuManufacturerList", cpuManufacturers());
         model.addAttribute("cpuSeriesList", cpuSeries());
@@ -62,7 +62,7 @@ public class shopBuildControllerCPU {
         model.addAttribute("filteredCPU", filterCPU());
         return "HTDShop/pickCPU";
     }
-
+    
     @RequestMapping(value = "filterCpu", method = RequestMethod.POST)
     public String filterCPU(@ModelAttribute("cpuValues") BuildValues cpuValues, BindingResult error,
             RedirectAttributes redirect) {
@@ -75,7 +75,7 @@ public class shopBuildControllerCPU {
         this.cpuValues = cpuValues;
         return "redirect:/build/cpu";
     }
-
+    
     @RequestMapping(value = "pickCpu", method = RequestMethod.POST)
     public String pickCPU(@ModelAttribute("id") Integer id, RedirectAttributes redirect) {
         // get CPU from ID
@@ -88,7 +88,7 @@ public class shopBuildControllerCPU {
         // redirect to build's home page
         return "redirect:/build";
     }
-
+    
     @RequestMapping(value = "discardCpu", method = RequestMethod.GET)
     public String discardCPU(RedirectAttributes redirect) {
         // remove CPU from session Prebuilt
@@ -96,6 +96,7 @@ public class shopBuildControllerCPU {
         return "redirect:/build";
     }
 
+    // Socket list for form
     private List<String> cpuSockets() {
         List<String> sockets = new ArrayList<>();
         // TODO check if motherboard is picked. (needs testing)
@@ -104,16 +105,14 @@ public class shopBuildControllerCPU {
             String manufacturer = motherboard.getManufacturer();
             cpuValues.setManufacturer(manufacturer);
             // get specific socket
-            sockets = buildProductList.stream()
-                    .filter(p -> p.getCategory().getId() == 1 && p.getSocket().equals(motherboard.getSocket()))
-                    .map(s -> s.getSocket()).distinct().collect(Collectors.toList());
+
         }
         // filter manufacturer
         if (!cpuValues.getManufacturer().equals("all")) {
             // get all sockets from manufacturer
             sockets = buildProductList.stream()
                     .filter(p -> p.getCategory().getId() == 1
-                            && p.getManufacturer().equals(cpuValues.getManufacturer()))
+                    && p.getManufacturer().equals(cpuValues.getManufacturer()))
                     .map(s -> s.getSocket()).distinct().collect(Collectors.toList());
         } else {
             // get all sockets
@@ -122,7 +121,7 @@ public class shopBuildControllerCPU {
         }
         return sockets;
     }
-
+    
     private List<String> cpuManufacturers() {
         if (buildService.getPreBuilt() == null) {
             cpuValues.setManufacturer("all");
@@ -134,14 +133,14 @@ public class shopBuildControllerCPU {
                 .map(s -> s.getManufacturer()).distinct().collect(Collectors.toList());
         return manufacturers;
     }
-
+    
     private List<String> cpuSeries() {
         // TODO check if motherboard is picked
         List<String> series = new ArrayList<>();
         if (!cpuValues.getManufacturer().equals("all")) {
             series = buildProductList.stream()
                     .filter(p -> p.getCategory().getId() == 1
-                            && p.getManufacturer().equals(cpuValues.getManufacturer()))
+                    && p.getManufacturer().equals(cpuValues.getManufacturer()))
                     .map(s -> s.getSeries()).distinct().collect(Collectors.toList());
         } else {
             series = buildProductList.stream().filter(p -> p.getCategory().getId() == 1).map(s -> s.getSeries())
@@ -152,7 +151,7 @@ public class shopBuildControllerCPU {
         // .collect(Collectors.toList());
         return series;
     }
-
+    
     private List<Product> filterCPU() {
         List<Product> cpus = new ArrayList<>();
         if (cpuValues == null) {
@@ -165,11 +164,12 @@ public class shopBuildControllerCPU {
                     .collect(Collectors.toList());
         }
         // filter by socket
-
+        if (!cpuValues.getSocket().equals("all")) {
+            cpus = cpus.stream().filter(s -> s.getSocket().equals(cpuValues.getSocket())).collect(Collectors.toList());
+        }
         // filter by series
 
         // filter by core&threads
-
         // filter by price
         if (cpuValues.getPriceMin() == 0 && cpuValues.getPriceMax() == 0) {
             cpuValues.setPriceMax(2000);
@@ -179,13 +179,14 @@ public class shopBuildControllerCPU {
         cpus = cpus.stream()
                 .filter(p -> p.getPrice() >= cpuValues.getPriceMin() && p.getPrice() <= cpuValues.getPriceMax())
                 .collect(Collectors.toList());
-
+        
         return cpus;
     }
-
+    
     private void initFilterValues() {
         cpuValues.setPartCategory("cpu");
         cpuValues.setManufacturer("all");
+        cpuValues.setSocket("all");
         cpuValues.setPriceMax(2000);
         if (buildService.getSessionPrebuilt().getMotherboard() != null) {
             Product motherboard = buildService.getSessionPrebuilt().getMotherboard();
