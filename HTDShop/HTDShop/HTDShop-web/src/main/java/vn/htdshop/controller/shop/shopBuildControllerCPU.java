@@ -98,14 +98,26 @@ public class shopBuildControllerCPU {
 
     private List<String> cpuSockets() {
         List<String> sockets = new ArrayList<>();
-        // TODO check if motherboard is picked.
+        // TODO check if motherboard is picked. (needs testing)
+        if (buildService.getSessionPrebuilt().getMotherboard() != null) {
+            Product motherboard = buildService.getSessionPrebuilt().getMotherboard();
+            String manufacturer = motherboard.getManufacturer();
+            cpuValues.setManufacturer(manufacturer);
+            // get specific socket
+            sockets = buildProductList.stream()
+                    .filter(p -> p.getCategory().getId() == 1 && p.getManufacturer().equals(cpuValues.getManufacturer())
+                            && p.getSocket().equals(motherboard.getSocket()))
+                    .map(s -> s.getSocket()).distinct().collect(Collectors.toList());
+        }
         // filter manufacturer
         if (!cpuValues.getManufacturer().equals("all")) {
+            // get all sockets from manufacturer
             sockets = buildProductList.stream()
                     .filter(p -> p.getCategory().getId() == 1
                             && p.getManufacturer().equals(cpuValues.getManufacturer()))
                     .map(s -> s.getSocket()).distinct().collect(Collectors.toList());
         } else {
+            // get all sockets
             sockets = buildProductList.stream().filter(p -> p.getCategory().getId() == 1).map(s -> s.getSocket())
                     .distinct().collect(Collectors.toList());
         }
@@ -113,11 +125,12 @@ public class shopBuildControllerCPU {
     }
 
     private List<String> cpuManufacturers() {
-        // TODO check if motherboard is picked.
         if (buildService.getPreBuilt() == null) {
             cpuValues.setManufacturer("all");
         }
         List<String> manufacturers = new ArrayList<>();
+        // TODO check if motherboard is picked.
+
         manufacturers = buildProductList.stream().filter(p -> p.getCategory().getId() == 1)
                 .map(s -> s.getManufacturer()).distinct().collect(Collectors.toList());
         return manufacturers;

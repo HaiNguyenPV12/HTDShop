@@ -52,7 +52,7 @@ public class shopBuildController {
         if (isBuildStarted()) {
             buildService.initBuildApp();
         }
-        // TODO handle build all in session.
+        // TODO check compatibility if parts are picked/removed.
         return "HTDShop/build";
     }
 
