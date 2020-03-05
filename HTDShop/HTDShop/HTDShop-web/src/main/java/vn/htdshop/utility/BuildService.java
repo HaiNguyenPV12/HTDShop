@@ -43,8 +43,9 @@ public class BuildService {
 
     List<Product> buildProductList = null;
 
-    boolean isBuilding = false;
+    // boolean isBuilding = false;
 
+    // Current build in session
     public PreBuilt getSessionPrebuilt() {
         return (PreBuilt) session.getAttribute("prebuiltSession");
     }
@@ -53,11 +54,24 @@ public class BuildService {
         session.setAttribute("prebuiltSession", prebuilt);
     }
 
+    public boolean isSessionBuilding() {
+        if (session.getAttribute("isBuilding") == null) {
+            return false;
+        }
+        return (boolean) session.getAttribute("isBuilding");
+    }
+
+    public void setSessionBuilding(Boolean isBuilding) {
+        session.setAttribute("isBuilding", isBuilding);
+    }
+
     public void initBuildApp() {
+        boolean isBuilding = isSessionBuilding();
         if (!isBuilding) {
             setProductList();
-            preBuilt = new PreBuilt();
-            isBuilding = true;
+            PreBuilt preBuilt = new PreBuilt();
+            setSessionPrebuilt(preBuilt);
+            setSessionBuilding(true);
         }
     }
 
@@ -73,7 +87,7 @@ public class BuildService {
     }
 
     public boolean isBuildAppStarted() {
-        return isBuilding;
+        return isSessionBuilding();
     }
 
     public PreBuilt getPreBuilt() {

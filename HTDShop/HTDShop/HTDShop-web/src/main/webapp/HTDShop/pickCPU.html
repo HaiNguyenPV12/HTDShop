@@ -140,7 +140,9 @@
                             <th:block th:text="${c.price}" />
                         </td>
                         <td>
-                            <button class="btn btn-primary">Add to build</button>
+                            <form action="" th:action="@{/build/cpu/pickCpu?id=__${c.id}__}" method="post">
+                                <button class="btn btn-primary">Add to build</button>
+                            </form>
                         </td>
                     </tr>
                 </tbody>

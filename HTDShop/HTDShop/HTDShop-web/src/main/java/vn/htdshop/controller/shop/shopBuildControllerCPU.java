@@ -22,6 +22,7 @@ import vn.htdshop.sb.ProductFacadeLocal;
 import vn.htdshop.utility.BuildService;
 
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * shopBuildController
@@ -73,6 +74,19 @@ public class shopBuildControllerCPU {
         // apply values to form
         this.cpuValues = cpuValues;
         return "redirect:/build/cpu";
+    }
+
+    @RequestMapping(value = "pickCpu", method = RequestMethod.POST)
+    public String requestMethodName(@ModelAttribute("id") Integer id, RedirectAttributes redirect) {
+        // get CPU from ID
+        Product cpu = productFacade.find(id);
+        // TODO go back to cpu page if there were errors/id isn't a cpu
+        // Set CPU in session's build
+        PreBuilt sessionPreBuilt = buildService.getSessionPrebuilt();
+        sessionPreBuilt.setCpu(cpu);
+        buildService.setSessionPrebuilt(sessionPreBuilt);
+        // redirect to build's home page
+        return "redirect:/build";
     }
 
     private List<String> cpuSockets() {
