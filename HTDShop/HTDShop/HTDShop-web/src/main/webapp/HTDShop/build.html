@@ -55,7 +55,7 @@
                         <tr>
                             <td>CPU Cooler</td>
                             <td>
-                                <a href="" th:href="@{/}" class="btn btn-primary">
+                                <a href="" th:href="@{/build/cpuCooler}" class="btn btn-primary">
                                     <i class="ti-plus"></i> Choose a CPU cooler
                                 </a>
                             </td>
@@ -67,9 +67,14 @@
                         <tr>
                             <td>Motherboard</td>
                             <td>
-                                <a href="" th:href="@{/}" class="btn btn-primary">
-                                    <i class="ti-plus"></i> Choose a motherboard
-                                </a>
+                                <th:block th:if="${session.prebuiltSession.motherboard == null}">
+                                    <a href="" th:href="@{/build/motherboard}" class="btn btn-primary">
+                                        <i class="ti-plus"></i> Choose a Motherboard
+                                    </a>
+                                </th:block>
+                                <a href="" th:if="${session.prebuiltSession.motherboard != null}"
+                                    th:href="@{/product?id=__${session.prebuiltSession.motherboard.id}__}"
+                                    th:text="${session.prebuiltSession.motherboard.name}"></a>
                             </td>
                             <td>
 

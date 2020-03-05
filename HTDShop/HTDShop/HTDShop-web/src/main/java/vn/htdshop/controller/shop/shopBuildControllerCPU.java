@@ -105,8 +105,7 @@ public class shopBuildControllerCPU {
             cpuValues.setManufacturer(manufacturer);
             // get specific socket
             sockets = buildProductList.stream()
-                    .filter(p -> p.getCategory().getId() == 1 && p.getManufacturer().equals(cpuValues.getManufacturer())
-                            && p.getSocket().equals(motherboard.getSocket()))
+                    .filter(p -> p.getCategory().getId() == 1 && p.getSocket().equals(motherboard.getSocket()))
                     .map(s -> s.getSocket()).distinct().collect(Collectors.toList());
         }
         // filter manufacturer
@@ -188,5 +187,9 @@ public class shopBuildControllerCPU {
         cpuValues.setPartCategory("cpu");
         cpuValues.setManufacturer("all");
         cpuValues.setPriceMax(2000);
+        if (buildService.getSessionPrebuilt().getMotherboard() != null) {
+            Product motherboard = buildService.getSessionPrebuilt().getMotherboard();
+            cpuValues.setSocket(motherboard.getSocket());
+        }
     }
 }
