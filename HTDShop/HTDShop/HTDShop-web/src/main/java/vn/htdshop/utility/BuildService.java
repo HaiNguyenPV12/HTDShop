@@ -43,8 +43,9 @@ public class BuildService {
 
     List<Product> buildProductList = null;
 
-    boolean isBuilding = false;
+    // boolean isBuilding = false;
 
+    // Current build in session
     public PreBuilt getSessionPrebuilt() {
         return (PreBuilt) session.getAttribute("prebuiltSession");
     }
@@ -53,27 +54,58 @@ public class BuildService {
         session.setAttribute("prebuiltSession", prebuilt);
     }
 
+    public boolean isSessionBuilding() {
+        if (session.getAttribute("isBuilding") == null) {
+            return false;
+        }
+        return (boolean) session.getAttribute("isBuilding");
+    }
+
+    public void setSessionBuilding(Boolean isBuilding) {
+        session.setAttribute("isBuilding", isBuilding);
+    }
+
+    public List<Product> getSessionProductList() {
+        try {
+            List<Product> result = (List<Product>) session.getAttribute("buildProductList");
+            if (result == null || result.size() == 0) {
+                result = productFacade.findAll();
+            }
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            session.setAttribute("buildProductList", productFacade.findAll());
+            return (List<Product>) session.getAttribute("buildProductList");
+        }
+    }
+
+    public void setSessionProductList() {
+        session.setAttribute("buildProductList", productFacade.findAll());
+    }
+
     public void initBuildApp() {
+        boolean isBuilding = isSessionBuilding();
         if (!isBuilding) {
-            setProductList();
-            preBuilt = new PreBuilt();
-            isBuilding = true;
+            setSessionProductList();
+            PreBuilt preBuilt = new PreBuilt();
+            setSessionPrebuilt(preBuilt);
+            setSessionBuilding(true);
         }
     }
 
-    public void setProductList() {
-        buildProductList = productFacade.findAll();
-    }
+    // public void setProductList() {
+    // buildProductList = productFacade.findAll();
+    // }
 
-    public List<Product> getProductList() {
-        if (buildProductList == null) {
-            setProductList();
-        }
-        return buildProductList;
-    }
+    // public List<Product> getProductList() {
+    // if (buildProductList == null) {
+    // setProductList();
+    // }
+    // return buildProductList;
+    // }
 
     public boolean isBuildAppStarted() {
-        return isBuilding;
+        return isSessionBuilding();
     }
 
     public PreBuilt getPreBuilt() {

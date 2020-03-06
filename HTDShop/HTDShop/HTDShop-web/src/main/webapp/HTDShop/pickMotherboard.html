@@ -16,8 +16,74 @@
 
 <body>
     <div layout:fragment="content">
+        <div class="container">
+            <div class="row">
+                <h2 class="mx-auto">Pick a Motherboard</h2>
+            </div>
+            <!-- START OF FILTER FORM -->
+            <!-- END OF FILTER FORM -->
+            <table id="filteredMotherboardTable" class="table table-striped" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Core Count</th>
+                        <th>TDP</th>
+                        <th>Status</th>
+                        <th>Price</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="m : ${filteredMotherboard}">
+                        <td>
+                            <a href="" th:href=@{/} th:text=${m.name}></a>
+                        </td>
+                        <td>
+
+                        </td>
+                        <td>
+
+                        </td>
+                        <td>
+
+                        </td>
+                        <td>
+                            <th:block th:text="${m.price}" />
+                        </td>
+                        <td>
+                            <form action="" th:action="@{/build/motherboard/pickMotherboard?id=__${m.id}__}"
+                                method="post">
+                                <button class="btn btn-primary">Add to build</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>Name</th>
+                        <th>Core Count</th>
+                        <th>TDP</th>
+                        <th>Status</th>
+                        <th>Price</th>
+                        <th></th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
     </div>
     <script th:inline="none" layout:fragment="script">
+        $(document).ready(function () {
+            $("#pickMotherboardForm").change(function (e) {
+                $("#pickMotherboardForm").submit();
+            });
+        });
+
+        $('#filteredMotherboardTable').DataTable({
+            initComplete: function () {
+                $('div.dataTables_length').addClass('form-inline');
+                $('div.dataTables_length').addClass('mt-4');
+            }
+        });
     </script>
 </body>
 

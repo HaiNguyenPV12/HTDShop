@@ -43,19 +43,21 @@ public class shopBuildController {
     @Autowired
     BuildService buildService;
 
+    @Autowired
+    HttpSession session;
+
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public String getBuild(HttpSession session) {
+    public String getBuild() {
         // buildService.initBuildApp();
-        if (isBuildStarted(session)) {
-            session.setAttribute("isBuilding", true);
-            session.setAttribute("currentBuild", new PreBuilt());
-            preBuilt = new PreBuilt();
+        if (isBuildStarted()) {
+            buildService.initBuildApp();
         }
-        // TODO handle build all in session.
+
+        // TODO check compatibility if parts are picked/removed.
         return "HTDShop/build";
     }
 
-    private boolean isBuildStarted(HttpSession session) {
+    private boolean isBuildStarted() {
         return session.getAttribute("isBuilding") == null;
     }
 
