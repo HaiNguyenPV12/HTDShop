@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
  * BuildValues
  */
 @Entity
-public class BuildValues implements Serializable {
+public class BuildValues2 implements Serializable {
 
     /**
      *
@@ -43,12 +43,53 @@ public class BuildValues implements Serializable {
     private Integer screenSize;
     private String resolution;
 
-    public BuildValues() {
+    public BuildValues2() {
     }
 
-    public BuildValues(int id, String manufacturer) {
+    // public BuildValues(int id, String manufacturer) {
+    //     this.id = id;
+    //     this.manufacturer = manufacturer;
+    // }
+
+    public BuildValues2(int id, String category) {
         this.id = id;
-        this.manufacturer = manufacturer;
+        this.partCategory = category;
+        this.manufacturer = "";
+        this.priceMin = 0;
+        this.priceMax = 2000;
+        switch (id) {
+            case 1:
+                this.tdp = 0;
+                this.core = 0;
+                this.thread = 0;
+                break;
+            case 2:
+            
+                break;
+            case 3:
+                
+                break;
+            case 4:
+                
+                break;
+            case 5:
+               
+                break;
+            case 6:
+                
+                break;
+            case 7:
+                
+                break;
+            case 8:
+                
+                break;
+            case 9:
+                
+                break;
+            default:
+                break;
+        }
     }
 
     /**

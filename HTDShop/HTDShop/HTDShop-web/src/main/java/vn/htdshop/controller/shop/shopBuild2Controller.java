@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import vn.htdshop.entity.BuildValues;
+import vn.htdshop.entity.BuildValues2;
 import vn.htdshop.entity.Category;
 import vn.htdshop.entity.PreBuilt;
 import vn.htdshop.entity.Product;
@@ -74,15 +75,15 @@ public class shopBuild2Controller {
             return "redirect:/build";
         }
         shopService.checkLogin();
-        BuildValues values = null;
+        BuildValues2 values = null;
         if (model.asMap().containsKey("filters")) {
-            values = (BuildValues) model.asMap().get("filters");
+            values = (BuildValues2) model.asMap().get("filters");
             if (!values.getId().equals(category.getId())) {
-                values = new BuildValues(category.getId(), category.getName());
+                values = new BuildValues2(category.getId(), category.getName());
             }
             model.addAttribute("filters", values);
         } else {
-            values = new BuildValues(category.getId(), category.getName());
+            values = new BuildValues2(category.getId(), category.getName());
             model.addAttribute("filters", values);
         }
         if (model.asMap().containsKey("filterList")) {
@@ -100,7 +101,7 @@ public class shopBuild2Controller {
     }
 
     @RequestMapping(value = "filter", method = RequestMethod.POST)
-    public String getCpuFilter(Model model, @ModelAttribute("filters") BuildValues filters,
+    public String getCpuFilter(Model model, @ModelAttribute("filters") BuildValues2 filters,
             RedirectAttributes redirect) {
         List<Product> pList = (List<Product>) session.getAttribute("pList");
         Stream<Product> filterList = pList.stream();
