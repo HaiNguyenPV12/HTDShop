@@ -64,6 +64,8 @@
                             </h4>
                             <div>
                                 <select name="socket" id="" th:field=*{socket}>
+                                    <option th:if="${cpuValues.manufacturer eq 'all'}" value="all">All
+                                    </option>
                                     <option th:each="s : ${cpuSocketList}" th:value="${s}" th:text="${s}"></option>
                                 </select>
                             </div>
@@ -102,6 +104,8 @@
                     <div class="col-md-3">
                         <div>
                             <h4 class="mx-auto">Series</h4>
+                            <input type="radio" name="series" th:field=*{series} th:value="all">All
+                            <br>
                             <th:block th:each="s : ${cpuSeriesList}">
                                 <input type="radio" name="series" th:field=*{series} th:value="${s}">[[${s}]]
                                 <br>
@@ -157,19 +161,22 @@
                     </tr>
                 </tfoot>
             </table>
-            <h2>
+            <!-- for debugging -->
+            <!-- <h2>
                 Searching for
-                <th:block th:text="${cpuValues.manufacturer}" /> <br>
+                <th:block th:text="${cpuValues.manufacturer}" /> CPUs<br>
                 Price from
+                $
                 <th:block th:text="${cpuValues.priceMin}" /> to
+                $
                 <th:block th:text="${cpuValues.priceMax}" /> <br>
                 Socket
                 <th:block th:text="${cpuValues.socket}" /> <br>
                 <th:block th:text="${cpuValues.core}" /> Cores <br>
-                <th:block th:text="${cpuValues.thread}" /> <br>
-                <th:block th:text="${cpuValues.tdp}" />W TDP
+                <th:block th:text="${cpuValues.thread}" /> Threads<br>
+                <th:block th:text="${cpuValues.tdp}" />W TDP <br>
                 <th:block th:text="${cpuValues.series}" /> family
-            </h2>
+            </h2> -->
         </div>
     </div>
     <script th:inline="none" layout:fragment="script">

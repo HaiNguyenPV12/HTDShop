@@ -43,7 +43,7 @@ public class shopBuildControllerMotherboard {
     public String getMotherboardList(HttpSession session, Model model) {
 
         buildService.initBuildApp();
-        buildProductList = buildService.getProductList();
+        // buildProductList = buildService.getProductList();
 
         if (motherboardValues == null || !motherboardValues.getPartCategory().equals("motherboard")) {
             motherboardValues = new BuildValues();
