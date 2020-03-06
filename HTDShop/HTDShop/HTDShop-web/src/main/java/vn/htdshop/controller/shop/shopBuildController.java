@@ -53,10 +53,6 @@ public class shopBuildController {
             buildService.initBuildApp();
         }
 
-        // refresh filter values from other controllers
-        // session.setAttribute("cpuValues", new BuildValues());
-        // session.setAttribute("motherboardValues", new BuildValues());
-
         // TODO check compatibility if parts are picked/removed.
         return "HTDShop/build";
     }
