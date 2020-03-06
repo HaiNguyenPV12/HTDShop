@@ -65,26 +65,44 @@ public class BuildService {
         session.setAttribute("isBuilding", isBuilding);
     }
 
+    public List<Product> getSessionProductList() {
+        try {
+            List<Product> result = (List<Product>) session.getAttribute("buildProductList");
+            if (result == null || result.size() == 0) {
+                result = productFacade.findAll();
+            }
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            session.setAttribute("buildProductList", productFacade.findAll());
+            return (List<Product>) session.getAttribute("buildProductList");
+        }
+    }
+
+    public void setSessionProductList() {
+        session.setAttribute("buildProductList", productFacade.findAll());
+    }
+
     public void initBuildApp() {
         boolean isBuilding = isSessionBuilding();
         if (!isBuilding) {
-            setProductList();
+            setSessionProductList();
             PreBuilt preBuilt = new PreBuilt();
             setSessionPrebuilt(preBuilt);
             setSessionBuilding(true);
         }
     }
 
-    public void setProductList() {
-        buildProductList = productFacade.findAll();
-    }
+    // public void setProductList() {
+    // buildProductList = productFacade.findAll();
+    // }
 
-    public List<Product> getProductList() {
-        if (buildProductList == null) {
-            setProductList();
-        }
-        return buildProductList;
-    }
+    // public List<Product> getProductList() {
+    // if (buildProductList == null) {
+    // setProductList();
+    // }
+    // return buildProductList;
+    // }
 
     public boolean isBuildAppStarted() {
         return isSessionBuilding();

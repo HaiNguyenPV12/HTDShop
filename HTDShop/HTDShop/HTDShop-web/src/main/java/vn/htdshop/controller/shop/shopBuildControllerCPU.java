@@ -51,7 +51,7 @@ public class shopBuildControllerCPU {
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String getCPUList(HttpSession session, Model model) {
         buildService.initBuildApp();
-        buildProductList = buildService.getProductList();
+        buildProductList = buildService.getSessionProductList();
 
         if (cpuValues == null || !cpuValues.getPartCategory().equals("cpu")) {
             cpuValues = new BuildValues();
@@ -164,6 +164,7 @@ public class shopBuildControllerCPU {
             return buildProductList.stream().filter(p -> p.getCategory().getId() == 1).collect(Collectors.toList());
         }
         cpus = buildProductList.stream().filter(p -> p.getCategory().getId() == 1).collect(Collectors.toList());
+
         // filter by manufacturers
         if (!cpuValues.getManufacturer().equals("all")) {
             if (cpus.stream().filter(m -> m.getManufacturer().equals(cpuValues.getManufacturer()))

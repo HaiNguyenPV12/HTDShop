@@ -570,7 +570,7 @@ public class ShopService {
                 total += rate.getRating();
             }
             result = Math.round(total / Double.parseDouble(size.toString()));
-        } 
+        }
         return result;
     }
 
