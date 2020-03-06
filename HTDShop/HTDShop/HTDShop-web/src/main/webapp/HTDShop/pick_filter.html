@@ -1,0 +1,93 @@
+<th:block th:fragment="1">
+    <form th:action="@{/build2/filter}" method="POST" id="frmPick" th:object="${filters}">
+        <input type="hidden" th:field="*{partCategory}">
+        <input type="hidden" th:field="*{id}">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="pb-2">
+                    <h4 class="mx-auto">
+                        Manufacturer
+                    </h4>
+                    <div>
+                        <input type="radio" value="" th:field=*{manufacturer}> All
+                        <br>
+                        <th:block th:each="m : ${buildSv.getList('manuCpu')}">
+                            <input type="radio" th:field=*{manufacturer} th:value="${m}">[[${m}]]
+                            <br>
+                        </th:block>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="mx-auto">Price</h4>
+                    <div class="row">
+                        <div class="col-md-3">From:</div>
+                        <div class="col-md-9 pb-1">
+                            <input type="number" name="priceMin" max="99999" min="0" th:field=*{priceMin} value="0"
+                                style="width: 100%;">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">To:</div>
+                        <div class="col-md-9">
+                            <input type="number" name="priceMax" max="99999" min="0" th:field=*{priceMax} value="10000"
+                                style="width: 100%;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="pb-2">
+                    <h4 class="mx-auto">
+                        Socket
+                    </h4>
+                    <div>
+                        <select name="socket" id="" th:field=*{socket}>
+                            <option value="">All</option>
+                            <option th:each="s : ${buildSv.getList('socketCpu')}" th:value="${s}" th:text="${s}">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <div class="row pb-1">
+                        <div class="col-md-3">Core:</div>
+                        <div class="col-md-9">
+                            <input type="number" name="core" max="200" min="0" th:field=*{core} value="0"
+                                style="width: 100%;">
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="row pb-1">
+                        <div class="col-md-3">Thread:</div>
+                        <div class="col-md-9">
+                            <input type="number" name="thread" max="200" min="0" th:field=*{thread} value="0"
+                                style="width: 100%;">
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="row pb-1">
+                        <div class="col-md-3">TDP:</div>
+                        <div class="col-md-7">
+                            <input type="number" name="tdp" max="2000" min="0" th:field=*{tdp} value="0"
+                                style="width: 100%;">
+                        </div>
+                        <div class="col-md-1">
+                            (W)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div>
+                    <h4 class="mx-auto">Series</h4>
+                    <th:block th:each="s : ${buildSv.getList('seriesCpu')}">
+                        <input type="radio" name="series" th:field=*{series} th:value="${s}">[[${s}]]
+                        <br>
+                    </th:block>
+                </div>
+            </div>
+        </div>
+    </form>
+</th:block>

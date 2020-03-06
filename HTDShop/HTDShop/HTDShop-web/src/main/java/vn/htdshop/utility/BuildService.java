@@ -79,4 +79,8 @@ public class BuildService {
     public PreBuilt getPreBuilt() {
         return preBuilt;
     }
+
+    public List<String> getList(String type) {
+        return productFacade.getStringList(type);
+    }
 }

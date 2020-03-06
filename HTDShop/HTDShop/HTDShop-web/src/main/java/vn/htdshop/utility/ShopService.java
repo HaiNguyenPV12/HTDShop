@@ -40,6 +40,7 @@ import vn.htdshop.sb.PromotionFacadeLocal;
 
 /**
  * shopService
+ * 
  * @author Thien
  */
 @Service("shopService")
@@ -388,8 +389,7 @@ public class ShopService {
                 if (nonUserId != null && findUserSetting(nonUserId) == null) {
                     userSettings.add(new UserSetting(nonUserId));
                 }
-            }
-
+            } 
         }
         return result;
     }
@@ -400,7 +400,6 @@ public class ShopService {
         }
         return null;
     }
-
 
     public UserSetting findUserSetting(Integer id) {
         for (UserSetting us : userSettings) {
@@ -420,8 +419,20 @@ public class ShopService {
         return null;
     }
 
-    
-
+    public UserSetting getUserSetting(){
+        if (checkLogin()) {
+            return findUserSetting(getLoggedInCustomer().getId());
+        }
+        String nonUserId = "";
+        if (request.getCookies() != null) {
+            nonUserId = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("JSESSIONID"))
+                    .findFirst().map(Cookie::getValue).orElse(null);
+            if (nonUserId != null && findUserSetting(nonUserId) == null) {
+                userSettings.add(new UserSetting(nonUserId));
+            }
+        } 
+        return findUserSetting(nonUserId);
+    }
 
     // =========== PRICE MANAGEMENT ============
 
