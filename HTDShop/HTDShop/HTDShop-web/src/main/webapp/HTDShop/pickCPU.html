@@ -40,7 +40,7 @@
                             </div>
                         </div>
                         <div>
-                            <h4 class="mx-auto">Price</h4>
+                            <!-- <h4 class="mx-auto">Price</h4>
                             <div id="priceSlider" class="mb-3"></div>
                             <div class="row">
                                 <div class="col-md-3">From:</div>
@@ -52,6 +52,19 @@
                             <div class="row">
                                 <div class="col-md-3">To:</div>
                                 <div class="col-md-9">
+                                    <input type="number" name="priceMax" max="99999" min="0" th:field=*{priceMax}
+                                        id="priceTo" value="10000" style="width: 100%;">
+                                </div>
+                            </div> -->
+                            <h4 class="mx-auto">Price</h4>
+                            <div id="priceSlider" class="mb-3"></div>
+                            <div class="row">
+                                <div class="col-md-5 pb-1">
+                                    <input type="number" name="priceMin" max="99999" min="0" th:field=*{priceMin}
+                                        id="priceFrom" value="0" style="width: 100%;">
+                                </div>
+                                <i class="fas fa-long-arrow-alt-right mt-3"></i>
+                                <div class="col-md-5">
                                     <input type="number" name="priceMax" max="99999" min="0" th:field=*{priceMax}
                                         id="priceTo" value="10000" style="width: 100%;">
                                 </div>
