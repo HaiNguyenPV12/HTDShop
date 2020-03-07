@@ -28,7 +28,7 @@
             <form th:action="@{/build/cpu/filterCpu}" method="POST" id="pickCPUForm" th:object="${cpuValues}">
                 <input type="hidden" th:field="*{partCategory}" value="cpu" />
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="pb-2">
                             <h4 class="mx-auto">
                                 Manufacturer
@@ -61,7 +61,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="pb-2">
                             <h4 class="mx-auto">
                                 Socket
@@ -114,7 +114,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div>
                             <h4 class="mx-auto">Series</h4>
                             <input type="radio" name="series" th:field=*{series} th:value="all">All
@@ -142,7 +142,7 @@
                 <tbody>
                     <tr th:each="c : ${filteredCPU}">
                         <td>
-                            <a href="" th:href=@{/} th:text=${c.name}></a>
+                            <a href="" th:href="@{/product?id=__${c.id}__}" th:text=${c.name}></a>
                         </td>
                         <td>
                             <th:block th:text="${c.core}" />
@@ -174,22 +174,9 @@
                     </tr>
                 </tfoot>
             </table>
-            <!-- for debugging -->
-            <!-- <h2>
-                Searching for
-                <th:block th:text="${cpuValues.manufacturer}" /> CPUs<br>
-                Price from
-                $
-                <th:block th:text="${cpuValues.priceMin}" /> to
-                $
-                <th:block th:text="${cpuValues.priceMax}" /> <br>
-                Socket
-                <th:block th:text="${cpuValues.socket}" /> <br>
-                <th:block th:text="${cpuValues.core}" /> Cores <br>
-                <th:block th:text="${cpuValues.thread}" /> Threads<br>
-                <th:block th:text="${cpuValues.tdp}" />W TDP <br>
-                <th:block th:text="${cpuValues.series}" /> family
-            </h2> -->
+            <div class="row justify-content-center py-3">
+                <a th:href="@{/build}" class="button btn-hover-black py-1">Back to Build</a>
+            </div>
         </div>
     </div>
     <th:block layout:fragment="additionalScript">
@@ -203,6 +190,10 @@
         });
 
         $('#filteredCPUTable').DataTable({
+            "language": {
+                "emptyTable": "<div style='text-align:center;'><a href='' th:href='@{build/cpu/reset}'>No results. Reset your search values.</a>" +
+                    "<br><a href='' th:href='@{build/cpu/reset}' class='btn btn-success'>Reset</a></div>"
+            },
             initComplete: function () {
                 $('div.dataTables_length').addClass('form-inline');
                 $('div.dataTables_length').addClass('mt-4');
