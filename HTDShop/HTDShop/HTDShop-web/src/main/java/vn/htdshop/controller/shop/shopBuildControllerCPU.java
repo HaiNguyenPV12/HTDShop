@@ -111,7 +111,16 @@ public class shopBuildControllerCPU {
         return "redirect:/build";
     }
 
-    @RequestMapping(value = "discardCpu", method = RequestMethod.GET)
+    // Reset search form link
+    @RequestMapping(value = "reset", method = RequestMethod.GET)
+    public String filterReset(RedirectAttributes redirect) {
+        // reset search values
+        setSessionCPUValues(initFilterValues());
+        return "redirect:/build/cpu";
+    }
+
+    // Remove from current build
+    @RequestMapping(value = "discard", method = RequestMethod.GET)
     public String discardCPU(RedirectAttributes redirect) {
         // remove CPU from session Prebuilt
         buildService.getSessionPrebuilt().setCpu(null);
