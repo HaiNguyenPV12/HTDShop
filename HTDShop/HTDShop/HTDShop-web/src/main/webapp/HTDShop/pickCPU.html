@@ -11,15 +11,6 @@
         .dataTables_filter {
             float: right !important;
         }
-
-        #tdpHandle {
-            width: fit-content;
-            padding-bottom: 1.3rem;
-        }
-
-        #tdpSlider {
-            padding-right: 1rem;
-        }
     </style>
     <th:block layout:fragment="additionalCss">
         <link rel="stylesheet" th:href="@{/resources/Plugins/jquery-ui/jquery-ui.min.css}" />
@@ -77,8 +68,7 @@
                             </h4>
                             <div>
                                 <select name="socket" id="" th:field=*{socket}>
-                                    <option th:if="${cpuValues.manufacturer eq 'all'}" value="all">All
-                                    </option>
+                                    <option value="all">All</option>
                                     <option th:each="s : ${cpuSocketList}" th:value="${s}" th:text="${s}"></option>
                                 </select>
                             </div>
@@ -104,13 +94,21 @@
                         <div>
                             <div class="row pb-1">
                                 <div class="col-md-3">TDP:</div>
-                                <div class="col-md-9" style="padding-right: 1.8rem;">
+                                <div class="col-md-9">
                                     <div id="tdpSlider">
                                         <div id="tdpHandle" class="ui-slider-handle"></div>
                                     </div>
-                                    <div style="display: none;">
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="row pb-1">
+                                <div class="col-md-3">&nbsp;</div>
+                                <div class="col-md-9">
+                                    <div>
                                         <input type="number" name="tdp" id="tdp" max="1000" min="0" th:field=*{tdp}
-                                            value="0">
+                                            value="0" style="padding-right: 1.5rem; text-align: right; width: 100%;">
+                                        <span style="margin-left: -1.5rem;">W</span>
                                     </div>
                                 </div>
                             </div>
@@ -225,20 +223,19 @@
             }
         });
 
-        var tdpHandle = $("#tdpHandle");
+        // var tdpHandle = $("#tdpHandle");
+        var currentTDP = $("#tdp").val();
         var tdpSlider = $("#tdpSlider").slider({
-            create: function () {
-                tdpHandle.text($(this).slider("value") + " W");
-            },
             min: 0,
             max: 1000,
             value: $("#tdp").val(),
             slide: function (event, ui) {
                 $("#tdp").val(ui.value);
-                tdpHandle.text(ui.value);
             },
             stop: function (event, ui) {
-                $("#pickCPUForm").submit();
+                if (currentTDP != $("#tdp").val()) {
+                    $("#pickCPUForm").submit();
+                }
             }
         });
     </script>
