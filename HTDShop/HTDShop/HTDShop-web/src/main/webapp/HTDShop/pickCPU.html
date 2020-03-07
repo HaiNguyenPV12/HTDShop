@@ -11,6 +11,15 @@
         .dataTables_filter {
             float: right !important;
         }
+
+        #tdpHandle {
+            width: fit-content;
+            padding-bottom: 1.3rem;
+        }
+
+        #tdpSlider {
+            padding-right: 1rem;
+        }
     </style>
     <th:block layout:fragment="additionalCss">
         <link rel="stylesheet" th:href="@{/resources/Plugins/jquery-ui/jquery-ui.min.css}" />
@@ -95,12 +104,12 @@
                         <div>
                             <div class="row pb-1">
                                 <div class="col-md-3">TDP:</div>
-                                <div class="col-md-9">
+                                <div class="col-md-9" style="padding-right: 1.8rem;">
                                     <div id="tdpSlider">
                                         <div id="tdpHandle" class="ui-slider-handle"></div>
                                     </div>
                                     <div style="display: none;">
-                                        <input type="number" name="tdp" id="tdp" max="5000" min="0" th:field=*{tdp}
+                                        <input type="number" name="tdp" id="tdp" max="1000" min="0" th:field=*{tdp}
                                             value="0">
                                     </div>
                                 </div>
@@ -222,7 +231,7 @@
                 tdpHandle.text($(this).slider("value") + " W");
             },
             min: 0,
-            max: 5000,
+            max: 1000,
             value: $("#tdp").val(),
             slide: function (event, ui) {
                 $("#tdp").val(ui.value);
