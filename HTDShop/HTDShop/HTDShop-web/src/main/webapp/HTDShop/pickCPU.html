@@ -41,18 +41,19 @@
                         </div>
                         <div>
                             <h4 class="mx-auto">Price</h4>
+                            <div id="priceSlider" class="mb-3"></div>
                             <div class="row">
                                 <div class="col-md-3">From:</div>
                                 <div class="col-md-9 pb-1">
                                     <input type="number" name="priceMin" max="99999" min="0" th:field=*{priceMin}
-                                        value="0" style="width: 100%;">
+                                        id="priceFrom" value="0" style="width: 100%;">
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-3">To:</div>
                                 <div class="col-md-9">
                                     <input type="number" name="priceMax" max="99999" min="0" th:field=*{priceMax}
-                                        value="10000" style="width: 100%;">
+                                        id="priceTo" value="10000" style="width: 100%;">
                                 </div>
                             </div>
                         </div>
@@ -179,6 +180,9 @@
             </h2> -->
         </div>
     </div>
+    <th:block layout:fragment="additionalScript">
+        <script th:src="@{/resources/Plugins/jquery-ui/jquery-ui.min.js}"></script>
+    </th:block>
     <script th:inline="none" layout:fragment="script">
         $(document).ready(function () {
             $("#pickCPUForm").change(function (e) {
@@ -190,6 +194,20 @@
             initComplete: function () {
                 $('div.dataTables_length').addClass('form-inline');
                 $('div.dataTables_length').addClass('mt-4');
+            }
+        });
+
+        var priceSlider = $("#priceSlider").slider({
+            range: true,
+            min: 0,
+            max: 10000,
+            values: [$("#priceFrom").val(), $("#priceTo").val()],
+            slide: function (event, ui) {
+                $("#priceFrom").val(ui.values[0]);
+                $("#priceTo").val(ui.values[1]);
+            },
+            stop: function (event, ui) {
+                doSearch(1, null, false);
             }
         });
     </script>

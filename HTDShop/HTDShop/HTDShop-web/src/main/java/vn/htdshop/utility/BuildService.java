@@ -93,16 +93,17 @@ public class BuildService {
         }
     }
 
-    // public void setProductList() {
-    // buildProductList = productFacade.findAll();
-    // }
-
-    // public List<Product> getProductList() {
-    // if (buildProductList == null) {
-    // setProductList();
-    // }
-    // return buildProductList;
-    // }
+    // Session build compatibility checker
+    public void checkCompatibility() {
+        PreBuilt currentBuild = getSessionPrebuilt();
+        // Check CPU socket and Motherboard
+        // Check Motherboard RAM types (DDR3/4)
+        // Check RAM modules and RAM slots on motherboard
+        // Check case compatibility with motherboard
+        // Check case compatibility with PSU
+        // Check Cooler compatibility with CPU
+        // Check System TDP
+    }
 
     public boolean isBuildAppStarted() {
         return isSessionBuilding();
