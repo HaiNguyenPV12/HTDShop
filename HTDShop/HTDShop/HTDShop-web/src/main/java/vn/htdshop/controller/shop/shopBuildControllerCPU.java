@@ -139,6 +139,7 @@ public class shopBuildControllerCPU {
         result.setSocket("all");
         result.setCore(0);
         result.setThread(0);
+        result.setPriceMin(0);
         result.setPriceMax(10000);
         return result;
     }
