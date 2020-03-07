@@ -225,7 +225,8 @@
             max: 5000,
             value: $("#tdp").val(),
             slide: function (event, ui) {
-                $("#tdp").val(ui.values[0]);
+                $("#tdp").val(ui.value);
+                tdpHandle.text(ui.value);
             },
             stop: function (event, ui) {
                 $("#pickCPUForm").submit();
