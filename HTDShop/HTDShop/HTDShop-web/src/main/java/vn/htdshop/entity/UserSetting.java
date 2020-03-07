@@ -10,7 +10,9 @@ public class UserSetting {
 
     private Integer customerId;
     private String sessionId;
+    private List<String> recentItems;
     private List<CartItem> cart;
+    private PreBuilt prebuilt;
 
     public UserSetting() {
     }
@@ -18,11 +20,15 @@ public class UserSetting {
     public UserSetting(Integer id) {
         this.setCustomerId(id);
         this.setCart(new ArrayList<CartItem>());
+        this.setRecentItems(new ArrayList<String>());
+        this.prebuilt = new PreBuilt();
     }
 
     public UserSetting(String id) {
         this.setSessionId(id);
         this.setCart(new ArrayList<CartItem>());
+        this.setRecentItems(new ArrayList<String>());
+        this.prebuilt = new PreBuilt();
     }
 
     /**
@@ -66,6 +72,35 @@ public class UserSetting {
      */
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
+    }
+
+
+    /**
+     * @return List<String> return the recentItems
+     */
+    public List<String> getRecentItems() {
+        return recentItems;
+    }
+
+    /**
+     * @param recentItems the recentItems to set
+     */
+    public void setRecentItems(List<String> recentItems) {
+        this.recentItems = recentItems;
+    }
+
+    /**
+     * @return the prebuilt
+     */
+    public PreBuilt getPrebuilt() {
+        return prebuilt;
+    }
+
+    /**
+     * @param prebuilt the prebuilt to set
+     */
+    public void setPrebuilt(PreBuilt prebuilt) {
+        this.prebuilt = prebuilt;
     }
 
 }

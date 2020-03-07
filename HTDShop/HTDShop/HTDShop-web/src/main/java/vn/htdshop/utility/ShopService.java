@@ -3,7 +3,6 @@ package vn.htdshop.utility;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,6 +40,8 @@ import vn.htdshop.sb.PromotionFacadeLocal;
 
 /**
  * shopService
+ * 
+ * @author Thien
  */
 @Service("shopService")
 public class ShopService {
@@ -72,14 +73,15 @@ public class ShopService {
 
     private final String SITE_VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify";
 
-    public boolean isBeforeOrNow(Date date) {
-        return date.compareTo(new LocalDate().toDate()) >= 0;
-    }
+    // public boolean isBeforeOrNow(Date date) {
+    // return date.compareTo(new LocalDate().toDate()) >= 0;
+    // }
 
-    public Date localToday() {
-        return new LocalDate().toDate();
-    }
+    // public Date localToday() {
+    // return new LocalDate().toDate();
+    // }
 
+    // =========== CART FUNCTION ============
     public List<CartItem> getCart() {
         if (checkLogin()) {
             return getUserCart();
@@ -87,6 +89,14 @@ public class ShopService {
         return getNonUserCart();
     }
 
+    public boolean saveCart(List<CartItem> cartItems) {
+        if (checkLogin()) {
+            return saveUserCart(cartItems);
+        }
+        return saveNonUserCart(cartItems);
+    }
+
+    // Use when user successfully login, move all cart item to login setting.
     public List<CartItem> getLoggedInCart() {
         // Check for cookie cart
         List<CartItem> result = getNonUserCart();
@@ -338,6 +348,8 @@ public class ShopService {
 
     }
 
+    // =========== CUSTOMER FUNCTION ============
+
     public boolean checkLogin() {
         Boolean result = false;
         if (userSettings == null) {
@@ -377,10 +389,16 @@ public class ShopService {
                 if (nonUserId != null && findUserSetting(nonUserId) == null) {
                     userSettings.add(new UserSetting(nonUserId));
                 }
-            }
-
+            } 
         }
         return result;
+    }
+
+    public Customer getLoggedInCustomer() {
+        if (checkLogin()) {
+            return (Customer) session.getAttribute("loggedInCustomer");
+        }
+        return null;
     }
 
     public UserSetting findUserSetting(Integer id) {
@@ -401,12 +419,22 @@ public class ShopService {
         return null;
     }
 
-    public Customer getLoggedInCustomer() {
+    public UserSetting getUserSetting(){
         if (checkLogin()) {
-            return (Customer) session.getAttribute("loggedInCustomer");
+            return findUserSetting(getLoggedInCustomer().getId());
         }
-        return null;
+        String nonUserId = "";
+        if (request.getCookies() != null) {
+            nonUserId = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("JSESSIONID"))
+                    .findFirst().map(Cookie::getValue).orElse(null);
+            if (nonUserId != null && findUserSetting(nonUserId) == null) {
+                userSettings.add(new UserSetting(nonUserId));
+            }
+        } 
+        return findUserSetting(nonUserId);
     }
+
+    // =========== PRICE MANAGEMENT ============
 
     public Double getDiscountPrice(Product product) {
         Double discount = 0d;
@@ -438,12 +466,6 @@ public class ShopService {
                     if (promo.getExactSaleOff() != null) {
                         exactDiscount = promo.getExactSaleOff();
                     }
-                    // System.out.println("\"" + promo.getPromotionDetail().getName() + "\" -
-                    // product's discount %: "
-                    // + percentageDiscount);
-                    // System.out.println("\"" + promo.getPromotionDetail().getName() + "\" -
-                    // product's discount exact: "
-                    // + exactDiscount);
                     discount += percentageDiscount + exactDiscount;
                 }
             }
@@ -473,12 +495,6 @@ public class ShopService {
                     if (promo.getExactSaleOff() != null) {
                         exactDiscount = promo.getExactSaleOff();
                     }
-                    // System.out.println("\"" + promo.getPromotionDetail().getName() + "\" -
-                    // category's discount %: "
-                    // + percentageDiscount);
-                    // System.out.println("\"" + promo.getPromotionDetail().getName() + "\" -
-                    // category's discount exact: "
-                    // + exactDiscount);
                     discount += percentageDiscount + exactDiscount;
                 }
             }
@@ -559,6 +575,8 @@ public class ShopService {
         }
         return getPreBuiltPrice(prebuilt) - discount;
     }
+
+    // =========== OTHER FUNCTION ============
 
     public Long getAverageRating(PreBuilt prebuilt) {
         Long result = 0L;

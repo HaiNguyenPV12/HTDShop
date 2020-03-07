@@ -1,0 +1,58 @@
+<th:block th:fragment="1">
+    <table id="filteredCPUTable" class="table table-striped" style="width: 100%;">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Core Count</th>
+                <th>TDP</th>
+                <th>Status</th>
+                <th>Price</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="c : ${filterList}">
+                <td>
+                    <a href="" th:href=@{/} th:text=${c.name}></a>
+                </td>
+                <td>
+                    <th:block th:text="${c.core}" />
+                </td>
+                <td>
+                    <th:block th:text="${c.tdp}" />
+                </td>
+                <td>
+                    <th:block th:text="${c.status}" />
+                </td>
+                <td>
+                    <th:block th:text="${c.price}" />
+                </td>
+                <td>
+                    <button class="btn btn-primary">Add to build</button>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>Name</th>
+                <th>Core Count</th>
+                <th>TDP</th>
+                <th>Status</th>
+                <th>Price</th>
+                <th></th>
+            </tr>
+        </tfoot>
+    </table>
+    <script>
+        $(document).ready(function () {
+            $('#filteredCPUTable').DataTable({
+                initComplete: function () {
+                    $('div.dataTables_length').addClass('form-inline');
+                    $('div.dataTables_length').addClass('mt-4');
+                }
+            });
+        });
+    </script>
+
+
+</th:block>

@@ -112,4 +112,14 @@ public class BuildService {
     public PreBuilt getPreBuilt() {
         return preBuilt;
     }
+
+    public List<String> getList(String type) {
+        return productFacade.getStringList(type);
+    }
+
+    public List<String> getList2(String type, String options) {
+        System.out.println(type + "_" + options);
+        return productFacade.getStringList(type, options);
+
+    }
 }

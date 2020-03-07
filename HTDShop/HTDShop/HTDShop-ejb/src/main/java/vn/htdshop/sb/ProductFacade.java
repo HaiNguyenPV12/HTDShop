@@ -7,6 +7,7 @@ package vn.htdshop.sb;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -146,6 +147,41 @@ public class ProductFacade extends AbstractFacade<Product> implements ProductFac
     public Product find(Integer id) {
         // TODO Auto-generated method stub
         return em.find(Product.class, id);
+    }
+
+    @Override
+    public List<String> getStringList(String attr, String options) {
+        Query q = null;
+        String qStr = "";
+        if (attr.equals("socketCpu")) {
+            qStr = "SELECT DISTINCT CAST(Socket AS VARCHAR(MAX)) FROM Product WHERE CateId = 1";
+        } else if (attr.equals("series") || attr.equals("seriesCpu")) {
+            qStr = "SELECT DISTINCT Series FROM Product WHERE CateId = 1";
+        } else {
+            return null;
+        }
+
+        StringTokenizer token = new StringTokenizer(options, ",");
+        while (token.hasMoreTokens()) {
+            String a = token.nextToken();
+            if (a != null && !a.isEmpty()) {
+                String option = a.substring(0, a.indexOf(":"));
+                String value = a.substring(a.indexOf(":") + 1, a.length());
+                if (option != null && !option.isEmpty() && value != null && !value.isEmpty()) {
+                    if (option.equals("Socket")) {
+                        qStr += " AND CAST(Socket AS VARCHAR(MAX)) = '" + value + "'";
+                    } else {
+                        qStr += " AND " + option + " = '" + value + "'";
+                    }
+                }
+            }
+        }
+        q = em.createNativeQuery(qStr);
+
+        if (q.getResultList().size() == 0) {
+            return new ArrayList<String>();
+        }
+        return (List<String>) q.getResultList();
     }
 
 }

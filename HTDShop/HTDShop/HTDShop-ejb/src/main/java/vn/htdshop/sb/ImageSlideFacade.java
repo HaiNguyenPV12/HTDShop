@@ -8,6 +8,9 @@ package vn.htdshop.sb;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+
 import vn.htdshop.entity.ImageSlide;
 
 /**
@@ -28,5 +31,15 @@ public class ImageSlideFacade extends AbstractFacade<ImageSlide> implements Imag
     public ImageSlideFacade() {
         super(ImageSlide.class);
     }
-    
+
+    @Override
+    public boolean promoExist(int promoId) {
+        Query query = em.createNativeQuery(
+                "SELECT Link FROM ImageSlide WHERE CAST(Link AS VARCHAR(MAX)) = 'promotion?id=" + promoId + "'");
+        if (query.getResultList().size() > 0) {
+            return true;
+        }
+        return false;
+    }
+
 }
