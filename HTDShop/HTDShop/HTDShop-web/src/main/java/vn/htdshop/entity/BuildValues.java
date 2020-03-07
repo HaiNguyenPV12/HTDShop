@@ -1,7 +1,6 @@
 package vn.htdshop.entity;
 
 import java.io.Serializable;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.validation.constraints.Size;
@@ -38,24 +37,26 @@ public class BuildValues implements Serializable {
     private Integer memorySlot;
     private String storageType;
     private Integer psuWattage;
-    private int memoryModules;
+    private Integer memoryModules;
     private String psuFormFactor;
     private Integer screenSize;
     private String resolution;
 
-    public BuildValues() {
-    }
-
-    public BuildValues(int id, String manufacturer) {
+    public BuildValues(Integer id, String manufacturer) {
         this.id = id;
         this.manufacturer = manufacturer;
     }
 
-    /**
-     * @return the id
-     */
-    public Integer getId() {
-        return id;
+    public Integer getPriceMax() {
+        return priceMax;
+    }
+
+    public void setPriceMax(Integer priceMax) {
+        this.priceMax = priceMax;
+    }
+
+    public String getResolution() {
+        return resolution;
     }
 
     /**
@@ -65,18 +66,12 @@ public class BuildValues implements Serializable {
         this.id = id;
     }
 
-    /**
-     * @return the partCategory
-     */
-    public String getPartCategory() {
-        return partCategory;
+    public Integer getScreenSize() {
+        return screenSize;
     }
 
-    /**
-     * @param partCategory the partCategory to set
-     */
-    public void setPartCategory(String partCategory) {
-        this.partCategory = partCategory;
+    public void setScreenSize(Integer screenSize) {
+        this.screenSize = screenSize;
     }
 
     /**
@@ -93,32 +88,20 @@ public class BuildValues implements Serializable {
         this.manufacturer = manufacturer;
     }
 
-    /**
-     * @return the color
-     */
-    public String getColor() {
-        return color;
+    public Integer getMemoryModules() {
+        return memoryModules;
     }
 
-    /**
-     * @param color the color to set
-     */
-    public void setColor(String color) {
-        this.color = color;
+    public void setMemoryModules(Integer memoryModules) {
+        this.memoryModules = memoryModules;
     }
 
-    /**
-     * @return the priceMin
-     */
-    public Integer getPriceMin() {
-        return priceMin;
+    public Integer getPsuWattage() {
+        return psuWattage;
     }
 
-    /**
-     * @param priceMin the priceMin to set
-     */
-    public void setPriceMin(Integer priceMin) {
-        this.priceMin = priceMin;
+    public void setPsuWattage(Integer psuWattage) {
+        this.psuWattage = psuWattage;
     }
 
     /**
@@ -135,18 +118,12 @@ public class BuildValues implements Serializable {
         this.priceMax = priceMax;
     }
 
-    /**
-     * @return the socket
-     */
-    public String getSocket() {
-        return socket;
+    public Integer getMemorySlot() {
+        return memorySlot;
     }
 
-    /**
-     * @param socket the socket to set
-     */
-    public void setSocket(String socket) {
-        this.socket = socket;
+    public void setMemorySlot(Integer memorySlot) {
+        this.memorySlot = memorySlot;
     }
 
     /**
@@ -163,46 +140,28 @@ public class BuildValues implements Serializable {
         this.chipset = chipset;
     }
 
-    /**
-     * @return the memoryType
-     */
-    public String getMemoryType() {
-        return memoryType;
+    public Integer getThread() {
+        return thread;
     }
 
-    /**
-     * @param memoryType the memoryType to set
-     */
-    public void setMemoryType(String memoryType) {
-        this.memoryType = memoryType;
+    public void setThread(Integer thread) {
+        this.thread = thread;
     }
 
-    /**
-     * @return the formFactor
-     */
-    public String getFormFactor() {
-        return formFactor;
+    public Integer getCore() {
+        return core;
     }
 
-    /**
-     * @param formFactor the formFactor to set
-     */
-    public void setFormFactor(String formFactor) {
-        this.formFactor = formFactor;
+    public void setCore(Integer core) {
+        this.core = core;
     }
 
-    /**
-     * @return the tdp
-     */
-    public Integer getTdp() {
-        return tdp;
+    public Integer getMemory() {
+        return memory;
     }
 
-    /**
-     * @param tdp the tdp to set
-     */
-    public void setTdp(Integer tdp) {
-        this.tdp = tdp;
+    public void setMemory(Integer memory) {
+        this.memory = memory;
     }
 
     /**
@@ -219,18 +178,12 @@ public class BuildValues implements Serializable {
         this.partInterface = partInterface;
     }
 
-    /**
-     * @return the memory
-     */
-    public Integer getMemory() {
-        return memory;
+    public Integer getTdp() {
+        return tdp;
     }
 
-    /**
-     * @param memory the memory to set
-     */
-    public void setMemory(Integer memory) {
-        this.memory = memory;
+    public void setTdp(Integer tdp) {
+        this.tdp = tdp;
     }
 
     /**
@@ -289,18 +242,12 @@ public class BuildValues implements Serializable {
         this.memorySlot = memorySlot;
     }
 
-    /**
-     * @return the storageType
-     */
-    public String getStorageType() {
-        return storageType;
+    public Integer getPriceMin() {
+        return priceMin;
     }
 
-    /**
-     * @param storageType the storageType to set
-     */
-    public void setStorageType(String storageType) {
-        this.storageType = storageType;
+    public void setPriceMin(Integer price) {
+        this.priceMin = price;
     }
 
     /**
@@ -365,12 +312,4 @@ public class BuildValues implements Serializable {
     public String getResolution() {
         return resolution;
     }
-
-    /**
-     * @param resolution the resolution to set
-     */
-    public void setResolution(String resolution) {
-        this.resolution = resolution;
-    }
-
 }
