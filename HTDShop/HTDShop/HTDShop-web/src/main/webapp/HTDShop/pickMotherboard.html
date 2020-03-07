@@ -21,14 +21,17 @@
                 <h2 class="mx-auto">Pick a Motherboard</h2>
             </div>
             <!-- START OF FILTER FORM -->
+
             <!-- END OF FILTER FORM -->
             <table id="filteredMotherboardTable" class="table table-striped" style="width: 100%;">
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Core Count</th>
-                        <th>TDP</th>
-                        <th>Status</th>
+                        <th>Socket</th>
+                        <th>Chipset</th>
+                        <th>Form Factor</th>
+                        <th>Memory Type</th>
+                        <th>Memory Slots</th>
                         <th>Price</th>
                         <th></th>
                     </tr>
@@ -37,6 +40,12 @@
                     <tr th:each="m : ${filteredMotherboard}">
                         <td>
                             <a href="" th:href=@{/} th:text=${m.name}></a>
+                        </td>
+                        <td>
+
+                        </td>
+                        <td>
+
                         </td>
                         <td>
 
@@ -61,9 +70,11 @@
                 <tfoot>
                     <tr>
                         <th>Name</th>
-                        <th>Core Count</th>
-                        <th>TDP</th>
-                        <th>Status</th>
+                        <th>Socket</th>
+                        <th>Chipset</th>
+                        <th>Form Factor</th>
+                        <th>Memory Type</th>
+                        <th>Memory Slots</th>
                         <th>Price</th>
                         <th></th>
                     </tr>

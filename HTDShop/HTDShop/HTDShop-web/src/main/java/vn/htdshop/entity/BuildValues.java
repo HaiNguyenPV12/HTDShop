@@ -22,36 +22,36 @@ public class BuildValues implements Serializable {
     private String partCategory;
     private String manufacturer;
     private String color;
-    private int priceMin;
-    private int priceMax;
+    private Integer priceMin;
+    private Integer priceMax;
     private String socket;
     private String chipset;
     private String memoryType;
     private String formFactor;
-    private int tdp;
+    private Integer tdp;
     private String partInterface;
-    private int memory;
-    private int core;
-    private int thread;
+    private Integer memory;
+    private Integer core;
+    private Integer thread;
     private String series;
-    private int memorySlot;
+    private Integer memorySlot;
     private String storageType;
-    private int psuWattage;
-    private int memoryModules;
+    private Integer psuWattage;
+    private Integer memoryModules;
     private String psuFormFactor;
-    private int screenSize;
+    private Integer screenSize;
     private String resolution;
 
-    public BuildValues(int id, String manufacturer) {
+    public BuildValues(Integer id, String manufacturer) {
         this.id = id;
         this.manufacturer = manufacturer;
     }
 
-    public int getPriceMax() {
+    public Integer getPriceMax() {
         return priceMax;
     }
 
-    public void setPriceMax(int priceMax) {
+    public void setPriceMax(Integer priceMax) {
         this.priceMax = priceMax;
     }
 
@@ -63,11 +63,11 @@ public class BuildValues implements Serializable {
         this.resolution = resolution;
     }
 
-    public int getScreenSize() {
+    public Integer getScreenSize() {
         return screenSize;
     }
 
-    public void setScreenSize(int screenSize) {
+    public void setScreenSize(Integer screenSize) {
         this.screenSize = screenSize;
     }
 
@@ -79,19 +79,19 @@ public class BuildValues implements Serializable {
         this.psuFormFactor = psuFormFactor;
     }
 
-    public int getMemoryModules() {
+    public Integer getMemoryModules() {
         return memoryModules;
     }
 
-    public void setMemoryModules(int memoryModules) {
+    public void setMemoryModules(Integer memoryModules) {
         this.memoryModules = memoryModules;
     }
 
-    public int getPsuWattage() {
+    public Integer getPsuWattage() {
         return psuWattage;
     }
 
-    public void setPsuWattage(int psuWattage) {
+    public void setPsuWattage(Integer psuWattage) {
         this.psuWattage = psuWattage;
     }
 
@@ -103,11 +103,11 @@ public class BuildValues implements Serializable {
         this.storageType = storageType;
     }
 
-    public int getMemorySlot() {
+    public Integer getMemorySlot() {
         return memorySlot;
     }
 
-    public void setMemorySlot(int memorySlot) {
+    public void setMemorySlot(Integer memorySlot) {
         this.memorySlot = memorySlot;
     }
 
@@ -119,27 +119,27 @@ public class BuildValues implements Serializable {
         this.series = series;
     }
 
-    public int getThread() {
+    public Integer getThread() {
         return thread;
     }
 
-    public void setThread(int thread) {
+    public void setThread(Integer thread) {
         this.thread = thread;
     }
 
-    public int getCore() {
+    public Integer getCore() {
         return core;
     }
 
-    public void setCore(int core) {
+    public void setCore(Integer core) {
         this.core = core;
     }
 
-    public int getMemory() {
+    public Integer getMemory() {
         return memory;
     }
 
-    public void setMemory(int memory) {
+    public void setMemory(Integer memory) {
         this.memory = memory;
     }
 
@@ -151,11 +151,11 @@ public class BuildValues implements Serializable {
         this.partInterface = partInterface;
     }
 
-    public int getTdp() {
+    public Integer getTdp() {
         return tdp;
     }
 
-    public void setTdp(int tdp) {
+    public void setTdp(Integer tdp) {
         this.tdp = tdp;
     }
 
@@ -191,11 +191,11 @@ public class BuildValues implements Serializable {
         this.socket = socket;
     }
 
-    public int getPriceMin() {
+    public Integer getPriceMin() {
         return priceMin;
     }
 
-    public void setPriceMin(int price) {
+    public void setPriceMin(Integer price) {
         this.priceMin = price;
     }
 

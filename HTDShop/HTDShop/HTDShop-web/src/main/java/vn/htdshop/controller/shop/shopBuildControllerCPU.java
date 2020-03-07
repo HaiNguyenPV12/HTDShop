@@ -121,8 +121,7 @@ public class shopBuildControllerCPU {
     public BuildValues getSessionCPUValues() {
         BuildValues result = (BuildValues) session.getAttribute("cpuValues");
         if (result == null) {
-            BuildValues newCPUValues = new BuildValues();
-            newCPUValues = initFilterValues();
+            BuildValues newCPUValues = initFilterValues();
             setSessionCPUValues(newCPUValues);
         }
         return (BuildValues) session.getAttribute("cpuValues");
@@ -137,8 +136,10 @@ public class shopBuildControllerCPU {
         result.setPartCategory("cpu");
         result.setManufacturer("all");
         result.setSocket("all");
+        result.setSeries("all");
         result.setCore(0);
         result.setThread(0);
+        result.setPriceMin(0);
         result.setPriceMax(10000);
         return result;
     }
@@ -179,7 +180,6 @@ public class shopBuildControllerCPU {
                 .map(s -> s.getSeries()).distinct().collect(Collectors.toList());
 
         // TODO check if motherboard is picked
-
         // filter by manufacturer (AMD/Intel)
         String manufacturer = cpuValues.getManufacturer();
         if (!manufacturer.equals("all")) {
@@ -227,11 +227,15 @@ public class shopBuildControllerCPU {
 
             // filter by core & threads
             // --cores
-            int cores = cpuValues.getCore();
+            Integer cores = cpuValues.getCore();
             cpus = cpus.stream().filter(c -> c.getCore() >= cores).collect(Collectors.toList());
             // --threads
-            int threads = cpuValues.getThread();
+            Integer threads = cpuValues.getThread();
             cpus = cpus.stream().filter(t -> t.getThread() >= threads).collect(Collectors.toList());
+
+            // filter by TDP
+            Integer tdp = cpuValues.getTdp();
+            cpus = cpus.stream().filter(c -> c.getTdp() >= tdp).collect(Collectors.toList());
 
             // filter by price
             // --clamp prices and filter
@@ -265,14 +269,12 @@ public class shopBuildControllerCPU {
     // // redirect to build's home page
     // return "redirect:/build";
     // }
-
     // @RequestMapping(value = "discardCpu", method = RequestMethod.GET)
     // public String discardCPU(RedirectAttributes redirect) {
     // // remove CPU from session Prebuilt
     // buildService.getSessionPrebuilt().setCpu(null);
     // return "redirect:/build";
     // }
-
     // // Socket list for form
     // private List<String> cpuSockets() {
     // List<String> sockets = new ArrayList<>();
@@ -282,7 +284,6 @@ public class shopBuildControllerCPU {
     // String manufacturer = motherboard.getManufacturer();
     // cpuValues.setManufacturer(manufacturer);
     // // get specific socket
-
     // }
     // // filter manufacturer
     // if (!cpuValues.getManufacturer().equals("all")) {
@@ -299,20 +300,17 @@ public class shopBuildControllerCPU {
     // }
     // return sockets;
     // }
-
     // private List<String> cpuManufacturers() {
     // if (buildService.getPreBuilt() == null) {
     // cpuValues.setManufacturer("all");
     // }
     // List<String> manufacturers = new ArrayList<>();
     // // TODO check if motherboard is picked.
-
     // manufacturers = buildProductList.stream().filter(p -> p.getCategory().getId()
     // == 1)
     // .map(s -> s.getManufacturer()).distinct().collect(Collectors.toList());
     // return manufacturers;
     // }
-
     // private List<String> cpuSeries() {
     // // TODO check if motherboard is picked
     // List<String> series = new ArrayList<>();
@@ -331,7 +329,6 @@ public class shopBuildControllerCPU {
     // // .collect(Collectors.toList());
     // return series;
     // }
-
     // private List<Product> filterCPU() {
     // List<Product> cpus = new ArrayList<>();
     // if (cpuValues == null) {
@@ -340,7 +337,6 @@ public class shopBuildControllerCPU {
     // }
     // cpus = buildProductList.stream().filter(p -> p.getCategory().getId() ==
     // 1).collect(Collectors.toList());
-
     // // filter by manufacturers
     // if (!cpuValues.getManufacturer().equals("all")) {
     // if (cpus.stream().filter(m ->
@@ -361,7 +357,6 @@ public class shopBuildControllerCPU {
     // }
     // }
     // // filter by series
-
     // // filter by core&threads
     // // filter by price
     // if (cpuValues.getPriceMin() == 0 && cpuValues.getPriceMax() == 0) {
@@ -373,16 +368,13 @@ public class shopBuildControllerCPU {
     // .filter(p -> p.getPrice() >= cpuValues.getPriceMin() && p.getPrice() <=
     // cpuValues.getPriceMax())
     // .collect(Collectors.toList());
-
     // return cpus;
     // }
-
     // private void initFilterValues() {
     // cpuValues.setPartCategory("cpu");
     // cpuValues.setManufacturer("all");
     // cpuValues.setSocket("all");
     // cpuValues.setPriceMax(2000);
-
     // if (buildService.getSessionPrebuilt().getMotherboard() != null) {
     // Product motherboard = buildService.getSessionPrebuilt().getMotherboard();
     // cpuValues.setSocket(motherboard.getSocket());
