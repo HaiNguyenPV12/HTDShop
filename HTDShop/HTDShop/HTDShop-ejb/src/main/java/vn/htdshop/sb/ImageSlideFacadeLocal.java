@@ -29,5 +29,7 @@ public interface ImageSlideFacadeLocal {
     List<ImageSlide> findRange(int[] range);
 
     int count();
+
+    boolean promoExist(int promoId);
     
 }

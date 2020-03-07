@@ -26,10 +26,19 @@
             display: none;
         }
 
-        .product-img {
+        /* .product-img {
             cursor: pointer;
             height: 4rem;
             width: 6rem;
+            object-fit: contain;
+            background-color: white;
+            border: 1px solid #9628f08c;
+        } */
+
+        .product-img {
+            cursor: pointer;
+            height: 10rem;
+            width: 14rem;
             object-fit: contain;
             background-color: white;
             border: 1px solid #9628f08c;
@@ -142,10 +151,19 @@
         </div>
 
         <div class="modal fade" id="modalImage">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-                    <div class="modal-header" id='modalImageHeader'>
-                        <h4 class="modal-title" id="modalImageTitle">Image:</h4>
+                    <div class="modal-header bg-" id='modalImageHeader'>
+                        <h4 class="modal-title" id="modalImageTitle">
+                            Image
+                            <div class="file btn btn-success" style="position:relative;overflow:hidden;"
+                                id="modalImageButton">
+                                <i class="fas fa-plus-square fa-lg mr-2"></i> Add new Image
+                                <input type="file"
+                                    style="position: absolute;font-size:50px;opacity: 0;right: 0;top: 0;cursor: pointer;"
+                                    id="btnUploadImage" multiple="multiple" name="uploadimg" accept="image/*">
+                            </div>
+                        </h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -157,13 +175,7 @@
                                 <th>Image</th>
                                 <th>Action</th>
                             </thead>
-
                             <tbody>
-
-                                <tr th:if="${productImages eq null or productImages.empty}">
-                                    <td colspan="2">No products</td>
-                                </tr>
-                                
 
                             </tbody>
                             <tfoot class="bg-purple">
@@ -175,8 +187,7 @@
                     </div>
                     <div class="modal-footer justify-content-between">
                         <button type="button" class="btn btn-default" data-dismiss="modal"
-                            id='modalClose'>Cancel</button>
-                        <a class="btn btn-danger" id="modalImageButton">Yes, delete this</a>
+                            id='modalImageClose'>Close</button>
                     </div>
                 </div>
                 <!-- /.modal-content -->
@@ -335,7 +346,8 @@
                         var productlink = /*[[@{/manager/product}]]*/'';
                         var id = row.id;
                         var str = "";
-                        str += '<a class="btn btn-info btn-sm" href="' + productlink + '/image?id=' + id + '" data-toggle="tooltip" title = "Images" > <i class="fas fa-images" ></i></a>';
+                        // str += '<a class="btn btn-info btn-sm" href="' + productlink + '/image?id=' + id + '" data-toggle="tooltip" title = "Images" > <i class="fas fa-images" ></i></a>';
+                        str += '<button class="btn btn-info btn-sm" onclick="showImage(' + id + ')" data-toggle="tooltip" title = "Images" > <i class="fas fa-images" ></i></button>';
                         str += '<a class="btn btn-warning btn-sm" href="' + productlink + '/edit?id=' + id + '" data-toggle="tooltip" title = "Edit" > <i class="fas fa-pencil-alt" ></i></a>';
                         str += '<button class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete" onclick=\"confirmDelete(\'' + row.name.replace("\"", "&quot;") + '\',\'' + productlink + '/doDelete?id=' + id + '\')\"><i class="fas fa-trash"></i></button>';
                         return str;
@@ -504,6 +516,18 @@
             });
         }
 
+        var existImgSize = +0;
+
+        var productId = 0;
+
+        function showImage(id) {
+            var imgUrl = /*[[@{/manager/product/image/list}]]*/"";
+            imgUrl += "?id=" + id;
+            productId = id;
+            tableImage.ajax.url(imgUrl).load();
+            $('#modalImage').modal('show');
+        }
+
         var tableImage = $('#tblProductImage').DataTable({
             // Move filter from foot to head
             initComplete: function () {
@@ -519,7 +543,7 @@
             "info": true,
             "autoWidth": false,
             ajax: {
-                url:/*[[@{/manager/product/image/list(id=${param.id})}]]*/"",
+                url:/*[[@{/manager/product/image/list}]]*/"",
                 dataSrc: function (json) {
                     //Make your callback here.
                     existImgSize = json.length;
@@ -562,8 +586,8 @@
             }],
             // custom collums's width
             "columns": [
-                { "width": "10%", "data": "mainImage" },
-                { "width": "80%", "data": "imagePath" },
+                { "width": "20%", "data": "mainImage" },
+                { "width": "70%", "data": "imagePath" },
                 { "width": "10%", "data": null }
             ],
             "createdRow": function (row, data, dataIndex) {
@@ -587,7 +611,7 @@
                                     type: 'success',
                                     title: 'Successfully changed main image.'
                                 });
-                                table.ajax.reload();
+                                tableImage.ajax.reload();
                             } else {
                                 Toast.fire({
                                     type: 'error',
@@ -610,7 +634,7 @@
                                     type: 'success',
                                     title: 'Successfully deleted image.'
                                 });
-                                table.ajax.reload();
+                                tableImage.ajax.reload();
                             } else {
                                 Toast.fire({
                                     type: 'error',
@@ -621,6 +645,49 @@
                     });
                 });
             }
+        });
+
+        $("#btnUploadImage").on("change", function () {
+            if (this.files && this.files[0]) {
+                if ((this.files.length + existImgSize) > 10) {
+                    Toast.fire({
+                        type: 'error',
+                        title: 'Product can have maximum 10 images.'
+                    });
+                    $(this).val("");
+                    return;
+                }
+
+                var myFormData = new FormData();
+                for (var i = 0; i < this.files.length; i++) {
+                    myFormData.append('uploadimg', this.files[i]);
+                }
+                myFormData.append("id", productId);
+
+                $.ajax({
+                    url: /*[[@{/manager/product/image/doAdd}]]*/'',
+                    type: 'POST',
+                    processData: false, // important
+                    contentType: false, // important
+                    data: myFormData,
+                    success: function (result) {
+                        if (result == "ok") {
+                            Toast.fire({
+                                type: 'success',
+                                title: 'Successfully added image.'
+                            });
+                            tableImage.ajax.reload();
+                        } else {
+                            Toast.fire({
+                                type: 'error',
+                                title: result,
+                                timer: 5000
+                            });
+                        }
+                    }
+                });
+            }
+            $(this).val("");
         });
         /*]]>*/
     </script>
