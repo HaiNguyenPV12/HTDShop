@@ -78,7 +78,6 @@ public class shopBuildControllerMotherboard {
     public String pickMotherboard(@ModelAttribute("id") Integer id, RedirectAttributes redirect) {
         // get Motherboard from ID
         Product motherboard = productFacade.find(id);
-        // TODO go back to cpu page if there were errors/id isn't a motherboard
         // Set Motherboard in session's build
         PreBuilt sessionPreBuilt = buildService.getSessionPrebuilt();
         sessionPreBuilt.setMotherboard(motherboard);
@@ -108,7 +107,6 @@ public class shopBuildControllerMotherboard {
         List<String> manufacturers = new ArrayList<>();
         manufacturers = buildService.getSessionProductList().stream().filter(p -> p.getCategory().getId() == 2)
                 .map(m -> m.getManufacturer()).distinct().collect(Collectors.toList());
-        // TODO check if CPU/RAM is picked and filter accordingly.
         return manufacturers;
     }
 
