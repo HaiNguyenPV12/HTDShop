@@ -59,11 +59,8 @@ public class BuildValues implements Serializable {
         return resolution;
     }
 
-    /**
-     * @param id the id to set
-     */
-    public void setId(Integer id) {
-        this.id = id;
+    public void setResolution(String resolution) {
+        this.resolution = resolution;
     }
 
     public Integer getScreenSize() {
@@ -74,18 +71,12 @@ public class BuildValues implements Serializable {
         this.screenSize = screenSize;
     }
 
-    /**
-     * @return the manufacturer
-     */
-    public String getManufacturer() {
-        return manufacturer;
+    public String getPsuFormFactor() {
+        return psuFormFactor;
     }
 
-    /**
-     * @param manufacturer the manufacturer to set
-     */
-    public void setManufacturer(String manufacturer) {
-        this.manufacturer = manufacturer;
+    public void setPsuFormFactor(String psuFormFactor) {
+        this.psuFormFactor = psuFormFactor;
     }
 
     public Integer getMemoryModules() {
@@ -104,18 +95,12 @@ public class BuildValues implements Serializable {
         this.psuWattage = psuWattage;
     }
 
-    /**
-     * @return the priceMax
-     */
-    public Integer getPriceMax() {
-        return priceMax;
+    public String getStorageType() {
+        return storageType;
     }
 
-    /**
-     * @param priceMax the priceMax to set
-     */
-    public void setPriceMax(Integer priceMax) {
-        this.priceMax = priceMax;
+    public void setStorageType(String storageType) {
+        this.storageType = storageType;
     }
 
     public Integer getMemorySlot() {
@@ -126,18 +111,12 @@ public class BuildValues implements Serializable {
         this.memorySlot = memorySlot;
     }
 
-    /**
-     * @return the chipset
-     */
-    public String getChipset() {
-        return chipset;
+    public String getSeries() {
+        return series;
     }
 
-    /**
-     * @param chipset the chipset to set
-     */
-    public void setChipset(String chipset) {
-        this.chipset = chipset;
+    public void setSeries(String series) {
+        this.series = series;
     }
 
     public Integer getThread() {
@@ -164,16 +143,10 @@ public class BuildValues implements Serializable {
         this.memory = memory;
     }
 
-    /**
-     * @return the partInterface
-     */
     public String getPartInterface() {
         return partInterface;
     }
 
-    /**
-     * @param partInterface the partInterface to set
-     */
     public void setPartInterface(String partInterface) {
         this.partInterface = partInterface;
     }
@@ -186,60 +159,36 @@ public class BuildValues implements Serializable {
         this.tdp = tdp;
     }
 
-    /**
-     * @return the core
-     */
-    public Integer getCore() {
-        return core;
+    public String getFormFactor() {
+        return formFactor;
     }
 
-    /**
-     * @param core the core to set
-     */
-    public void setCore(Integer core) {
-        this.core = core;
+    public void setFormFactor(String formFactor) {
+        this.formFactor = formFactor;
     }
 
-    /**
-     * @return the thread
-     */
-    public Integer getThread() {
-        return thread;
+    public String getMemoryType() {
+        return memoryType;
     }
 
-    /**
-     * @param thread the thread to set
-     */
-    public void setThread(Integer thread) {
-        this.thread = thread;
+    public void setMemoryType(String memoryType) {
+        this.memoryType = memoryType;
     }
 
-    /**
-     * @return the series
-     */
-    public String getSeries() {
-        return series;
+    public String getChipset() {
+        return chipset;
     }
 
-    /**
-     * @param series the series to set
-     */
-    public void setSeries(String series) {
-        this.series = series;
+    public void setChipset(String chipset) {
+        this.chipset = chipset;
     }
 
-    /**
-     * @return the memorySlot
-     */
-    public Integer getMemorySlot() {
-        return memorySlot;
+    public String getSocket() {
+        return socket;
     }
 
-    /**
-     * @param memorySlot the memorySlot to set
-     */
-    public void setMemorySlot(Integer memorySlot) {
-        this.memorySlot = memorySlot;
+    public void setSocket(String socket) {
+        this.socket = socket;
     }
 
     public Integer getPriceMin() {
@@ -250,66 +199,38 @@ public class BuildValues implements Serializable {
         this.priceMin = price;
     }
 
-    /**
-     * @return the psuWattage
-     */
-    public Integer getPsuWattage() {
-        return psuWattage;
+    public String getColor() {
+        return color;
     }
 
-    /**
-     * @param psuWattage the psuWattage to set
-     */
-    public void setPsuWattage(Integer psuWattage) {
-        this.psuWattage = psuWattage;
+    public void setColor(String color) {
+        this.color = color;
     }
 
-    /**
-     * @return the memoryModules
-     */
-    public int getMemoryModules() {
-        return memoryModules;
+    public BuildValues() {
     }
 
-    /**
-     * @param memoryModules the memoryModules to set
-     */
-    public void setMemoryModules(int memoryModules) {
-        this.memoryModules = memoryModules;
+    public String getManufacturer() {
+        return manufacturer;
     }
 
-    /**
-     * @return the psuFormFactor
-     */
-    public String getPsuFormFactor() {
-        return psuFormFactor;
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
     }
 
-    /**
-     * @param psuFormFactor the psuFormFactor to set
-     */
-    public void setPsuFormFactor(String psuFormFactor) {
-        this.psuFormFactor = psuFormFactor;
+    public Integer getId() {
+        return id;
     }
 
-    /**
-     * @return the screenSize
-     */
-    public Integer getScreenSize() {
-        return screenSize;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    /**
-     * @param screenSize the screenSize to set
-     */
-    public void setScreenSize(Integer screenSize) {
-        this.screenSize = screenSize;
+    public String getPartCategory() {
+        return partCategory;
     }
 
-    /**
-     * @return the resolution
-     */
-    public String getResolution() {
-        return resolution;
+    public void setPartCategory(String partCategory) {
+        this.partCategory = partCategory;
     }
 }
