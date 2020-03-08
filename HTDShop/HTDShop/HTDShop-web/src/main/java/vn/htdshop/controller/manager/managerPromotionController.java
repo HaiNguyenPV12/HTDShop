@@ -172,7 +172,9 @@ public class managerPromotionController {
                     .collect(Collectors.toList());
         }
         for (PromotionDetail promo : promolist) {
-            result.add(new PromotionView(promo));
+            PromotionView promoView = new PromotionView(promo);
+            promoView.setHasImageSlide(managerService.checkImageSlideExists(promo.getId()));
+            result.add(promoView);
         }
 
         return result;

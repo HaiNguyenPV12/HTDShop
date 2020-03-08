@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDShop/layout}">
+
+<head>
+    <title>Build Your PC</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-4">
+                    <h2>System Builder</h2>
+                </div>
+            </div>
+            <div class="row">
+                <table class="table table-striped table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Component</th>
+                            <th>Selection</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- CPU ROW -->
+                        <tr>
+                            <td>CPU</td>
+                            <td>
+                                <a href="" th:href="@{/build2/pick(id=1)}" class="btn btn-primary">
+                                    <i class="ti-plus"></i> Choose a CPU
+                                </a>
+                            </td>
+                            <td>
+                                <!-- ITEM PRICE -->
+                            </td>
+                        </tr>
+                        <!-- CPU COOLER ROW -->
+                        <tr>
+                            <td>CPU Cooler</td>
+                            <td>
+                                <a href="" th:href="@{/build2/pick(id=7)}" class="btn btn-primary">
+                                    <i class="ti-plus"></i> Choose a CPU cooler
+                                </a>
+                            </td>
+                            <td>
+
+                            </td>
+                        </tr>
+                        <!-- MOTHERBOARD ROW -->
+                        <tr>
+                            <td>Motherboard</td>
+                            <td>
+                                <a href="" th:href="@{/build2/pick(id=2)}" class="btn btn-primary">
+                                    <i class="ti-plus"></i> Choose a motherboard
+                                </a>
+                            </td>
+                            <td>
+
+                            </td>
+                        </tr>
+                        <!-- MEMORY ROW -->
+                        <tr>
+                            <td>Memory</td>
+                            <td>
+                                <a href="" th:href="@{/build2/pick(id=4)}" class="btn btn-primary">
+                                    <i class="ti-plus"></i> Choose memory
+                                </a>
+                            </td>
+                            <td>
+
+                            </td>
+                        </tr>
+                        <!-- STORAGE ROW -->
+                        <tr>
+                            <td>Storage</td>
+                            <td>
+                                <a href="" th:href="@{/build2/pick(id=6)}" class="btn btn-primary">
+                                    <i class="ti-plus"></i> Choose storage
+                                </a>
+                            </td>
+                            <td>
+
+                            </td>
+                        </tr>
+                        <!-- VIDEO CARD ROW -->
+                        <tr>
+                            <td>Video Card</td>
+                            <td>
+                                <a href="" th:href="@{/build2/pick(id=3)}" class="btn btn-primary">
+                                    <i class="ti-plus"></i> Choose a video card
+                                </a>
+                            </td>
+                            <td>
+
+                            </td>
+                        </tr>
+                        <!-- CASE ROW -->
+                        <tr>
+                            <td>Case</td>
+                            <td>
+                                <a href="" th:href="@{/build2/pick(id=8)}" class="btn btn-primary">
+                                    <i class="ti-plus"></i> Choose a case
+                                </a>
+                            </td>
+                            <td>
+
+                            </td>
+                        </tr>
+                        <!-- PSU ROW -->
+                        <tr>
+                            <td>Power Supply</td>
+                            <td>
+                                <a href="" th:href="@{/build2/pick(id=5)}" class="btn btn-primary">
+                                    <i class="ti-plus"></i> Choose a PSU
+                                </a>
+                            </td>
+                            <td>
+
+                            </td>
+                        </tr>
+                        <!-- MONITOR ROW -->
+                        <tr>
+                            <td>Monitor</td>
+                            <td>
+                                <a href="" th:href="@{/build2/pick(id=9)}" class="btn btn-primary">
+                                    <i class="ti-plus"></i> Choose a Monitor
+                                </a>
+                            </td>
+                            <td>
+
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="row justify-content-end">
+                <a href="" th:href="@{/}" class="btn btn-primary mx-1">
+                    Share Build
+                </a>
+                <a href="" th:href="@{/}" class="btn btn-success mx-1">
+                    Add build to cart
+                </a>
+            </div>
+            <div class="row justify-content-center py-3">
+                <a th:href="@{/}" class="button btn-hover-black py-1">Back to Home</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

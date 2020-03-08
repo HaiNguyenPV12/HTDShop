@@ -20,7 +20,9 @@
                 <!-- small box -->
                 <div class="small-box bg-info">
                     <div class="inner row text-center">
-                        <h4 class="col-sm-12 border-bottom pb-2"><strong>ORDERS</strong></h4>
+                        <h4 class="col-sm-12 border-bottom pb-2"><strong>
+                            <i class="fas fa-receipt"></i> ORDERS
+                        </strong></h4>
                         <div class="col-sm-4">
                             <h3 th:text="${statistic.orderToday}">15</h3>
                             <p>new today</p>
@@ -37,7 +39,6 @@
                     <div class="icon">
                         <i class="ion ion-bag"></i>
                     </div>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
 
@@ -47,7 +48,9 @@
                 <!-- small box -->
                 <div class="small-box bg-success">
                     <div class="inner row  text-center">
-                        <h4 class="col-sm-12 border-bottom pb-2"><strong>INCOME</strong></h4>
+                        <h4 class="col-sm-12 border-bottom pb-2"><strong>
+                            <i class="fas fa-coins"></i> INCOME
+                        </strong></h4>
                         <div class="col-sm-4">
                             <h3><th:block th:text="${statistic.incomeToday}"></th:block><sup style="font-size: 20px">$</sup></h3>
                             <p>today</p>
@@ -64,7 +67,7 @@
                     <div class="icon">
                         <i class="ion ion-stats-bars"></i>
                     </div>
-                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        
                 </div>
             </div>
             
@@ -76,10 +79,12 @@
                 <!-- small box -->
                 <div class="small-box bg-danger">
                     <div class="inner row text-center">
-                        <h4 class="col-sm-12 border-bottom pb-2"><strong>BEST SELLERS THIS MONTH</strong></h4>
+                        <h4 class="col-sm-12 border-bottom pb-2"><strong>
+                            <i class="fas fa-chart-line"></i> BEST SELLERS THIS MONTH
+                        </strong></h4>
                         <div class="col-sm-4">
                             <strong>Product</strong>
-                            <img th:src="@{/images/__${statistic.productImageThisMonth}__}" style="width: 100%; object-fit: contain; max-height: 8rem;" th:if="${!statistic.productImageThisMonth.isEmpty()}"/>
+                            <img th:src="@{/images/__${statistic.productImageThisMonth}__}" style="width: 100%; object-fit: contain; max-height: 6rem;" th:if="${!statistic.productImageThisMonth.isEmpty()}"/>
                             <p><i th:text="${statistic.productThisMonth}">AMD Ryzen 5 3600 3.6 GHz 6-Core</i></p>
                         </div>
                         <div class="col-sm-4">
@@ -91,10 +96,9 @@
                             <h4 th:text="${statistic.categoryThisMonth}">Mainboard</h4>
                         </div>
                     </div>
-                <div class="icon">
-                    <i class="ion ion-person-add"></i>
-                </div>
-                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    <div class="icon">
+                        <i class="ion ion-person-add"></i>
+                    </div>
                 </div>
             </div>
         </div>

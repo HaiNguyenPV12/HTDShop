@@ -33,6 +33,8 @@ public interface ProductFacadeLocal {
     List<Product> search(Integer cateId, String search);
 
     List<String> getStringList(String attr);
+
+    List<String> getStringList(String attr, String options);
     
     List<Integer> getIntegerList(String attr);
     

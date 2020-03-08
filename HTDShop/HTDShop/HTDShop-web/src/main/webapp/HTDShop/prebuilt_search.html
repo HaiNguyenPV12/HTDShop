@@ -60,22 +60,21 @@
                 <div class="row" id="scrollHere">
                     <div class="col-lg-3">
                         <div class="shop-sidebar mr-50">
-                            <div class="sidebar-widget mb-30">
+                            <div class="sidebar-widget mb-4">
                                 <h3 class="sidebar-title">Search Pre-built PC</h3>
-                                <div class="sidebar-search">
-                                    <form id="searchKeyword">
+                                <div class="px-3">
+                                    <form id="searchKeyword" class="row">
                                         <input placeholder="Search Pre-built PC..." type="text"
-                                            th:value="${param.keyword}" name="keyword" id="keyword" maxlength="100">
-                                        <button type="submit"><i class="ti-search"></i></button>
+                                            th:value="${param.keyword}" name="keyword" id="keyword" maxlength="100"
+                                            class="col-10">
+                                        <button type="submit" class="col-2"><i class="ti-search"></i></button>
                                     </form>
                                 </div>
                             </div>
 
-                            <div class="sidebar-widget mb-30"
-                                th:with="cate = ${new String[]{'cpu', 'motherboard', 'gpu', 'memory', 'psu', 'storage', 'cpucooler', 'case', 'monitor'}}"
-                                id="parts">
+                            <div class="sidebar-widget mb-4">
                                 <h3 class="sidebar-title">Author</h3>
-                                <form id="partFilter">
+                                <form id="authorFilter">
                                     <div class="sidebar-categories mb-2">
                                         <select class="form-control select2" data-dropdown-css-class="select2-purple"
                                             th:name="auth" id="auth">
@@ -96,7 +95,7 @@
                                 </form>
                             </div>
 
-                            <div class="sidebar-widget mb-30"
+                            <div class="sidebar-widget mb-4"
                                 th:with="cate = ${new String[]{'cpu', 'motherboard', 'gpu', 'memory', 'psu', 'storage', 'cpucooler', 'case', 'monitor'}}"
                                 id="parts">
                                 <h3 class="sidebar-title">Parts</h3>
@@ -118,7 +117,7 @@
                                 </form>
                             </div>
 
-                            <div class="sidebar-widget mb-30">
+                            <div class="sidebar-widget mb-4">
                                 <h3 class="sidebar-title">Filter by Price</h3>
                                 <div id="priceSlider" class="mb-3"></div>
                                 <div class="d-flex">

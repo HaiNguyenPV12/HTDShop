@@ -140,9 +140,9 @@
                                 <label for="warrantyPeriod" class="col-sm-3 col-form-label text-right">Warranty
                                     Period<i class="text-danger">*</i></label>
                                 <div class="input-group col-sm-9">
-                                    <input type="number" class="form-control" id="warrantyPeriod"
+                                    <input type="number" class="form-control autocomplete" id="warrantyPeriod"
                                         placeholder="Warranty Period" th:field="*{warrantyPeriod}" required min=1
-                                        value=1 />
+                                        value=1 max=120 step="1" auto-for=""/>
                                     <div class="input-group-append">
                                         <span class="input-group-text">months</span>
                                     </div>
@@ -158,13 +158,13 @@
                                         class="text-danger">*</i></label>
                                 <div class="col-sm-4">
                                     <input type="number" class="form-control" id="price" placeholder="Price"
-                                        th:field="*{price}" step="0.01" required value=0 max=10000/>
+                                        th:field="*{price}" step="0.01" required value=0 min=0 max=10000 />
                                 </div>
                                 <label for="stock" class="col-sm-2 col-form-label text-right">Stock<i
                                         class="text-danger">*</i></label>
                                 <div class="col-sm-4">
                                     <input type="number" class="form-control" id="stock" placeholder="Stock"
-                                        th:field="*{stock}" required value=0 />
+                                        th:field="*{stock}" required value=0 min=0 max=1000 step=1 />
                                 </div>
                                 <div class="col-sm-2"></div>
                                 <div class="col-sm-4">
@@ -387,12 +387,14 @@
                         });
                         $("#category.id").val(cateId);
                         makeAutoList($("#manufacturer"), $("#cateName").val(), "manu");
+                        makeAutoList($("#warrantyPeriod"), "", "warrantyPeriod");
                     }
                 });
             }
         });
 
         makeAutoList($("#manufacturer"), /*[[${cateName == null? '' : cateName}]]*/"", "manu");
+        makeAutoList($("#warrantyPeriod"), "", "warrantyPeriod");
         if (update) {
             $("#specificInfo").find("input.autocomplete").each(function (i, e) {
                 var attr = $(this).attr("id");
@@ -422,6 +424,8 @@
                 },
                 minLength: 0
             }).focus(function () {
+                $(this).data("uiAutocomplete").search($(this).val());
+            }).on('input propertychange', function () {
                 $(this).data("uiAutocomplete").search($(this).val());
             });
         }
@@ -477,10 +481,13 @@
                                 }
                             });
                             if (!update) {
+                                var oldCate = $("#category").val();
                                 $("#frmProduct").trigger("reset");
+                                $("#color").trigger("change");
                                 $("#uploadimg").html("");
                                 existImgSize = +0;
                                 $('.textarea').summernote('reset');
+                                $("#category").val(oldCate);
                                 Toast.fire({
                                     type: 'success',
                                     title: 'Successfully added!'
