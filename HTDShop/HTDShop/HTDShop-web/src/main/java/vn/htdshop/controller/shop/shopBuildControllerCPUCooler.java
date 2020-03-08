@@ -54,7 +54,7 @@ public class shopBuildControllerCPUCooler {
         return "HTDShop/pickCPUCooler";
     }
 
-    @RequestMapping(value = "filterCooler", method = RequestMethod.POST)
+    @RequestMapping(value = "filtercooler", method = RequestMethod.POST)
     public String filterCooler(@ModelAttribute("coolerValues") BuildValues coolerValues, BindingResult error,
             RedirectAttributes redirect) {
         BuildValues prevSearch = getSessionCoolerValues();
@@ -75,6 +75,9 @@ public class shopBuildControllerCPUCooler {
         PreBuilt sessionPreBuilt = buildService.getSessionPrebuilt();
         sessionPreBuilt.setCpucooler(cooler);
         buildService.setSessionPrebuilt(sessionPreBuilt);
+
+        // reset filter values
+        setSessionCoolerValues(initFilterValues());
         // redirect to build's home page
         return "redirect:/build";
     }

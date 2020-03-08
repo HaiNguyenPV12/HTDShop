@@ -192,8 +192,8 @@
 
         $('#filteredCPUTable').DataTable({
             "language": {
-                "emptyTable": "<div style='text-align:center;'><a href='' th:href='@{build/cpu/reset}'>No results. Reset your search values.</a>" +
-                    "<br><a href='' th:href='@{build/cpu/reset}' class='btn btn-success'>Reset</a></div>"
+                "emptyTable": "<div style='text-align:center;'><a href='cpu/reset' th:href='@{cpu/reset}'>No results. Reset your search values.</a>" +
+                    "<br><a href='cpu/reset' th:href='@{cpu/reset}' class='btn btn-success'>Reset</a></div>"
             },
             initComplete: function () {
                 $('div.dataTables_length').addClass('form-inline');

@@ -82,6 +82,9 @@ public class shopBuildControllerMotherboard {
         PreBuilt sessionPreBuilt = buildService.getSessionPrebuilt();
         sessionPreBuilt.setMotherboard(motherboard);
         buildService.setSessionPrebuilt(sessionPreBuilt);
+
+        // reset filter values
+        setSessionMotherboardValues(initFilterValues());
         // redirect to build's home page
         return "redirect:/build";
     }
@@ -251,7 +254,7 @@ public class shopBuildControllerMotherboard {
                     i--;
                 }
             }
-            
+
             if (motherboards.size() == 0) {
                 setSessionMotherboardValues(initFilterValues());
             }

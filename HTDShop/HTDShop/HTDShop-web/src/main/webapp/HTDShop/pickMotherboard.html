@@ -55,7 +55,7 @@
                                 </div>
                                 <div class="col-md-5">
                                     <input type="number" name="priceMax" max="99999" min="0" th:field=*{priceMax}
-                                        id="priceTo" value="10000" style="width: 100%;">
+                                        id="priceTo" value="2000" style="width: 100%;">
                                 </div>
                             </div>
                         </div>
@@ -192,8 +192,8 @@
 
         $('#filteredMotherboardTable').DataTable({
             "language": {
-                "emptyTable": "<div style='text-align:center;'><a href='' th:href='@{build/motherboard/reset}'>No results. Reset your search values.</a>" +
-                    "<br><a href='' th:href='@{build/motherboard/reset}' class='btn btn-success'>Reset</a></div>"
+                "emptyTable": "<div style='text-align:center;'><a href='' th:href='@{/build/motherboard/reset}'>No results. Reset your search values.</a>" +
+                    "<br><a href='' th:href='@{/build/motherboard/reset}' class='btn btn-success'>Reset</a></div>"
             },
             initComplete: function () {
                 $('div.dataTables_length').addClass('form-inline');

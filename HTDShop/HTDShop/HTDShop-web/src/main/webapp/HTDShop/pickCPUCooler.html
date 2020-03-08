@@ -29,7 +29,7 @@
                 <h2 class="mx-auto">Pick a Cooler</h2>
             </div>
             <!-- START OF FILTER FORM -->
-            <form th:action="@{/build/cpucooler/filterCooler}" method="POST" id="pickCoolerForm"
+            <form th:action="@{/build/cpucooler/filtercooler}" method="POST" id="pickCoolerForm"
                 th:object="${coolerValues}">
                 <input type="hidden" th:field="*{partCategory}" value="motherboard" />
                 <div class="row">
@@ -60,7 +60,7 @@
                             </div>
                             <div class="col-md-5">
                                 <input type="number" name="priceMax" max="99999" min="0" th:field=*{priceMax}
-                                    id="priceTo" value="10000" style="width: 100%;">
+                                    id="priceTo" value="2000" style="width: 100%;">
                             </div>
                         </div>
                     </div>
@@ -138,8 +138,8 @@
                 null
             ],
             "language": {
-                "emptyTable": "<div style='text-align:center;'><a href='' th:href='@{build/cpucooler/reset}'>No results. Reset your search values.</a>" +
-                    "<br><a href='' th:href='@{build/cpucooler/reset}' class='btn btn-success'>Reset</a></div>"
+                "emptyTable": "<div style='text-align:center;'><a href='' th:href='@{/build/cpucooler/reset}'>No results. Reset your search values.</a>" +
+                    "<br><a href='' th:href='@{/build/cpucooler/reset}' class='btn btn-success'>Reset</a></div>"
             },
             initComplete: function () {
                 $('div.dataTables_length').addClass('form-inline');
@@ -147,6 +147,8 @@
             }
         });
 
+        var currentPriceFrom = $("#priceFrom").val();
+        var currentPriceTo = $("#priceTo").val();
         var priceSlider = $("#priceSlider").slider({
             range: true,
             min: 0,
@@ -157,7 +159,9 @@
                 $("#priceTo").val(ui.values[1]);
             },
             stop: function (event, ui) {
-                $("#pickCoolerForm").submit();
+                if (currentPriceFrom != $("#priceFrom").val() || currentPriceTo != $("#priceTo").val()) {
+                    $("#pickCoolerForm").submit();
+                }
             }
         });
     </script>
