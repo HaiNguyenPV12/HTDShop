@@ -14,7 +14,6 @@
 
         .table {
             table-layout: fixed !important;
-            word-wrap: break-word;
         }
     </style>
     <th:block layout:fragment="additionalCss">
@@ -93,7 +92,7 @@
                         <td>
                             <a href="" th:href="@{/product?id=__${c.id}__}" th:text=${c.name}></a>
                         </td>
-                        <td>
+                        <td style="word-wrap: break-word; word-break:break-all;">
                             <th:block th:text="${c.socket}" />
                         </td>
                         <td>
