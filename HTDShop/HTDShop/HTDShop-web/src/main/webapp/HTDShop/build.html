@@ -110,12 +110,27 @@
                         <tr>
                             <td>Memory</td>
                             <td>
-                                <a href="" th:href="@{/}" class="btn btn-primary">
-                                    <i class="ti-plus"></i> Choose memory
-                                </a>
+                                <th:block th:if="${session.prebuiltSession.memory == null}">
+                                    <a href="" th:href="@{/build/memory}" class="btn btn-primary">
+                                        <i class="ti-plus"></i> Choose Memory
+                                    </a>
+                                </th:block>
+                                <a href="" th:if="${session.prebuiltSession.memory != null}"
+                                    th:href="@{/product?id=__${session.prebuiltSession.memory.id}__}"
+                                    th:text="${session.prebuiltSession.memory.name}"></a>
                             </td>
                             <td>
-
+                                <!-- MEMORY PRICE -->
+                                <th:block th:if="${session.prebuiltSession.memory != null}">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            $ <span th:text="${session.prebuiltSession.memory.price}"></span>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <a th:href="@{/build/memory/discard}" class="btn btn-danger">X</a>
+                                        </div>
+                                    </div>
+                                </th:block>
                             </td>
                         </tr>
                         <!-- STORAGE ROW -->
