@@ -66,7 +66,7 @@ public class shopBuildControllerCPUCooler {
     }
 
     // pick and set to prebuilt values
-    @RequestMapping(value = "pickCooler", method = RequestMethod.POST)
+    @RequestMapping(value = "pickcooler", method = RequestMethod.POST)
     public String pickCPU(@ModelAttribute("id") Integer id, RedirectAttributes redirect) {
         // get CPU from ID
         Product cooler = productFacade.find(id);
@@ -168,6 +168,7 @@ public class shopBuildControllerCPUCooler {
             String socket = getSessionCoolerValues().getSocket();
             if (!socket.equals("all")) {
                 for (int i = 0; i < coolers.size(); i++) {
+                    // remove unsupported sockets
                     if (!coolers.get(i).getSocket().contains(socket)) {
                         coolers.remove(i);
                         i--;

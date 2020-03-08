@@ -11,6 +11,11 @@
         .dataTables_filter {
             float: right !important;
         }
+
+        .table {
+            table-layout: fixed !important;
+            word-wrap: break-word;
+        }
     </style>
     <th:block layout:fragment="additionalCss">
         <link rel="stylesheet" th:href="@{/resources/Plugins/jquery-ui/jquery-ui.min.css}" />
@@ -128,10 +133,10 @@
         $('#filteredCoolerTable').DataTable({
             "autoWidth": false,
             "columns": [
-                { "width": "45%" },
-                { "width": "35%" },
-                { "width": "10%" },
-                { "width": "10%" }
+                { "width": "40%" },
+                { "width": "25%" },
+                null,
+                null
             ],
             "language": {
                 "emptyTable": "<div style='text-align:center;'><a href='' th:href='@{build/cpucooler/reset}'>No results. Reset your search values.</a>" +
