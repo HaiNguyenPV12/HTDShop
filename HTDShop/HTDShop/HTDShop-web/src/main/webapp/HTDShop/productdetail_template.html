@@ -31,7 +31,12 @@
         <li th:if="${product.formFactor != null}"><strong>Form Factor:</strong>
             <th:block th:text="${product.formFactor}"></th:block>
         </li>
-
+        <li th:if="${product.memoryType != null}"><strong>Memory Type:</strong>
+            <th:block th:text="${product.memoryType}"></th:block>
+        </li>
+        <li th:if="${product.interface1 != null}"><strong>Memory Interface:</strong>
+            <th:block th:text="${product.interface1}"></th:block>
+        </li>
         <li th:if="${product.memorySlot != null}"><strong>Memory Slots:</strong>
             <th:block th:text="${product.memorySlot}"></th:block>
         </li>
@@ -102,7 +107,8 @@
         <li th:if="${product.socket != null}"><strong>CPU Socket support:</strong>
             <!-- <th:block th:text="${product.socket}"></th:block> -->
             <ul>
-                <li th:each="sk : ${shopSv.getSocketList(product.socket)}" th:text="${sk}" style="list-style: disc; margin-left: 2rem;"></li>
+                <!-- <li th:each="sk : ${shopSv.getSocketList(product.socket)}" th:text="${sk}" style="list-style: disc; margin-left: 2rem;"></li> -->
+                <li th:each="sk : ${#strings.arraySplit(product.socket, ',')}" th:if="${!sk.trim().isEmpty()}" th:text="${sk.trim()}" style="list-style: disc; margin-left: 2rem;"></li>
             </ul>
         </li>
     </ul>

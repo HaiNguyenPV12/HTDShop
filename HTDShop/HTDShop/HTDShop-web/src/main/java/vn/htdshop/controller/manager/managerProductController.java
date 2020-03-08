@@ -119,9 +119,9 @@ public class managerProductController {
         List<ProductView> result = new ArrayList<>();
         // For testing
         // for (int i = 0; i < 50; i++) {
-        //     for (Product product : productList) {
-        //         result.add(new ProductView(product));
-        //     }
+        // for (Product product : productList) {
+        // result.add(new ProductView(product));
+        // }
         // }
         for (Product product : productList) {
             result.add(new ProductView(product));
