@@ -244,6 +244,14 @@ public class shopBuildControllerMotherboard {
             motherboards = motherboards.stream().filter(p -> p.getPrice() >= motherboardValues.getPriceMin()
                     && p.getPrice() <= motherboardValues.getPriceMax()).collect(Collectors.toList());
 
+            // return only selling items
+            for (int i = 0; i < motherboards.size(); i++) {
+                if (motherboards.get(i).getStatus() == 3) {
+                    motherboards.remove(i);
+                    i--;
+                }
+            }
+            
             if (motherboards.size() == 0) {
                 setSessionMotherboardValues(initFilterValues());
             }

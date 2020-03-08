@@ -55,12 +55,28 @@
                         <tr>
                             <td>CPU Cooler</td>
                             <td>
-                                <a href="" th:href="@{/build/cpuCooler}" class="btn btn-primary">
-                                    <i class="ti-plus"></i> Choose a CPU cooler
-                                </a>
+                                <th:block>
+                                    <a th:if="${session.prebuiltSession.cpucooler == null}" href=""
+                                        th:href="@{/build/cpucooler}" class="btn btn-primary">
+                                        <i class="ti-plus"></i> Choose a CPU cooler
+                                    </a>
+                                </th:block>
+                                <a href="" th:if="${session.prebuiltSession.cpucooler != null}"
+                                    th:href="@{/product?id=__${session.prebuiltSession.cpucooler.id}__}"
+                                    th:text="${session.prebuiltSession.cpucooler.name}"></a>
                             </td>
                             <td>
-
+                                <!-- CPU COOLER PRICE -->
+                                <th:block th:if="${session.prebuiltSession.cpucooler != null}">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            $ <span th:text="${session.prebuiltSession.cpucooler.price}"></span>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <a th:href="@{/build/cpucooler/discard}" class="btn btn-danger">X</a>
+                                        </div>
+                                    </div>
+                                </th:block>
                             </td>
                         </tr>
                         <!-- MOTHERBOARD ROW -->
