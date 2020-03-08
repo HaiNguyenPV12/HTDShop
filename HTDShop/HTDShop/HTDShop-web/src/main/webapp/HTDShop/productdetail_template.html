@@ -65,7 +65,8 @@
             <th:block th:text="${product.memoryType}"></th:block>
         </li>
         <li th:if="${product.memoryModules != null}"><strong>Modules:</strong>
-            <th:block th:text="${product.memoryModules + ' x '+ (product.memory/product.memoryModules) + ' GB'}"></th:block>
+            <th:block th:text="${product.memoryModules + ' x '+ (product.memory/product.memoryModules) + ' GB'}">
+            </th:block>
         </li>
     </ul>
 </th:block>
@@ -85,7 +86,8 @@
             <th:block th:text="${product.storageType}"></th:block>
         </li>
         <li th:if="${product.memory != null}"><strong>Capacity:</strong>
-            <th:block th:text="${product.memory lt 1000? (product.memory + ' GB') : (product.memory/1000 + ' TB')}"></th:block>
+            <th:block th:text="${product.memory lt 1000? (product.memory + ' GB') : (product.memory/1000 + ' TB')}">
+            </th:block>
         </li>
         <li th:if="${product.interface1 != null}"><strong>Interface:</strong>
             <th:block th:text="${product.interface1}"></th:block>
@@ -98,7 +100,10 @@
 <th:block th:fragment="full-7">
     <ul>
         <li th:if="${product.socket != null}"><strong>CPU Socket support:</strong>
-            <th:block th:text="${product.socket}"></th:block>
+            <!-- <th:block th:text="${product.socket}"></th:block> -->
+            <ul>
+                <li th:each="sk : ${shopSv.getSocketList(product.socket)}" th:text="${sk}" style="list-style: disc; margin-left: 2rem;"></li>
+            </ul>
         </li>
     </ul>
 </th:block>
