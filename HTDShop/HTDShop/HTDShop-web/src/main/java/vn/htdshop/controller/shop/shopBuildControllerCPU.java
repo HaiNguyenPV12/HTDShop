@@ -1,6 +1,7 @@
 package vn.htdshop.controller.shop;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,7 +42,7 @@ public class shopBuildControllerCPU {
     HttpSession session;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public String getCPUList(HttpSession session, Model model) {
+    public String getCPUList(Model model) {
         buildService.initBuildApp();
 
         // -----SEARCH VALUES---
@@ -98,6 +99,7 @@ public class shopBuildControllerCPU {
         return "redirect:/build/cpu";
     }
 
+    // pick and set to prebuilt values
     @RequestMapping(value = "pickCpu", method = RequestMethod.POST)
     public String pickCPU(@ModelAttribute("id") Integer id, RedirectAttributes redirect) {
         // get CPU from ID
@@ -146,6 +148,7 @@ public class shopBuildControllerCPU {
         result.setManufacturer("all");
         result.setSocket("all");
         result.setSeries("all");
+        result.setTdp(0);
         result.setCore(0);
         result.setThread(0);
         result.setPriceMin(0);
@@ -207,6 +210,7 @@ public class shopBuildControllerCPU {
         return series;
     }
 
+    // Filter from form values
     private List<Product> filterCPU() {
         List<Product> cpus = new ArrayList<>();
         BuildValues cpuValues = getSessionCPUValues();
@@ -259,8 +263,17 @@ public class shopBuildControllerCPU {
                     .filter(p -> p.getPrice() >= cpuValues.getPriceMin() && p.getPrice() <= cpuValues.getPriceMax())
                     .collect(Collectors.toList());
 
+            // return only selling items
+            for (int i = 0; i < cpus.size(); i++) {
+                if (cpus.get(i).getStatus() == 3) {
+                    cpus.remove(i);
+                    i--;
+                }
+            }
+
         } catch (Exception e) {
-            return cpus;
+            e.printStackTrace();
+            return new ArrayList<>();
         }
         return cpus;
     }
