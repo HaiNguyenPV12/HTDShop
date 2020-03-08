@@ -75,6 +75,9 @@ public class shopBuildControllerCPUCooler {
         PreBuilt sessionPreBuilt = buildService.getSessionPrebuilt();
         sessionPreBuilt.setCpucooler(cooler);
         buildService.setSessionPrebuilt(sessionPreBuilt);
+
+        // reset filter values
+        setSessionCoolerValues(initFilterValues());
         // redirect to build's home page
         return "redirect:/build";
     }

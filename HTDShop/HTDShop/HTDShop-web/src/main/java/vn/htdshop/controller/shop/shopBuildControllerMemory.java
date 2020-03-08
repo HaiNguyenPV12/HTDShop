@@ -63,12 +63,37 @@ public class shopBuildControllerMemory {
         return "redirect:/build/memory";
     }
 
+    // pick and set to prebuilt values
+    @RequestMapping(value = "pickMemory", method = RequestMethod.POST)
+    public String pickCPU(@ModelAttribute("id") Integer id, RedirectAttributes redirect) {
+        // get CPU from ID
+        Product memory = productFacade.find(id);
+        // TODO go back to cpu page if there were errors/id isn't a cpu
+
+        PreBuilt sessionPreBuilt = buildService.getSessionPrebuilt();
+        sessionPreBuilt.setMemory(memory);
+        buildService.setSessionPrebuilt(sessionPreBuilt);
+
+        // reset filter values
+        setSessionMemoryValues(initFilterValues());
+        // redirect to build's home page
+        return "redirect:/build";
+    }
+
     // reset search form link
     @RequestMapping(value = "reset", method = RequestMethod.GET)
     public String filterReset(RedirectAttributes redirect) {
         // reset search values
         setSessionMemoryValues(initFilterValues());
         return "redirect:/build/memory";
+    }
+
+    // Remove from current build
+    @RequestMapping(value = "discard", method = RequestMethod.GET)
+    public String discardCPU(RedirectAttributes redirect) {
+        // remove CPU from session Prebuilt
+        buildService.getSessionPrebuilt().setMemory(null);
+        return "redirect:/build";
     }
 
     public BuildValues getSessionMemoryValues() {

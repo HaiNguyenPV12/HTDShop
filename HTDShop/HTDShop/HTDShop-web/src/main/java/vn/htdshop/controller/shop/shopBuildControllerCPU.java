@@ -109,6 +109,9 @@ public class shopBuildControllerCPU {
         PreBuilt sessionPreBuilt = buildService.getSessionPrebuilt();
         sessionPreBuilt.setCpu(cpu);
         buildService.setSessionPrebuilt(sessionPreBuilt);
+
+        // reset filter values
+        setSessionCPUValues(initFilterValues());
         // redirect to build's home page
         return "redirect:/build";
     }
