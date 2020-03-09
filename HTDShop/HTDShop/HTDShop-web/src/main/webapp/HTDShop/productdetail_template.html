@@ -119,10 +119,16 @@
 <th:block th:fragment="full-8">
     <ul>
         <li th:if="${product.formFactor != null}"><strong>Motherboard's Form Factor:</strong>
-            <th:block th:text="${product.formFactor}"></th:block>
+            <ul>
+                <li th:each="sk : ${#strings.arraySplit(product.formFactor, ',')}" th:if="${!sk.trim().isEmpty()}" th:text="${sk.trim()}" style="list-style: disc; margin-left: 2rem;"></li>
+            </ul>
+            <!-- <th:block th:text="${product.formFactor}"></th:block> -->
         </li>
         <li th:if="${product.pSUFormFactor != null}"><strong>PSU's Form Factor:</strong>
-            <th:block th:text="${product.pSUFormFactor}"></th:block>
+            <!-- <th:block th:text="${product.pSUFormFactor}"></th:block> -->
+            <ul>
+                <li th:each="sk : ${#strings.arraySplit(product.pSUFormFactor, ',')}" th:if="${!sk.trim().isEmpty()}" th:text="${sk.trim()}" style="list-style: disc; margin-left: 2rem;"></li>
+            </ul>
         </li>
     </ul>
 </th:block>

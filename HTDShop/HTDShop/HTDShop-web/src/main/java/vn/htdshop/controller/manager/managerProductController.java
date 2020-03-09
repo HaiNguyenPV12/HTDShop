@@ -118,7 +118,7 @@ public class managerProductController {
                 .sorted(Comparator.comparingInt(Product::getStatus)).collect(Collectors.toList());
         List<ProductView> result = new ArrayList<>();
         // For testing
-        // for (int i = 0; i < 50; i++) {
+        // for (int i = 0; i < 100; i++) {
         // for (Product product : productList) {
         // result.add(new ProductView(product));
         // }
