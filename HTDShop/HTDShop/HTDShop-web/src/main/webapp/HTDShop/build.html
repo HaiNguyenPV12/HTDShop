@@ -15,6 +15,21 @@
                 </div>
             </div>
             <div class="row">
+                <th:block th:if="${buildCompatibility.isSocketCompatible != true}">
+                    <div class="alert alert-danger">
+                        <h4>Socket Incompatible</h4>
+                        <ul>
+                            <li>CPU Socket:
+                                <th:block th:text="${currentBuild.cpu.socket}" />
+                            </li>
+                            <li>Motherboard Socket:
+                                <th:block th:text="${currentBuild.motherboard.socket}" />
+                            </li>
+                        </ul>
+                    </div>
+                </th:block>
+            </div>
+            <div class="row">
                 <table class="table table-striped table-hover">
                     <thead class="thead-dark">
                         <tr>

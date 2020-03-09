@@ -57,6 +57,7 @@ public class shopBuildController {
         // }
 
         model.addAttribute("buildCompatibility", checkCompatibility());
+        model.addAttribute("currentBuild", buildService.getSessionPrebuilt());
         return "HTDShop/build";
     }
 
