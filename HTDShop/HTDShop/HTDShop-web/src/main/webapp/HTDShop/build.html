@@ -15,15 +15,15 @@
                 </div>
             </div>
             <div class="row">
-                <th:block th:if="${buildCompatibility.isSocketCompatible != true}">
+                <th:block th:if="${session.buildCompatibility.isSocketCompatible != true}">
                     <div class="alert alert-danger">
                         <h4>Socket Incompatible</h4>
                         <ul>
                             <li>CPU Socket:
-                                <th:block th:text="${currentBuild.cpu.socket}" />
+                                <th:block th:text="${session.prebuiltSession.cpu.socket}" />
                             </li>
                             <li>Motherboard Socket:
-                                <th:block th:text="${currentBuild.motherboard.socket}" />
+                                <th:block th:text="${session.prebuiltSession.motherboard.socket}" />
                             </li>
                         </ul>
                     </div>

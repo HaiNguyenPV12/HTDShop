@@ -52,12 +52,8 @@ public class shopBuildController {
     public String getBuild(Model model) {
         buildService.initBuildApp();
 
-        // if (isBuildStarted()) {
-        // buildService.initBuildApp();
-        // }
+        setSessionBuildCompatibility(checkCompatibility());
 
-        model.addAttribute("buildCompatibility", checkCompatibility());
-        model.addAttribute("currentBuild", buildService.getSessionPrebuilt());
         return "HTDShop/build";
     }
 
