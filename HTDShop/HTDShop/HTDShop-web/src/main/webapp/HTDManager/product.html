@@ -36,9 +36,9 @@
         } */
 
         .product-img {
-            cursor: pointer;
-            height: 10rem;
-            width: 14rem;
+            /* cursor: pointer; */
+            height: 20rem;
+            width: 30rem;
             object-fit: contain;
             background-color: white;
             border: 1px solid #9628f08c;
@@ -535,12 +535,8 @@
             },
             "paging": true,
             "lengthChange": false,
-            "lengthMenu": [
-                [10, 25, 50, -1], [10, 25, 50, "All"]
-            ],
-            "searching": true,
+            "searching": false,
             "ordering": false,
-            "info": true,
             "autoWidth": false,
             ajax: {
                 url:/*[[@{/manager/product/image/list}]]*/"",
@@ -558,7 +554,8 @@
                     var img = /*[[@{/images/}]]*/'';
                     var str = "";
                     if (data != "") {
-                        str += "<img src='" + img + data + "' class='product-img' onclick=\"showModal(\'\', \'<img src=" + img + data + " style=width:100%; />\', null, false, false);\"></img>";
+                        // str += "<img src='" + img + data + "' class='product-img' onclick=\"showModal(\'\', \'<img src=" + img + data + " style=width:100%; />\', null, false, false);\"></img>";
+                        str += "<img src='" + img + data + "' class='product-img'></img>";
                     }
                     return str;
                 }
@@ -586,8 +583,8 @@
             }],
             // custom collums's width
             "columns": [
-                { "width": "20%", "data": "mainImage" },
-                { "width": "70%", "data": "imagePath" },
+                { "width": "10%", "data": "mainImage" },
+                { "width": "80%", "data": "imagePath" },
                 { "width": "10%", "data": null }
             ],
             "createdRow": function (row, data, dataIndex) {
