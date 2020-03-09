@@ -115,7 +115,7 @@ public class ProductFacade extends AbstractFacade<Product> implements ProductFac
                     "SELECT * FROM (SELECT DISTINCT CAST(Memory AS VARCHAR) AS Memory FROM Product WHERE CateId = 4) As Mem ORDER BY CAST(Memory As INT)");
         } else if (attr.equals("memoryModulesMemory")) {
             q = em.createNativeQuery(
-                    "SELECT * FROM (SELECT DISTINCT CAST(MemoryModules AS VARCHAR) AS Memory FROM Product WHERE CateId = 4) As MemoryModules ORDER BY CAST(MemoryModules As INT)");
+                    "SELECT * FROM (SELECT DISTINCT CAST(MemoryModules AS VARCHAR) AS MemoryModules FROM Product WHERE CateId = 4) As MemoryModules ORDER BY CAST(MemoryModules As INT)");
         } else if (attr.equals("interfaceMemory") || attr.equals("interface1Memory")) {
             q = em.createNativeQuery("SELECT DISTINCT Interface FROM Product WHERE CateId = 4 AND Interface != 'NULL'");
         } else if (attr.equals("interfaceMotherboard") || attr.equals("interface1Motherboard")) {

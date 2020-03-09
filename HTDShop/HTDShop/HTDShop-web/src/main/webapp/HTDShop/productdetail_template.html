@@ -6,8 +6,11 @@
         <li th:if="${product.socket != null}"><strong>Socket:</strong>
             <th:block th:text="${product.socket}"></th:block>
         </li>
-        <li th:if="${product.chipset != null}"><strong>Chipset:</strong>
-            <th:block th:text="${product.chipset}"></th:block>
+        <li th:if="${product.chipset != null}"><strong>Chipset support:</strong>
+            <!-- <th:block th:text="${product.chipset}"></th:block> -->
+            <ul>
+                <li th:each="sk : ${#strings.arraySplit(product.chipset, ',')}" th:if="${!sk.trim().isEmpty()}" th:text="${sk.trim()}" style="list-style: disc; margin-left: 2rem;"></li>
+            </ul>
         </li>
         <li th:if="${product.core != null}"><strong>Cores:</strong>
             <th:block th:text="${product.core}"></th:block>
