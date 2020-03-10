@@ -412,7 +412,7 @@
                 attr = "manu";
             }
             searchUrl += "?attr=" + attr + "&cate=" + cate;
-            if ((attr == "socket" && cate == "CpuCooler") || (attr == "chipset" && cate == "Cpu")) {
+            if ((attr == "socket" && cate == "CpuCooler") || (attr == "chipset" && cate == "Cpu") || (attr == "formFactor" && cate == "Case") || (attr == "pSUFormFactor" && cate == "Case")) {
                 function split(val) {
                     return val.split(/,\s*/);
                 }
@@ -681,6 +681,17 @@
             "LGA 1151 Intel 6000-7000:H110,B150,Q150,H170,Q170,Z170,B250,Q250,H270,Q270,Z270",
             "LGA 1150 Intel 4000: H81,B85,Q85,Q87,H87,Z87,H97,Z97",
             "LGA 1155 Intel 3000: H61,B65,Q65,P67,H67,Q67,Z67,B75,H77,Q77,Z77"
+        ];
+        autoValues["formFactorCase"] = [
+            "ATX",
+            "Micro ATX",
+            "Mini ITX",
+            "Nano ITX",
+            "Pico ITX",
+        ];
+        autoValues["pSUFormFactorCase"] = [
+            "ATX",
+            "SFX"
         ];
 
         /*]]>*/

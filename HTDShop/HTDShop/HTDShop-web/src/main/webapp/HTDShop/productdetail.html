@@ -22,7 +22,6 @@
             list-style: square
         }
 
-
         .card-comments {
             background: #f8f9fa;
         }
@@ -235,8 +234,7 @@
                             <h3 th:text="${product.name}"></h3>
                             <div class="rating-number">
                                 <span>
-                                    <th:block
-                                        th:text="${sold}">
+                                    <th:block th:text="${sold}">
                                     </th:block> sold
                                 </span>
                                 <div class="quick-view-number">
@@ -635,7 +633,7 @@
                 grecaptcha.render("g-recaptcha", { "sitekey": "6LdeYdoUAAAAAHL11wXzM80G7X_dNVEQAYp_V9JN", "callback": "checked" });
             }
             showModal("Confirm Captcha");
-        
+
         });
 
         function checked() {
