@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import vn.htdshop.entity.BuildCompatibility;
 import vn.htdshop.entity.BuildValues;
 import vn.htdshop.entity.PreBuilt;
 import vn.htdshop.entity.Product;
@@ -48,13 +49,11 @@ public class shopBuildController {
     HttpSession session;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public String getBuild() {
-        // buildService.initBuildApp();
-        if (isBuildStarted()) {
-            buildService.initBuildApp();
-        }
+    public String getBuild(Model model) {
+        buildService.initBuildApp();
 
-        // TODO check compatibility if parts are picked/removed.
+        setSessionBuildCompatibility(checkCompatibility());
+
         return "HTDShop/build";
     }
 
@@ -70,83 +69,133 @@ public class shopBuildController {
         return session.getAttribute("isBuilding") == null;
     }
 
-    // @RequestMapping(value = "cpu", method = RequestMethod.GET)
-    // public String getCPUList(HttpSession session, Model model) {
-    // if (partValues == null || !partValues.getPartCategory().equals("cpu")) {
-    // partValues = new BuildValues();
-    // partValues.setPartCategory("cpu");
-    // }
-    // model.addAttribute("cpuSocketList", cpuSockets());
-    // model.addAttribute("cpuManufacturerList", cpuManufacturers());
-    // model.addAttribute("cpuSeriesList", cpuSeries());
-    // model.addAttribute("cpuValues", partValues);
-    // model.addAttribute("filteredCPU", filterCPU());
-    // return "HTDShop/pickCPU";
-    // }
+    // checking parts compatibilities
+    public BuildCompatibility checkCompatibility() {
+        BuildCompatibility result = getSessionBuildCompatibility();
+        if (buildService.getSessionPrebuilt() != null) {
+            PreBuilt currentBuild = buildService.getSessionPrebuilt();
 
-    // @RequestMapping(value = "filterCpu", method = RequestMethod.POST)
-    // public String requestMethodName(@ModelAttribute("cpuValues") BuildValues
-    // cpuValues, BindingResult error,
-    // RedirectAttributes redirect) {
-    // if (!cpuValues.getManufacturer().equals("all")) {
-    // isFilteringCPU = true;
-    // } else {
-    // isFilteringCPU = false;
-    // }
-    // partValues = cpuValues;
-    // return "redirect:/build/cpu";
-    // }
+            result.setIsSocketCompatible(checkCPUSocket(currentBuild)); // check socket
+            result.setIsMemorySlotCompatible(checkMemorySlot(currentBuild)); // check mem slots
+            result.setIsMemoryTypeCompatible(checkMemoryType(currentBuild)); // check mem types
+            result.setIsPSUFormFactorCompatible(checkPSUFormFactor(currentBuild));
+            result.setIsWattageCompatible(checkWattage(currentBuild));
+            result.setIsFormFactorCompatible(checkFormFactor(currentBuild));
+            result.setIsCoolerCompatible(checkCoolerSocket(currentBuild));
+            setSessionBuildCompatibility(result);
+        }
+        return getSessionBuildCompatibility();
+    }
 
-    // private List<String> cpuSockets() {
-    // // TODO check if motherboard is picked.
-    // // TODO check filtered manufacturer
-    // List<String> sockets = new ArrayList<>();
-    // sockets = buildProductList.stream().filter(p -> p.getCategory().getId() ==
-    // 1).map(s -> s.getSocket()).distinct()
-    // .collect(Collectors.toList());
-    // // SELECT DISTINCT
-    // // sockets = sockets.stream().distinct().collect(Collectors.toList());
-    // return sockets;
-    // }
+    // check socket
+    private boolean checkCPUSocket(PreBuilt currentBuild) {
+        if (currentBuild.getCpu() != null && currentBuild.getMotherboard() != null) {
+            Product cpu = currentBuild.getCpu();
+            Product motherboard = currentBuild.getMotherboard();
+            if (!cpu.getSocket().equals(motherboard.getSocket())) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-    // private List<String> cpuManufacturers() {
-    // // TODO check if motherboard is picked.
+    // check cooler
+    private boolean checkCoolerSocket(PreBuilt currentBuild) {
+        if (currentBuild.getCpu() != null && currentBuild.getCpucooler() != null) {
+            Product cpu = currentBuild.getCpu();
+            Product cooler = currentBuild.getCpucooler();
+            if (!cooler.getSocket().contains(cpu.getSocket())) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-    // if (preBuilt == null || !isFilteringCPU) {
-    // partValues.setManufacturer("all");
-    // }
-    // List<String> manufacturers = new ArrayList<>();
-    // manufacturers = buildProductList.stream().filter(p -> p.getCategory().getId()
-    // == 1)
-    // .map(s -> s.getManufacturer()).distinct().collect(Collectors.toList());
-    // return manufacturers;
-    // }
+    // check memory slot
+    private boolean checkMemorySlot(PreBuilt currentBuild) {
+        if (currentBuild.getMotherboard() != null && currentBuild.getMemory() != null) {
+            Product motherboard = currentBuild.getMotherboard();
+            Product memory = currentBuild.getMemory();
+            if (motherboard.getMemorySlot() != memory.getMemoryModules()) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-    // private List<String> cpuSeries() {
-    // List<String> series = new ArrayList<>();
-    // series = buildProductList.stream().filter(p -> p.getCategory().getId() ==
-    // 1).map(s -> s.getSeries()).distinct()
-    // .collect(Collectors.toList());
-    // return series;
-    // }
+    // check memory type
+    private boolean checkMemoryType(PreBuilt currentBuild) {
+        if (currentBuild.getMotherboard() != null && currentBuild.getMemory() != null) {
+            Product motherboard = currentBuild.getMotherboard();
+            Product memory = currentBuild.getMemory();
+            if (!motherboard.getMemoryType().equals(memory.getMemoryType())) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-    // private List<Product> filterCPU() {
-    // List<Product> cpus = new ArrayList<>();
-    // if (partValues == null) {
-    // return buildProductList.stream().filter(p -> p.getCategory().getId() ==
-    // 1).collect(Collectors.toList());
-    // }
-    // cpus = buildProductList.stream().filter(p -> p.getCategory().getId() ==
-    // 1).collect(Collectors.toList());
-    // // filter by manufacturers
-    // if (!partValues.getManufacturer().equals("all")) {
-    // cpus = cpus.stream().filter(m ->
-    // m.getManufacturer().equals(partValues.getManufacturer()))
-    // .collect(Collectors.toList());
-    // }
-    // // filter by socket
-    // // filter by series
-    // // filter by core&threads
-    // return cpus;
-    // }
+    // check PSU vs Case
+    private boolean checkPSUFormFactor(PreBuilt currentBuild) {
+        if (currentBuild.getCases() != null && currentBuild.getPsu() != null) {
+            Product cases = currentBuild.getCases();
+            Product psu = currentBuild.getPsu();
+            if (!cases.getPSUFormFactor().equals(psu.getPSUFormFactor())) {
+                Integer caseSize = buildService.psuFormFactorSizes().indexOf(cases.getFormFactor());
+                Integer psuSize = buildService.psuFormFactorSizes().indexOf(psu.getFormFactor());
+                if (caseSize < psuSize) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    // check motherboard vs Case
+    private boolean checkFormFactor(PreBuilt currentBuild) {
+        if (currentBuild.getCases() != null && currentBuild.getMotherboard() != null) {
+            Product cases = currentBuild.getCases();
+            Product motherboard = currentBuild.getMotherboard();
+            if (!cases.getFormFactor().equals(motherboard.getFormFactor())) {
+                Integer caseSize = buildService.motherboardFormFactorSizes().indexOf(cases.getFormFactor());
+                Integer motherboardSize = buildService.motherboardFormFactorSizes()
+                        .indexOf(motherboard.getFormFactor());
+                if (caseSize < motherboardSize) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    // check wattage
+    private boolean checkWattage(PreBuilt currentBuild) {
+        if (currentBuild.getCpu() != null && currentBuild.getVga() != null && currentBuild.getPsu() != null) {
+            Product cpu = currentBuild.getCpu();
+            Product gpu = currentBuild.getVga();
+            Product psu = currentBuild.getPsu();
+            if ((cpu.getTdp() + gpu.getTdp()) > psu.getPSUWattage()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public BuildCompatibility getSessionBuildCompatibility() {
+        BuildCompatibility result = (BuildCompatibility) session.getAttribute("buildCompatibility");
+        if (result == null) {
+            BuildCompatibility newBuildCompatibility = initCompatibilityValues();
+            setSessionBuildCompatibility(newBuildCompatibility);
+        }
+        return (BuildCompatibility) session.getAttribute("buildCompatibility");
+    }
+
+    public void setSessionBuildCompatibility(BuildCompatibility buildCompatibility) {
+        session.setAttribute("buildCompatibility", buildCompatibility);
+    }
+
+    private BuildCompatibility initCompatibilityValues() {
+        BuildCompatibility result = new BuildCompatibility();
+        return result;
+    }
 }

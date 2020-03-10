@@ -35,7 +35,7 @@
                                 Manufacturer
                             </h4>
                             <div>
-                                <select name="socket" id="" th:field=*{manufacturer}>
+                                <select name="manufacturer" id="" th:field=*{manufacturer}>
                                     <option value="all">All</option>
                                     <option th:each="m : ${memoryManufacturerList}" th:value="${m}" th:text="${m}">
                                     </option>
@@ -170,6 +170,9 @@
                     </tr>
                 </tfoot>
             </table>
+            <div class="row justify-content-center py-3">
+                <a th:href="@{/build}" class="button btn-hover-black py-1">Back to Build</a>
+            </div>
         </div>
     </div>
     <th:block layout:fragment="additionalScript">

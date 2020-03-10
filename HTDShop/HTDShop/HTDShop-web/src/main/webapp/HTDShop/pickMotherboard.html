@@ -93,6 +93,17 @@
                                 <br>
                             </th:block>
                         </div>
+                        <h4 class="mx-auto">
+                            Form Factor
+                        </h4>
+                        <div>
+                            <input type="radio" name="formFactor" id="" value="all" th:field=*{formFactor}> All
+                            <br>
+                            <th:block th:each="f : ${motherboardFormFactorList}">
+                                <input type="radio" name="formFactor" th:field=*{formFactor} th:value="${f}">[[${f}]]
+                                <br>
+                            </th:block>
+                        </div>
                         <div>
                             <div class="row pb-1">
                                 <div class="col-md-4">Memory slots:</div>
