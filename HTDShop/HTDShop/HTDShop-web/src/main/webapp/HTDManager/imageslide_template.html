@@ -41,7 +41,8 @@
         </a>
         >
         <th:block th:if="${update==null}">Add new Image Slide</th:block>
-        <th:block th:if="${update!=null}">Edit Image Slide: "<th:block th:text="${imageSlide.title}"></th:block>"</th:block>
+        <th:block th:if="${update!=null}">Edit Image Slide: "<th:block th:text="${imageSlide.title}"></th:block>"
+        </th:block>
     </span>
 
     <div layout:fragment="breadcrumb">
@@ -50,7 +51,7 @@
             <li class="breadcrumb-item active"><a th:href="@{/manager/imageslide}">Image Slide</a></li>
         </ol>
     </div>
-    
+
     <div layout:fragment="content">
         <form action="" th:action="@{/manager/imageslide/__${formUrl}__}" th:object="${imageSlide}" method="POST"
             enctype="multipart/form-data">
@@ -78,11 +79,7 @@
                         <div class="card-body row" id="uploadimg">
                             <!-- Upload image will be shown here -->
                             <th:block th:if="${update!=null}">
-                                <div class="col-sm-3"></div> 
-                                <label class="col-sm-6 text-center uploadimg">
-                                    <input type="radio" name="uploadradio">
-                                    <img th:src="@{/images/__${imageSlide.image}__}"/>
-                                </label>
+                                <img th:src="@{/images/__${imageSlide.image}__}" class="col-sm-12 text-center" style="object-fit: contain;"/>
                             </th:block>
                         </div>
                         
@@ -220,10 +217,7 @@
                 for (var i = 0; i < this.files.length; i++) {
                     var reader = new FileReader();
                     reader.onload = function (e) {
-                        $("#uploadimg").append('<div class="col-sm-3"></div><label class="col-sm-6 text-center uploadimg">'
-                            + '<input type="radio" name="uploadradio">'
-                            + '<img src="' + e.target.result + '">'
-                            + '</label>');
+                        $("#uploadimg").append('<img src="' + e.target.result + '" class="col-sm-12 text-center" style="object-fit: contain;"/>');
                     }
                     reader.readAsDataURL(this.files[i]);
                 }
