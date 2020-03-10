@@ -12,12 +12,187 @@
             float: right !important;
         }
     </style>
+    <th:block layout:fragment="additionalCss">
+        <link rel="stylesheet" th:href="@{/resources/Plugins/jquery-ui/jquery-ui.min.css}" />
+        <link rel="stylesheet" th:href="@{/resources/Plugins/jquery-ui/jquery-ui.theme.min.css}" />
+    </th:block>
 </head>
 
 <body>
     <div layout:fragment="content">
+        <div class="container">
+            <div class="row">
+                <h2 class="mx-auto">Pick a Power Supply</h2>
+            </div>
+            <!-- START OF FILTER FORM -->
+            <form th:action="@{/build/psu/filterPsu}" method="POST" id="pickPSUForm" th:object="${psuValues}">
+                <input type="hidden" th:field="*{partCategory}" value="psu" />
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="pb-2">
+                            <h4 class="mx-auto">
+                                Manufacturer
+                            </h4>
+                            <select name="socket" id="" th:field=*{manufacturer}>
+                                <option value="all">All</option>
+                                <option th:each="m : ${psuManufacturerList}" th:value="${m}" th:text="${m}">
+                                </option>
+                            </select>
+                        </div>
+                        <h4 class="mx-auto">Price</h4>
+                        <div id="priceSlider" class="mb-3"></div>
+                        <div class="row">
+                            <div class="col-md-5 pb-1">
+                                <input type="number" name="priceMin" max="99999" min="0" th:field=*{priceMin}
+                                    id="priceFrom" value="0" style="width: 100%;">
+                            </div>
+                            <div class="col-md-2">
+                                <i class="fas fa-long-arrow-alt-right my-auto"></i>
+                            </div>
+                            <div class="col-md-5">
+                                <input type="number" name="priceMax" max="99999" min="0" th:field=*{priceMax}
+                                    id="priceTo" value="1000" style="width: 100%;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <h4 class="mx-auto">
+                            Max Wattage
+                        </h4>
+                        <div class="row pb-1">
+                            <div class="col-md-12">
+                                <div id="wattageSlider" class="mt-1">
+                                    <div id="wattageHandle" class="ui-slider-handle"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row pb-1">
+                            <div class="col-md-12">
+                                <div>
+                                    <input type="number" name="psuWattage" id="psuWattage" max="2000" min="0"
+                                        th:field=*{psuWattage} value="0"
+                                        style="padding-right: 1.5rem; text-align: right; width: 100%;">
+                                    <span style="margin-left: -1.5rem;">W</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <h4 class="mx-auto">
+                            Form Factor
+                        </h4>
+                        <div>
+                            <input type="radio" name="psuFormFactor" value="all" th:field=*{psuFormFactor}> All
+                            <br>
+                            <th:block th:each="f : ${psuFormFactorList}">
+                                <input type="radio" name="psuFormFactor" th:field=*{psuFormFactor}
+                                    th:value="${f}">[[${f}]]
+                                <br>
+                            </th:block>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <!-- END OF FILTER FORM -->
+            <table id="filteredPSUTable" class="table table-striped" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Form Factor</th>
+                        <th>Wattage</th>
+                        <th>Price</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="p : ${filteredPSU}">
+                        <td>
+                            <a href="" th:href="@{/product?id=__${p.id}__}" th:text=${p.name}></a>
+                        </td>
+                        <td>
+                            <th:block th:text="${p.pSUFormFactor}" />
+                        </td>
+                        <td>
+                            <th:block th:text="${p.pSUWattage}" />
+                        </td>
+                        <td>
+                            <th:block th:text="${p.price}" />
+                        </td>
+                        <td>
+                            <form action="" th:action="@{/build/psu/pickPsu?id=__${p.id}__}" method="post">
+                                <button class="btn btn-primary">Add to build</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>Name</th>
+                        <th>Form Factor</th>
+                        <th>Wattage</th>
+                        <th>Price</th>
+                        <th></th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div class="row justify-content-center py-3">
+                <a th:href="@{/build}" class="button btn-hover-black py-1">Back to Build</a>
+            </div>
+        </div>
     </div>
+    <th:block layout:fragment="additionalScript">
+        <script th:src="@{/resources/Plugins/jquery-ui/jquery-ui.min.js}"></script>
+    </th:block>
     <script th:inline="none" layout:fragment="script">
+        $(document).ready(function () {
+            $("#pickPSUForm").change(function (e) {
+                $("#pickPSUForm").submit();
+            });
+        });
+
+        $('#filteredPSUTable').DataTable({
+            "language": {
+                "emptyTable": "<div style='text-align:center;'><a href='psu/reset' th:href='@{/build/psu/reset}'>No results. Reset your search values.</a>" +
+                    "<br><a href='psu/reset' th:href='@{/build/psu/reset}' class='btn btn-success'>Reset</a></div>"
+            },
+            initComplete: function () {
+                $('div.dataTables_length').addClass('form-inline');
+                $('div.dataTables_length').addClass('mt-4');
+            }
+        });
+
+        var currentPriceFrom = $("#priceFrom").val();
+        var currentPriceTo = $("#priceTo").val();
+        var priceSlider = $("#priceSlider").slider({
+            range: true,
+            min: 0,
+            max: 1000,
+            values: [$("#priceFrom").val(), $("#priceTo").val()],
+            slide: function (event, ui) {
+                $("#priceFrom").val(ui.values[0]);
+                $("#priceTo").val(ui.values[1]);
+            },
+            stop: function (event, ui) {
+                if (currentPriceFrom != $("#priceFrom").val() || currentPriceTo != $("#priceTo").val()) {
+                    $("#pickPSUForm").submit();
+                }
+            }
+        });
+
+        var currentTDP = $("#psuWattage").val();
+        var tdpSlider = $("#wattageSlider").slider({
+            min: 0,
+            max: 2000,
+            value: $("#psuWattage").val(),
+            slide: function (event, ui) {
+                $("#psuWattage").val(ui.value);
+            },
+            stop: function (event, ui) {
+                if (currentTDP != $("#psuWattage").val()) {
+                    $("#pickPSUForm").submit();
+                }
+            }
+        });
     </script>
 </body>
 
