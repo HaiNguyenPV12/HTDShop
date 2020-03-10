@@ -43,8 +43,9 @@ public class BuildService {
 
     List<Product> buildProductList = null;
 
-    boolean isBuilding = false;
+    // boolean isBuilding = false;
 
+    // Current build in session
     public PreBuilt getSessionPrebuilt() {
         return (PreBuilt) session.getAttribute("prebuiltSession");
     }
@@ -53,30 +54,72 @@ public class BuildService {
         session.setAttribute("prebuiltSession", prebuilt);
     }
 
+    public boolean isSessionBuilding() {
+        if (session.getAttribute("isBuilding") == null) {
+            return false;
+        }
+        return (boolean) session.getAttribute("isBuilding");
+    }
+
+    public void setSessionBuilding(Boolean isBuilding) {
+        session.setAttribute("isBuilding", isBuilding);
+    }
+
+    public List<Product> getSessionProductList() {
+        try {
+            List<Product> result = (List<Product>) session.getAttribute("buildProductList");
+            if (result == null || result.size() == 0) {
+                result = productFacade.findAll();
+            }
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            session.setAttribute("buildProductList", productFacade.findAll());
+            return (List<Product>) session.getAttribute("buildProductList");
+        }
+    }
+
+    public void setSessionProductList() {
+        session.setAttribute("buildProductList", productFacade.findAll());
+    }
+
     public void initBuildApp() {
+        boolean isBuilding = isSessionBuilding();
         if (!isBuilding) {
-            setProductList();
-            preBuilt = new PreBuilt();
-            isBuilding = true;
+            setSessionProductList();
+            PreBuilt preBuilt = new PreBuilt();
+            setSessionPrebuilt(preBuilt);
+            setSessionBuilding(true);
         }
     }
 
-    public void setProductList() {
-        buildProductList = productFacade.findAll();
-    }
-
-    public List<Product> getProductList() {
-        if (buildProductList == null) {
-            setProductList();
-        }
-        return buildProductList;
+    // Session build compatibility checker
+    public void checkCompatibility() {
+        PreBuilt currentBuild = getSessionPrebuilt();
+        // Check CPU socket and Motherboard
+        // Check Motherboard RAM types (DDR3/4)
+        // Check RAM modules and RAM slots on motherboard
+        // Check case compatibility with motherboard
+        // Check case compatibility with PSU
+        // Check Cooler compatibility with CPU
+        // Check System TDP
     }
 
     public boolean isBuildAppStarted() {
-        return isBuilding;
+        return isSessionBuilding();
     }
 
     public PreBuilt getPreBuilt() {
         return preBuilt;
+    }
+
+    public List<String> getList(String type) {
+        return productFacade.getStringList(type);
+    }
+
+    public List<String> getList2(String type, String options) {
+        System.out.println(type + "_" + options);
+        return productFacade.getStringList(type, options);
+
     }
 }

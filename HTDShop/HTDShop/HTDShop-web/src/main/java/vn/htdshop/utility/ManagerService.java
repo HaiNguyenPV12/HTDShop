@@ -27,6 +27,7 @@ import vn.htdshop.entity.Product;
 import vn.htdshop.entity.ProductImage;
 import vn.htdshop.entity.RoleRights;
 import vn.htdshop.entity.Staff;
+import vn.htdshop.sb.ImageSlideFacadeLocal;
 import vn.htdshop.sb.ProductImageFacadeLocal;
 import vn.htdshop.sb.StaffFacadeLocal;
 
@@ -52,6 +53,8 @@ public class ManagerService {
 
     @EJB(mappedName = "Order1Facade")
     Order1FacadeLocal order1Facade;
+    @EJB(mappedName = "ImageSlideFacade")
+    ImageSlideFacadeLocal imageSlideFacade;
 
     List<ProductImage> tempUploadImage;
 
@@ -233,6 +236,10 @@ public class ManagerService {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public boolean checkImageSlideExists(Integer promoId) {
+        return imageSlideFacade.promoExist(promoId);
     }
 
     public String getCateName(Integer id) {

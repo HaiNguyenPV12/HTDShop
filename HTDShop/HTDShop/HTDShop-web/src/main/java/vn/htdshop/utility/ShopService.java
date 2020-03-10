@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
 import java.io.InputStream;
@@ -43,6 +44,7 @@ import vn.htdshop.sb.PromotionFacadeLocal;
 
 /**
  * shopService
+ * 
  * @author Thien
  */
 @Service("shopService")
@@ -416,8 +418,7 @@ public class ShopService {
                 if (nonUserId != null && findUserSetting(nonUserId) == null) {
                     userSettings.add(new UserSetting(nonUserId));
                 }
-            }
-
+            } 
         }
         return result;
     }
@@ -428,7 +429,6 @@ public class ShopService {
         }
         return null;
     }
-
 
     public UserSetting findUserSetting(Integer id) {
         for (UserSetting us : userSettings) {
@@ -448,8 +448,20 @@ public class ShopService {
         return null;
     }
 
-    
-
+    public UserSetting getUserSetting(){
+        if (checkLogin()) {
+            return findUserSetting(getLoggedInCustomer().getId());
+        }
+        String nonUserId = "";
+        if (request.getCookies() != null) {
+            nonUserId = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("JSESSIONID"))
+                    .findFirst().map(Cookie::getValue).orElse(null);
+            if (nonUserId != null && findUserSetting(nonUserId) == null) {
+                userSettings.add(new UserSetting(nonUserId));
+            }
+        } 
+        return findUserSetting(nonUserId);
+    }
 
     // =========== PRICE MANAGEMENT ============
 
@@ -594,6 +606,17 @@ public class ShopService {
     }
 
     // =========== OTHER FUNCTION ============
+
+    public List<String> getSocketList(String coolerSockets){
+        List<String> result = new ArrayList<String>();
+        StringTokenizer token = new StringTokenizer(coolerSockets, ",");
+        while (token.hasMoreTokens()){
+            String socket = (String) token.nextToken();
+            result.add(socket);
+        }
+
+        return result;
+    }
 
     public Long getAverageRating(PreBuilt prebuilt) {
         Long result = 0L;

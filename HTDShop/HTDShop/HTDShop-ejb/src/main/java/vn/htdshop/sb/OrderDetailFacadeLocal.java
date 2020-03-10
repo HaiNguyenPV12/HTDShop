@@ -38,4 +38,5 @@ public interface OrderDetailFacadeLocal {
 
     Map<String, Integer> getTopManufacturer(String datepart, Integer top);
     
+    Map<Integer, Integer> getTopProductInCategory(String datepart, Integer top, Integer cateId);
 }

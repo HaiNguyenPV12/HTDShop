@@ -11,7 +11,7 @@
                             class="text-danger">*</i></label>
                     <div class="col-sm-9">
                         <input class="form-control autocomplete" id="series" placeholder="Series" name="series" required
-                            auto-for="" th:value="${update != null? product.series : ''}" />
+                            auto-for="" th:value="${update != null? product.series : ''}" autocomplete="off" />
                     </div>
                     <div class="col-sm-3"></div>
                     <div class="col-sm-9">
@@ -23,7 +23,8 @@
                             class="text-danger">*</i></label>
                     <div class="col-sm-9">
                         <input class="form-control autocomplete" id="socket" placeholder="Socket" name="socket" required
-                            th:auto-for="${cateName}" th:value="${update != null? product.socket : ''}" />
+                            th:auto-for="${cateName}" th:value="${update != null? product.socket : ''}"
+                            autocomplete="off" />
                     </div>
                     <div class="col-sm-3"></div>
                     <div class="col-sm-9">
@@ -33,8 +34,8 @@
                 <div class="form-group row">
                     <label for="chipset" class="col-sm-3 col-form-label text-right">Chipset</label>
                     <div class="col-sm-9">
-                        <input class="form-control" placeholder="Chipset" name="chipset"
-                            th:value="${update != null? product.chipset : ''}" />
+                        <input class="form-control autocomplete" placeholder="Chipset" id="chipset" name="chipset"
+                            th:value="${update != null? product.chipset : ''}" autocomplete="off" th:auto-for="${cateName}"/>
                     </div>
                     <div class="col-sm-3"></div>
                     <div class="col-sm-9">
@@ -59,15 +60,17 @@
                     <label for="core" class="col-sm-3 col-form-label text-right">Cores number<i
                             class="text-danger">*</i></label>
                     <div class="col-sm-3">
-                        <input type="number" class="form-control" id="core" placeholder="Cores" name="core" required
-                            th:value="${update != null? product.core : ''}" />
+                        <input type="number" class="form-control autocomplete" id="core" placeholder="Cores" name="core"
+                            required th:value="${update != null? product.core : ''}" min="1" max="100" step="1"
+                            th:auto-for="${cateName}" />
                     </div>
 
                     <label for="thread" class="col-sm-3 col-form-label text-right">Threads number<i
                             class="text-danger">*</i></label>
                     <div class="col-sm-3">
-                        <input type="number" class="form-control" id="thread" placeholder="Threads" name="thread"
-                            required th:value="${update != null? product.thread : ''}" />
+                        <input type="number" class="form-control autocomplete" id="thread" placeholder="Threads"
+                            name="thread" required th:value="${update != null? product.thread : ''}" min="1" max="100"
+                            step="1" th:auto-for="${cateName}" />
                     </div>
 
                     <div class="col-sm-3"></div>
@@ -107,7 +110,8 @@
                             class="text-danger">*</i></label>
                     <div class="col-sm-9">
                         <input class="form-control autocomplete" id="socket" placeholder="Socket" name="socket" required
-                            th:auto-for="${cateName}" th:value="${update != null? product.socket : ''}" />
+                            th:auto-for="${cateName}" th:value="${update != null? product.socket : ''}"
+                            autocomplete="off" />
                     </div>
                     <div class="col-sm-3"></div>
                     <div class="col-sm-9">
@@ -119,7 +123,8 @@
                             class="text-danger">*</i></label>
                     <div class="col-sm-9">
                         <input class="form-control autocomplete" id="chipset" placeholder="Chipset" name="chipset"
-                            th:auto-for="${cateName}" required th:value="${update != null? product.chipset : ''}" />
+                            th:auto-for="${cateName}" required th:value="${update != null? product.chipset : ''}"
+                            autocomplete="off" />
                     </div>
                     <div class="col-sm-3"></div>
                     <div class="col-sm-9">
@@ -132,7 +137,7 @@
                     <div class="col-sm-9">
                         <input class="form-control autocomplete" id="formFactor" placeholder="Form Factor"
                             name="formFactor" th:auto-for="${cateName}" required
-                            th:value="${update != null? product.formFactor : ''}" />
+                            th:value="${update != null? product.formFactor : ''}" autocomplete="off" />
                     </div>
                     <div class="col-sm-3"></div>
                     <div class="col-sm-9">
@@ -145,7 +150,7 @@
                     <div class="col-sm-3">
                         <input class="form-control autocomplete" id="memoryType" placeholder="Memory Type"
                             name="memoryType" required th:auto-for="${cateName}"
-                            th:value="${update != null? product.memoryType : ''}" />
+                            th:value="${update != null? product.memoryType : ''}" autocomplete="off" />
                     </div>
 
                     <label for="memorySlot" class="col-sm-3 col-form-label text-right">Memory Slots<i
@@ -162,6 +167,19 @@
                     <div class="col-sm-3"></div>
                     <div class="col-sm-3">
                         <ul class="text-danger" id="memorySlotError"></ul>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="interface1" class="col-sm-3 col-form-label text-right">Memory Interface<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-9">
+                        <input class="form-control autocomplete" id="interface1" placeholder="Memory Interface"
+                            name="interface1" required th:value="${update != null? product.interface1 : ''}"
+                            th:auto-for=${cateName} autocomplete="off" />
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" id="interface1Error"></ul>
                     </div>
                 </div>
             </div>
@@ -192,7 +210,8 @@
                             class="text-danger">*</i></label>
                     <div class="col-sm-9">
                         <input class="form-control autocomplete" id="chipset" name="chipset" placeholder="Chipset"
-                            required th:auto-for="${cateName}" th:value="${update != null? product.chipset : ''}" />
+                            required th:auto-for="${cateName}" th:value="${update != null? product.chipset : ''}"
+                            autocomplete="off" />
                     </div>
                     <div class="col-sm-3"></div>
                     <div class="col-sm-9">
@@ -205,7 +224,7 @@
                     <div class="col-sm-9">
                         <input class="form-control autocomplete" id="interface1" name="interface1"
                             placeholder="Interface" required th:auto-for="${cateName}"
-                            th:value="${update != null? product.interface1 : ''}" />
+                            th:value="${update != null? product.interface1 : ''}" autocomplete="off" />
                     </div>
                     <div class="col-sm-3"></div>
                     <div class="col-sm-9">
@@ -232,7 +251,7 @@
                     <div class="col-sm-3">
                         <input class="form-control autocomplete" id="memoryType" placeholder="Memory Type"
                             name="memoryType" required th:auto-for="${cateName}"
-                            th:value="${update != null? product.memoryType : ''}" />
+                            th:value="${update != null? product.memoryType : ''}" autocomplete="off" />
                     </div>
 
                     <label for="memory" class="col-sm-3 col-form-label text-right">Memory<i
@@ -283,14 +302,15 @@
                     <div class="col-sm-3">
                         <input class="form-control autocomplete" id="memoryType" placeholder="Memory Type"
                             name="memoryType" required th:auto-for="${cateName}"
-                            th:value="${update != null? product.memoryType : ''}" />
+                            th:value="${update != null? product.memoryType : ''}" autocomplete="off" />
                     </div>
 
                     <label for="memory" class="col-sm-3 col-form-label text-right">Capacity<i
                             class="text-danger">*</i></label>
                     <div class="input-group col-sm-3">
-                        <input type="number" class="form-control" id="memory" placeholder="Capacity" name="memory"
-                            required th:value="${update != null? product.memory : ''}" />
+                        <input type="number" class="form-control autocomplete" id="memory" placeholder="Capacity"
+                            name="memory" required th:value="${update != null? product.memory : ''}"
+                            th:auto-for="${cateName}" min=1 max=50000 step="1" />
                         <div class="input-group-append">
                             <span class="input-group-text">GB</span>
                         </div>
@@ -305,18 +325,29 @@
                         <ul class="text-danger" id="memoryError"></ul>
                     </div>
                 </div>
-            </div>
-
-            <div class="form-group row">
-                <label for="memoryModules" class="col-sm-3 col-form-label text-right">Modules<i
-                        class="text-danger">*</i></label>
-                <div class="col-sm-9">
-                    <input type="number" class="form-control" id="memoryModules" placeholder="Modules"
-                        name="memoryModules" required th:value="${update != null? product.memoryModules : ''}" />
-                </div>
-                <div class="col-sm-3"></div>
-                <div class="col-sm-9">
-                    <ul class="text-danger" id="memoryModulesError"></ul>
+                <div class="form-group row">
+                    <label for="interface1" class="col-sm-3 col-form-label text-right">Memory Interface<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-3">
+                        <input class="form-control autocomplete" id="interface1" placeholder="Memory Interface"
+                            name="interface1" required th:value="${update != null? product.interface1 : ''}"
+                            th:auto-for="${cateName}" autocomplete="off" />
+                    </div>
+                    <label for="memoryModules" class="col-sm-3 col-form-label text-right">Modules<i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-3">
+                        <input type="number" class="form-control autocomplete" id="memoryModules" placeholder="Modules"
+                            name="memoryModules" required th:value="${update != null? product.memoryModules : ''}"
+                            min="1" max="20" step="1" th:auto-for="${cateName}" />
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-3">
+                        <ul class="text-danger" id="interface1Error"></ul>
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-3">
+                        <ul class="text-danger" id="memoryModulesError"></ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -346,7 +377,7 @@
                     <div class="col-sm-9">
                         <input class="form-control autocomplete" id="pSUFormFactor" placeholder="PSU Form Factor"
                             name="pSUFormFactor" th:auto-for="${cateName}"
-                            th:value="${update != null? product.pSUFormFactor : ''}" />
+                            th:value="${update != null? product.pSUFormFactor : ''}" autocomplete="off" />
                     </div>
                     <div class="col-sm-3"></div>
                     <div class="col-sm-9">
@@ -397,7 +428,7 @@
                     <div class="col-sm-9">
                         <input class="form-control autocomplete" id="interface1" placeholder="Interface"
                             name="interface1" required th:auto-for="${cateName}"
-                            th:value="${update != null? product.interface1 : ''}" />
+                            th:value="${update != null? product.interface1 : ''}" autocomplete="off" />
                     </div>
                     <div class="col-sm-3"></div>
                     <div class="col-sm-9">
@@ -410,7 +441,7 @@
                     <div class="col-sm-9">
                         <input class="form-control autocomplete" id="formFactor" placeholder="Form Factor"
                             name="formFactor" th:auto-for="${cateName}"
-                            th:value="${update != null? product.formFactor : ''}" required />
+                            th:value="${update != null? product.formFactor : ''}" required autocomplete="off" />
                     </div>
                     <div class="col-sm-3"></div>
                     <div class="col-sm-9">
@@ -423,17 +454,18 @@
                     <div class="col-sm-3">
                         <input class="form-control autocomplete" id="storageType" placeholder="Storage Type"
                             name="storageType" required th:auto-for="${cateName}"
-                            th:value="${update != null? product.storageType : ''}" />
+                            th:value="${update != null? product.storageType : ''}" autocomplete="off" />
                     </div>
 
                     <label for="memory" class="col-sm-3 col-form-label text-right">Capacity<i
                             class="text-danger">*</i></label>
                     <div class="input-group col-sm-3">
                         <input type="number" class="form-control" id="memory" placeholder="Capacity" name="memory"
-                            required th:value="${update != null? product.memory : ''}" />
+                            required th:value="${update != null? product.memory : ''}" min=1 max=5000000 step="1" />
                         <div class="input-group-append">
                             <span class="input-group-text">GB</span>
                         </div>
+                        <div class="row"><i class="text-muted">* For easy input: 1000 GB will result in 1 TB</i></div>
                     </div>
 
                     <div class="col-sm-3"></div>
@@ -472,8 +504,8 @@
                     <label for="socket" class="col-sm-3 col-form-label text-right">Socket<i
                             class="text-danger">*</i></label>
                     <div class="col-sm-9">
-                        <input class="form-control" id="socket" placeholder="Socket" name="socket" required
-                            th:value="${update != null? product.socket : ''}" />
+                        <input class="form-control autocomplete" id="socket" placeholder="Socket" name="socket" required
+                            th:value="${update != null? product.socket : ''}" autocomplete="off" th:auto-for="${cateName}"/>
                     </div>
                     <div class="col-sm-3"></div>
                     <div class="col-sm-9">
@@ -509,7 +541,7 @@
                     <div class="col-sm-9">
                         <input class="form-control autocomplete" id="formFactor" placeholder="Form Factor"
                             name="formFactor" th:auto-for="${cateName}"
-                            th:value="${update != null? product.formFactor : ''}" required />
+                            th:value="${update != null? product.formFactor : ''}" required autocomplete="off" />
                     </div>
                     <div class="col-sm-3"></div>
                     <div class="col-sm-9">
@@ -522,7 +554,7 @@
                     <div class="col-sm-9">
                         <input class="form-control autocomplete" id="pSUFormFactor" placeholder="Form Factor"
                             name="pSUFormFactor" th:auto-for="${cateName}"
-                            th:value="${update != null? product.pSUFormFactor : ''}" />
+                            th:value="${update != null? product.pSUFormFactor : ''}" autocomplete="off" />
                     </div>
                     <div class="col-sm-3"></div>
                     <div class="col-sm-9">
@@ -559,7 +591,7 @@
                     <div class="input-group col-sm-9">
                         <input type="number" class="form-control" id="screenSize" placeholder="Screen Size"
                             name="screenSize" required step="0.1"
-                            th:value="${update != null? product.screenSize : ''}" />
+                            th:value="${update != null? product.screenSize : ''}" autocomplete="off"/>
                         <div class="input-group-append">
                             <span class="input-group-text">inch</span>
                         </div>
@@ -575,7 +607,7 @@
                     <div class="input-group col-sm-9">
                         <input class="form-control autocomplete" id="resolution" placeholder="Resolution"
                             name="resolution" required th:auto-for="${cateName}"
-                            th:value="${update != null? product.resolution : ''}" />
+                            th:value="${update != null? product.resolution : ''}" autocomplete="off"/>
                     </div>
                     <div class="col-sm-3"></div>
                     <div class="col-sm-9">

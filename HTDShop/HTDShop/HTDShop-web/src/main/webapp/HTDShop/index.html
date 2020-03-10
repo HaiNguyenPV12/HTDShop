@@ -22,6 +22,10 @@
             color: #fff;
         }
 
+        .product-wrapper {
+            border: solid mediumpurple;
+        }
+
         .product-wrapper-big {
             height: 35rem;
             display: contents;
@@ -119,7 +123,7 @@
         </div>
     </div>
     <div layout:fragment="content">
-        <div class="container-fluid">
+        <div class="container-fluid mt-5">
             <div class="best-selling-area pb-95 gray-bg-7">
                 <div class="section-title-4 text-center mb-60">
                     <h2>Best Selling</h2>
@@ -127,7 +131,8 @@
                 <div class="best-selling-product">
                     <div class="row no-gutters">
                         <!-- TOP SELLER  (OF TOP 7) -->
-                        <div class="col-lg-5">
+                        <!-- TODO : add: onclick = "doAddToCart(id of product, 1)" -->
+                        <div class="col-lg-5" style="border: solid mediumpurple;">
                             <div class="best-selling-left">
                                 <div class="product-wrapper product-wrapper-big">
                                     <div class="product-img-4 product-img-big">
@@ -170,9 +175,6 @@
                                                         <a class="animate-top" title="Add To Cart" href="#">
                                                             <i class="pe-7s-cart"></i>
                                                         </a>
-                                                        <a class="animate-left" title="Wishlist" href="#">
-                                                            <i class="pe-7s-like"></i>
-                                                        </a>
                                                     </div>
                                                 </div>
                                                 <div class="product-content-6">
@@ -199,9 +201,6 @@
                                                         <a class="animate-top" title="Add To Cart" href="#">
                                                             <i class="pe-7s-cart"></i>
                                                         </a>
-                                                        <a class="animate-left" title="Wishlist" href="#">
-                                                            <i class="pe-7s-like"></i>
-                                                        </a>
                                                     </div>
                                                 </div>
                                                 <div class="product-content-6">
@@ -226,9 +225,6 @@
                                                     <div class="product-action-right">
                                                         <a class="animate-top" title="Add To Cart" href="#">
                                                             <i class="pe-7s-cart"></i>
-                                                        </a>
-                                                        <a class="animate-left" title="Wishlist" href="#">
-                                                            <i class="pe-7s-like"></i>
                                                         </a>
                                                     </div>
                                                 </div>
@@ -255,9 +251,6 @@
                                                         <a class="animate-top" title="Add To Cart" href="#">
                                                             <i class="pe-7s-cart"></i>
                                                         </a>
-                                                        <a class="animate-left" title="Wishlist" href="#">
-                                                            <i class="pe-7s-like"></i>
-                                                        </a>
                                                     </div>
                                                 </div>
                                                 <div class="product-content-6">
@@ -283,9 +276,6 @@
                                                         <a class="animate-top" title="Add To Cart" href="#">
                                                             <i class="pe-7s-cart"></i>
                                                         </a>
-                                                        <a class="animate-left" title="Wishlist" href="#">
-                                                            <i class="pe-7s-like"></i>
-                                                        </a>
                                                     </div>
                                                 </div>
                                                 <div class="product-content-6">
@@ -310,9 +300,6 @@
                                                     <div class="product-action-right">
                                                         <a class="animate-top" title="Add To Cart" href="#">
                                                             <i class="pe-7s-cart"></i>
-                                                        </a>
-                                                        <a class="animate-left" title="Wishlist" href="#">
-                                                            <i class="pe-7s-like"></i>
                                                         </a>
                                                     </div>
                                                 </div>

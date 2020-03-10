@@ -115,7 +115,7 @@
                                         class="text-danger">*</i></label>
                                 <div class="col-sm-9">
                                     <input class="form-control" id="name" placeholder="Product name" th:field="*{name}"
-                                        required minlength="3" maxlength="255" />
+                                        required minlength="3" maxlength="255" autocomplete="off" />
                                 </div>
                                 <div class="col-sm-3"></div>
                                 <div class="col-sm-9">
@@ -129,7 +129,7 @@
                                 <div class="col-sm-9">
                                     <input class="form-control autocomplete" id="manufacturer"
                                         placeholder="Manufacturer" th:field="*{manufacturer}"
-                                        th:auto-for="${cateName == null? '' : cateName}" required />
+                                        th:auto-for="${cateName == null? '' : cateName}" required autocomplete="off" />
                                 </div>
                                 <div class="col-sm-3"></div>
                                 <div class="col-sm-9">
@@ -140,9 +140,9 @@
                                 <label for="warrantyPeriod" class="col-sm-3 col-form-label text-right">Warranty
                                     Period<i class="text-danger">*</i></label>
                                 <div class="input-group col-sm-9">
-                                    <input type="number" class="form-control" id="warrantyPeriod"
+                                    <input type="number" class="form-control autocomplete" id="warrantyPeriod"
                                         placeholder="Warranty Period" th:field="*{warrantyPeriod}" required min=1
-                                        value=1 />
+                                        value=1 max=120 step="1" auto-for="" />
                                     <div class="input-group-append">
                                         <span class="input-group-text">months</span>
                                     </div>
@@ -158,13 +158,13 @@
                                         class="text-danger">*</i></label>
                                 <div class="col-sm-4">
                                     <input type="number" class="form-control" id="price" placeholder="Price"
-                                        th:field="*{price}" step="0.01" required value=0 max=10000/>
+                                        th:field="*{price}" step="0.01" required value=0 min=0 max=10000 />
                                 </div>
                                 <label for="stock" class="col-sm-2 col-form-label text-right">Stock<i
                                         class="text-danger">*</i></label>
                                 <div class="col-sm-4">
                                     <input type="number" class="form-control" id="stock" placeholder="Stock"
-                                        th:field="*{stock}" required value=0 />
+                                        th:field="*{stock}" required value=0 min=0 max=1000 step=1 />
                                 </div>
                                 <div class="col-sm-2"></div>
                                 <div class="col-sm-4">
@@ -310,6 +310,9 @@
         var existImgSize = +/*[[${update == null? 0 : product.productImageCollection.size()}]]*/0;
         var cache = {};
         var update = /*[[${update == null ? false : true}]]*/false;
+        // var formChanged = false;
+        var frmProduct = $("#frmProduct"), original = frmProduct.serialize();
+
         $("#btnUploadImage").on("change", function () {
             if (this.files && this.files[0]) {
                 var filesNum = this.files.length;
@@ -387,12 +390,14 @@
                         });
                         $("#category.id").val(cateId);
                         makeAutoList($("#manufacturer"), $("#cateName").val(), "manu");
+                        makeAutoList($("#warrantyPeriod"), "", "warrantyPeriod");
                     }
                 });
             }
         });
 
         makeAutoList($("#manufacturer"), /*[[${cateName == null? '' : cateName}]]*/"", "manu");
+        makeAutoList($("#warrantyPeriod"), "", "warrantyPeriod");
         if (update) {
             $("#specificInfo").find("input.autocomplete").each(function (i, e) {
                 var attr = $(this).attr("id");
@@ -407,24 +412,82 @@
                 attr = "manu";
             }
             searchUrl += "?attr=" + attr + "&cate=" + cate;
-            $(element).autocomplete({
-                source: function (request, response) {
-                    var term = request.term + attr + cate;
-                    if (term in cache) {
-                        response(cache[term]);
-                        return;
-                    }
+            if ((attr == "socket" && cate == "CpuCooler") || (attr == "chipset" && cate == "Cpu") || (attr == "formFactor" && cate == "Case") || (attr == "pSUFormFactor" && cate == "Case")) {
+                function split(val) {
+                    return val.split(/,\s*/);
+                }
+                function extractLast(term) {
+                    return split(term).pop();
+                }
 
-                    $.post(searchUrl, request, function (data, status, xhr) {
-                        cache[term] = data;
-                        response(data);
+                $(element)
+                    // don't navigate away from the field on tab when selecting an item
+                    .on("keydown", function (event) {
+                        if (event.keyCode === $.ui.keyCode.TAB &&
+                            $(this).autocomplete("instance").menu.active) {
+                            event.preventDefault();
+                        }
+                    })
+                    .autocomplete({
+                        minLength: 0,
+                        source: function (request, response) {
+                            // delegate back to autocomplete, but extract the last term
+                            response($.ui.autocomplete.filter(
+                                autoValues[attr + cate], extractLast(request.term)));
+                        },
+                        focus: function () {
+                            // prevent value inserted on focus
+                            return false;
+                        },
+                        select: function (event, ui) {
+                            var terms = split(this.value);
+                            // remove the current input
+                            terms.pop();
+                            // add the selected item
+                            var val = ui.item.value;
+                            if (val.indexOf(":") >= 0) {
+                                terms.push(val.substr(val.indexOf(":") + 1));
+                            } else {
+                                terms.push(val);
+                            }
+                            // terms.push(val);
+                            // add placeholder to get the comma-and-space at the end
+                            terms.push("");
+                            this.value = terms.join(",");
+                            return false;
+                        }
+                    }).on("focus click", function () {
+                        $(this).data("uiAutocomplete").search($(this).val());
                     });
-                },
-                minLength: 0
-            }).focus(function () {
-                $(this).data("uiAutocomplete").search($(this).val());
-            });
+
+            } else {
+                $(element).autocomplete({
+                    source: function (request, response) {
+                        var term = attr + cate;
+                        if (term in cache) {
+                            response($.ui.autocomplete.filter(cache[term], request.term));
+                            return;
+                        }
+
+                        $.post(searchUrl, request, function (data, status, xhr) {
+                            cache[term] = data;
+                            // response(data);
+                            response($.ui.autocomplete.filter(data, request.term));
+                        });
+                    },
+                    minLength: 0
+                }).focus(function () {
+                    $(this).data("uiAutocomplete").search($(this).val());
+                }).on('input propertychange', function () {
+                    $(this).data("uiAutocomplete").search($(this).val());
+                });
+            }
+
         }
+
+        // $("#frmProduct").on("change", function(){
+        //     formChanged = true;
+        // });
 
         $("#frmProduct").validate({
             ignore: [],
@@ -477,10 +540,13 @@
                                 }
                             });
                             if (!update) {
+                                var oldCate = $("#category").val();
                                 $("#frmProduct").trigger("reset");
+                                $("#color").trigger("change");
                                 $("#uploadimg").html("");
                                 existImgSize = +0;
                                 $('.textarea').summernote('reset');
+                                $("#category").val(oldCate);
                                 Toast.fire({
                                     type: 'success',
                                     title: 'Successfully added!'
@@ -491,6 +557,7 @@
                                     title: 'Successfully updated!'
                                 });
                             }
+                            original = frmProduct.serialize();
                         }
 
                     }
@@ -583,9 +650,49 @@
 
         $('.textarea').summernote({ height: 150 });
 
+        // window.onbeforeunload = function () {
+        //     if (form.serialize() != original)
+        //         return 'Are you sure you want to leave?'
+        // }
         $(window).on("beforeunload", function () {
+            if (frmProduct.serialize() != original) {
+                var cf = confirm('There are data(s) not being saved! Are you sure to leave page?');
+                if (!cf) {
+                    return false;
+                }
+            }
             $.post(/*[[@{/manager/product/clearUploadImage}]]*/"", function (result) { });
-        })
+        });
+        var autoValues = [];
+        autoValues["socketCpuCooler"] = [
+            "AM2", "AM2+", "AM3", "AM3+", "FM1", "FM2", "FM2+", "AM4", "LGA775", "LGA1150", "LGA1151", "LGA1155", "LGA1156", "LGA1366", "LGA2011", "LGA2011-3", "LGA2066", "TR4", "sTR4", "sTRX4"
+        ];
+        autoValues["chipsetCpu"] = [
+            "AM4 Ryzen 1000:A300,B300,X300,A320,B350,X370,B450,X470",
+            "AM4 Ryzen 2000:A300,B300,X300,A320,B350,X370,B450,X470,X570",
+            "AM4 Ryzen 3000:B350,X370,B450,X470,X570",
+            "AM3+ Piledriver/Bulldozer:970,980G,990X,990FX",
+            "FM2+ Steamroller/Excavator:A58,A68H,A78,A88X",
+            "TR4 Threadripper 1-2:X399",
+            "TR4 Threadripper 3:TRX40",
+            "LGA 2066 Intel -X,-W:X299",
+            "LGA 2066 Intel -X,-W:X299",
+            "LGA 1151 Intel 8000-9000:B360, Q370, H310, H370, Z370",
+            "LGA 1151 Intel 6000-7000:H110,B150,Q150,H170,Q170,Z170,B250,Q250,H270,Q270,Z270",
+            "LGA 1150 Intel 4000: H81,B85,Q85,Q87,H87,Z87,H97,Z97",
+            "LGA 1155 Intel 3000: H61,B65,Q65,P67,H67,Q67,Z67,B75,H77,Q77,Z77"
+        ];
+        autoValues["formFactorCase"] = [
+            "ATX",
+            "Micro ATX",
+            "Mini ITX",
+            "Nano ITX",
+            "Pico ITX",
+        ];
+        autoValues["pSUFormFactorCase"] = [
+            "ATX",
+            "SFX"
+        ];
 
         /*]]>*/
     </script>

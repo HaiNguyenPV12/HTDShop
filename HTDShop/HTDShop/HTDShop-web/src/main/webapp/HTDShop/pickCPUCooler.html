@@ -11,13 +11,159 @@
         .dataTables_filter {
             float: right !important;
         }
+
+        .table {
+            table-layout: fixed !important;
+        }
     </style>
+    <th:block layout:fragment="additionalCss">
+        <link rel="stylesheet" th:href="@{/resources/Plugins/jquery-ui/jquery-ui.min.css}" />
+        <link rel="stylesheet" th:href="@{/resources/Plugins/jquery-ui/jquery-ui.theme.min.css}" />
+    </th:block>
 </head>
 
 <body>
     <div layout:fragment="content">
+        <div class="container">
+            <div class="row">
+                <h2 class="mx-auto">Pick a Cooler</h2>
+            </div>
+            <!-- START OF FILTER FORM -->
+            <form th:action="@{/build/cpucooler/filtercooler}" method="POST" id="pickCoolerForm"
+                th:object="${coolerValues}">
+                <input type="hidden" th:field="*{partCategory}" value="motherboard" />
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="pb-2">
+                            <h4 class="mx-auto">
+                                Manufacturer
+                            </h4>
+                            <div>
+                                <select name="socket" id="" th:field=*{manufacturer}>
+                                    <option value="all">All</option>
+                                    <option th:each="m : ${coolerManufacturerList}" th:value="${m}" th:text="${m}">
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <h4 class="mx-auto">Price</h4>
+                        <div id="priceSlider" class="mb-3"></div>
+                        <div class="row">
+                            <div class="col-md-5 pb-1">
+                                <input type="number" name="priceMin" max="99999" min="0" th:field=*{priceMin}
+                                    id="priceFrom" value="0" style="width: 100%;">
+                            </div>
+                            <div class="col-md-2">
+                                <i class="fas fa-long-arrow-alt-right my-auto"></i>
+                            </div>
+                            <div class="col-md-5">
+                                <input type="number" name="priceMax" max="99999" min="0" th:field=*{priceMax}
+                                    id="priceTo" value="2000" style="width: 100%;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <h4 class="mx-auto">
+                            Socket
+                        </h4>
+                        <div>
+                            <select name="socket" id="" th:field=*{socket}>
+                                <option value="all">All</option>
+                                <option th:each="s : ${coolerSocketList}" th:value="${s}" th:text="${s}"></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <!-- END OF FILTER FORM -->
+            <table id="filteredCoolerTable" class="table table-striped" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Socket</th>
+                        <th>Price</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="c : ${filteredCooler}">
+                        <td>
+                            <a href="" th:href="@{/product?id=__${c.id}__}" th:text=${c.name}></a>
+                        </td>
+                        <td style="word-wrap: break-word; word-break:break-all;">
+                            <th:block th:text="${c.socket}" />
+                        </td>
+                        <td>
+                            <th:block th:text="${c.price}" />
+                        </td>
+                        <td>
+                            <form action="" th:action="@{/build/cpucooler/pickcooler?id=__${c.id}__}" method="post">
+                                <button class="btn btn-primary">Add to build</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>Name</th>
+                        <th>Socket</th>
+                        <th>Price</th>
+                        <th></th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div class="row justify-content-center py-3">
+                <a th:href="@{/build}" class="button btn-hover-black py-1">Back to Build</a>
+            </div>
+        </div>
     </div>
+    <th:block layout:fragment="additionalScript">
+        <script th:src="@{/resources/Plugins/jquery-ui/jquery-ui.min.js}"></script>
+    </th:block>
     <script th:inline="none" layout:fragment="script">
+        $(document).ready(function () {
+            $("#pickCoolerForm").change(function (e) {
+                $("#pickCoolerForm").submit();
+            });
+        });
+
+        $('#filteredCoolerTable').DataTable({
+            "autoWidth": false,
+            "columns": [
+                { "width": "40%" },
+                { "width": "25%" },
+                null,
+                null
+            ],
+            "language": {
+                "emptyTable": "<div style='text-align:center;'><a href='' th:href='@{/build/cpucooler/reset}'>No results. Reset your search values.</a>" +
+                    "<br><a href='' th:href='@{/build/cpucooler/reset}' class='btn btn-success'>Reset</a></div>"
+            },
+            initComplete: function () {
+                $('div.dataTables_length').addClass('form-inline');
+                $('div.dataTables_length').addClass('mt-4');
+            }
+        });
+
+        var currentPriceFrom = $("#priceFrom").val();
+        var currentPriceTo = $("#priceTo").val();
+        var priceSlider = $("#priceSlider").slider({
+            range: true,
+            min: 0,
+            max: 2000,
+            values: [$("#priceFrom").val(), $("#priceTo").val()],
+            slide: function (event, ui) {
+                $("#priceFrom").val(ui.values[0]);
+                $("#priceTo").val(ui.values[1]);
+            },
+            stop: function (event, ui) {
+                if (currentPriceFrom != $("#priceFrom").val() || currentPriceTo != $("#priceTo").val()) {
+                    $("#pickCoolerForm").submit();
+                }
+            }
+        });
     </script>
 </body>
 

@@ -7,6 +7,7 @@ package vn.htdshop.sb;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -52,6 +53,9 @@ public class ProductFacade extends AbstractFacade<Product> implements ProductFac
     @Override
     public List<String> getStringList(String attr) {
         Query q = null;
+        if (attr == null) {
+            return null;
+        }
         if (attr.equals("socketCpu")) {
             q = em.createNativeQuery("SELECT DISTINCT CAST(Socket AS VARCHAR(MAX)) FROM Product WHERE CateId = 1");
         } else if (attr.equals("series") || attr.equals("seriesCpu")) {
@@ -106,6 +110,34 @@ public class ProductFacade extends AbstractFacade<Product> implements ProductFac
             q = em.createNativeQuery("SELECT DISTINCT StorageType FROM Product WHERE CateId = 6");
         } else if (attr.equals("resolutionMonitor")) {
             q = em.createNativeQuery("SELECT DISTINCT Resolution FROM Product WHERE CateId = 9");
+        } else if (attr.equals("memoryMemory") || attr.equals("capacityMemory")) {
+            q = em.createNativeQuery(
+                    "SELECT * FROM (SELECT DISTINCT CAST(Memory AS VARCHAR) AS Memory FROM Product WHERE CateId = 4) As Mem ORDER BY CAST(Memory As INT)");
+        } else if (attr.equals("memoryModulesMemory")) {
+            q = em.createNativeQuery(
+                    "SELECT * FROM (SELECT DISTINCT CAST(MemoryModules AS VARCHAR) AS MemoryModules FROM Product WHERE CateId = 4) As MemoryModules ORDER BY CAST(MemoryModules As INT)");
+        } else if (attr.equals("interfaceMemory") || attr.equals("interface1Memory")) {
+            q = em.createNativeQuery("SELECT DISTINCT Interface FROM Product WHERE CateId = 4 AND Interface != 'NULL'");
+        } else if (attr.equals("interfaceMotherboard") || attr.equals("interface1Motherboard")) {
+            q = em.createNativeQuery("SELECT DISTINCT Interface FROM Product WHERE CateId = 2 AND Interface != 'NULL'");
+        } else if (attr.equals("coreCpu")) {
+            q = em.createNativeQuery(
+                    "SELECT * FROM (SELECT DISTINCT CAST(Core AS VARCHAR) AS Core FROM Product WHERE CateId = 1) As Core ORDER BY CAST(Core As INT)");
+        } else if (attr.equals("threadCpu")) {
+            q = em.createNativeQuery(
+                    "SELECT * FROM (SELECT DISTINCT CAST(Thread AS VARCHAR) AS Thread FROM Product WHERE CateId = 1) As Thread ORDER BY CAST(Thread As INT)");
+        } else if (attr.equals("warrantyPeriod")) {
+            q = em.createNativeQuery(
+                    "SELECT * FROM (SELECT DISTINCT CAST(WarrantyPeriod AS VARCHAR) AS WarrantyPeriod FROM Product) As WarrantyPeriod ORDER BY CAST(WarrantyPeriod As INT)");
+        } else if (attr.equals("memorySlotMotherboard")) {
+            q = em.createNativeQuery(
+                    "SELECT * FROM (SELECT DISTINCT CAST(MemorySlot AS VARCHAR) AS MemorySlot FROM Product WHERE CateId = 2) As MemorySlot ORDER BY CAST(MemorySlot As INT)");
+        } else if (attr.equals("memoryGpu")) {
+            q = em.createNativeQuery(
+                    "SELECT * FROM (SELECT DISTINCT CAST(Memory AS VARCHAR) AS Memory FROM Product WHERE CateId = 3) As Memory ORDER BY CAST(Memory As INT)");
+        } else if (attr.equals("memoryStorage")) {
+            q = em.createNativeQuery(
+                    "SELECT * FROM (SELECT DISTINCT CAST(Memory AS VARCHAR) AS Memory FROM Product WHERE CateId = 6) As Memory ORDER BY CAST(Memory As INT)");
         } else {
             return null;
         }
@@ -146,6 +178,41 @@ public class ProductFacade extends AbstractFacade<Product> implements ProductFac
     public Product find(Integer id) {
         // TODO Auto-generated method stub
         return em.find(Product.class, id);
+    }
+
+    @Override
+    public List<String> getStringList(String attr, String options) {
+        Query q = null;
+        String qStr = "";
+        if (attr.equals("socketCpu")) {
+            qStr = "SELECT DISTINCT CAST(Socket AS VARCHAR(MAX)) FROM Product WHERE CateId = 1";
+        } else if (attr.equals("series") || attr.equals("seriesCpu")) {
+            qStr = "SELECT DISTINCT Series FROM Product WHERE CateId = 1";
+        } else {
+            return null;
+        }
+
+        StringTokenizer token = new StringTokenizer(options, ",");
+        while (token.hasMoreTokens()) {
+            String a = token.nextToken();
+            if (a != null && !a.isEmpty()) {
+                String option = a.substring(0, a.indexOf(":"));
+                String value = a.substring(a.indexOf(":") + 1, a.length());
+                if (option != null && !option.isEmpty() && value != null && !value.isEmpty()) {
+                    if (option.equals("Socket")) {
+                        qStr += " AND CAST(Socket AS VARCHAR(MAX)) = '" + value + "'";
+                    } else {
+                        qStr += " AND " + option + " = '" + value + "'";
+                    }
+                }
+            }
+        }
+        q = em.createNativeQuery(qStr);
+
+        if (q.getResultList().size() == 0) {
+            return new ArrayList<String>();
+        }
+        return (List<String>) q.getResultList();
     }
 
 }

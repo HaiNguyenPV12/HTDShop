@@ -368,7 +368,7 @@
                                         enctype="application/x-www-form-urlencoded">
                                         <div class="d-flex">
                                             <input type="hidden" name="prebuiltid" th:value="${prebuilt.id}" />
-                                            <select class="form-control form-control-sm" name="rating" id="" style="width: 5rem;">
+                                            <select class="form-control form-control-sm" name="rating" id="" style="width: 5rem;height: auto;">
                                                 <option th:each="num : ${#numbers.sequence(0, 10)}" th:value="${num}" th:text="${num}"></option>
                                             </select>
                                             <!-- <input type="number" class="form-control form-control-sm" name="rating"
@@ -435,7 +435,7 @@
                         </button>
                     </div>
                     <div class="modal-body" id="modalBody">
-                        <div id="g-recaptcha" class="g-recaptcha" data-sitekey="6LdeYdoUAAAAAHL11wXzM80G7X_dNVEQAYp_V9JN" data-callback="checked"></div>
+                        <div id="g-recaptcha" class="g-recaptcha ml-auto mr-auto" data-sitekey="6LdeYdoUAAAAAHL11wXzM80G7X_dNVEQAYp_V9JN" data-callback="checked"></div>
                     </div>
                     <div class="modal-footer justify-content-between">
                         <button type="button" class="btn btn-default" data-dismiss="modal" id='modalClose'>Cancel</button>

@@ -20,6 +20,7 @@ public class PromotionView implements Serializable {
     private Date endDate;
     private boolean isAlways;
     private boolean isDisabled;
+    private boolean hasImageSlide;
 
     public PromotionView() {
     }
@@ -164,6 +165,20 @@ public class PromotionView implements Serializable {
      */
     public void setIsDisabled(boolean isDisabled) {
         this.isDisabled = isDisabled;
+    }
+
+    /**
+     * @return the hasImageSlide
+     */
+    public boolean isHasImageSlide() {
+        return hasImageSlide;
+    }
+
+    /**
+     * @param hasImageSlide the hasImageSlide to set
+     */
+    public void setHasImageSlide(boolean hasImageSlide) {
+        this.hasImageSlide = hasImageSlide;
     }
 
 }

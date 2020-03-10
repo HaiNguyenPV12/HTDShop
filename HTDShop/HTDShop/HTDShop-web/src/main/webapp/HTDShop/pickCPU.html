@@ -12,6 +12,10 @@
             float: right !important;
         }
     </style>
+    <th:block layout:fragment="additionalCss">
+        <link rel="stylesheet" th:href="@{/resources/Plugins/jquery-ui/jquery-ui.min.css}" />
+        <link rel="stylesheet" th:href="@{/resources/Plugins/jquery-ui/jquery-ui.theme.min.css}" />
+    </th:block>
 </head>
 
 <body>
@@ -24,7 +28,8 @@
             <form th:action="@{/build/cpu/filterCpu}" method="POST" id="pickCPUForm" th:object="${cpuValues}">
                 <input type="hidden" th:field="*{partCategory}" value="cpu" />
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-4">
+                        <div class="pb-2"></div>
                         <div class="pb-2">
                             <h4 class="mx-auto">
                                 Manufacturer
@@ -41,29 +46,30 @@
                         </div>
                         <div>
                             <h4 class="mx-auto">Price</h4>
+                            <div id="priceSlider" class="mb-3"></div>
                             <div class="row">
-                                <div class="col-md-3">From:</div>
-                                <div class="col-md-9 pb-1">
+                                <div class="col-md-5 pb-1">
                                     <input type="number" name="priceMin" max="99999" min="0" th:field=*{priceMin}
-                                        value="0" style="width: 100%;">
+                                        id="priceFrom" value="0" style="width: 100%;">
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-3">To:</div>
-                                <div class="col-md-9">
+                                <div class="col-md-2">
+                                    <i class="fas fa-long-arrow-alt-right my-auto"></i>
+                                </div>
+                                <div class="col-md-5">
                                     <input type="number" name="priceMax" max="99999" min="0" th:field=*{priceMax}
-                                        value="10000" style="width: 100%;">
+                                        id="priceTo" value="10000" style="width: 100%;">
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="pb-2">
                             <h4 class="mx-auto">
                                 Socket
                             </h4>
                             <div>
                                 <select name="socket" id="" th:field=*{socket}>
+                                    <option value="all">All</option>
                                     <option th:each="s : ${cpuSocketList}" th:value="${s}" th:text="${s}"></option>
                                 </select>
                             </div>
@@ -89,19 +95,31 @@
                         <div>
                             <div class="row pb-1">
                                 <div class="col-md-3">TDP:</div>
-                                <div class="col-md-7">
-                                    <input type="number" name="tdp" max="2000" min="0" th:field=*{tdp} value="0"
-                                        style="width: 100%;">
+                                <div class="col-md-9">
+                                    <div id="tdpSlider" class="mt-1">
+                                        <div id="tdpHandle" class="ui-slider-handle"></div>
+                                    </div>
                                 </div>
-                                <div class="col-md-1">
-                                    (W)
+                            </div>
+                        </div>
+                        <div>
+                            <div class="row pb-1">
+                                <div class="col-md-3">&nbsp;</div>
+                                <div class="col-md-9">
+                                    <div>
+                                        <input type="number" name="tdp" id="tdp" max="1000" min="0" th:field=*{tdp}
+                                            value="0" style="padding-right: 1.5rem; text-align: right; width: 100%;">
+                                        <span style="margin-left: -1.5rem;">W</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div>
                             <h4 class="mx-auto">Series</h4>
+                            <input type="radio" name="series" th:field=*{series} th:value="all">All
+                            <br>
                             <th:block th:each="s : ${cpuSeriesList}">
                                 <input type="radio" name="series" th:field=*{series} th:value="${s}">[[${s}]]
                                 <br>
@@ -110,7 +128,7 @@
                     </div>
                 </div>
             </form>
-
+            <!-- END OF FILTER FORM -->
             <table id="filteredCPUTable" class="table table-striped" style="width: 100%;">
                 <thead>
                     <tr>
@@ -125,7 +143,7 @@
                 <tbody>
                     <tr th:each="c : ${filteredCPU}">
                         <td>
-                            <a href="" th:href=@{/} th:text=${c.name}></a>
+                            <a href="" th:href="@{/product?id=__${c.id}__}" th:text=${c.name}></a>
                         </td>
                         <td>
                             <th:block th:text="${c.core}" />
@@ -140,7 +158,9 @@
                             <th:block th:text="${c.price}" />
                         </td>
                         <td>
-                            <button class="btn btn-primary">Add to build</button>
+                            <form action="" th:action="@{/build/cpu/pickCpu?id=__${c.id}__}" method="post">
+                                <button class="btn btn-primary">Add to build</button>
+                            </form>
                         </td>
                     </tr>
                 </tbody>
@@ -155,21 +175,14 @@
                     </tr>
                 </tfoot>
             </table>
-            <h2>
-                Searching for
-                <th:block th:text="${cpuValues.manufacturer}" /> <br>
-                Price from
-                <th:block th:text="${cpuValues.priceMin}" /> to
-                <th:block th:text="${cpuValues.priceMax}" /> <br>
-                Socket
-                <th:block th:text="${cpuValues.socket}" /> <br>
-                <th:block th:text="${cpuValues.core}" /> Cores <br>
-                <th:block th:text="${cpuValues.thread}" /> <br>
-                <th:block th:text="${cpuValues.tdp}" />W TDP
-                <th:block th:text="${cpuValues.series}" /> family
-            </h2>
+            <div class="row justify-content-center py-3">
+                <a th:href="@{/build}" class="button btn-hover-black py-1">Back to Build</a>
+            </div>
         </div>
     </div>
+    <th:block layout:fragment="additionalScript">
+        <script th:src="@{/resources/Plugins/jquery-ui/jquery-ui.min.js}"></script>
+    </th:block>
     <script th:inline="none" layout:fragment="script">
         $(document).ready(function () {
             $("#pickCPUForm").change(function (e) {
@@ -178,9 +191,43 @@
         });
 
         $('#filteredCPUTable').DataTable({
+            "language": {
+                "emptyTable": "<div style='text-align:center;'><a href='cpu/reset' th:href='@{cpu/reset}'>No results. Reset your search values.</a>" +
+                    "<br><a href='cpu/reset' th:href='@{cpu/reset}' class='btn btn-success'>Reset</a></div>"
+            },
             initComplete: function () {
                 $('div.dataTables_length').addClass('form-inline');
                 $('div.dataTables_length').addClass('mt-4');
+            }
+        });
+
+        var priceSlider = $("#priceSlider").slider({
+            range: true,
+            min: 0,
+            max: 10000,
+            values: [$("#priceFrom").val(), $("#priceTo").val()],
+            slide: function (event, ui) {
+                $("#priceFrom").val(ui.values[0]);
+                $("#priceTo").val(ui.values[1]);
+            },
+            stop: function (event, ui) {
+                $("#pickCPUForm").submit();
+            }
+        });
+
+        // var tdpHandle = $("#tdpHandle");
+        var currentTDP = $("#tdp").val();
+        var tdpSlider = $("#tdpSlider").slider({
+            min: 0,
+            max: 1000,
+            value: $("#tdp").val(),
+            slide: function (event, ui) {
+                $("#tdp").val(ui.value);
+            },
+            stop: function (event, ui) {
+                if (currentTDP != $("#tdp").val()) {
+                    $("#pickCPUForm").submit();
+                }
             }
         });
     </script>

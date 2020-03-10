@@ -15,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import vn.htdshop.entity.BuildValues;
 import vn.htdshop.entity.PreBuilt;
@@ -43,19 +44,29 @@ public class shopBuildController {
     @Autowired
     BuildService buildService;
 
+    @Autowired
+    HttpSession session;
+
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public String getBuild(HttpSession session) {
+    public String getBuild() {
         // buildService.initBuildApp();
-        if (isBuildStarted(session)) {
-            session.setAttribute("isBuilding", true);
-            session.setAttribute("currentBuild", new PreBuilt());
-            preBuilt = new PreBuilt();
+        if (isBuildStarted()) {
+            buildService.initBuildApp();
         }
-        // TODO handle build all in session.
+
+        // TODO check compatibility if parts are picked/removed.
         return "HTDShop/build";
     }
 
-    private boolean isBuildStarted(HttpSession session) {
+    // reset build link
+    @RequestMapping(value = "reset", method = RequestMethod.GET)
+    public String filterReset(RedirectAttributes redirect) {
+        // reset build values
+        buildService.setSessionPrebuilt(new PreBuilt());
+        return "redirect:/build";
+    }
+
+    private boolean isBuildStarted() {
         return session.getAttribute("isBuilding") == null;
     }
 

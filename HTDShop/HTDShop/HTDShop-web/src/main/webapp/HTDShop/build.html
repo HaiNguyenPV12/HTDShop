@@ -28,48 +28,109 @@
                         <tr>
                             <td>CPU</td>
                             <td>
-                                <a href="" th:href="@{/build/cpu}" class="btn btn-primary">
-                                    <i class="ti-plus"></i> Choose a CPU
-                                </a>
+                                <th:block th:if="${session.prebuiltSession.cpu == null}">
+                                    <a href="" th:href="@{/build/cpu}" class="btn btn-primary">
+                                        <i class="ti-plus"></i> Choose a CPU
+                                    </a>
+                                </th:block>
+                                <a href="" th:if="${session.prebuiltSession.cpu != null}"
+                                    th:href="@{/product?id=__${session.prebuiltSession.cpu.id}__}"
+                                    th:text="${session.prebuiltSession.cpu.name}"></a>
                             </td>
                             <td>
-                                <!-- ITEM PRICE -->
+                                <!-- CPU PRICE -->
+                                <th:block th:if="${session.prebuiltSession.cpu != null}">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            $ <span th:text="${session.prebuiltSession.cpu.price}"></span>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <a th:href="@{/build/cpu/discard}" class="btn btn-danger">X</a>
+                                        </div>
+                                    </div>
+                                </th:block>
                             </td>
                         </tr>
                         <!-- CPU COOLER ROW -->
                         <tr>
                             <td>CPU Cooler</td>
                             <td>
-                                <a href="" th:href="@{/}" class="btn btn-primary">
-                                    <i class="ti-plus"></i> Choose a CPU cooler
-                                </a>
+                                <th:block>
+                                    <a th:if="${session.prebuiltSession.cpucooler == null}" href=""
+                                        th:href="@{/build/cpucooler}" class="btn btn-primary">
+                                        <i class="ti-plus"></i> Choose a CPU cooler
+                                    </a>
+                                </th:block>
+                                <a href="" th:if="${session.prebuiltSession.cpucooler != null}"
+                                    th:href="@{/product?id=__${session.prebuiltSession.cpucooler.id}__}"
+                                    th:text="${session.prebuiltSession.cpucooler.name}"></a>
                             </td>
                             <td>
-
+                                <!-- CPU COOLER PRICE -->
+                                <th:block th:if="${session.prebuiltSession.cpucooler != null}">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            $ <span th:text="${session.prebuiltSession.cpucooler.price}"></span>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <a th:href="@{/build/cpucooler/discard}" class="btn btn-danger">X</a>
+                                        </div>
+                                    </div>
+                                </th:block>
                             </td>
                         </tr>
                         <!-- MOTHERBOARD ROW -->
                         <tr>
                             <td>Motherboard</td>
                             <td>
-                                <a href="" th:href="@{/}" class="btn btn-primary">
-                                    <i class="ti-plus"></i> Choose a motherboard
-                                </a>
+                                <th:block th:if="${session.prebuiltSession.motherboard == null}">
+                                    <a href="" th:href="@{/build/motherboard}" class="btn btn-primary">
+                                        <i class="ti-plus"></i> Choose a Motherboard
+                                    </a>
+                                </th:block>
+                                <a href="" th:if="${session.prebuiltSession.motherboard != null}"
+                                    th:href="@{/product?id=__${session.prebuiltSession.motherboard.id}__}"
+                                    th:text="${session.prebuiltSession.motherboard.name}"></a>
                             </td>
                             <td>
-
+                                <!-- MOTHERBOARD PRICE -->
+                                <th:block th:if="${session.prebuiltSession.motherboard != null}">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            $ <span th:text="${session.prebuiltSession.motherboard.price}"></span>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <a th:href="@{/build/motherboard/discard}" class="btn btn-danger">X</a>
+                                        </div>
+                                    </div>
+                                </th:block>
                             </td>
                         </tr>
                         <!-- MEMORY ROW -->
                         <tr>
                             <td>Memory</td>
                             <td>
-                                <a href="" th:href="@{/}" class="btn btn-primary">
-                                    <i class="ti-plus"></i> Choose memory
-                                </a>
+                                <th:block th:if="${session.prebuiltSession.memory == null}">
+                                    <a href="" th:href="@{/build/memory}" class="btn btn-primary">
+                                        <i class="ti-plus"></i> Choose Memory
+                                    </a>
+                                </th:block>
+                                <a href="" th:if="${session.prebuiltSession.memory != null}"
+                                    th:href="@{/product?id=__${session.prebuiltSession.memory.id}__}"
+                                    th:text="${session.prebuiltSession.memory.name}"></a>
                             </td>
                             <td>
-
+                                <!-- MEMORY PRICE -->
+                                <th:block th:if="${session.prebuiltSession.memory != null}">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            $ <span th:text="${session.prebuiltSession.memory.price}"></span>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <a th:href="@{/build/memory/discard}" class="btn btn-danger">X</a>
+                                        </div>
+                                    </div>
+                                </th:block>
                             </td>
                         </tr>
                         <!-- STORAGE ROW -->
@@ -136,6 +197,9 @@
                 </table>
             </div>
             <div class="row justify-content-end">
+                <a href="" th:href="@{/build/reset}" class="btn btn-danger mx-1">
+                    Reset
+                </a>
                 <a href="" th:href="@{/}" class="btn btn-primary mx-1">
                     Share Build
                 </a>

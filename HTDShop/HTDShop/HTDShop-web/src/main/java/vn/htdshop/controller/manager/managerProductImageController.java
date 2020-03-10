@@ -122,7 +122,7 @@ public class managerProductImageController {
                 return null;
             }
         } else {
-            return null;
+            return new ArrayList<>();
         }
         Collection<ProductImage> productImages = p.getProductImageCollection();
         List<ProductImageView> result = new ArrayList<ProductImageView>();
