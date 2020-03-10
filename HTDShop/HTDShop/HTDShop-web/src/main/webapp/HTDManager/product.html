@@ -217,9 +217,9 @@
                 $(this).html('<div class="select2-purple"><select id="txtSearch' + title + '" class="form-control select2" multiple data-dropdown-css-class="select2-purple"></select></div>');
                 // $(this).html('<select id="txtSearch' + title + '" class="form-control select2 multiple"><option value="">All</option></select>');
             } else if (title == "Price") {
-                $(this).html('<div class="d-flex"><input type="number" id="txtSearch' + title + 'Min" placeholder="Min" class="form-control" style="width:100%" value="0"/> - <input type="number" id="txtSearch' + title + 'Max" placeholder="Max" class="form-control" style="width:100%" value="1000000"/></div>');
+                $(this).html('<div class="row"><span class="col-sm-5">From:</span><input type="number" id="txtSearch' + title + 'Min" placeholder="Min" class="form-control col-sm-7" style="width:100%" value="0"/></div><div class="row"><span class="col-sm-5">To:</span><input type="number" id="txtSearch' + title + 'Max" placeholder="Max" class="form-control col-sm-7" style="width:100%" value="1000000"/></div>');
             } else if (title == "Stock") {
-                $(this).html('<div class="d-flex"><input type="number" id="txtSearch' + title + 'Min" placeholder="Min" class="form-control" style="width:100%" value="0"/> - <input type="number" id="txtSearch' + title + 'Max" placeholder="Max" class="form-control" style="width:100%" value="10000"/></div>');
+                $(this).html('<div class="row"><span class="col-sm-5">From:</span><input type="number" id="txtSearch' + title + 'Min" placeholder="Min" class="form-control col-sm-7" style="width:100%" value="0"/></div><div class="row"><span class="col-sm-5">To:</span><input type="number" id="txtSearch' + title + 'Max" placeholder="Max" class="form-control col-sm-7" style="width:100%" value="10000"/></div>');
             } else {
                 // Collum that using text filter
                 $(this).html('<input id="txtSearch' + title + '" type="text" placeholder="Search ' + title + '" class="form-control" style="width:100%" />');
@@ -233,6 +233,7 @@
                 var r = $('#tblProduct tfoot tr');
                 r.find('th').each(function () {
                     $(this).css('padding', 8);
+                    $(this).css('vertical-align', 'middle');
                 });
                 $('#tblProduct thead').append(r);
                 $('div.dataTables_length').addClass('form-inline');
@@ -361,10 +362,10 @@
                 { "width": "12%", "data": "category" },
                 { "width": "8%", "data": "manufacturer" },
                 { "width": "15%", "data": "price" },
-                { "width": "15%", "data": "stock" },
+                { "width": "13%", "data": "stock" },
                 // { "width": "10%", "data": "imageThumbnail", "className": "text-center" },
                 { "width": "12%", "data": "status" },
-                { "width": "13%", "data": null, "className": "text-center" }
+                { "width": "15%", "data": null, "className": "text-center" }
             ],
             "createdRow": function (row, data, dataIndex) {
                 if (data.status == 'Upcoming') {

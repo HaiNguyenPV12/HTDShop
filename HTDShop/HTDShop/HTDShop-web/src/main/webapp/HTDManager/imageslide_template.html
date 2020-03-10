@@ -54,7 +54,7 @@
 
     <div layout:fragment="content">
         <form action="" th:action="@{/manager/imageslide/__${formUrl}__}" th:object="${imageSlide}" method="POST"
-            enctype="multipart/form-data">
+            enctype="multipart/form-data" id="frmImageSlide">
             <input type="hidden" th:field="*{image}" />
             <div class="row">
                 <div class="col-lg-12 mb-3" th:if="${#fields.hasErrors('global')}">
@@ -71,7 +71,7 @@
                                 Image
                                 <div class="file btn btn-info" style="position:relative;overflow:hidden;">
                                     <i class="fas fa-file-upload"></i> 
-                                    <input type="file" style="position: absolute;font-size:50px;opacity: 0;right: 0;top: 0;cursor: pointer;" id="btnUploadImage" name="uploadimg" accept="image/*"/>
+                                    <input type="file" style="position: absolute;font-size:50px;opacity: 0;right: 0;top: 0;cursor: pointer;" id="btnUploadImage" name="uploadimg" accept="image/*" required/>
                                 </div>
                                 
                             </h3>
@@ -83,6 +83,9 @@
                             </th:block>
                         </div>
                         
+                    </div>
+                    <div class="row">
+                        <ul class="text-danger" id="btnUploadImageError"></ul>
                     </div>
                 </div>
                 <input type="hidden" th:field="*{id}" th:if="${update!=null}"/>
@@ -101,9 +104,9 @@
                                         th:classappend="${(#fields.hasErrors('title')?'is-invalid':'') + (submited != null and !#fields.hasErrors('title')?'is-valid':'')}" required/>
                                 </div>
                                 <div class="col-sm-3"></div>
-                                <div class="col-sm-9" th:if="${#fields.hasErrors('title')}">
-                                    <ul class="text-danger">
-                                        <li th:each="err : ${#fields.errors('title')}" th:text="${err}">Name Error</li>
+                                <div class="col-sm-9" >
+                                    <ul class="text-danger" id="titleError">
+                                        <li th:each="err : ${#fields.errors('title')}" th:text="${err}" th:if="${#fields.hasErrors('title')}">Name Error</li>
                                     </ul> 
                                 </div>
                             </div>
@@ -117,9 +120,9 @@
                                     </textarea>
                                 </div>
                                 <div class="col-sm-3"></div>
-                                <div class="col-sm-9" th:if="${#fields.hasErrors('description')}">
-                                    <ul class="text-danger">
-                                        <li th:each="err : ${#fields.errors('description')}" th:text="${err}">Name Error</li>
+                                <div class="col-sm-9" >
+                                    <ul class="text-danger" id="descriptionError">
+                                        <li th:each="err : ${#fields.errors('description')}" th:text="${err}" th:if="${#fields.hasErrors('description')}">Name Error</li>
                                     </ul> 
                                 </div>
                             </div>
@@ -143,9 +146,9 @@
                                     
                                 </div>
                                 <div class="col-sm-3"></div>
-                                <div class="col-sm-9" th:if="${#fields.hasErrors('order')}">
-                                    <ul class="text-danger">
-                                        <li th:each="err : ${#fields.errors('order')}" th:text="${err}">Name Error</li>
+                                <div class="col-sm-9" >
+                                    <ul class="text-danger" id="orderError">
+                                        <li th:each="err : ${#fields.errors('order')}" th:text="${err}" th:if="${#fields.hasErrors('order')}">Name Error</li>
                                     </ul> 
                                 </div>
                             </div>
@@ -162,9 +165,9 @@
                                     
                                 </div>
                                 <div class="col-sm-3"></div>
-                                <div class="col-sm-9" th:if="${#fields.hasErrors('link')}">
-                                    <ul class="text-danger">
-                                        <li th:each="err : ${#fields.errors('link')}" th:text="${err}">Name Error</li>
+                                <div class="col-sm-9" >
+                                    <ul class="text-danger" id="linkError">
+                                        <li th:each="err : ${#fields.errors('link')}" th:text="${err}" th:if="${#fields.hasErrors('link')}">Name Error</li>
                                     </ul> 
                                 </div>
                             </div>
@@ -185,9 +188,9 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-3"></div>
-                                <div class="col-sm-9" th:if="${#fields.hasErrors('status')}">
-                                    <ul class="text-danger">
-                                        <li th:each="err : ${#fields.errors('status')}" th:text="${err}">Name Error</li>
+                                <div class="col-sm-9" >
+                                    <ul class="text-danger" id="statusError">
+                                        <li th:each="err : ${#fields.errors('status')}" th:text="${err}" th:if="${#fields.hasErrors('status')}">Name Error</li>
                                     </ul> 
                                 </div>
                             </div>
@@ -202,6 +205,16 @@
             </div>
         </form>
     </div>
+    <th:block layout:fragment="additionalScript">
+        <script th:src="@{/manager_resources/plugins/jquery-validation/jquery.validate.js}"></script>
+        <script th:src="@{/manager_resources/plugins/jquery-validation/additional-methods.min.js}"></script>
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            var submited = /*[[${submited != null? true : false}]]*/false;
+
+            /*]]>*/
+        </script>
+    </th:block>
     
     <script layout:fragment="script" th:inline="none">
         $("#btnUploadImage").on("change", function () {
@@ -236,7 +249,67 @@
         });
 
         $(document).ready(function () {
+            var frmImageSlide = $("#frmImageSlide"), original = frmImageSlide.serialize();
+            $(window).on("beforeunload", function () {
+                if (frmImageSlide.serialize() != original || submited) {
+                    var cf = confirm('There are data(s) not being saved! Are you sure to leave page?');
+                    if (!cf) {
+                        return false;
+                    }
+                }
+            });
+            frmImageSlide.on("submit", function () {
+                if (frmImageSlide.valid()) {
+                    original = frmImageSlide.serialize();
+                }
+            });
+            function injectTrim(handler) {
+                return function (element, event) {
+                    if (element.tagName === "TEXTAREA" || (element.tagName === "INPUT"
+                        && element.type !== "password")) {
+                        element.value = $.trim(element.value);
+                    }
+                    return handler.call(this, element, event);
+                };
+            }
 
+            $("#frmImageSlide").validate({
+                ignore: [],
+                errorClass: "is-invalid",
+                validClass: "is-valid",
+                errorPlacement: function (error, element) {
+                    error.appendTo('#' + element.attr("id") + "Error");
+                },
+                highlight: function (element, errorClass, validClass) {
+                    var elem = $(element);
+                    if (elem.hasClass("select2")) {
+                        $(elem).next().addClass(errorClass);
+                        // $("#s2id_" + elem.attr("id") + " ul").addClass(errorClass);
+                    } else {
+                        elem.addClass(errorClass);
+                    }
+                },
+
+                unhighlight: function (element, errorClass, validClass) {
+                    var elem = $(element);
+                    if (elem.hasClass("select2")) {
+                        $(elem).next().removeClass(errorClass);
+                    } else {
+                        elem.removeClass(errorClass);
+                    }
+                },
+                errorElement: "li",
+                callback: function () {
+                    // addRule();
+                    var form = $("#frmImageSlide");
+                    if (form.valid()) {
+                        form.submit();
+                    } else {
+                        return false;
+                    }
+                },
+                onfocusout: injectTrim($.validator.defaults.onfocusout)
+            });
         });
     </script>
 </body>
