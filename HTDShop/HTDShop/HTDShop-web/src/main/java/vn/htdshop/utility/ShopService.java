@@ -28,9 +28,11 @@ import org.springframework.stereotype.Service;
 
 import vn.htdshop.entity.CartItem;
 import vn.htdshop.entity.Customer;
+import vn.htdshop.entity.OrderDetail;
 import vn.htdshop.entity.PreBuilt;
 import vn.htdshop.entity.PreBuiltRating;
 import vn.htdshop.entity.Product;
+import vn.htdshop.entity.ProductComment;
 import vn.htdshop.entity.Promotion;
 import vn.htdshop.entity.UserSetting;
 import vn.htdshop.sb.CategoryFacadeLocal;
@@ -578,7 +580,6 @@ public class ShopService {
     }
 
     // =========== OTHER FUNCTION ============
-
     public List<String> getSocketList(String coolerSockets){
         List<String> result = new ArrayList<String>();
         StringTokenizer token = new StringTokenizer(coolerSockets, ",");
@@ -587,6 +588,25 @@ public class ShopService {
             result.add(socket);
         }
 
+        return result;
+    }
+
+    public Integer getSoldCount(Product product){
+        Integer sold = 0;
+        for (OrderDetail od : product.getOrderDetailCollection()) {
+            if (od.getOrder1().getOrderStatus() == 4) {
+                sold += od.getQuantity();
+            }
+        }
+        return sold;
+    }
+
+    public Integer getCommentCount(Product product){
+        Integer result = 0;
+        for (ProductComment comment : product.getProductCommentCollection()) {
+            result++;
+            result += comment.getProductCommentReplyCollection().size();
+        }
         return result;
     }
 

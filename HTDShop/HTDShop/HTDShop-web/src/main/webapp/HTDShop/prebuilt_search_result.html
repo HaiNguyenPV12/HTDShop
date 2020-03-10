@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-lg-12 col-md-12 col-xl-12 text-center" th:if="${result.size()==0}">No result</div>
         <div class="col-lg-6 col-md-6 col-xl-3" th:each="p : ${result}">
-            <div class="product-wrapper mb-30">
+            <div class="product-wrapper mb-1">
                 <div class="product-img text-center">
                     <a th:href="@{/prebuilt(id=${p.id})}">
                         <img th:src="@{/images/__${p.preBuiltImageCollection[0].path}__}" alt=""
