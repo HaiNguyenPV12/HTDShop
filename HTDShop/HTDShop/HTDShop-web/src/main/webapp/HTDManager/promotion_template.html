@@ -234,10 +234,7 @@
                                 <div class="card-body row" id="uploadimg">
                                     <!-- Upload image will be shown here -->
                                     <th:block th:if="${update!=null}">
-                                        <label class="col-sm-12 text-center uploadimg">
-                                            <input type="radio" name="uploadradio"> 
-                                            <img th:src="@{/images/__${promotion.image}__}"/>
-                                        </label>
+                                        <img th:src="@{/images/__${promotion.image}__}" class="col-sm-12 text-center" style="object-fit: contain;"/>
                                     </th:block>
                                 </div>
                             </div>
@@ -560,18 +557,21 @@
                     $("#conExactVal").val(curCon.find("input[name='conExact']").val());
                 }
                 if (curCon.find("input[name='conLimit']").val() != "") {
-                    $("#conLimitForm").attr("checked", "");
-                    $("#conLimitVal").removeAttr("disabled");
+                    $("#conLimitForm").click();
+                    // $("#conLimitForm").attr("checked", "");
+                    // $("#conLimitVal").removeAttr("disabled");
                     $("#conLimitVal").val(curCon.find("input[name='conLimit']").val());
                 }
                 if (curCon.find("input[name='conMin']").val() != "") {
-                    $("#conMinForm").attr("checked", "");
-                    $("#conMinVal").removeAttr("disabled");
+                    $("#conMinForm").click();
+                    // $("#conMinForm").attr("checked", "");
+                    // $("#conMinVal").removeAttr("disabled");
                     $("#conMinVal").val(curCon.find("input[name='conMin']").val());
                 }
                 if (curCon.find("input[name='conMax']").val() != "") {
-                    $("#conMaxForm").attr("checked", "");
-                    $("#conMaxVal").removeAttr("disabled");
+                    $("#conMaxForm").click();
+                    // $("#conMaxForm").attr("checked", "");
+                    // $("#conMaxVal").removeAttr("disabled");
                     $("#conMaxVal").val(curCon.find("input[name='conMax']").val());
                 }
                 $("#conModalConfirm").on("click", function () { saveCondition(true, button) });
@@ -787,10 +787,7 @@
                 for (var i = 0; i < this.files.length; i++) {
                     var reader = new FileReader();
                     reader.onload = function (e) {
-                        $("#uploadimg").append('<label class="col-sm-12 text-center uploadimg">'
-                            + '<input type="radio" name="uploadradio">'
-                            + '<img src="' + e.target.result + '">'
-                            + '</label>');
+                        $("#uploadimg").append('<img src="' + e.target.result + '" class="col-sm-12 text-center" style="object-fit: contain;"/>');
                     }
                     reader.readAsDataURL(this.files[i]);
                 }

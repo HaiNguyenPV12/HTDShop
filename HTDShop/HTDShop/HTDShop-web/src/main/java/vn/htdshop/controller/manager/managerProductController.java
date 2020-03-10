@@ -15,6 +15,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
@@ -201,16 +202,28 @@ public class managerProductController {
 
     // ==== PRODUCT ADD AJAX - PROCESS ==== \\
     @RequestMapping(value = "doAdd", method = RequestMethod.POST)
-    public @ResponseBody Object doAdd(@Valid @ModelAttribute("product") Product product, BindingResult error,
-            Model model) {
+    public @ResponseBody Object doAdd(@Valid @ModelAttribute("product") Product product,
+            @RequestParam(value = "others[]", required = false) String[] others, BindingResult error, Model model) {
         if (!managerService.checkLoginWithRole("product_add")) {
             return null;
         }
         if (product.getCategory() == null) {
             error.rejectValue("category", "product", "Please choose category");
         }
-
         if (!error.hasErrors()) {
+            if (product.getCategory().getId() > 9) {
+                String other = "";
+                int count = 0;
+                for (CategoryOther o : categoryFacade.find(product.getCategory().getId())
+                        .getCategoryOtherCollection()) {
+                    other += o.getName();
+                    other += ":";
+                    other += others[count];
+                    other += "||";
+                    count++;
+                }
+                product.setOther(other);
+            }
             productFacade.create(product);
 
             // Image
@@ -221,20 +234,23 @@ public class managerProductController {
                 checkPath.mkdirs();
             }
             // Move image from temp to product folder
-            try {
-                for (ProductImage img : managerService.getTempImages()) {
-                    managerService.moveTempImageToProduct(img, product.getId());
-                    ProductImage pi = new ProductImage();
-                    pi.setImagePath("product/" + product.getId() + "/" + FilenameUtils.getName(img.getImagePath()));
-                    pi.setThumbnailPath(
-                            "product/" + product.getId() + "/" + FilenameUtils.getName(img.getThumbnailPath()));
-                    pi.setMainImage(img.getMainImage());
-                    pi.setProduct(product);
-                    productImageFacade.create(pi);
+            if (managerService.getTempImages() != null) {
+                try {
+                    for (ProductImage img : managerService.getTempImages()) {
+                        managerService.moveTempImageToProduct(img, product.getId());
+                        ProductImage pi = new ProductImage();
+                        pi.setImagePath("product/" + product.getId() + "/" + FilenameUtils.getName(img.getImagePath()));
+                        pi.setThumbnailPath(
+                                "product/" + product.getId() + "/" + FilenameUtils.getName(img.getThumbnailPath()));
+                        pi.setMainImage(img.getMainImage());
+                        pi.setProduct(product);
+                        productImageFacade.create(pi);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+
             managerService.deleteAllTempImage(false);
         }
 
@@ -248,6 +264,7 @@ public class managerProductController {
     public String getTempCate(Model model, @RequestParam(value = "category", required = false) Integer category) {
         model.asMap().put("curCate", category);
         model.asMap().put("cateName", managerService.getCateName(category));
+        model.asMap().put("category", categoryFacade.find(category));
         // Continue to login page
         return "HTDManager/product_template";
     }
@@ -311,13 +328,42 @@ public class managerProductController {
         } else {
             return redirectProductHome;
         }
+        if (p.getOther() != null) {
+            List<OtherAttribute> others = new ArrayList<>();
+            for (CategoryOther ot : categoryFacade.find(p.getCategory().getId()).getCategoryOtherCollection()) {
+                OtherAttribute attr = new OtherAttribute();
+                attr.setAttribute(ot.getName());
+                attr.setValue("");
+                others.add(attr);
+            }
+            if (!p.getOther().isEmpty()) {
+                StringTokenizer token = new StringTokenizer(p.getOther(), "||");
+                while (token.hasMoreTokens()) {
+                    String str = (String) token.nextToken();
+                    if (str.contains(":")) {
+                        OtherAttribute input = new OtherAttribute(str);
+                        for (OtherAttribute otherAttribute : others) {
+                            if (input.getAttribute().equals(otherAttribute.getAttribute())) {
+                                otherAttribute.setValue(input.getValue());
+                                break;
+                            }
+                        }
+                    }
+
+                }
+            }
+
+            model.addAttribute("others", others);
+        }
 
         model.addAttribute("product", p);
         managerService.setTempImages(p.getProductImageCollection());
+
         // Prepare form url for form submit
         // model.addAttribute("formUrl", "doAdd" + category);
         model.addAttribute("formUrl", "doEdit");
         model.asMap().put("cateName", managerService.getCateName(p.getCategory().getId()));
+        model.asMap().put("category", p.getCategory());
         // Add indicator attribute for sidemenu highlight
         model.asMap().put("menu", "product");
         model.addAttribute("update", "update");
@@ -327,13 +373,25 @@ public class managerProductController {
 
     // ==== PRODUCT EDIT AJAX - PROCESS ==== \\
     @RequestMapping(value = "doEdit", method = RequestMethod.POST)
-    public @ResponseBody Object doEdit2(@Valid @ModelAttribute("product") Product product, BindingResult error,
-            Model model) {
+    public @ResponseBody Object doEdit2(@Valid @ModelAttribute("product") Product product,
+            @RequestParam(value = "others[]", required = false) String[] others, BindingResult error, Model model) {
         if (!managerService.checkLoginWithRole("product_add")) {
             return null;
         }
-
         if (!error.hasErrors()) {
+            if (product.getCategory().getId() > 9) {
+                String other = "";
+                int count = 0;
+                for (CategoryOther o : categoryFacade.find(product.getCategory().getId())
+                        .getCategoryOtherCollection()) {
+                    other += o.getName();
+                    other += ":";
+                    other += others[count];
+                    other += "||";
+                    count++;
+                }
+                product.setOther(other);
+            }
             productFacade.edit(product);
 
             // Image

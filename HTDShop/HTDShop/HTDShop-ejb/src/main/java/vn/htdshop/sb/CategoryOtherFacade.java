@@ -8,16 +8,14 @@ package vn.htdshop.sb;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-
-import vn.htdshop.entity.Category;
+import vn.htdshop.entity.CategoryOther;
 
 /**
  *
- * @author Hai
+ * @author Thien
  */
 @Stateless
-public class CategoryFacade extends AbstractFacade<Category> implements CategoryFacadeLocal {
+public class CategoryOtherFacade extends AbstractFacade<CategoryOther> implements CategoryOtherFacadeLocal {
 
     @PersistenceContext(unitName = "vn.htdshop_HTDShop-ejb_ejb_1.0-SNAPSHOTPU")
     private EntityManager em;
@@ -27,18 +25,8 @@ public class CategoryFacade extends AbstractFacade<Category> implements Category
         return em;
     }
 
-    public CategoryFacade() {
-        super(Category.class);
+    public CategoryOtherFacade() {
+        super(CategoryOther.class);
     }
-
-    @Override
-    public Category findByName(String name) {
-        Query q = em.createQuery("SELECT c FROM Category c WHERE c.name = :name");
-        q.setParameter("name", name);
-        if (q.getResultList().size() <= 0) {
-            return null;
-        }
-        return (Category) q.getSingleResult();
-    }
-
+    
 }

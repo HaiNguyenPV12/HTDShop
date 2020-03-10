@@ -142,3 +142,10 @@
         </li>
     </ul>
 </th:block>
+<th:block th:fragment="full-other">
+    <ul th:if="${product.other != null && !product.other.isEmpty()}">
+        <li th:each="attr : ${shopSv.getAttributes(product.other)}"><strong th:text="${attr.attribute + ':'}">Attribute:</strong>
+            <th:block th:text="${attr.value}"></th:block>
+        </li>
+    </ul>
+</th:block>

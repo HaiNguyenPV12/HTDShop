@@ -303,7 +303,22 @@
     <th:block layout:fragment="additionalScript">
         <script th:src="@{/manager_resources/plugins/summernote/summernote-lite.min.js}"></script>
         <script th:src="@{/manager_resources/plugins/jquery-ui/jquery-ui.min.js}"></script>
-        <script th:src="@{/manager_resources/plugins/jquery-validation/jquery.validate.min.js}"></script>
+        <script th:src="@{/manager_resources/plugins/jquery-validation/jquery.validate.js}"></script>
+        <script th:src="@{/manager_resources/plugins/jquery-validation/additional-methods.min.js}"></script>
+        <script th:inline="none">
+            // function addRule() {
+            //     console.log('addRule ran!');
+            //     $("input[name='others[]']").each(function () {
+            //         console.log($(this).attr('id'));
+            //         $(this).rules("add", {
+            //             required: true,
+            //             minlength: 1,
+            //             maxlength: 100,
+            //             pattern: /^[^\\.,\\/#!?£$%\\^&\\*;:{}=\\_`~()|]+$/
+            //         });
+            //     });
+            // }
+        </script>
     </th:block>
     <script layout:fragment="script" th:inline="javascript">
         /*<![CDATA[*/
@@ -485,9 +500,15 @@
 
         }
 
-        // $("#frmProduct").on("change", function(){
-        //     formChanged = true;
-        // });
+        function injectTrim(handler) {
+            return function (element, event) {
+                if (element.tagName === "TEXTAREA" || (element.tagName === "INPUT"
+                    && element.type !== "password")) {
+                    element.value = $.trim(element.value);
+                }
+                return handler.call(this, element, event);
+            };
+        }
 
         $("#frmProduct").validate({
             ignore: [],
@@ -516,7 +537,6 @@
             },
             errorElement: "li",
             submitHandler: function (form) {
-                console.log("submited");
                 var formData = new FormData($(form)[0]);
                 $.ajax({
                     url: $(form).attr("action"),
@@ -526,7 +546,6 @@
                     processData: false,
                     success: function (data) {
                         console.log(data);
-
                         if (data.length) {
 
                         } else {
@@ -559,10 +578,11 @@
                             }
                             original = frmProduct.serialize();
                         }
-
                     }
                 });
-            }
+                return false;
+            },
+            onfocusout: injectTrim($.validator.defaults.onfocusout)
         });
 
         // $("#frmProduct").submit(function (e) {

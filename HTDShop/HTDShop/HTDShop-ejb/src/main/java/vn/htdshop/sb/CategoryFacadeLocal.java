@@ -29,5 +29,7 @@ public interface CategoryFacadeLocal {
     List<Category> findRange(int[] range);
 
     int count();
+
+    Category findByName(String name);
     
 }
