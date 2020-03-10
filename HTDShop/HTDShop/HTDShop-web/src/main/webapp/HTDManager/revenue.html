@@ -75,7 +75,7 @@
                             <tbody>
                                 <tr>
                                     <td>January</td>
-                                    <td>$1200.89</td>
+                                    <td><span th:text="${'$' + #numbers.formatDecimal(managerSv.getRevenue() , 0, 'COMMA', 2, 'POINT')}">$152.97‬</span></td>
                                 </tr>
                                 <tr>
                                     <td>February</td>

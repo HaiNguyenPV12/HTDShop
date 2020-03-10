@@ -70,10 +70,7 @@ public class shopLoginController {
             else{
                 return "redirect:/cart/checkout";
             }
-            // Then redirect to index
-           
-
         }
-        return "HTDShop/login";
+        return "redirect:/login";
     }
 }

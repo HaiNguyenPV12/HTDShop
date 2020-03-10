@@ -27,6 +27,8 @@ import org.springframework.stereotype.Service;
 
 import vn.htdshop.entity.CartItem;
 import vn.htdshop.entity.Customer;
+import vn.htdshop.entity.Order1;
+import vn.htdshop.entity.OrderDetail;
 import vn.htdshop.entity.PreBuilt;
 import vn.htdshop.entity.PreBuiltRating;
 import vn.htdshop.entity.Product;
@@ -34,6 +36,7 @@ import vn.htdshop.entity.Promotion;
 import vn.htdshop.entity.UserSetting;
 import vn.htdshop.sb.CategoryFacadeLocal;
 import vn.htdshop.sb.CustomerFacadeLocal;
+import vn.htdshop.sb.Order1FacadeLocal;
 import vn.htdshop.sb.PreBuiltFacadeLocal;
 import vn.htdshop.sb.ProductFacadeLocal;
 import vn.htdshop.sb.PromotionFacadeLocal;
@@ -47,7 +50,7 @@ public class ShopService {
 
     @EJB(mappedName = "CustomerFacade")
     CustomerFacadeLocal customerFacade;
-
+    
     @EJB(mappedName = "PromotionFacade")
     PromotionFacadeLocal promotionFacade;
 

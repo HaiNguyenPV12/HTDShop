@@ -65,7 +65,7 @@
                                         class="text-danger">*</i></label>
                                 <div class="col-sm-9">
                                     <input class="form-control" id="password" th:field="*{password}" type="password"
-                                        th:classappend="${(#fields.hasErrors('password')?'is-invalid':'') + (submited != null and !#fields.hasErrors('password')?'is-valid':'')}" required/>
+                                        th:classappend="${(#fields.hasErrors('password')?'is-invalid':'') + (submited != null and !#fields.hasErrors('password')?'is-valid':'')}"/>
                                 </div>
                                 <div class="col-sm-3"></div>
                                 <div class="col-sm-9">

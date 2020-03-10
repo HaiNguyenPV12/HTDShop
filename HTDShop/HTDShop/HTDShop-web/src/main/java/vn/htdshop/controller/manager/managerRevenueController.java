@@ -83,8 +83,7 @@ public class managerRevenueController {
         }
 
         // Pass order list to session
-        model.asMap().put("orders", order1Facade.findAll().stream()
-                .sorted(Comparator.comparingInt(Order1::getOrderStatus)).collect(Collectors.toList()));
+        model.asMap().put("managerSv", managerService);
         // Add indicator attribute for sidemenu highlight
         model.asMap().put("menu", "revenue");   
         return "HTDManager/revenue";

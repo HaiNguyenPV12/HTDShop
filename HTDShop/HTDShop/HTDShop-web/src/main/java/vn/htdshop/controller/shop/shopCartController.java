@@ -33,6 +33,7 @@ import vn.htdshop.utility.ShopService;
 
 import vn.htdshop.sb.*;
 import vn.htdshop.entity.*;
+
 /**
  *
  * @author Hai
@@ -55,7 +56,7 @@ public class shopCartController {
 
     @EJB(mappedName = "CustomerFacade")
     CustomerFacadeLocal customerFacade;
-    
+
     @EJB(mappedName = "OrderDetailFacade")
     OrderDetailFacadeLocal orderDetailFacade;
 
@@ -75,7 +76,7 @@ public class shopCartController {
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String getViewCart(Model model) {
-        
+
         model.asMap().put("cart", shopService.getCart());
         model.asMap().put("shopSv", shopService);
         return "HTDShop/cart";
@@ -84,7 +85,11 @@ public class shopCartController {
     @RequestMapping(value = "checkout", method = RequestMethod.GET)
     public String viewCheckout(Model model) {
         shopService.checkLogin();
-        model.addAttribute("custom", new Customer());
+        Customer customer = shopService.getLoggedInCustomer();
+        if (customer == null) {
+            customer = new Customer();
+        }
+        model.addAttribute("custom", customer);
         model.addAttribute("ord", new Order1());
         model.asMap().put("cart", shopService.getCart());
         model.asMap().put("shopSv", shopService);
@@ -92,16 +97,14 @@ public class shopCartController {
     }
 
     @RequestMapping(value = "doCheckout", method = RequestMethod.POST)
-    public  String doCheckout(@Valid @ModelAttribute("custom") Customer custom, 
-            HttpServletResponse response,
-            RedirectAttributes redirect,
-            Model model) {
+    public String doCheckout(@Valid @ModelAttribute("custom") Customer custom, HttpServletResponse response,
+            RedirectAttributes redirect, Model model) {
         Order1 order1 = null;
         OrderDetail orderDetail = null;
 
         if (shopService.checkLogin() == false) {
             customerFacade.create(custom);
-            
+
             order1 = new Order1();
             order1.setId(null);
             order1.setCustomer(custom);
@@ -113,7 +116,7 @@ public class shopCartController {
             order1.setOrderDate(DateTime.now().toDate());
             order1.setCancelledDate(null);
             orderFacade.create(order1);
-            
+
             orderDetail = new OrderDetail();
             for (CartItem item : shopService.getCart()) {
                 if (item.getId().substring(0, 1).equals("a")) {
@@ -126,8 +129,44 @@ public class shopCartController {
                 }
             }
             shopService.saveNonUserCart(new ArrayList<CartItem>());
-        }else{
-            
+        } else {
+
+            Customer customerOld = shopService.getLoggedInCustomer();
+            boolean updated = false;
+            if (!customerOld.getFirstName().equals(custom.getFirstName())) {
+                customerOld.setFirstName(custom.getFirstName());
+                updated = true;
+            }
+            if (!customerOld.getLastName().equals(custom.getLastName())) {
+                customerOld.setLastName(custom.getLastName());
+                updated = true;
+            }
+            if (!customerOld.getAddress().equals(custom.getAddress())) {
+                customerOld.setAddress(custom.getAddress());
+                updated = true;
+            }
+            if (!customerOld.getPhone().equals(custom.getPhone())) {
+                customerOld.setPhone(custom.getPhone());
+                updated = true;
+            }
+            if (updated) {
+                customerFacade.edit(customerOld);
+                session.setAttribute("loggedInCustomer", customerOld);
+            }
+
+            // if (!custom.getFirstName().equals(customerOld.getFirstName())
+            // || !custom.getLastName().equals(customerOld.getLastName())
+            // || !custom.getAddress().equals(customerOld.getAddress())
+            // || !custom.getPhone().equals(customerOld.getPhone())
+            // ) {
+            // customerOld.setFirstName(custom.getFirstName());
+            // customerOld.setLastName(custom.getLastName());
+            // customerOld.setAddress(custom.getAddress());
+            // customerOld.setPhone(custom.getPhone());
+            // customerFacade.edit(customerOld);
+            // session.setAttribute("loggedInCustomer",customerOld);
+            // }
+
             order1 = new Order1();
             order1.setId(null);
             order1.setCustomer(shopService.getLoggedInCustomer());
@@ -139,7 +178,7 @@ public class shopCartController {
             order1.setOrderDate(DateTime.now().toDate());
             order1.setCancelledDate(null);
             orderFacade.create(order1);
-            
+
             orderDetail = new OrderDetail();
             for (CartItem item : shopService.getCart()) {
                 if (item.getId().substring(0, 1).equals("a")) {
@@ -153,7 +192,7 @@ public class shopCartController {
             }
             shopService.saveUserCart(new ArrayList<CartItem>());
         }
-        
+
         return "redirect:/";
     }
 
@@ -199,8 +238,6 @@ public class shopCartController {
         }
         return "ok";
     }
-
-    
 
     @RequestMapping(value = "remove", method = RequestMethod.POST)
     public @ResponseBody String doRemove(Model model, @RequestParam(value = "id", required = false) String id,

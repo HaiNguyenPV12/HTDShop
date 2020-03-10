@@ -58,6 +58,7 @@ public class shopRegisterController {
         }
 
         if (!error.hasErrors()) {
+            customer.setPoint(0);
             // Insert into database
             customerFacade.create(customer);
             return "HTDShop/login";

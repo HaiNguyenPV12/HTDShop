@@ -35,27 +35,66 @@ public class shopProfileController {
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String viewProfile(Model model, ModelMap modelMap, HttpSession session) {
-        if (session.getAttribute("loggedInCustomer") != null) {
-            model.asMap().put("cust", shopService.getLoggedInCustomer());
-            return "redirect:/profile";
-        }
-        return "redirect:/";
+        shopService.checkLogin();
+        Customer custom = shopService.getLoggedInCustomer();
+        model.addAttribute("custom", custom);
+        model.asMap().put("shopSv", shopService);
+        return "HTDShop/profile";
     }
 
     @RequestMapping(value = "doEdit", method = RequestMethod.POST)
-    public String doEdit(@Valid @ModelAttribute("customer") Customer customer, BindingResult error, HttpSession session,
+    public String doEdit(@Valid @ModelAttribute("custom") Customer custom, BindingResult error, HttpSession session,
             Model model, RedirectAttributes redirect) {
-        if (!shopService.checkLogin()) {
-            return "redirect:/";
-        }
+
         model.addAttribute("error", error);
 
-        if (!error.hasErrors()) {
-            // Update in database
-            customerFacade.edit(customer);
-            return "redirect:/profile";
+        Customer customerOld = shopService.getLoggedInCustomer();
+        boolean updated = false;
+        if (!customerOld.getFirstName().equals(custom.getFirstName())) {
+            customerOld.setFirstName(custom.getFirstName());
+            updated = true;
         }
-        redirect.addFlashAttribute("goodAlert", "Successfully updated \"" + customer.getId() + "\"!");
-        return "redirect:/profile";
+        if (!customerOld.getLastName().equals(custom.getLastName())) {
+            customerOld.setLastName(custom.getLastName());
+            updated = true;
+        }
+        if (!customerOld.getAddress().equals(custom.getAddress())) {
+            customerOld.setAddress(custom.getAddress());
+            updated = true;
+        }
+        if (!customerOld.getPassword().equals(custom.getPassword())) {
+            customerOld.setPassword(custom.getPassword());
+            updated = true;
+        }
+        if (!customerOld.getGender().equals(custom.getGender())) {
+            customerOld.setGender(custom.getGender());
+            updated = true;
+        }
+        if (!customerOld.getBirthday().equals(custom.getBirthday())) {
+            customerOld.setBirthday(custom.getBirthday());
+            updated = true;
+        }
+        if (!customerOld.getPhone().equals(custom.getPhone())) {
+            customerOld.setPhone(custom.getPhone());
+            updated = true;
+        }
+        if (updated) {
+            customerFacade.edit(customerOld);
+            session.setAttribute("loggedInCustomer", customerOld);
+        }
+        redirect.addFlashAttribute("goodAlert", "Successfully updated \"" + custom.getEmail() + "\"!");
+        return "HTDShop/profile";
     }
+
+    @RequestMapping(value = "orderChecker", method = RequestMethod.GET)
+    public String viewOrder(Model model, ModelMap modelMap, HttpSession session) {
+        if (shopService.checkLogin() == true) {
+            Customer custom = shopService.getLoggedInCustomer();
+            model.addAttribute("custom", custom);
+            return "HTDShop/orderChecker";
+        }
+        ;
+        return "redirect:/";
+    }
+
 }
