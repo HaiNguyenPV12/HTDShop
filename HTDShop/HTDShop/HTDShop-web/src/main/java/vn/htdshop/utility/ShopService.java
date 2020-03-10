@@ -27,8 +27,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import vn.htdshop.entity.CartItem;
+import vn.htdshop.entity.CategoryOther;
 import vn.htdshop.entity.Customer;
 import vn.htdshop.entity.OrderDetail;
+import vn.htdshop.entity.OtherAttribute;
 import vn.htdshop.entity.PreBuilt;
 import vn.htdshop.entity.PreBuiltRating;
 import vn.htdshop.entity.Product;
@@ -392,7 +394,7 @@ public class ShopService {
                 if (nonUserId != null && findUserSetting(nonUserId) == null) {
                     userSettings.add(new UserSetting(nonUserId));
                 }
-            } 
+            }
         }
         return result;
     }
@@ -422,18 +424,18 @@ public class ShopService {
         return null;
     }
 
-    public UserSetting getUserSetting(){
+    public UserSetting getUserSetting() {
         if (checkLogin()) {
             return findUserSetting(getLoggedInCustomer().getId());
         }
         String nonUserId = "";
         if (request.getCookies() != null) {
-            nonUserId = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("JSESSIONID"))
-                    .findFirst().map(Cookie::getValue).orElse(null);
+            nonUserId = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("JSESSIONID")).findFirst()
+                    .map(Cookie::getValue).orElse(null);
             if (nonUserId != null && findUserSetting(nonUserId) == null) {
                 userSettings.add(new UserSetting(nonUserId));
             }
-        } 
+        }
         return findUserSetting(nonUserId);
     }
 
@@ -580,10 +582,23 @@ public class ShopService {
     }
 
     // =========== OTHER FUNCTION ============
-    public List<String> getSocketList(String coolerSockets){
+    public List<OtherAttribute> getAttributes(String others) {
+        List<OtherAttribute> result = new ArrayList<>();
+        StringTokenizer token = new StringTokenizer(others, "||");
+        while (token.hasMoreTokens()) {
+            String str = (String) token.nextToken();
+            OtherAttribute input = new OtherAttribute(str);
+            if (input.getAttribute() != null && input.getValue() != null) {
+                result.add(input);
+            }
+        }
+        return result;
+    }
+
+    public List<String> getSocketList(String coolerSockets) {
         List<String> result = new ArrayList<String>();
         StringTokenizer token = new StringTokenizer(coolerSockets, ",");
-        while (token.hasMoreTokens()){
+        while (token.hasMoreTokens()) {
             String socket = (String) token.nextToken();
             result.add(socket);
         }
@@ -591,7 +606,7 @@ public class ShopService {
         return result;
     }
 
-    public Integer getSoldCount(Product product){
+    public Integer getSoldCount(Product product) {
         Integer sold = 0;
         for (OrderDetail od : product.getOrderDetailCollection()) {
             if (od.getOrder1().getOrderStatus() == 4) {
@@ -601,7 +616,7 @@ public class ShopService {
         return sold;
     }
 
-    public Integer getCommentCount(Product product){
+    public Integer getCommentCount(Product product) {
         Integer result = 0;
         for (ProductComment comment : product.getProductCommentCollection()) {
             result++;

@@ -186,6 +186,11 @@ public class Product implements Serializable {
     @Column(name = "Description")
     private String description;
 
+    @Basic(optional = false)
+    @Lob
+    @Column(name = "Other")
+    private String other;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
     private Collection<ProductComment> productCommentCollection;
 
@@ -650,6 +655,20 @@ public class Product implements Serializable {
      */
     public void setPreBuiltCPUCollection(Collection<PreBuilt> preBuiltCPUCollection) {
         this.preBuiltCPUCollection = preBuiltCPUCollection;
+    }
+
+    /**
+     * @return the other
+     */
+    public String getOther() {
+        return other;
+    }
+
+    /**
+     * @param other the other to set
+     */
+    public void setOther(String other) {
+        this.other = other;
     }
     
 }
