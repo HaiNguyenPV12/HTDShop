@@ -4,6 +4,12 @@
 
 <head>
     <title>Build Your PC</title>
+    <style>
+        .alert li {
+            list-style: disc;
+            margin-left: 2rem;
+        }
+    </style>
 </head>
 
 <body>
@@ -15,15 +21,130 @@
                 </div>
             </div>
             <div class="row">
+                <!-- CHECK SOCKET -->
                 <th:block th:if="${session.buildCompatibility.isSocketCompatible != true}">
                     <div class="alert alert-danger">
                         <h4>Socket Incompatible</h4>
                         <ul>
                             <li>CPU Socket:
-                                <th:block th:text="${session.prebuiltSession.cpu.socket}" />
+                                <strong>
+                                    <th:block th:text="${session.prebuiltSession.cpu.socket}" />
+                                </strong>
                             </li>
                             <li>Motherboard Socket:
-                                <th:block th:text="${session.prebuiltSession.motherboard.socket}" />
+                                <strong>
+                                    <th:block th:text="${session.prebuiltSession.motherboard.socket}" />
+                                </strong>
+                            </li>
+                        </ul>
+                    </div>
+                </th:block>
+                <!-- CHECK COOLER SOCKET -->
+                <th:block th:if="${session.buildCompatibility.isCoolerCompatible != true}">
+                    <div class="alert alert-danger">
+                        <h4>Socket Incompatible</h4>
+                        <ul>
+                            <li>CPU Socket:
+                                <strong>
+                                    <th:block th:text="${session.prebuiltSession.cpu.socket}" />
+                                </strong>
+                            </li>
+                            <li>Cooler Supported Sockets:
+                                <strong>
+                                    <th:block th:text="${session.prebuiltSession.cpucooler.socket}" />
+                                </strong>
+                            </li>
+                        </ul>
+                    </div>
+                </th:block>
+                <!-- CHECK RAM TYPE -->
+                <th:block th:if="${session.buildCompatibility.isMemoryTypeCompatible != true}">
+                    <div class="alert alert-danger">
+                        <h4>Memory Type Incompatible</h4>
+                        <ul>
+                            <li>Selected Memory Type:
+                                <strong>
+                                    <th:block th:text="${session.prebuiltSession.memory.memoryType}" />
+                                </strong>
+                            </li>
+                            <li>Motherboard Memory Type:
+                                <strong>
+                                    <th:block th:text="${session.prebuiltSession.motherboard.memoryType}" />
+                                </strong>
+                            </li>
+                        </ul>
+                    </div>
+                </th:block>
+                <!-- CHECK RAM SLOTS -->
+                <th:block th:if="${session.buildCompatibility.isMemorySlotCompatible != true}">
+                    <div class="alert alert-danger">
+                        <h4>Memory Slots Incompatible</h4>
+                        <ul>
+                            <li>Selected Memory Modules:
+                                <strong>
+                                    <th:block th:text="${session.prebuiltSession.memory.memoryModules}" />
+                                </strong>
+                            </li>
+                            <li>Motherboard Memory Slots:
+                                <strong>
+                                    <th:block th:text="${session.prebuiltSession.motherboard.memorySlot}" />
+                                </strong>
+                            </li>
+                        </ul>
+                    </div>
+                </th:block>
+                <!-- CHECK CASE VS MOTHERBOARD -->
+                <th:block th:if="${session.buildCompatibility.isFormFactorCompatible != true}">
+                    <div class="alert alert-danger">
+                        <h4>Case Incompatible</h4>
+                        <ul>
+                            <li>Motherboard size:
+                                <strong>
+                                    <th:block th:text="${session.prebuiltSession.motherboard.formFactor}" />
+                                </strong>
+                            </li>
+                            <li>Max Motherboard size for case:
+                                <strong>
+                                    <th:block th:text="${session.prebuiltSession.cases.formFactor}" />
+                                </strong>
+                            </li>
+                        </ul>
+                    </div>
+                </th:block>
+                <!-- CHECK CASE VS PSU -->
+                <th:block th:if="${session.buildCompatibility.isPSUFormFactorCompatible != true}">
+                    <div class="alert alert-danger">
+                        <h4>PSU Incompatible</h4>
+                        <ul>
+                            <li>PSU size:
+                                <strong>
+                                    <th:block th:text="${session.prebuiltSession.psu.psuFormFactor}" />
+                                </strong>
+                            </li>
+                            <li>Max PSU size for case:
+                                <strong>
+                                    <th:block th:text="${session.prebuiltSession.cases.psuFormFactor}" />
+                                </strong>
+                            </li>
+                        </ul>
+                    </div>
+                </th:block>
+                <!-- CHECK WATTAGE -->
+                <th:block th:if="${session.buildCompatibility.isWattageCompatible != true}">
+                    <div class="alert alert-danger">
+                        <h4>PSU Wattage Incompatible</h4>
+                        <ul>
+                            <li>PSU wattage:
+                                <strong>
+                                    <th:block th:text="${session.prebuiltSession.psu.pSUWattage}">W</th:block>
+                                </strong>
+                            </li>
+                            <li>System usage:
+                                <strong>
+                                    <th:block
+                                        th:text="${session.prebuiltSession.vga.tdp + session.prebuiltSession.cpu.tdp}">W
+                                    </th:block>
+                                </strong>
                             </li>
                         </ul>
                     </div>
@@ -164,36 +285,81 @@
                         <tr>
                             <td>Video Card</td>
                             <td>
-                                <a href="" th:href="@{/}" class="btn btn-primary">
-                                    <i class="ti-plus"></i> Choose a video card
-                                </a>
+                                <th:block th:if="${session.prebuiltSession.vga == null}">
+                                    <a href="" th:href="@{/build/gpu}" class="btn btn-primary">
+                                        <i class="ti-plus"></i> Choose Video Card
+                                    </a>
+                                </th:block>
+                                <a href="" th:if="${session.prebuiltSession.vga != null}"
+                                    th:href="@{/product?id=__${session.prebuiltSession.vga.id}__}"
+                                    th:text="${session.prebuiltSession.vga.name}"></a>
                             </td>
                             <td>
-
+                                <!-- VIDEO CARD PRICE -->
+                                <th:block th:if="${session.prebuiltSession.vga != null}">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            $ <span th:text="${session.prebuiltSession.vga.price}"></span>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <a th:href="@{/build/gpu/discard}" class="btn btn-danger">X</a>
+                                        </div>
+                                    </div>
+                                </th:block>
                             </td>
                         </tr>
                         <!-- CASE ROW -->
                         <tr>
                             <td>Case</td>
                             <td>
-                                <a href="" th:href="@{/}" class="btn btn-primary">
-                                    <i class="ti-plus"></i> Choose a case
-                                </a>
+                                <th:block th:if="${session.prebuiltSession.cases == null}">
+                                    <a href="" th:href="@{/build/case}" class="btn btn-primary">
+                                        <i class="ti-plus"></i> Choose a Case
+                                    </a>
+                                </th:block>
+                                <a href="" th:if="${session.prebuiltSession.cases != null}"
+                                    th:href="@{/product?id=__${session.prebuiltSession.cases.id}__}"
+                                    th:text="${session.prebuiltSession.cases.name}"></a>
                             </td>
                             <td>
-
+                                <!-- CASE PRICE -->
+                                <th:block th:if="${session.prebuiltSession.cases != null}">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            $ <span th:text="${session.prebuiltSession.cases.price}"></span>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <a th:href="@{/build/case/discard}" class="btn btn-danger">X</a>
+                                        </div>
+                                    </div>
+                                </th:block>
                             </td>
                         </tr>
                         <!-- PSU ROW -->
                         <tr>
                             <td>Power Supply</td>
                             <td>
-                                <a href="" th:href="@{/}" class="btn btn-primary">
-                                    <i class="ti-plus"></i> Choose a PSU
-                                </a>
+                                <th:block th:if="${session.prebuiltSession.psu == null}">
+                                    <a href="" th:href="@{/build/psu}" class="btn btn-primary">
+                                        <i class="ti-plus"></i> Choose a PSU
+                                    </a>
+                                </th:block>
+                                <a href="" th:if="${session.prebuiltSession.psu != null}"
+                                    th:href="@{/product?id=__${session.prebuiltSession.psu.id}__}"
+                                    th:text="${session.prebuiltSession.psu.name}"></a>
                             </td>
                             <td>
-
+                                <!-- PSU PRICE -->
+                                <th:block th:if="${session.prebuiltSession.psu != null}">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            $ <span th:text="${session.prebuiltSession.psu.price}"></span>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <a th:href="@{/build/psu/discard}" class="btn btn-danger">X</a>
+                                        </div>
+                                    </div>
+                                </th:block>
                             </td>
                         </tr>
                         <!-- MONITOR ROW -->
