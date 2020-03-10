@@ -53,6 +53,7 @@ public class ManagerService {
 
     @EJB(mappedName = "Order1Facade")
     Order1FacadeLocal order1Facade;
+    
     @EJB(mappedName = "ImageSlideFacade")
     ImageSlideFacadeLocal imageSlideFacade;
 
