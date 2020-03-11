@@ -66,17 +66,19 @@ public class shopBuildControllerCPU {
 
         // if mnufacturer/series is different, revert sockets to all
         if (!cpuValues.getManufacturer().equals(prevManufacturer) || !cpuValues.getSeries().equals(prevSeries)) {
-            cpuValues.setSocket("all");
+            if (!cpuValues.getManufacturer().equals("all")) {
+                cpuValues.setSocket("all");
+            }
         }
 
         // if socket is different, revert series to all
-        if (!cpuValues.getSocket().equals(prevSocket)) {
+        if (!cpuValues.getSocket().equals(prevSocket) && !cpuValues.getSocket().equals("all")) {
             cpuValues.setSeries("all");
         }
 
         // if manufacturer is different AND series was not from said manufacturer
         // before.
-        if (!cpuValues.getManufacturer().equals(prevManufacturer)) {
+        if (!cpuValues.getManufacturer().equals(prevManufacturer) && !cpuValues.getManufacturer().equals("all")) {
             String newManufacturer = cpuValues.getManufacturer();
             String newSeries = cpuValues.getSeries();
             boolean seriesAndManuMatch = false;
