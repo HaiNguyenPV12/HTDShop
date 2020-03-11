@@ -31,8 +31,6 @@ public class shopBuildControllerMotherboard {
     @EJB(mappedName = "ProductFacade")
     ProductFacadeLocal productFacade;
 
-    boolean isFilteringCPU = false;
-
     @Autowired
     BuildService buildService;
 
@@ -100,7 +98,7 @@ public class shopBuildControllerMotherboard {
 
     // Remove from current build
     @RequestMapping(value = "discard", method = RequestMethod.GET)
-    public String discardCPU(RedirectAttributes redirect) {
+    public String discardMotherboard(RedirectAttributes redirect) {
         // remove motherboard from session Prebuilt
         buildService.getSessionPrebuilt().setMotherboard(null);
         setSessionMotherboardValues(null);
@@ -190,8 +188,8 @@ public class shopBuildControllerMotherboard {
     public BuildValues getSessionMotherboardValues() {
         BuildValues result = (BuildValues) session.getAttribute("motherboardValues");
         if (result == null) {
-            BuildValues newNotherboardValues = initFilterValues();
-            setSessionMotherboardValues(newNotherboardValues);
+            BuildValues newMotherboardValues = initFilterValues();
+            setSessionMotherboardValues(newMotherboardValues);
             if (buildService.getSessionPrebuilt().getCpu() != null) {
                 String socket = buildService.getSessionPrebuilt().getCpu().getSocket();
                 getSessionMotherboardValues().setSocket(socket);

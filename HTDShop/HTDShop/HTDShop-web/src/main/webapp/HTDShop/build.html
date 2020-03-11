@@ -273,12 +273,27 @@
                         <tr>
                             <td>Storage</td>
                             <td>
-                                <a href="" th:href="@{/}" class="btn btn-primary">
-                                    <i class="ti-plus"></i> Choose storage
-                                </a>
+                                <th:block th:if="${session.prebuiltSession.storage == null}">
+                                    <a href="" th:href="@{/build/storage}" class="btn btn-primary">
+                                        <i class="ti-plus"></i> Choose Storage
+                                    </a>
+                                </th:block>
+                                <a href="" th:if="${session.prebuiltSession.storage != null}"
+                                    th:href="@{/product?id=__${session.prebuiltSession.storage.id}__}"
+                                    th:text="${session.prebuiltSession.storage.name}"></a>
                             </td>
                             <td>
-
+                                <!-- STORAGE PRICE -->
+                                <th:block th:if="${session.prebuiltSession.storage != null}">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            $ <span th:text="${session.prebuiltSession.storage.price}"></span>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <a th:href="@{/build/storage/discard}" class="btn btn-danger">X</a>
+                                        </div>
+                                    </div>
+                                </th:block>
                             </td>
                         </tr>
                         <!-- VIDEO CARD ROW -->
@@ -366,12 +381,36 @@
                         <tr>
                             <td>Monitor</td>
                             <td>
-                                <a href="" th:href="@{/}" class="btn btn-primary">
-                                    <i class="ti-plus"></i> Choose a Monitor
-                                </a>
+                                <th:block th:if="${session.prebuiltSession.monitor == null}">
+                                    <a href="" th:href="@{/build/monitor}" class="btn btn-primary">
+                                        <i class="ti-plus"></i> Choose a Monitor
+                                    </a>
+                                </th:block>
+                                <a href="" th:if="${session.prebuiltSession.monitor != null}"
+                                    th:href="@{/product?id=__${session.prebuiltSession.monitor.id}__}"
+                                    th:text="${session.prebuiltSession.monitor.name}"></a>
                             </td>
                             <td>
-
+                                <!-- MONITOR PRICE -->
+                                <th:block th:if="${session.prebuiltSession.monitor != null}">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            $ <span th:text="${session.prebuiltSession.monitor.price}"></span>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <a th:href="@{/build/monitor/discard}" class="btn btn-danger">X</a>
+                                        </div>
+                                    </div>
+                                </th:block>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>TOTAL</strong></td>
+                            <td></td>
+                            <td>
+                                $
+                                <th:block th:text="${session.prebuiltSession.price}">
+                                </th:block>
                             </td>
                         </tr>
                     </tbody>
