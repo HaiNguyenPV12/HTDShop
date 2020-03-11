@@ -121,11 +121,11 @@
         <script th:src="@{/manager_resources/plugins/jquery-validation/additional-methods.min.js}"></script>
         <script th:inline="javascript">
             /*<![CDATA[*/
-            var submited = /*[[${submited != null? true : false}]]*/false;
             var exists = +/*[[${category.categoryOtherCollection.size()}]]*/0;
+            var submited = /*[[${submited != null? true : false}]]*/false;
             var frmCategory = $("#frmCategory"), original = frmCategory.serialize();
             $(window).on("beforeunload", function () {
-                if (frmCategory.serialize() != original) {
+                if (frmCategory.serialize() != original || submited) {
                     var cf = confirm('There are data(s) not being saved! Are you sure to leave page?');
                     if (!cf) {
                         return false;
@@ -217,7 +217,7 @@
             if (frmCategory.valid()) {
                 original = frmCategory.serialize();
             }
-        })
+        });
     </script>
 </body>
 
