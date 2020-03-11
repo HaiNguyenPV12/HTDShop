@@ -92,6 +92,13 @@
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                         data-accordion="false">
 
+                        <li class="nav-item" th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('category_read')}">
+                            <a href="#" class="nav-link" th:href="@{/manager/category}" th:classappend="${menu eq 'category'}?'active':''">
+                                <i class="nav-icon fas fa-cube"></i>
+                                <p>Category</p>
+                            </a>
+                        </li>
+
                         <li class="nav-item" th:if="${#session.getAttribute('loggedInStaff').role.roleRightsCollection.![rightsDetail.tag].contains('product_read')}">
                             <a href="#" class="nav-link" th:href="@{/manager/product}" th:classappend="${menu eq 'product'}?'active':''">
                                 <i class="nav-icon fas fa-box-open"></i>

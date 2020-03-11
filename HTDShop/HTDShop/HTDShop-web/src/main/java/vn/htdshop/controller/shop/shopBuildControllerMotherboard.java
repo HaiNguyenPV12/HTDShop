@@ -50,6 +50,7 @@ public class shopBuildControllerMotherboard {
         model.addAttribute("motherboardSocketList", motherboardSockets());
         model.addAttribute("motherboardChipsetList", motherboardChipsets());
         model.addAttribute("motherboardMemoryTypeList", motherboardMemoryTypes());
+        model.addAttribute("motherboardFormFactorList", motherboardFormFactors());
         // -----FILTER RESULT---
         model.addAttribute("filteredMotherboard", filterMotherboard());
         return "HTDShop/pickMotherboard";
@@ -84,7 +85,7 @@ public class shopBuildControllerMotherboard {
         buildService.setSessionPrebuilt(sessionPreBuilt);
 
         // reset filter values
-        setSessionMotherboardValues(initFilterValues());
+        setSessionMotherboardValues(null);
         // redirect to build's home page
         return "redirect:/build";
     }
@@ -102,6 +103,7 @@ public class shopBuildControllerMotherboard {
     public String discardCPU(RedirectAttributes redirect) {
         // remove motherboard from session Prebuilt
         buildService.getSessionPrebuilt().setMotherboard(null);
+        setSessionMotherboardValues(null);
         return "redirect:/build";
     }
 
@@ -111,6 +113,14 @@ public class shopBuildControllerMotherboard {
         manufacturers = buildService.getSessionProductList().stream().filter(p -> p.getCategory().getId() == 2)
                 .map(m -> m.getManufacturer()).distinct().collect(Collectors.toList());
         return manufacturers;
+    }
+
+    // Form Factor list for form
+    private List<String> motherboardFormFactors() {
+        List<String> formFactors = new ArrayList<>();
+        formFactors = buildService.getSessionProductList().stream().filter(p -> p.getCategory().getId() == 2)
+                .map(m -> m.getFormFactor()).distinct().collect(Collectors.toList());
+        return formFactors;
     }
 
     // Socket list for form
@@ -182,6 +192,10 @@ public class shopBuildControllerMotherboard {
         if (result == null) {
             BuildValues newNotherboardValues = initFilterValues();
             setSessionMotherboardValues(newNotherboardValues);
+            if (buildService.getSessionPrebuilt().getCpu() != null) {
+                String socket = buildService.getSessionPrebuilt().getCpu().getSocket();
+                getSessionMotherboardValues().setSocket(socket);
+            }
         }
         return (BuildValues) session.getAttribute("motherboardValues");
     }
@@ -235,6 +249,13 @@ public class shopBuildControllerMotherboard {
             motherboards = motherboards.stream().filter(m -> m.getMemorySlot() >= memorySlot)
                     .collect(Collectors.toList());
 
+            // filter by form factor
+            String formFactor = motherboardValues.getFormFactor();
+            if (!formFactor.equals("all")) {
+                motherboards = motherboards.stream().filter(m -> m.getFormFactor().equals(formFactor))
+                        .collect(Collectors.toList());
+            }
+
             // filter by price
             // --clamp prices and filter
             if (motherboardValues.getPriceMin() == 0 && motherboardValues.getPriceMax() == 0) {
@@ -273,6 +294,7 @@ public class shopBuildControllerMotherboard {
         result.setSocket("all");
         result.setChipset("all");
         result.setMemoryType("all");
+        result.setFormFactor("all");
         result.setMemorySlot(0);
         result.setPriceMin(0);
         result.setPriceMax(10000);

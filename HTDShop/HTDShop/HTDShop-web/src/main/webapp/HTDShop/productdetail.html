@@ -348,8 +348,11 @@
                                     </ul>
                                 </div>
                                 <div class="ml-3">
-                                    <th:block
+                                    <th:block th:if="${product.category.id le 9}"
                                         th:replace="~{/HTDShop/productdetail_template :: full-__${product.category.id}__} ?:~{}">
+                                    </th:block>
+                                    <th:block th:if="${product.category.id > 9}"
+                                        th:replace="~{/HTDShop/productdetail_template :: full-other} ?:~{}">
                                     </th:block>
                                 </div>
 

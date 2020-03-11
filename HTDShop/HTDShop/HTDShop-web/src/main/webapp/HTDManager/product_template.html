@@ -35,7 +35,8 @@
                     <label for="chipset" class="col-sm-3 col-form-label text-right">Chipset</label>
                     <div class="col-sm-9">
                         <input class="form-control autocomplete" placeholder="Chipset" id="chipset" name="chipset"
-                            th:value="${update != null? product.chipset : ''}" autocomplete="off" th:auto-for="${cateName}"/>
+                            th:value="${update != null? product.chipset : ''}" autocomplete="off"
+                            th:auto-for="${cateName}" />
                     </div>
                     <div class="col-sm-3"></div>
                     <div class="col-sm-9">
@@ -505,7 +506,8 @@
                             class="text-danger">*</i></label>
                     <div class="col-sm-9">
                         <input class="form-control autocomplete" id="socket" placeholder="Socket" name="socket" required
-                            th:value="${update != null? product.socket : ''}" autocomplete="off" th:auto-for="${cateName}"/>
+                            th:value="${update != null? product.socket : ''}" autocomplete="off"
+                            th:auto-for="${cateName}" />
                     </div>
                     <div class="col-sm-3"></div>
                     <div class="col-sm-9">
@@ -590,8 +592,8 @@
                             class="text-danger">*</i></label>
                     <div class="input-group col-sm-9">
                         <input type="number" class="form-control" id="screenSize" placeholder="Screen Size"
-                            name="screenSize" required step="0.1"
-                            th:value="${update != null? product.screenSize : ''}" autocomplete="off"/>
+                            name="screenSize" required step="0.1" th:value="${update != null? product.screenSize : ''}"
+                            autocomplete="off" />
                         <div class="input-group-append">
                             <span class="input-group-text">inch</span>
                         </div>
@@ -607,7 +609,7 @@
                     <div class="input-group col-sm-9">
                         <input class="form-control autocomplete" id="resolution" placeholder="Resolution"
                             name="resolution" required th:auto-for="${cateName}"
-                            th:value="${update != null? product.resolution : ''}" autocomplete="off"/>
+                            th:value="${update != null? product.resolution : ''}" autocomplete="off" />
                     </div>
                     <div class="col-sm-3"></div>
                     <div class="col-sm-9">
@@ -621,5 +623,57 @@
 <!-- 
     =========================
         Monitor - END
+    =========================
+-->
+
+<!-- 
+    =========================
+            Other
+    =========================
+-->
+<th:block th:if="${curCate >= 10}">
+    <div class="col-lg-6" id="specificInfo">
+        <input type="hidden" id="cateName" th:value="${category.name}">
+        <div class="card card-purple">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <th:block th:text="${category.name}"></th:block> information
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group row" th:each="other,itr : ${category.categoryOtherCollection}"
+                    th:if="${update == null}">
+                    <label th:for="${'other_' + itr.index}" class="col-sm-3 col-form-label text-right">
+                        <th:block th:text="${other.name}"></th:block>
+                        <i class="text-danger">*</i>
+                    </label>
+                    <input type="text" class="form-control col-sm-9" th:id="${'other_' + itr.index}" name="others[]"
+                        th:placeholder="${other.name}" autocomplete="off" minlength="1" maxlength="200"
+                        pattern="^[^\\\/#!?£$%\\^&\\*;:{}=\\_`~|]+$" required />
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" th:id="${'other_' + itr.index + 'Error'}"></ul>
+                    </div>
+                </div>
+                <div class="form-group row" th:each="other,itr : ${others}" th:if="${update != null}">
+                    <label th:for="${'other_' + itr.index}" class="col-sm-3 col-form-label text-right">
+                        <th:block th:text="${other.attribute}"></th:block>
+                        <i class="text-danger">*</i>
+                    </label>
+                    <input type="text" class="form-control col-sm-9" th:id="${'other_' + itr.index}" name="others[]"
+                        th:placeholder="${other.attribute}" autocomplete="off" minlength="1" maxlength="200"
+                        pattern="^[^\\\/#!?£$%\\^&\\*;:{}=\\_`~|]+$" th:value="${other.value}" required />
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <ul class="text-danger" th:id="${'other_' + itr.index + 'Error'}"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+<!-- 
+    =========================
+        Other - END
     =========================
 -->

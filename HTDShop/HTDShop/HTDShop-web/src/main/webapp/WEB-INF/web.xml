@@ -38,6 +38,11 @@
         <local>vn.htdshop.sb.CategoryFacadeLocal</local>
     </ejb-local-ref>
     <ejb-local-ref>
+        <ejb-ref-name>CategoryOtherFacade</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <local>vn.htdshop.sb.CategoryOtherFacadeLocal</local>
+    </ejb-local-ref>
+    <ejb-local-ref>
         <ejb-ref-name>CustomerFacade</ejb-ref-name>
         <ejb-ref-type>Session</ejb-ref-type>
         <local>vn.htdshop.sb.CustomerFacadeLocal</local>

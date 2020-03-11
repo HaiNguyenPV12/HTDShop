@@ -51,8 +51,8 @@ public class managerRoleController {
     @EJB(mappedName = "RightsDetailFacade")
     RightsDetailFacadeLocal rightsDetailFacade;
 
-    final private String[] rightsNames = new String[] { "product", "prebuilt", "comment", "order", "customer",
-            "promotion", "imageslide", "staff", "role", "revenue", "delivery" };
+    final private String[] rightsNames = new String[] {"category", "product", "prebuilt", "comment", "order", "customer",
+            "promotion", "imageslide", "staff", "role", "revenue", "delivery"};
 
     @Autowired
     ServletContext context;

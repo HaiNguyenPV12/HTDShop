@@ -93,18 +93,6 @@ public class BuildService {
         }
     }
 
-    // Session build compatibility checker
-    public void checkCompatibility() {
-        PreBuilt currentBuild = getSessionPrebuilt();
-        // Check CPU socket and Motherboard
-        // Check Motherboard RAM types (DDR3/4)
-        // Check RAM modules and RAM slots on motherboard
-        // Check case compatibility with motherboard
-        // Check case compatibility with PSU
-        // Check Cooler compatibility with CPU
-        // Check System TDP
-    }
-
     public boolean isBuildAppStarted() {
         return isSessionBuilding();
     }
@@ -121,5 +109,23 @@ public class BuildService {
         System.out.println(type + "_" + options);
         return productFacade.getStringList(type, options);
 
+    }
+
+    public List<String> motherboardFormFactorSizes() {
+        List<String> sizes = new ArrayList<>();
+        sizes.add("Pico ITX");
+        sizes.add("Nano ITX");
+        sizes.add("Mini ITX");
+        sizes.add("Micro ATX");
+        sizes.add("ATX");
+        sizes.add("EATX");
+        return sizes;
+    }
+
+    public List<String> psuFormFactorSizes() {
+        List<String> sizes = new ArrayList<>();
+        sizes.add("SFX");
+        sizes.add("ATX");
+        return sizes;
     }
 }
