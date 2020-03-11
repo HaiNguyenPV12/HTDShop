@@ -127,6 +127,34 @@
         .border-purple {
             border-color: #9628f08c !important
         }
+
+        .detail-ellipsis {
+            display: block;
+            display: -webkit-box;
+            max-width: 100%;
+            height: 7.5rem;
+            margin: 0 auto;
+            line-height: 1.1;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            -webkit-transition: all .8s ease;
+            -moz-transition: all .8s ease;
+            -ms-transition: all .8s ease;
+            -o-transition: all .8s ease;
+            transition: all .8s ease;
+        }
+
+        .detail-show {
+            height: fit-content;
+            -webkit-line-clamp: unset;
+            -webkit-transition: all .8s ease;
+            -moz-transition: all .8s ease;
+            -ms-transition: all .8s ease;
+            -o-transition: all .8s ease;
+            transition: all .8s ease;
+        }
     </style>
 </head>
 
@@ -417,7 +445,10 @@
                     </div>
                     <div class="description-review-text tab-content">
                         <div class="tab-pane active show fade" id="pro-dec" role="tabpanel" style="margin-left: 10rem;">
-                            <p th:utext="${(product.description == null || product.description.isEmpty()) ? '&lt;p class=&quot;text-center&quot; &gt;(No description)&lt;/p&gt;' : product.description}"></p>
+                            <div class="detail-ellipsis" th:utext="${(product.description == null || product.description.isEmpty()) ? '&lt;p class=&quot;text-center&quot; &gt;(No description)&lt;/p&gt;' : product.description}"></div>
+                            <div>
+                                <button type="button" onclick="toggleDetail()" id="btnToggleDetail">Show more</button>
+                            </div>
                         </div>
                         <div class="tab-pane fade text-left border border-secondary" id="pro-review"
                             role="tabpanel" >
@@ -684,6 +715,24 @@
             var id = $(button).attr("data-target");
             $("#" + id).css("display", "block");
             $(button).css("display", "none");
+
+        }
+        // $.fn.overflown = function () { var e = this[0]; return e.scrollHeight > e.clientHeight || e.scrollWidth > e.clientWidth; }
+        function isOverflown(element) {
+            return element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth;
+        }
+        if (!isOverflown($("div.detail-ellipsis")[0])) {
+            $("#btnToggleDetail").css("display", "none");
+        }
+
+        function toggleDetail() {
+            if (!$("div.detail-ellipsis").hasClass("detail-show")) {
+                $("#btnToggleDetail").html("Show less");
+                $("div.detail-ellipsis").addClass("detail-show");
+            } else {
+                $("#btnToggleDetail").html("Show more");
+                $("div.detail-ellipsis").removeClass("detail-show");
+            }
 
         }
         // grecaptcha.render(
