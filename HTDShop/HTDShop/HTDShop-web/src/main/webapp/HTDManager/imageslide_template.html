@@ -215,6 +215,7 @@
     </th:block>
     
     <script layout:fragment="script" th:inline="none">
+
         $("#btnUploadImage").on("change", function () {
             if (this.files && this.files[0]) {
                 if (this.files.length > 1) {
@@ -246,6 +247,16 @@
             }
         });
 
+        function trimAll() {
+            $("form").find("input, textarea").each(function (i, e) {
+                if (e.type !== "file") {
+                    $(e).val($(e).val().trim());
+                }
+            });
+        }
+
+
+
         $(document).ready(function () {
             var frmImageSlide = $("#frmImageSlide"), original = frmImageSlide.serialize();
             $(window).on("beforeunload", function () {
@@ -256,20 +267,18 @@
                     }
                 }
             });
-            frmImageSlide.on("submit", function () {
-                if (frmImageSlide.valid()) {
-                    original = frmImageSlide.serialize();
-                }
-            });
+
+
             function injectTrim(handler) {
                 return function (element, event) {
                     if (element.tagName === "TEXTAREA" || (element.tagName === "INPUT"
-                        && element.type !== "password")) {
+                        && element.type !== "password" && element.type !== "file")) {
                         element.value = $.trim(element.value);
                     }
                     return handler.call(this, element, event);
                 };
             }
+
 
             $("#frmImageSlide").validate({
                 ignore: [],
@@ -297,18 +306,23 @@
                     }
                 },
                 errorElement: "li",
-                // callback: function () {
-                //     // addRule();
-                //     var form = $("#frmImageSlide");
-                //     if (form.valid()) {
-                //         form.submit();
-                //     } else {
-                //         return false;
-                //     }
-                // },
+                submitHandler: function (form) {
+                    trimAll();
+                    if ($("#frmImageSlide").valid()) {
+                        return true;
+                    }
+                    return false;
+                },
                 onfocusout: injectTrim($.validator.defaults.onfocusout)
             });
+
+            frmImageSlide.on("submit", function (e) {
+                if (frmImageSlide.valid()) {
+                    original = frmImageSlide.serialize();
+                }
+            });
         });
+
     </script>
 </body>
 
