@@ -54,6 +54,11 @@ public class shopBuildController {
 
         setSessionBuildCompatibility(checkCompatibility());
 
+        // total price
+        PreBuilt sessionPrebuilt = buildService.getSessionPrebuilt();
+        sessionPrebuilt.setPrice(buildPrice(sessionPrebuilt));
+        buildService.setSessionPrebuilt(sessionPrebuilt);
+
         return "HTDShop/build";
     }
 
@@ -116,7 +121,7 @@ public class shopBuildController {
         if (currentBuild.getMotherboard() != null && currentBuild.getMemory() != null) {
             Product motherboard = currentBuild.getMotherboard();
             Product memory = currentBuild.getMemory();
-            if (motherboard.getMemorySlot() != memory.getMemoryModules()) {
+            if (motherboard.getMemorySlot() < memory.getMemoryModules()) {
                 return false;
             }
         }
@@ -196,6 +201,39 @@ public class shopBuildController {
 
     private BuildCompatibility initCompatibilityValues() {
         BuildCompatibility result = new BuildCompatibility();
+        return result;
+    }
+
+    // Total Price
+    public Double buildPrice(PreBuilt currentBuild) {
+        Double result = new Double(0);
+        if (currentBuild.getCpu() != null) {
+            result = result + currentBuild.getCpu().getPrice();
+        }
+        if (currentBuild.getCpucooler() != null) {
+            result = result + currentBuild.getCpucooler().getPrice();
+        }
+        if (currentBuild.getMotherboard() != null) {
+            result = result + currentBuild.getMotherboard().getPrice();
+        }
+        if (currentBuild.getMemory() != null) {
+            result = result + currentBuild.getMemory().getPrice();
+        }
+        if (currentBuild.getStorage() != null) {
+            result = result + currentBuild.getStorage().getPrice();
+        }
+        if (currentBuild.getVga() != null) {
+            result = result + currentBuild.getVga().getPrice();
+        }
+        if (currentBuild.getCases() != null) {
+            result = result + currentBuild.getCases().getPrice();
+        }
+        if (currentBuild.getPsu() != null) {
+            result = result + currentBuild.getPsu().getPrice();
+        }
+        if (currentBuild.getMonitor() != null) {
+            result = result + currentBuild.getMonitor().getPrice();
+        }
         return result;
     }
 }
