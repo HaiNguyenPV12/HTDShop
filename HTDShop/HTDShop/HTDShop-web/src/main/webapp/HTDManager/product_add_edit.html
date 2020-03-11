@@ -53,6 +53,10 @@
                 border: 1px solid #dc3545;
                 border-radius: 4px;
             }
+
+            .note-group-select-from-files {
+                display: none;
+            }
         </style>
     </th:block>
 
@@ -668,7 +672,10 @@
             theme: 'bootstrap4'
         });
 
-        $('.textarea').summernote({ height: 150 });
+        $('.textarea').summernote({
+            minHeight: 200,
+            maxHeight: 650
+        });
 
         // window.onbeforeunload = function () {
         //     if (form.serialize() != original)

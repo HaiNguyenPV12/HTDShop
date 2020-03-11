@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
 <head>
     <meta charset="utf-8">
@@ -25,7 +25,8 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <body class="hold-transition login-page" style="height:60vh">
     <div class="login-box">
         <div class="login-logo">
-            <img th:src="@{/manager_resources/img/logo.png}" alt="AdminLTE Logo" class="img-rounded elevation-1" style="opacity: .8;width:35px">
+            <img th:src="@{/manager_resources/img/logo.png}" alt="AdminLTE Logo" class="img-rounded elevation-1"
+                style="opacity: .8;width:35px">
             <a>
                 <b>HTD </b>Manager
             </a>
@@ -37,23 +38,27 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
                 <form id="frmLogin" th:action="@{/manager/doLogin}" th:object="${staff}" method="post">
                     <div class="input-group mb-3">
-                        <input id="txtUsername" type="text" class="form-control" placeholder="Username" th:field="*{username}" required autofocus>
+                        <input id="txtUsername" type="text" class="form-control" placeholder="Username"
+                            th:field="*{username}" required autofocus pattern="[\d\w]+">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-user"></span>
                             </div>
                         </div>
-                        
                     </div>
+                    <ul class="mb-3 text-danger" id="txtUsernameError">
+                    </ul>
                     <div class="input-group mb-3">
-                        <input id="txtPassword" type="password" class="form-control" placeholder="Password" th:field="*{password}" required>
+                        <input id="txtPassword" type="password" class="form-control" placeholder="Password"
+                            th:field="*{password}" required>
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-lock"></span>
                             </div>
                         </div>
-                        
                     </div>
+                    <ul class="mb-3 text-danger" id="txtPasswordError">
+                    </ul>
                     <div class="row">
                         <div class="col-8">
                             <div class="icheck-purple">
@@ -85,24 +90,62 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
             </div>
         </div>
         <!-- /.login-box -->
+    </div>
+    <script th:src="@{/manager_resources/plugins/jquery/jquery.min.js}"></script>
+    <script th:src="@{/manager_resources/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/manager_resources/Scripts/adminlte.min.js}"></script>
+    
+    <script th:src="@{/manager_resources/plugins/jquery-validation/jquery.validate.js}"></script>
+    <script th:src="@{/manager_resources/plugins/jquery-validation/additional-methods.min.js}"></script>
+    <script th:inline="none">
+        function injectTrim(handler) {
+            return function (element, event) {
+                if (element.tagName === "TEXTAREA" || (element.tagName === "INPUT"
+                    && element.type !== "password")) {
+                    element.value = $.trim(element.value);
+                }
+                return handler.call(this, element, event);
+            };
+        }
 
-        <!-- jQuery -->
-        <script th:src="@{/manager_resources/plugins/jquery/jquery.min.js}"></script>
-        <!-- Bootstrap 4 -->
-        <script th:src="@{/manager_resources/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
-        <!-- AdminLTE App -->
-        <script th:src="@{/manager_resources/Scripts/adminlte.min.js}"></script>
-
-        <script>
-            // $("#frmLogin").on("submit", function (e) {
-            //     e.preventDefault();
-            //     if ($("#txtUsername").val() == "admin" && $("#txtPassword").val() == "admin") {
-            //         window.location.href = "template.html";
-            //     } else {
-            //         alert("Login failed.");
-            //     }
-            // });
-        </script>
+        $("#frmLogin").validate({
+            ignore: [],
+            errorClass: "is-invalid",
+            validClass: "is-valid",
+            errorPlacement: function (error, element) {
+                error.appendTo('#' + element.attr("id") + "Error");
+            },
+            highlight: function (element, errorClass, validClass) {
+                var elem = $(element);
+                if (elem.hasClass("select2")) {
+                    $(elem).next().addClass(errorClass);
+                    // $("#s2id_" + elem.attr("id") + " ul").addClass(errorClass);
+                } else {
+                    elem.addClass(errorClass);
+                }
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                var elem = $(element);
+                if (elem.hasClass("select2")) {
+                    $(elem).next().removeClass(errorClass);
+                } else {
+                    elem.removeClass(errorClass);
+                }
+            },
+            errorElement: "li",
+            callback: function () {
+                $("#txtUsername").val($("#txtUsername").val().trim());
+                // addRule();
+                var form = $("#frmLogin");
+                if (form.valid()) {
+                    form.submit();
+                } else {
+                    return false;
+                }
+            },
+            onfocusout: injectTrim($.validator.defaults.onfocusout)
+        });
+    </script>
 </body>
 
 </html>
