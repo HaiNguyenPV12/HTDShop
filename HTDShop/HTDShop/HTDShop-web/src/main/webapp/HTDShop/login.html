@@ -7,7 +7,7 @@
     <th:block layout:fragment="additionalCss">
         <link rel="stylesheet" th:href="@{/resources/Content/fontawesome-free/css/all.min.css}">
     </th:block>
-    
+
 </head>
 
 <body>
@@ -29,16 +29,19 @@
                         <div class="login">
                             <div class="login-form-container">
                                 <div class="login-form">
-                                    <form action="login/doLogin" method="post">
-                                        <input type="email" name="email" placeholder="Email" id="email" required autofocus>
-                                        <input type="password" name="password" placeholder="Password" id="password" required>
+                                    <form action="login/doLogin" method="post" onsubmit="return validation()"
+                                        name="frmLogin">
+                                        <input type="email" name="email" placeholder="Email" id="email" required
+                                            autofocus>
+                                        <input type="password" name="password" placeholder="Password" id="password"
+                                            required pattern=".{6,}" title="Password have 6 or more character">
                                         <div class="button-box">
                                             <div class="login-toggle-btn">
                                                 <input type="checkbox" id="remember" name="remember">
                                                 <label for="remember">Remember me</label>
                                                 <a th:href="@{/register}">REGISTER?</a>
                                             </div>
-                                            <button type="submit" class="default-btn floatright">Login</button>                                                                                      
+                                            <button type="submit" class="default-btn floatright">Login</button>
                                         </div>
                                     </form>
                                 </div>
