@@ -428,7 +428,7 @@
                                         <div class="d-flex">
                                             <input type="hidden" name="productid" th:value="${product.id}"/>
                                             <textarea type="text" class="form-control form-control" name="comment"
-                                                placeholder="Comment on this product" required style="resize: none;"></textarea>
+                                                placeholder="Comment on this product" style="resize: none;"></textarea>
                                             <!-- <div class="g-recaptcha" data-sitekey="6LdeYdoUAAAAAHL11wXzM80G7X_dNVEQAYp_V9JN" data-callback="checked"></div> -->
                                             <button type="submit" class="btn btn-secondary" style="height: auto;"><i class="fas fa-comment"></i></button>
                                         </div>
@@ -484,7 +484,7 @@
                                                     <input type="hidden" name="commentid" th:value="${cm.id}"/>
                                                     <div class="captcha"></div>
                                                     <input type="text" class="form-control form-control-sm"
-                                                        placeholder="Reply to this comment." required name="reply">
+                                                        placeholder="Reply to this comment." name="reply">
                                                     <button type="submit" class="btn btn-secondary" style="height: auto;"><i class="fas fa-reply"></i></button>
                                                 </div>
                                             </div>
@@ -630,13 +630,27 @@
         $("form.comment").on("submit", function (e) {
             e.preventDefault();
             form = $(this);
-            if ($("#g-recaptcha-response").length) {
-                grecaptcha.reset();
-            } else {
-                grecaptcha.render("g-recaptcha", { "sitekey": "6LdeYdoUAAAAAHL11wXzM80G7X_dNVEQAYp_V9JN", "callback": "checked" });
+            var validated = true;
+            form.find("textarea, input[type='text']").each(function (i, e2) {
+                $(e2).val($(e2).val().trim());
+                if ($(e2).val() == "" || $(e2).val() == null) {
+                    $(e2).focus();
+                    Toast.fire({
+                        type: 'error',
+                        title: "Please input some content!",
+                        timer: 3000
+                    });
+                    validated = false;
+                }
+            });
+            if (validated) {
+                if ($("#g-recaptcha-response").length) {
+                    grecaptcha.reset();
+                } else {
+                    grecaptcha.render("g-recaptcha", { "sitekey": "6LdeYdoUAAAAAHL11wXzM80G7X_dNVEQAYp_V9JN", "callback": "checked" });
+                }
+                showModal("Confirm Captcha");
             }
-            showModal("Confirm Captcha");
-
         });
 
         function checked() {
