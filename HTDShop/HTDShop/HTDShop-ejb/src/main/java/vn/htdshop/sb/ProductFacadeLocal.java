@@ -34,9 +34,11 @@ public interface ProductFacadeLocal {
 
     List<String> getStringList(String attr);
 
+    List<String> getManuOtherList(String cateId);
+
     List<String> getStringList(String attr, String options);
-    
+
     List<Integer> getIntegerList(String attr);
-    
+
     List<Double> getDoubleList(String attr);
 }

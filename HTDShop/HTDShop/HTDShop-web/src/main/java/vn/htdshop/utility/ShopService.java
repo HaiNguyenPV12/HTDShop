@@ -533,6 +533,10 @@ public class ShopService {
         }
         return product.getPrice() - discount;
     }
+    
+    public Double getDiscountPrice(Integer id){
+        return getDiscountPrice(productFacade.find(id));
+    }
 
     public Double getPreBuiltPrice(PreBuilt prebuilt) {
         Double result = 0d;
