@@ -74,10 +74,7 @@ public class shopBuildAdd {
     public String addBuild(@ModelAttribute("prebuilt") PreBuilt preBuilt, BindingResult error,
             RedirectAttributes redirect) {
 
-        // if (!isBuildMatch(preBuilt)) {
-        // redirect.addFlashAttribute("errorMessage", "Error processing request.");
-        // return "redirect:/build/add";
-        // }
+        Integer redirectId = 0;
 
         if (preBuilt.getName().trim().isEmpty()) {
             redirect.addFlashAttribute("errorMessage", "Name is required");
@@ -97,26 +94,6 @@ public class shopBuildAdd {
 
         try {
             preBuilt.setCustomer(shopService.getLoggedInCustomer());
-            // preBuilt.setCpu(preBuilt.getCpu() != null ? new
-            // Product(preBuilt.getCpu().getId()) : null);
-            // preBuilt.setCpucooler(
-            // preBuilt.getCpucooler() != null ? new
-            // Product(preBuilt.getCpucooler().getId()) : null);
-            // preBuilt.setMotherboard(
-            // preBuilt.getMotherboard() != null ? new
-            // Product(preBuilt.getMotherboard().getId()) : null);
-            // preBuilt.setMemory(preBuilt.getMemory() != null ? new
-            // Product(preBuilt.getMemory().getId()) : null);
-            // preBuilt.setStorage(preBuilt.getStorage() != null ? new
-            // Product(preBuilt.getStorage().getId()) : null);
-            // preBuilt.setVga(preBuilt.getVga() != null ? new
-            // Product(preBuilt.getVga().getId()) : null);
-            // preBuilt.setPsu(preBuilt.getPsu() != null ? new
-            // Product(preBuilt.getPsu().getId()) : null);
-            // preBuilt.setCases(preBuilt.getCases() != null ? new
-            // Product(preBuilt.getCases().getId()) : null);
-            // preBuilt.setMonitor(preBuilt.getMonitor() != null ? new
-            // Product(preBuilt.getMonitor().getId()) : null);
             preBuilt.setCreatedAt(new Date());
             preBuiltFacade.create(preBuilt);
             PreBuiltImage preBuiltImage = new PreBuiltImage();
@@ -141,46 +118,19 @@ public class shopBuildAdd {
                 preBuiltImage.setPath("prebuilt/" + preBuilt.getId() + "/" + fileName);
                 prebuiltImageFacade.edit(preBuiltImage);
             }
+            redirectId = preBuilt.getId();
         } catch (Exception e) {
             e.printStackTrace();
             redirect.addFlashAttribute("errorMessage", "Sorry, we couldn't process that request at the moment.");
             return "redirect:/build/add";
         }
-        return "redirect:/build/";
+        return "redirect:/prebuilt?id=" + redirectId;
     }
 
     private boolean isPartsValid(PreBuilt preBuilt) {
         if (preBuilt.getCpu() == null || preBuilt.getMotherboard() == null || preBuilt.getMemory() == null
                 || preBuilt.getPsu() == null || preBuilt.getStorage() == null || preBuilt.getCases() == null) {
             return false;
-        }
-        return true;
-    }
-
-    private boolean isBuildMatch(PreBuilt preBuilt) {
-        PreBuilt sessionPrebuilt = buildService.getSessionPrebuilt();
-        if (preBuilt.getCpu().getId() != sessionPrebuilt.getCpu().getId()
-                || preBuilt.getMotherboard().getId() != sessionPrebuilt.getMotherboard().getId()
-                || preBuilt.getMemory().getId() != sessionPrebuilt.getMemory().getId()
-                || preBuilt.getStorage().getId() != sessionPrebuilt.getStorage().getId()
-                || preBuilt.getCases().getId() != sessionPrebuilt.getCases().getId()
-                || preBuilt.getPsu().getId() != sessionPrebuilt.getPsu().getId()) {
-            return false;
-        }
-        if (preBuilt.getCpucooler() != null) {
-            if (preBuilt.getCpucooler().getId() != sessionPrebuilt.getCpucooler().getId()) {
-                return false;
-            }
-        }
-        if (preBuilt.getVga() != null) {
-            if (preBuilt.getVga().getId() != sessionPrebuilt.getVga().getId()) {
-                return false;
-            }
-        }
-        if (preBuilt.getMonitor() != null) {
-            if (preBuilt.getMonitor().getId() != sessionPrebuilt.getMonitor().getId()) {
-                return false;
-            }
         }
         return true;
     }
