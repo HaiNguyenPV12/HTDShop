@@ -50,6 +50,7 @@ public class OrderDetailFacade extends AbstractFacade<OrderDetail> implements Or
         if (!datepart.equals("")) {
             str += " AND DATEDIFF(" + datepart + ", [Order].PaidDate, GETDATE()) = 0";
         }
+        str += " AND ProductId IS NOT NULL";
         str += " GROUP BY ProductId ORDER BY Quan DESC";
         Query q = em.createNativeQuery(str);
         if (q.getResultList().size() > 0) {
@@ -73,6 +74,7 @@ public class OrderDetailFacade extends AbstractFacade<OrderDetail> implements Or
         if (!datepart.equals("")) {
             str += " AND DATEDIFF(" + datepart + ", [Order].OrderDate, GETDATE()) = 0";
         }
+        str += " AND ProductId IS NOT NULL";
         str += " GROUP BY ProductId ORDER BY Quan DESC";
         Query q = em.createNativeQuery(str);
         if (q.getResultList().size() > 0) {
@@ -95,6 +97,7 @@ public class OrderDetailFacade extends AbstractFacade<OrderDetail> implements Or
         if (!datepart.equals("")) {
             str += " AND DATEDIFF(" + datepart + ", [Order].OrderDate, GETDATE()) = 0";
         }
+        str += " AND ProductId IS NOT NULL";
         str += " GROUP BY Product.CateId ORDER BY Quan DESC";
         Query q = em.createNativeQuery(str);
         if (q.getResultList().size() > 0) {
