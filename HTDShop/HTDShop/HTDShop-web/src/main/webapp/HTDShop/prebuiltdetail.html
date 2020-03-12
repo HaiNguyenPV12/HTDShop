@@ -249,15 +249,15 @@
                                 <span th:if="${discountPrice!=null}">
                                     <i class="text-muted">
                                         <del
-                                            th:text="${'$'+#numbers.formatDecimal(prebuiltPrice, 1, 'POINT', 2, 'COMMA')}"></del>
+                                            th:text="${'$'+#numbers.formatDecimal(prebuiltPrice, 1, 'COMMA', 2, 'POINT')}"></del>
                                     </i>
                                     <th:block
-                                        th:text="${'$'+#numbers.formatDecimal(discountPrice , 1, 'POINT', 2, 'COMMA')}">
+                                        th:text="${'$'+#numbers.formatDecimal(discountPrice , 1, 'COMMA', 2, 'POINT')}">
                                     </th:block>
                                 </span>
                                 <th:block th:if="${discountPrice==null}">
                                     <span
-                                        th:text="${'$'+#numbers.formatDecimal(prebuiltPrice , 1, 'POINT', 2, 'COMMA')}"></span>
+                                        th:text="${'$'+#numbers.formatDecimal(prebuiltPrice , 1, 'COMMA', 2, 'POINT')}"></span>
                                 </th:block>
                             </div>
 
@@ -287,10 +287,10 @@
                                             th:text="${' ' + (promo.preBuiltTarget == 0?'All Pre-built PC':'HTD exclusive PC') + ' '}">
                                         </th:block>
                                         <strong
-                                            th:text="${' discount ' + (promo.percentage != null ? (promo.percentage + '%') : ('$' + #numbers.formatDecimal(promo.exactSaleOff , 0, 'POINT', 0, 'COMMA')))}">
+                                            th:text="${' discount ' + (promo.percentage != null ? (promo.percentage + '%') : ('$' + #numbers.formatDecimal(promo.exactSaleOff , 0, 'COMMA', 0, 'POINT')))}">
                                         </strong>
                                         <th:block
-                                            th:text="${promo.maxSaleOff != null ? ('(Max $' + #numbers.formatDecimal(promo.maxSaleOff , 0, 'POINT', 0, 'COMMA') + ')') : ''}">
+                                            th:text="${promo.maxSaleOff != null ? ('(Max $' + #numbers.formatDecimal(promo.maxSaleOff , 0, 'COMMA', 0, 'POINT') + ')') : ''}">
                                         </th:block>
                                         <br>
                                         <i>

@@ -31,5 +31,7 @@ public interface CustomerFacadeLocal {
     int count();
 
     Customer checkLogin(String e, String p);
+
+    Customer findByEmail(String email);
     
 }

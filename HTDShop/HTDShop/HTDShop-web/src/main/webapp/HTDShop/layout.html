@@ -92,13 +92,18 @@
                 </div>
                 <div class="electronics-login-register">
                     <ul>
-                        <li th:if="${session.loggedInCustomer != null}">
-                            <a href="#"><i class="pe-7s-users"></i>
-                                <th:block
+                        <li th:if="${session.loggedInCustomer != null}"><a th:href="@{/profile}"><i
+                                    class="pe-7s-users"></i>
+                                <th:block th:if="${session.loggedInCustomer.point != null}"
                                     th:text="${session.loggedInCustomer.firstName + ' ('+ session.loggedInCustomer.point +')'}">
                                 </th:block>
+                                <th:block th:if="${session.loggedInCustomer.point == null}"
+                                    th:text="${session.loggedInCustomer.firstName}">
+                                </th:block>
                             </a>
-                            <a th:href="@{/testlogout}">Logout</a>
+                            <div>
+                                <a th:href="@{/testlogout}">Logout</a>
+                            </div>
                         </li>
                         <li th:if="${session.loggedInCustomer == null}"><a th:href="@{/login}"><i
                                     class="pe-7s-key"></i>Login</a>

@@ -6,28 +6,33 @@
 package vn.htdshop.controller.shop;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import vn.htdshop.entity.CartItem;
-import vn.htdshop.entity.PreBuilt;
-import vn.htdshop.entity.Product;
 import vn.htdshop.sb.CategoryFacadeLocal;
 import vn.htdshop.sb.PreBuiltFacadeLocal;
 import vn.htdshop.sb.ProductFacadeLocal;
 import vn.htdshop.utility.ShopService;
+
+import vn.htdshop.sb.*;
+import vn.htdshop.entity.*;
 
 /**
  *
@@ -46,6 +51,15 @@ public class shopCartController {
     @EJB(mappedName = "CategoryFacade")
     CategoryFacadeLocal categoryFacade;
 
+    @EJB(mappedName = "Order1Facade")
+    Order1FacadeLocal orderFacade;
+
+    @EJB(mappedName = "CustomerFacade")
+    CustomerFacadeLocal customerFacade;
+
+    @EJB(mappedName = "OrderDetailFacade")
+    OrderDetailFacadeLocal orderDetailFacade;
+
     @Autowired
     ShopService shopService;
 
@@ -58,6 +72,135 @@ public class shopCartController {
         model.asMap().put("cart", shopService.getCart());
         model.asMap().put("shopSv", shopService);
         return "HTDShop/cart_quick";
+    }
+
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public String getViewCart(Model model) {
+
+        model.asMap().put("cart", shopService.getCart());
+        model.asMap().put("shopSv", shopService);
+        return "HTDShop/cart";
+    }
+
+    @RequestMapping(value = "checkout", method = RequestMethod.GET)
+    public String viewCheckout(Model model) {
+        shopService.checkLogin();
+        Customer customer = shopService.getLoggedInCustomer();
+        if (customer == null) {
+            customer = new Customer();
+        }
+        model.addAttribute("custom", customer);
+        model.addAttribute("ord", new Order1());
+        model.asMap().put("cart", shopService.getCart());
+        model.asMap().put("shopSv", shopService);
+        return "HTDShop/checkout";
+    }
+
+    @RequestMapping(value = "doCheckout", method = RequestMethod.POST)
+    public String doCheckout(@Valid @ModelAttribute("custom") Customer custom, HttpServletResponse response,
+            RedirectAttributes redirect, Model model) {
+        Order1 order1 = null;
+        OrderDetail orderDetail = null;
+
+        if (shopService.checkLogin() == false) {
+            customerFacade.create(custom);
+
+            order1 = new Order1();
+            order1.setId(null);
+            order1.setCustomer(custom);
+            order1.setPurchasedMethod(1);
+            order1.setPaymentMethod(1);
+            order1.setPaymentStatus(true);
+            order1.setPaidDate(null);
+            order1.setOrderStatus(1);
+            order1.setOrderDate(DateTime.now().toDate());
+            order1.setCancelledDate(null);
+            orderFacade.create(order1);
+
+            orderDetail = new OrderDetail();
+            for (CartItem item : shopService.getCart()) {
+                if (item.getId().substring(0, 1).equals("a")) {
+                    orderDetail.setId(null);
+                    orderDetail.setOrder1(order1);
+                    orderDetail.setProduct(productFacade.find(Integer.parseInt(item.getId().substring(1))));
+                    orderDetail.setQuantity(item.getQuan());
+                    orderDetail.setPrice(shopService.getcartItemPrice(item.getId(), item.getQuan()));
+                    orderDetailFacade.create(orderDetail);
+                }
+            }
+            shopService.saveNonUserCart(new ArrayList<CartItem>());
+        } else {
+
+            Customer customerOld = shopService.getLoggedInCustomer();
+            boolean updated = false;
+            if (!customerOld.getFirstName().equals(custom.getFirstName())) {
+                customerOld.setFirstName(custom.getFirstName());
+                updated = true;
+            }
+            if (!customerOld.getLastName().equals(custom.getLastName())) {
+                customerOld.setLastName(custom.getLastName());
+                updated = true;
+            }
+            if (!customerOld.getAddress().equals(custom.getAddress())) {
+                customerOld.setAddress(custom.getAddress());
+                updated = true;
+            }
+            if (!customerOld.getPhone().equals(custom.getPhone())) {
+                customerOld.setPhone(custom.getPhone());
+                updated = true;
+            }
+            if (updated) {
+                customerFacade.edit(customerOld);
+                session.setAttribute("loggedInCustomer", customerOld);
+            }
+
+            // if (!custom.getFirstName().equals(customerOld.getFirstName())
+            // || !custom.getLastName().equals(customerOld.getLastName())
+            // || !custom.getAddress().equals(customerOld.getAddress())
+            // || !custom.getPhone().equals(customerOld.getPhone())
+            // ) {
+            // customerOld.setFirstName(custom.getFirstName());
+            // customerOld.setLastName(custom.getLastName());
+            // customerOld.setAddress(custom.getAddress());
+            // customerOld.setPhone(custom.getPhone());
+            // customerFacade.edit(customerOld);
+            // session.setAttribute("loggedInCustomer",customerOld);
+            // }
+
+            order1 = new Order1();
+            order1.setId(null);
+            order1.setCustomer(shopService.getLoggedInCustomer());
+            order1.setPurchasedMethod(1);
+            order1.setPaymentMethod(1);
+            order1.setPaymentStatus(true);
+            order1.setPaidDate(null);
+            order1.setOrderStatus(1);
+            order1.setOrderDate(DateTime.now().toDate());
+            order1.setCancelledDate(null);
+            orderFacade.create(order1);
+
+            orderDetail = new OrderDetail();
+            for (CartItem item : shopService.getCart()) {
+                if (item.getId().substring(0, 1).equals("a")) {
+                    orderDetail.setId(null);
+                    orderDetail.setOrder1(order1);
+                    orderDetail.setProduct(productFacade.find(Integer.parseInt(item.getId().substring(1))));
+                    orderDetail.setQuantity(item.getQuan());
+                    orderDetail.setPrice(shopService.getcartItemPrice(item.getId(), item.getQuan()));
+                    orderDetailFacade.create(orderDetail);
+                }else{
+                    orderDetail.setId(null);
+                    orderDetail.setOrder1(order1);
+                    orderDetail.setPreBuilt(preBuiltFacade.find(Integer.parseInt(item.getId().substring(1))));
+                    orderDetail.setQuantity(item.getQuan());
+                    orderDetail.setPrice(shopService.getcartItemPrice(item.getId(), item.getQuan()));
+                    orderDetailFacade.create(orderDetail);
+                }
+            }
+            shopService.saveUserCart(new ArrayList<CartItem>());
+        }
+
+        return "redirect:/";
     }
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
