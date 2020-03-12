@@ -194,7 +194,7 @@ public class managerStaffController {
             staffFacade.edit(staff);
             uploadImage(img, staff, true);
 
-            redirect.addFlashAttribute("goodAlert", "Successfully added \"" + staff.getUsername() + "\"!");
+            redirect.addFlashAttribute("goodAlert", "Successfully updated \"" + staff.getUsername() + "\"!");
             return redirectStaffHome;
         }
         // Show common error message
