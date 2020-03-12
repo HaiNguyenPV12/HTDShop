@@ -100,9 +100,9 @@
                                     th:if="${session.loggedInCustomer.point == null}" th:text="${session.loggedInCustomer.firstName + ' ('0')}">
                                 </th:block>
                             </a>
-                            <div>
-                                <a th:href="@{/testlogout}">Logout</a>
-                            </div>
+                        </li>
+                        <li th:if="${session.loggedInCustomer != null}">
+                            <a th:href="@{/testlogout}">Logout</a>
                         </li>
                         <li th:if="${session.loggedInCustomer == null}"><a th:href="@{/login}"><i
                                     class="pe-7s-key"></i>Login</a>
