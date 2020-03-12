@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -48,13 +49,13 @@ public class shopLoginController {
     @RequestMapping(value = "doLogin", method = RequestMethod.POST)
     public String postLogin(@RequestParam(value = "email", required = false) String email,
             @RequestParam(value = "password", required = false) String password, RedirectAttributes redirect,
-            @RequestParam(value = "remember", required = false) String remember, 
+            @RequestParam(value = "remember", required = false) String remember,
             @RequestParam(value = "redirect", required = false) String redirectUrl,
-            HttpSession session,           
-            HttpServletResponse response) {
+            HttpSession session, HttpServletResponse response) {
 
         // Check if error exists
         // If not, start to check login
+
         Customer result = customerFacade.checkLogin(email, password);
         if (result != null) {
             // If ok, save staff's session
@@ -67,12 +68,12 @@ public class shopLoginController {
             redirect.addFlashAttribute("goodAlert", "Successfully logged in as \"" + result.getFirstName() + "\".");
             if (redirectUrl == null || redirectUrl.isEmpty()) {
                 return "redirect:/";
-            }
-            else{
+            } else {
                 return "redirect:/cart/checkout";
             }
         }
-        
+            
         return "redirect:/login";
     }
+
 }

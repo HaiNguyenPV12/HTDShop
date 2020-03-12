@@ -86,7 +86,7 @@ public class shopProfileController {
         return "HTDShop/profile";
     }
 
-    @RequestMapping(value = "orderChecker", method = RequestMethod.GET)
+    @RequestMapping(value = "orderchecker", method = RequestMethod.GET)
     public String viewOrder(Model model, ModelMap modelMap, HttpSession session) {
         if (shopService.checkLogin() == true) {
             Customer custom = shopService.getLoggedInCustomer();
