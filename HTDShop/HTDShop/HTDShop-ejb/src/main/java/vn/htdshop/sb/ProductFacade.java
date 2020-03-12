@@ -215,4 +215,16 @@ public class ProductFacade extends AbstractFacade<Product> implements ProductFac
         return (List<String>) q.getResultList();
     }
 
+    @Override
+    public List<String> getManuOtherList(String cateId) {
+        if (null == cateId) {
+            return new ArrayList<String>();
+        }
+        Query q = em.createNativeQuery("SELECT DISTINCT Manufacturer FROM Product WHERE CateId = " + cateId);
+        if (q.getResultList().size() == 0) {
+            return new ArrayList<String>();
+        }
+        return (List<String>) q.getResultList();
+    }
+
 }

@@ -409,14 +409,27 @@
                             makeAutoList(this, cate, attr);
                         });
                         $("#category.id").val(cateId);
-                        makeAutoList($("#manufacturer"), $("#cateName").val(), "manu");
+                        if ($("#cateName").length) {
+                            makeAutoList($("#manufacturer"), $("#cateName").val(), "manu");
+                        } else {
+                            makeAutoList($("#manufacturer"), $("#cateOtherId").val(), "manuOther");
+                        }
+
                         makeAutoList($("#warrantyPeriod"), "", "warrantyPeriod");
                     }
                 });
             }
         });
+        var cateNameExist = $("#cateName").length;
+        var cateOtherIdExist = $("#cateOtherId").length;
+        if (cateNameExist) {
+            makeAutoList($("#manufacturer"), $("#cateName").val(), "manu");
+        } else if (cateOtherIdExist) {
+            makeAutoList($("#manufacturer"), $("#cateOtherId").val(), "manuOther");
+        } else {
+            makeAutoList($("#manufacturer"), "", "manu");
+        }
 
-        makeAutoList($("#manufacturer"), /*[[${cateName == null? '' : cateName}]]*/"", "manu");
         makeAutoList($("#warrantyPeriod"), "", "warrantyPeriod");
         if (update) {
             $("#specificInfo").find("input.autocomplete").each(function (i, e) {
