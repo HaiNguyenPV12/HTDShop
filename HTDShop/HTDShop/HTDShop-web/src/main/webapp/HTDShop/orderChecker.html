@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDShop/layout}">
+
+<head>
+    <title>HTD Shop - Login</title>
+    <th:block layout:fragment="additionalCss">
+        <link rel="stylesheet" th:href="@{/resources/Content/fontawesome-free/css/all.min.css}">
+    </th:block>
+
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="breadcrumb-area pt-10 pb-10"
+            style="background-image: linear-gradient(141deg, #7906d88c 0%, #fff 51%, #7906d88c 75%);">
+            <div class="container">
+                <div class="breadcrumb-content text-center">
+                    <ul>
+                        <li><a th:href="@{/}">HOME</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card card-purple card-outline">
+                    <div class="card-body">
+                        <table id="tblOrder" class="table table-bordered table-striped table-hover">
+                            <thead class="bg-purple">
+                                <th>ID</th>
+                                <th>Order Date</th>
+                                <th>Product Name</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${custom.order1Collection eq null or custom.order1Collection.empty}">
+                                    <td colspan="9">You have No Orders</td>
+                                </tr>
+
+                                <tr th:each="o : ${custom.order1Collection}"
+                                    th:classappend="${(o.orderStatus==3?'bg-gray':'') + (o.orderStatus==2?'bg-yellow':'')}">
+
+                                    <td>
+                                        <th:block>
+                                            <a th:href="@{/profile/ordertracking(id=${o.id})}" th:if="${o.orderStatus != 5}" th:text="${o.id}">001</a>
+                                        </th:block>
+                                        <th:block>
+                                            <a th:if="${o.orderStatus == 5}" th:text="${o.id}">001</a>
+                                        </th:block>
+                                    </td>
+                                    <td th:text="${o.orderDate}">CPU</td>
+                                    <td>
+                                        <ul>
+                                            <li th:each="od : ${o.orderDetailCollection}">
+                                               <th:block  th:if="${od.product != null}" th:text="${od.product.name}"></th:block>
+                                               <th:block  th:if="${od.preBuilt != null}" th:text="${od.preBuilt.name}"></th:block>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <ul>
+                                            <li th:each="od : ${o.orderDetailCollection}">
+                                               <th:block th:text="${od.quantity}"></th:block>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <ul>
+                                            <li th:each="od : ${o.orderDetailCollection}">
+                                               <th:block th:text="'$'+ ${od.price}"></th:block>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                    <!-- <td>
+                                        <th:block th:each="od : ${o.orderDetailCollection}">
+                                            <a th:text="${od.quantity}"></a>
+                                        </th:block>
+                                    </td>
+                                    <td>
+                                        <th:block th:each="od : ${o.orderDetailCollection}">
+                                            <a th:text="${od.price}"></a>
+                                        </th:block>
+                                    </td> -->
+                                    <!-- <th:block th:each="od : ${o.orderDetailCollection}">
+                                        <td th:text="${od.product.name}"></td>
+                                        <td th:text="${od.quantity}"></td>
+                                        <td th:text="'$' + ${od.price}"></td>
+                                    </th:block> -->
+                                    <td>
+                                        <th:block th:if="${o.orderStatus==1}">Ordered</th:block>
+                                        <th:block th:if="${o.orderStatus==2}">Confirmed</th:block>
+                                        <th:block th:if="${o.orderStatus==3}">Shipping</th:block>
+                                        <th:block th:if="${o.orderStatus==4}">Done</th:block>
+                                        <th:block th:if="${o.orderStatus==5}">Cancelled</th:block>
+                                    </td>
+
+                                </tr>
+                                </th:block>
+                            </tbody>
+                            <tfoot class="bg-purple">
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:src="@{/manager_resources/plugins/jquery/jquery.min.js}"></script>
+    <!-- Bootstrap 4 -->
+    <script th:src="@{/manager_resources/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <!-- AdminLTE App -->
+    <script th:src="@{/manager_resources/Scripts/adminlte.min.js}"></script>
+    <script>
+    </script>
+</body>
+
+</html>

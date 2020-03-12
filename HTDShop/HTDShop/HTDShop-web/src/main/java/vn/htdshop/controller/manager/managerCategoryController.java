@@ -162,7 +162,7 @@ public class managerCategoryController {
             // Insert into database
             categoryFacade.create(category);
 
-            // Insert rights
+            // Insert category's attribute
             for (String o : others) {
                 if (o != null && !o.trim().isEmpty()) {
                     CategoryOther other = new CategoryOther();
@@ -171,7 +171,7 @@ public class managerCategoryController {
                     categoryOtherFacade.create(other);
                 }
             }
-
+            session.removeAttribute("categories");
             // Pass alert attribute to notify successful process
             redirect.addFlashAttribute("goodAlert", "Successfully added \"" + category.getName() + "\"!");
             return redirectCategoryHome;
@@ -289,7 +289,7 @@ public class managerCategoryController {
                     categoryOtherFacade.create(other);
                 }
             }
-
+            session.removeAttribute("categories");
             // Pass alert attribute to notify successful process
             redirect.addFlashAttribute("goodAlert", "Successfully updated \"" + category.getName() + "\"!");
             return redirectCategoryHome;

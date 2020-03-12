@@ -34,15 +34,25 @@ public class CustomerFacade extends AbstractFacade<Customer> implements Customer
 
     @Override
     public Customer checkLogin(String e, String p) {
-        TypedQuery<Customer> query = em.createQuery(
-                "SELECT c FROM Customer c WHERE c.email = :email AND c.password = :password", Customer.class);
+        Query query = em.createQuery(
+                "SELECT c FROM Customer c WHERE c.email = :email AND c.password = :password");
         query.setParameter("email", e);
         query.setParameter("password", p);
 
         if (query.getResultList().size() == 0) {
             return null;
         }
-        return query.getSingleResult();
+        return (Customer)query.getSingleResult();
+    }
+
+    @Override
+    public Customer findByEmail(String email) {
+        Query q = em.createNamedQuery("Customer.findByEmail");
+        q.setParameter("email", email);
+        if (q.getResultList().size() <= 0) {
+            return null;
+        }
+        return (Customer) q.getSingleResult();
     }
 
 }

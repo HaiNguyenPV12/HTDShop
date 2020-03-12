@@ -274,16 +274,16 @@
                                     <span th:if="${product.status == 1 || product.status == 2}">
                                         <i class="text-muted">
                                             <del
-                                                th:text="${'$'+#numbers.formatDecimal(product.price, 1, 'POINT', 2, 'COMMA')}"></del>
+                                                th:text="${'$'+#numbers.formatDecimal(product.price, 1, 'COMMA', 2, 'POINT')}"></del>
                                         </i>
                                         <th:block
-                                            th:text="${'$'+#numbers.formatDecimal(discountPrice , 1, 'POINT', 2, 'COMMA')}">
+                                            th:text="${'$'+#numbers.formatDecimal(discountPrice , 1, 'COMMA', 2, 'POINT')}">
                                         </th:block>
                                     </span>
                                 </th:block>
                                 <th:block th:if="${discountPrice==null}">
                                     <span th:if="${product.status == 1 || product.status == 2}"
-                                        th:text="${'$'+#numbers.formatDecimal(product.price , 1, 'POINT', 2, 'COMMA')}"></span>
+                                        th:text="${'$'+#numbers.formatDecimal(product.price , 1, 'COMMA', 2, 'POINT')}"></span>
                                 </th:block>
                                 <span th:if="${product.status == 3}">Unavailable</span>
                                 <span th:if="${product.status == 2}"> - Cooming soon</span>
@@ -572,23 +572,23 @@
                             <h4><a th:href="@{/product(id=${p.id})}" th:text="${p.name}"></a></h4>
                             <span th:if="${p.status == 1 && p.stock > 0}">
                                 <del th:if="${shopSv.getDiscountPrice(p) lt p.price}"
-                                    th:text="${'$'+#numbers.formatDecimal(p.price, 1, 'POINT', 2, 'COMMA')}"
+                                    th:text="${'$'+#numbers.formatDecimal(p.price, 1, 'COMMA', 2, 'POINT')}"
                                     class="text-muted"></del>
                                 <th:block
-                                    th:text="${'$'+#numbers.formatDecimal(shopSv.getDiscountPrice(p), 1, 'POINT', 2, 'COMMA')}">
+                                    th:text="${'$'+#numbers.formatDecimal(shopSv.getDiscountPrice(p), 1, 'COMMA', 2, 'POINT')}">
                                 </th:block>
                             </span>
                             <span th:if="${p.status == 1 && p.stock == 0}">
-                                <th:block th:text="${'$'+#numbers.formatDecimal(p.price, 1, 'POINT', 2, 'COMMA')}"
+                                <th:block th:text="${'$'+#numbers.formatDecimal(p.price, 1, 'COMMA', 2, 'POINT')}"
                                     class="text-muted"></th:block>
                                 - Out of stock
                             </span>
                             <span th:if="${p.status == 2}">
                                 <del th:if="${shopSv.getDiscountPrice(p) lt p.price}"
-                                    th:text="${'$'+#numbers.formatDecimal(p.price, 1, 'POINT', 2, 'COMMA')}"
+                                    th:text="${'$'+#numbers.formatDecimal(p.price, 1, 'COMMA', 2, 'POINT')}"
                                     class="text-muted"></del>
                                 <th:block
-                                    th:text="${'$'+#numbers.formatDecimal(shopSv.getDiscountPrice(p), 1, 'POINT', 2, 'COMMA')}">
+                                    th:text="${'$'+#numbers.formatDecimal(shopSv.getDiscountPrice(p), 1, 'COMMA', 2, 'POINT')}">
                                 </th:block>
                                 - Upcoming
                             </span>

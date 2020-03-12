@@ -170,7 +170,12 @@ public class managerProductController {
             category = "";
         }
         List<String> result = new ArrayList<String>();
-        result = productFacade.getStringList(params.get("attr") + category);
+        if ("manuOther".equals(params.get("attr"))) {
+            result = productFacade.getManuOtherList(category);
+        } else {
+            result = productFacade.getStringList(params.get("attr") + category);
+        }
+
         return result;
     }
 

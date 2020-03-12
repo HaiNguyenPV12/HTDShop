@@ -82,16 +82,16 @@
                         <h4 class="col-sm-12 border-bottom pb-2"><strong>
                             <i class="fas fa-chart-line"></i> BEST SELLERS THIS MONTH
                         </strong></h4>
-                        <div class="col-sm-4 border">
+                        <div class="col-sm-4 border-right">
                             <strong>Product</strong>
                             <img th:src="@{/images/__${statistic.productImageThisMonth}__}" style="width: 100%; object-fit: contain; max-height: 6rem;" th:if="${!statistic.productImageThisMonth.isEmpty()}"/>
                             <p><i th:text="${statistic.productThisMonth}">AMD Ryzen 5 3600 3.6 GHz 6-Core</i></p>
                         </div>
-                        <div class="col-sm-4 border">
+                        <div class="col-sm-4 border-right">
                             <strong>Manufacturer</strong>
                             <h4 th:text="${statistic.manuThisMonth}">Gigabyte</h4>
                         </div>
-                        <div class="col-sm-4 border">
+                        <div class="col-sm-4">
                             <strong>Category</strong>
                             <h4 th:text="${statistic.categoryThisMonth}">Mainboard</h4>
                         </div>

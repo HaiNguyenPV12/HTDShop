@@ -103,7 +103,6 @@ public class Staff implements Serializable {
     @Column(name = "Phone")
     private String phone;
     @Basic(optional = false)
-    @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "Image")
     private String image;
