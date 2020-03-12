@@ -260,7 +260,9 @@
                             </h3>
                         </div>
                         <div class="card-body">
-                            <div class="row" id="conditions"> 
+                            <div class="row" id="conditions">
+                                <div class="col-sm-12 text-danger" id="conditionsError">
+                                </div>
                                 <div class="col-sm-12 border rounded-sm border-secondary row hoverable" th:if="${!promotion.promotionCollection.isEmpty()}" th:each="p : ${promotion.promotionCollection}">
                                     <div class="col-sm-10">
                                         <input type="hidden" name="conCount" value="1"/>
@@ -494,20 +496,32 @@
         <script th:inline="javascript">
             /*<![CDATA[*/
             var submited = /*[[${submited != null? true : false}]]*/false;
-            
-             /*]]>*/
+
+            /*]]>*/
         </script>
     </th:block>
     <script layout:fragment="script" th:inline="javascript">
         /*<![CDATA[*/
         // Condition proccess
         $("#btnAddCondition").on("click", function () {
+            checkCount();
             showCondition(false, null);
         });
 
         $("#frmCondition").on("submit", function (e) {
             e.preventDefault();
         });
+        function checkCount() {
+            $("#conditionsError").html("");
+            var count = $("input[name='conCount']").length;
+            if (count <= 0) {
+                $("#conditionsError").html("Please add at least 1 conditions.");
+                return false;
+            }
+            return true;
+        }
+
+        checkCount();
 
         function showCondition(update, button) {
             $("#conModalConfirm").off("click");
@@ -654,7 +668,7 @@
                 }
                 string += '</div><div class="col-sm-2 text-right">'
                     + '<a type="button" class="btn btn-warning btn-sm" onclick="showCondition(true, this)"> <i class="fas fa-pencil-alt" ></i></a> '
-                    + '<a type="button" class="btn btn-danger btn-sm" onclick="$(this).parent().parent().remove();"> <i class="fas fa-trash"></i></a>'
+                    + '<a type="button" class="btn btn-danger btn-sm" onclick="$(this).parent().parent().remove();checkCount();"> <i class="fas fa-trash"></i></a>'
                     + '</div>';
 
                 if (update == false) {
@@ -664,6 +678,7 @@
                 }
 
                 $('#conModal').modal('hide');
+                checkCount();
             }
         }
 
@@ -845,11 +860,19 @@
             function injectTrim(handler) {
                 return function (element, event) {
                     if (element.tagName === "TEXTAREA" || (element.tagName === "INPUT"
-                        && element.type !== "password")) {
+                        && element.type !== "password" && element.type !== "file")) {
                         element.value = $.trim(element.value);
                     }
                     return handler.call(this, element, event);
                 };
+            }
+
+            function trimAll() {
+                $("form").find("input, textarea").each(function (i, e) {
+                    if (e.type !== "file") {
+                        $(e).val($(e).val().trim());
+                    }
+                });
             }
 
             $("#frmPromotion").validate({
@@ -878,15 +901,25 @@
                     }
                 },
                 errorElement: "li",
-                callback: function () {
-                    // addRule();
-                    var form = $("#frmPromotion");
-                    if (form.valid()) {
-                        form.submit();
-                    } else {
+                submitHandler: function (form) {
+                    if (!checkCount()) {
                         return false;
                     }
+                    trimAll();
+                    if ($("#frmPromotion").valid()) {
+                        return true;
+                    }
+                    return false;
                 },
+                // callback: function () {
+                //     // addRule();
+                //     var form = $("#frmPromotion");
+                //     if (form.valid()) {
+                //         form.submit();
+                //     } else {
+                //         return false;
+                //     }
+                // },
                 onfocusout: injectTrim($.validator.defaults.onfocusout)
             });
         });

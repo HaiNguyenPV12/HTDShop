@@ -71,7 +71,7 @@ public class OrderDetailFacade extends AbstractFacade<OrderDetail> implements Or
                 + " WHERE OrderDetail.OrderId = [Order].Id AND Product.Id = OrderDetail.ProductId AND [Order].OrderStatus = 4";
         str += " AND Product.CateId = " + cateId;
         if (!datepart.equals("")) {
-            str += " AND DATEDIFF(" + datepart + ", [Order].PaidDate, GETDATE()) = 0";
+            str += " AND DATEDIFF(" + datepart + ", [Order].OrderDate, GETDATE()) = 0";
         }
         str += " GROUP BY ProductId ORDER BY Quan DESC";
         Query q = em.createNativeQuery(str);
@@ -93,7 +93,7 @@ public class OrderDetailFacade extends AbstractFacade<OrderDetail> implements Or
         str += " Product.CateId, SUM(Quantity) AS Quan FROM OrderDetail, [Order], Product"
                 + " WHERE OrderDetail.OrderId = [Order].Id AND OrderDetail.ProductId = Product.Id AND [Order].OrderStatus = 4";
         if (!datepart.equals("")) {
-            str += " AND DATEDIFF(" + datepart + ", [Order].PaidDate, GETDATE()) = 0";
+            str += " AND DATEDIFF(" + datepart + ", [Order].OrderDate, GETDATE()) = 0";
         }
         str += " GROUP BY Product.CateId ORDER BY Quan DESC";
         Query q = em.createNativeQuery(str);
@@ -115,7 +115,7 @@ public class OrderDetailFacade extends AbstractFacade<OrderDetail> implements Or
         str += " Product.Manufacturer, SUM(Quantity) AS Quan FROM OrderDetail, [Order], Product"
                 + " WHERE OrderDetail.OrderId = [Order].Id AND OrderDetail.ProductId = Product.Id AND [Order].OrderStatus = 4";
         if (!datepart.equals("")) {
-            str += " AND DATEDIFF(" + datepart + ", [Order].PaidDate, GETDATE()) = 0";
+            str += " AND DATEDIFF(" + datepart + ", [Order].OrderDate, GETDATE()) = 0";
         }
         str += " GROUP BY Product.Manufacturer ORDER BY Quan DESC";
         Query q = em.createNativeQuery(str);

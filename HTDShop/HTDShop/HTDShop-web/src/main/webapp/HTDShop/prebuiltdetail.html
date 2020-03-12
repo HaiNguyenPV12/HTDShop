@@ -128,6 +128,34 @@
         .border-purple {
             border-color: #9628f08c !important
         }
+
+        .detail-ellipsis {
+            display: block;
+            display: -webkit-box;
+            max-width: 100%;
+            height: 8rem;
+            margin: 0 auto;
+            line-height: 1.1;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            -webkit-transition: all .8s ease;
+            -moz-transition: all .8s ease;
+            -ms-transition: all .8s ease;
+            -o-transition: all .8s ease;
+            transition: all .8s ease;
+        }
+
+        .detail-show {
+            height: fit-content;
+            -webkit-line-clamp: unset;
+            -webkit-transition: all .8s ease;
+            -moz-transition: all .8s ease;
+            -ms-transition: all .8s ease;
+            -o-transition: all .8s ease;
+            transition: all .8s ease;
+        }
     </style>
 </head>
 
@@ -355,9 +383,12 @@
                     </div>
                     <div class="description-review-text tab-content">
                         <div class="tab-pane active show fade" id="pro-dec" role="tabpanel" style="margin-left: 10rem;">
-                            <p
+                            <div class="detail-ellipsis"
                                 th:utext="${(prebuilt.detail == null || prebuilt.detail.isEmpty()) ? '(No description)' : prebuilt.detail}">
-                            </p>
+                            </div>
+                            <div>
+                                <button type="button" onclick="toggleDetail()" id="btnToggleDetail">Show more</button>
+                            </div>
                         </div>
                         <div class="tab-pane fade overflow-auto text-left border border-secondary" id="pro-review"
                             role="tabpanel">
@@ -368,13 +399,14 @@
                                         enctype="application/x-www-form-urlencoded">
                                         <div class="d-flex">
                                             <input type="hidden" name="prebuiltid" th:value="${prebuilt.id}" />
-                                            <select class="form-control form-control-sm" name="rating" id="" style="width: 5rem;height: auto;">
-                                                <option th:each="num : ${#numbers.sequence(0, 10)}" th:value="${num}" th:text="${num}"></option>
+                                            <select class="form-control form-control-sm" name="rating" id="" style="width: 5rem;height: auto;" required>
+                                                <option disabled selected>Rating</option>
+                                                <option th:each="num : ${#numbers.sequence(10, 1)}" th:value="${num}" th:text="${num}"></option>
                                             </select>
                                             <!-- <input type="number" class="form-control form-control-sm" name="rating"
                                                 required min=1 max=10 step="1" style="width: 5rem;" /> -->
                                             <input type="text" class="form-control form-control-sm" name="comment"
-                                                placeholder="Comment and rating on this pre-built PC" required />
+                                                placeholder="Comment and rating on this pre-built PC" />
                                             <button type="submit" class="btn btn-secondary" style="height: auto;"><i
                                                     class="fas fa-comment"></i></button>
                                             <br>
@@ -454,6 +486,8 @@
     </th:block>
 
     <script layout:fragment="script">
+        var form = null;
+
         function showModal(title) {
             $('#modalButton').attr('style', 'display:none;');
             $('#modalTitle').html(title);
@@ -463,12 +497,38 @@
         $("form.rating").on("submit", function (e) {
             e.preventDefault();
             form = $(this);
-            if ($("#g-recaptcha-response").length) {
-                grecaptcha.reset();
-            } else {
-                grecaptcha.render("g-recaptcha", { "sitekey": "6LdeYdoUAAAAAHL11wXzM80G7X_dNVEQAYp_V9JN", "callback": "checked" });
+            var validated = true;
+            var rating = form.find("select[name='rating']");
+            if (rating.val() == "" || rating.val() == null) {
+                rating.focus();
+                Toast.fire({
+                    type: 'error',
+                    title: "Please select rating!",
+                    timer: 3000
+                });
+                validated = false;
+                return;
             }
-            showModal("Confirm Captcha");
+            form.find("input[type='text']").each(function (i, e2) {
+                $(e2).val($(e2).val().trim());
+                if ($(e2).val() == "" || $(e2).val() == null) {
+                    $(e2).focus();
+                    Toast.fire({
+                        type: 'error',
+                        title: "Please input some content!",
+                        timer: 3000
+                    });
+                    validated = false;
+                }
+            });
+            if (validated) {
+                if ($("#g-recaptcha-response").length) {
+                    grecaptcha.reset();
+                } else {
+                    grecaptcha.render("g-recaptcha", { "sitekey": "6LdeYdoUAAAAAHL11wXzM80G7X_dNVEQAYp_V9JN", "callback": "checked" });
+                }
+                showModal("Confirm Captcha");
+            }
         });
 
         function checked() {
@@ -512,6 +572,24 @@
                 $(this).val(1);
             }
         });
+
+        function isOverflown(element) {
+            return element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth;
+        }
+        if (!isOverflown($("div.detail-ellipsis")[0])) {
+            $("#btnToggleDetail").css("display", "none");
+        }
+
+        function toggleDetail() {
+            if (!$("div.detail-ellipsis").hasClass("detail-show")) {
+                $("#btnToggleDetail").html("Show less");
+                $("div.detail-ellipsis").addClass("detail-show");
+            } else {
+                $("#btnToggleDetail").html("Show more");
+                $("div.detail-ellipsis").removeClass("detail-show");
+            }
+
+        }
     </script>
 </body>
 

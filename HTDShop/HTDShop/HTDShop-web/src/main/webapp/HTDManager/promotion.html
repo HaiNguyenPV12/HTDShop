@@ -221,12 +221,12 @@
                         var promotionlink = /*[[@{/manager/promotion}]]*/'';
                         var id = row.id;
                         var str = "";
-                        str += '<a class="btn btn-warning btn-sm" href="' + promotionlink + '/edit?id=' + id + '" data-toggle="tooltip" title = "Edit" > <i class="fas fa-pencil-alt" ></i></a>';
+                        str += '<a class="btn btn-warning btn-sm" href="' + promotionlink + '/edit?id=' + id + '" data-toggle="tooltip" title = "Edit" > <i class="fas fa-pencil-alt" ></i></a> ';
                         if (!row.hasImageSlide) {
-                            str += '<a class="btn btn-info btn-sm" data-toggle="tooltip" title="Make Image Slide" onclick="createImageSlide(' + id + ')" style="cursor:pointer"><i class="fas fa-photo-video"></i></a>';
+                            str += '<a class="btn btn-info btn-sm" data-toggle="tooltip" title="Make Image Slide" onclick="createImageSlide(' + id + ')" style="cursor:pointer"><i class="fas fa-photo-video"></i></a> ';
                         }           
-                        str += '<a class="btn btn-danger btn-sm" data-toggle="tooltip" style="cursor:pointer" title="Disable" onclick="doDisable(' + id + ')"> <i class="fas fa-stop-circle" ></i></a>';
-                        str += '<button class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete" onclick=\"confirmDelete(\'' + row.name.replace("\"", "&quot;").replace("\'", "") + '\',\'' + promotionlink + '/doDelete?id=' + id + '\')\"><i class="fas fa-trash"></i></button>';
+                        str += '<a class="btn btn-danger btn-sm" data-toggle="tooltip" style="cursor:pointer" title="Disable" onclick="doDisable(' + id + ')"> <i class="fas fa-stop-circle" ></i></a> ';
+                        str += '<button class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete" onclick=\"confirmDelete(\'' + row.name.replace("\"", "&quot;").replace("\'", "") + '\',\'' + promotionlink + '/doDelete?id=' + id + '\')\"><i class="fas fa-trash"></i></button> ';
                         return str;
                     }
                 }
@@ -307,8 +307,8 @@
                         var promotionlink = /*[[@{/manager/promotion}]]*/'';
                         var id = row.id;
                         var str = "";
-                        str += '<a class="btn btn-warning btn-sm" href="' + promotionlink + '/edit?id=' + id + '" data-toggle="tooltip" title = "Edit" > <i class="fas fa-pencil-alt" ></i></a>';
-                        str += '<button class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete" onclick=\"confirmDelete(\'' + row.name.replace("\"", "&quot;").replace("\'", "") + '\',\'' + promotionlink + '/doDelete?id=' + id + '\')\"><i class="fas fa-trash"></i></button>';
+                        str += '<a class="btn btn-warning btn-sm" href="' + promotionlink + '/edit?id=' + id + '" data-toggle="tooltip" title = "Edit" > <i class="fas fa-pencil-alt" ></i></a> ';
+                        str += '<button class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete" onclick=\"confirmDelete(\'' + row.name.replace("\"", "&quot;").replace("\'", "") + '\',\'' + promotionlink + '/doDelete?id=' + id + '\')\"><i class="fas fa-trash"></i></button> ';
                         return str;
                     }
                 }

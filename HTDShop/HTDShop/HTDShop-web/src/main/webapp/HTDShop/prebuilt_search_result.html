@@ -29,7 +29,7 @@
                     </div>
                 </div>
                 <div class="product-content">
-                    <h4><a th:href="@{/prebuilt(id=${p.id})}" th:text="${p.name}"></a></h4>
+                    <h4><a class="block-ellipsis" th:href="@{/prebuilt(id=${p.id})}" th:text="${p.name}"></a></h4>
                     <p th:with="rating = ${shopSv.getAverageRating(p)}">
                         <th:block th:each="i : ${#numbers.sequence(1, rating)}" th:if="${rating > 0}">
                             <i th:if="${i != rating && i % 2 == 0}" class="fas fa-star"></i>
@@ -40,6 +40,7 @@
                             <i th:if="${i != (10-rating) && i % 2 == 0}" class="far fa-star"></i>
                             <i th:if="${i == (10-rating) && i % 2 == 0}" class="far fa-star"></i>
                         </th:block>
+                        <i class="text-muted" th:text="${p.preBuiltRatingCollection.size() + ' rating(s)'}"></i>
                     </p>
                     <span>
                         <del th:if="${shopSv.getPreBuiltDiscountPrice(p) lt shopSv.getPreBuiltPrice(p)}"

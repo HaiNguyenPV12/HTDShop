@@ -652,6 +652,7 @@ public class ShopService {
         return result;
     }
 
+
     public Long getAverageRating(PreBuilt prebuilt) {
         Long result = 0L;
         Collection<PreBuiltRating> ratings = prebuilt.getPreBuiltRatingCollection();

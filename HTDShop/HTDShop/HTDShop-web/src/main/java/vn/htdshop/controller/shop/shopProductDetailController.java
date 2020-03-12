@@ -5,10 +5,8 @@
  */
 package vn.htdshop.controller.shop;
 
-import java.security.KeyStore.Entry;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +24,6 @@ import vn.htdshop.entity.OrderDetail;
 import vn.htdshop.entity.Product;
 import vn.htdshop.entity.ProductComment;
 import vn.htdshop.entity.ProductCommentReply;
-import vn.htdshop.entity.ProductView;
 import vn.htdshop.sb.OrderDetailFacadeLocal;
 import vn.htdshop.sb.ProductCommentFacadeLocal;
 import vn.htdshop.sb.ProductCommentReplyFacadeLocal;

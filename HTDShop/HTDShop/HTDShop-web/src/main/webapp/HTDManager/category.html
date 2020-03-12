@@ -17,7 +17,7 @@
 <body>
 
     <span layout:fragment="title">
-        <i class="fas fa-box" style="font-size:20px"></i> Category
+        <i class="fas fa-cube" style="font-size:20px"></i> Category
         <a class="btn btn-success" th:href="@{/manager/category/add}">
             <i class="fas fa-plus-square fa-lg mr-2"></i> Add new Category
         </a>
@@ -54,7 +54,7 @@
                                             Default
                                         </th:block>
                                         <div class="row">
-                                            <div class="col-sm-2 border rounded-sm border-secondary"
+                                            <div class="col-sm-3 border rounded-sm border-secondary"
                                                 th:each="o : ${c.categoryOtherCollection}"
                                                 th:if="${!c.categoryOtherCollection.isEmpty()}">
                                                 <span th:text="${o.name}"></span>

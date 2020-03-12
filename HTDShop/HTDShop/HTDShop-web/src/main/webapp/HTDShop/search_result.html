@@ -30,7 +30,7 @@
                     </div>
                 </div>
                 <div class="product-content">
-                    <h4><a th:href="@{/product(id=${p.id})}" th:text="${p.name}"></a></h4>
+                    <h4><a class="block-ellipsis" th:href="@{/product(id=${p.id})}" th:text="${p.name}"></a></h4>
                     <span th:if="${p.status == 1 && p.stock > 0}">
                         <del th:if="${shopSv.getDiscountPrice(p) lt p.price}"
                             th:text="${'$'+#numbers.formatDecimal(p.price, 1, 'POINT', 2, 'COMMA')}"
