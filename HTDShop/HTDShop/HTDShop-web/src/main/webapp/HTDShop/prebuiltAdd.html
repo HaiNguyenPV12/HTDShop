@@ -34,7 +34,7 @@
                         <textarea id="detail" th:field=*{detail} class="form-control"></textarea>
                     </div>
                 </div>
-                <div class="row py-2">
+                <div class="row py-2" th:if="${prebuilt.cpu!=null}">
                     <div class="col-md-4">
                         <label for="cpu">CPU</label>
                     </div>
@@ -43,7 +43,7 @@
                         <span th:text=*{cpu.name}></span>
                     </div>
                 </div>
-                <div class="row py-2">
+                <div class="row py-2" th:if="${prebuilt.cpucooler!=null}">
                     <div class="col-md-4">
                         <label for="cpucooler">CPU Cooler</label>
                     </div>
@@ -52,7 +52,7 @@
                         <span th:text=*{cpucooler.name}></span>
                     </div>
                 </div>
-                <div class="row py-2">
+                <div class="row py-2" th:if="${prebuilt.motherboard!=null}">
                     <div class="col-md-4">
                         <label for="motherboard">Motherboard</label>
                     </div>
@@ -61,7 +61,7 @@
                         <span th:text=*{motherboard.name}></span>
                     </div>
                 </div>
-                <div class="row py-2">
+                <div class="row py-2" th:if="${prebuilt.memory!=null}">
                     <div class="col-md-4">
                         <label for="memory">Memory</label>
                     </div>
@@ -70,7 +70,7 @@
                         <span th:text=*{memory.name}></span>
                     </div>
                 </div>
-                <div class="row py-2">
+                <div class="row py-2" th:if="${prebuilt.storage!=null}">
                     <div class="col-md-4">
                         <label for="storage">Storage</label>
                     </div>
@@ -79,7 +79,7 @@
                         <span th:text=*{storage.name}></span>
                     </div>
                 </div>
-                <div class="row py-2">
+                <div class="row py-2" th:if="${prebuilt.vga!=null}">
                     <div class="col-md-4">
                         <label for="gpu">GPU</label>
                     </div>
@@ -88,7 +88,7 @@
                         <span th:text=*{vga.name}></span>
                     </div>
                 </div>
-                <div class="row py-2">
+                <div class="row py-2" th:if="${prebuilt.cases!=null}">
                     <div class="col-md-4">
                         <label for="case">Case</label>
                     </div>
@@ -97,7 +97,7 @@
                         <span th:text=*{cases.name}></span>
                     </div>
                 </div>
-                <div class="row py-2">
+                <div class="row py-2" th:if="${prebuilt.psu!=null}">
                     <div class="col-md-4">
                         <label for="psu">PSU</label>
                     </div>
@@ -106,7 +106,7 @@
                         <span th:text=*{psu.name}></span>
                     </div>
                 </div>
-                <div class="row py-2">
+                <div class="row py-2" th:if="${prebuilt.monitor!=null}">
                     <div class="col-md-4">
                         <label for="monitor">Monitor</label>
                     </div>
