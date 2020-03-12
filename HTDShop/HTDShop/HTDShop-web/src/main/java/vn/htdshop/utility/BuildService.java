@@ -44,9 +44,11 @@ public class BuildService {
     List<Product> buildProductList = null;
 
     // boolean isBuilding = false;
-
     // Current build in session
     public PreBuilt getSessionPrebuilt() {
+        if (session.getAttribute("prebuiltSession") == null) {
+            session.setAttribute("prebuiltSession", new PreBuilt());
+        }
         return (PreBuilt) session.getAttribute("prebuiltSession");
     }
 

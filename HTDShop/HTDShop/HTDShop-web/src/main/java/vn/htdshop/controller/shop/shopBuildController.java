@@ -98,7 +98,7 @@ public class shopBuildController {
 
     // check socket
     private boolean checkCPUSocket(PreBuilt currentBuild) {
-        if (currentBuild.getCpu().getId() != null && currentBuild.getMotherboard().getId() != null) {
+        if (currentBuild.getCpu() != null && currentBuild.getMotherboard() != null && currentBuild.getCpu().getId() != null && currentBuild.getMotherboard().getId() != null) {
             Product cpu = currentBuild.getCpu();
             Product motherboard = currentBuild.getMotherboard();
             if (!cpu.getSocket().equals(motherboard.getSocket())) {
@@ -110,7 +110,8 @@ public class shopBuildController {
 
     // check cooler
     private boolean checkCoolerSocket(PreBuilt currentBuild) {
-        if (currentBuild.getCpu().getId() != null && currentBuild.getCpucooler().getId() != null) {
+        if (currentBuild.getCpu() != null && currentBuild.getCpucooler() != null
+                && currentBuild.getCpu().getId() != null && currentBuild.getCpucooler().getId() != null) {
             Product cpu = currentBuild.getCpu();
             Product cooler = currentBuild.getCpucooler();
             if (!cooler.getSocket().contains(cpu.getSocket())) {
@@ -122,7 +123,8 @@ public class shopBuildController {
 
     // check memory slot
     private boolean checkMemorySlot(PreBuilt currentBuild) {
-        if (currentBuild.getMotherboard().getId() != null && currentBuild.getMemory().getId() != null) {
+        if (currentBuild.getMotherboard() != null && currentBuild.getMemory() != null
+                && currentBuild.getMotherboard().getId() != null && currentBuild.getMemory().getId() != null) {
             Product motherboard = currentBuild.getMotherboard();
             Product memory = currentBuild.getMemory();
             if (motherboard.getMemorySlot() < memory.getMemoryModules()) {
@@ -134,7 +136,7 @@ public class shopBuildController {
 
     // check memory type
     private boolean checkMemoryType(PreBuilt currentBuild) {
-        if (currentBuild.getMotherboard().getId() != null && currentBuild.getMemory().getId() != null) {
+        if (currentBuild.getMotherboard() != null && currentBuild.getMemory() != null && currentBuild.getMotherboard().getId() != null && currentBuild.getMemory().getId() != null) {
             Product motherboard = currentBuild.getMotherboard();
             Product memory = currentBuild.getMemory();
             if (!motherboard.getMemoryType().equals(memory.getMemoryType())) {
@@ -146,7 +148,8 @@ public class shopBuildController {
 
     // check PSU vs Case
     private boolean checkPSUFormFactor(PreBuilt currentBuild) {
-        if (currentBuild.getCases().getId() != null && currentBuild.getPsu().getId() != null) {
+        if (currentBuild.getCases() != null && currentBuild.getPsu() != null
+                && currentBuild.getCases().getId() != null && currentBuild.getPsu().getId() != null) {
             Product cases = currentBuild.getCases();
             Product psu = currentBuild.getPsu();
             if (!cases.getPSUFormFactor().equals(psu.getPSUFormFactor())) {
@@ -162,7 +165,8 @@ public class shopBuildController {
 
     // check motherboard vs Case
     private boolean checkFormFactor(PreBuilt currentBuild) {
-        if (currentBuild.getCases().getId() != null && currentBuild.getMotherboard().getId() != null) {
+        if (currentBuild.getCases() != null && currentBuild.getMotherboard() != null
+                && currentBuild.getCases().getId() != null && currentBuild.getMotherboard().getId() != null) {
             Product cases = currentBuild.getCases();
             Product motherboard = currentBuild.getMotherboard();
             if (!cases.getFormFactor().equals(motherboard.getFormFactor())) {
@@ -179,7 +183,7 @@ public class shopBuildController {
 
     // check wattage
     private boolean checkWattage(PreBuilt currentBuild) {
-        if (currentBuild.getCpu().getId() != null && currentBuild.getVga().getId() != null
+        if (currentBuild.getCpu() != null && currentBuild.getVga() != null && currentBuild.getCpu().getId() != null && currentBuild.getVga().getId() != null
                 && currentBuild.getPsu().getId() != null) {
             Product cpu = currentBuild.getCpu();
             Product gpu = currentBuild.getVga();
@@ -192,8 +196,7 @@ public class shopBuildController {
     }
 
     public BuildCompatibility getSessionBuildCompatibility() {
-        BuildCompatibility result = (BuildCompatibility) session.getAttribute("buildCompatibility");
-        if (result == null) {
+        if (session.getAttribute("buildCompatibility") == null) {
             BuildCompatibility newBuildCompatibility = initCompatibilityValues();
             setSessionBuildCompatibility(newBuildCompatibility);
         }
@@ -212,31 +215,31 @@ public class shopBuildController {
     // Total Price
     public Double buildPrice(PreBuilt currentBuild) {
         Double result = new Double(0);
-        if (currentBuild.getCpu() != null) {
+        if (currentBuild.getCpu() != null && currentBuild.getCpu().getId() != null) {
             result = result + shopService.getDiscountPrice(currentBuild.getCpu().getId());
         }
-        if (currentBuild.getCpucooler() != null) {
+        if (currentBuild.getCpucooler() != null && currentBuild.getCpucooler().getId() != null) {
             result = result + shopService.getDiscountPrice(currentBuild.getCpucooler().getId());
         }
-        if (currentBuild.getMotherboard() != null) {
+        if (currentBuild.getMotherboard() != null && currentBuild.getMotherboard().getId() != null) {
             result = result + shopService.getDiscountPrice(currentBuild.getMotherboard().getId());
         }
-        if (currentBuild.getMemory() != null) {
+        if (currentBuild.getMemory() != null && currentBuild.getMemory().getId() != null) {
             result = result + shopService.getDiscountPrice(currentBuild.getMemory().getId());
         }
-        if (currentBuild.getStorage() != null) {
+        if (currentBuild.getStorage() != null && currentBuild.getStorage().getId() != null) {
             result = result + shopService.getDiscountPrice(currentBuild.getStorage().getId());
         }
-        if (currentBuild.getVga() != null) {
+        if (currentBuild.getVga() != null && currentBuild.getVga().getId() != null) {
             result = result + shopService.getDiscountPrice(currentBuild.getVga().getId());
         }
-        if (currentBuild.getCases() != null) {
+        if (currentBuild.getCases() != null && currentBuild.getCases().getId() != null) {
             result = result + shopService.getDiscountPrice(currentBuild.getCases().getId());
         }
-        if (currentBuild.getPsu() != null) {
+        if (currentBuild.getPsu() != null && currentBuild.getPsu().getId() != null) {
             result = result + shopService.getDiscountPrice(currentBuild.getPsu().getId());
         }
-        if (currentBuild.getMonitor() != null) {
+        if (currentBuild.getMonitor() != null && currentBuild.getMonitor().getId() != null) {
             result = result + shopService.getDiscountPrice(currentBuild.getMonitor().getId());
         }
         return result;
