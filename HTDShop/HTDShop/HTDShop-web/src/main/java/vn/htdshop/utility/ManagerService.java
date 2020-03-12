@@ -31,6 +31,8 @@ import vn.htdshop.sb.ImageSlideFacadeLocal;
 import vn.htdshop.sb.ProductImageFacadeLocal;
 import vn.htdshop.sb.StaffFacadeLocal;
 
+import vn.htdshop.entity.*;
+import vn.htdshop.sb.*;
 /**
  * managerService
  */
@@ -49,6 +51,9 @@ public class ManagerService {
     @EJB(mappedName = "ProductImageFacade")
     ProductImageFacadeLocal productImageFacade;
 
+    @EJB(mappedName = "Order1Facade")
+    Order1FacadeLocal order1Facade;
+    
     @EJB(mappedName = "ImageSlideFacade")
     ImageSlideFacadeLocal imageSlideFacade;
 
@@ -158,6 +163,7 @@ public class ManagerService {
         }
     }
 
+    
     public boolean deleteTempImage(String imgPath) {
         Iterator<ProductImage> itr = tempUploadImage.iterator();
         while (itr.hasNext()) {
@@ -271,6 +277,20 @@ public class ManagerService {
                 break;
         }
         return cateName;
+    }
+
+    public Double getRevenue() {
+        Double result = 0d;
+        List<Order1> order = order1Facade.findByOrderStatus();
+        if (order!=null && order.size()>0) {
+            for (Order1 item : order) {
+                List<OrderDetail> orderDetails = (List<OrderDetail>) item.getOrderDetailCollection();
+                for (OrderDetail orderdDetail : orderDetails) {
+                    result += orderdDetail.getPrice();
+                }
+            }
+        }
+        return result;
     }
 
 }

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDShop/layout}">
+
+<head>
+    <title>HTD Shop - Profile</title>
+    <th:block layout:fragment="additionalCss">
+        <link rel="stylesheet" th:href="@{/resources/Content/fontawesome-free/css/all.min.css}">
+        <link th:href="@{/manager_resources/plugins/ichek-bootstrap/icheck-bootstrap.min.css}" rel="stylesheet">
+        <link th:href="@{/manager_resources/plugins/daterangepicker/daterangepicker.css}" rel="stylesheet">
+    </th:block>
+
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="breadcrumb-area pt-10 pb-10"
+            style="background-image: linear-gradient(141deg, #7906d88c 0%, #fff 51%, #7906d88c 75%);">
+            <div class="container">
+                <div class="breadcrumb-content text-center">
+                    <ul>
+                        <li><a th:href="@{/}">HOME</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="register-area ptb-100">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12 col-12 col-lg-6 col-xl-6 ml-auto mr-auto">
+                        <div class="login">
+                            <div class="login-form-container">
+                                <div class="login-form">
+                                    <h1 class="cart-heading">Edit Profile</h1>
+                                    <form action="profile/doEdit" method="POST" th:object="${custom}">
+                                        <div class="col-lg-12 mb-3" th:if="${#fields.hasErrors('global')}">
+                                            <p class="alert alert-danger">
+                                                <i class="fas fa-exclamation-circle"></i> 
+                                                <span th:errors="*{global}">Name Error</span>
+                                            </p>
+                                        </div>
+                                        <input type="hidden" th:field="*{id}"/> 
+                                        <div class="card-body">
+                                            <div class="form-group row">
+                                                <label for="firstName" class="col-sm-3 col-form-label text-right">First
+                                                    Name</label>
+                                                <div class="col-sm-9">
+                                                    <input class="form-control" id="firstName" placeholder="First Name"
+                                                        th:field="*{firstName}"
+                                                        maxlength="255"
+                                                        autocomplete="off"
+                                                        th:classappend="${(#fields.hasErrors('firstName')?'is-invalid':'') + (submited != null and !#fields.hasErrors('firstName')?'is-valid':'')}"
+                                                        required />
+                                                </div>
+                                                <div class="col-sm-3"></div>
+                                                <div class="col-sm-9" th:if="${#fields.hasErrors('firstName')}">
+                                                    <ul class="text-danger">
+                                                        <li th:each="err : ${#fields.errors('firstName')}" th:text="${err}">Name Error</li>
+                                                    </ul> 
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="lastName" class="col-sm-3 col-form-label text-right">Last Name</label>
+                                                <div class="col-sm-9">
+                                                    <input class="form-control" id="lastName" placeholder="Last Name" th:field="*{lastName}"
+                                                        th:classappend="${(#fields.hasErrors('lastName')?'is-invalid':'') + (submited != null and !#fields.hasErrors('lastName')?'is-valid':'')}" required/>
+                                                </div>
+                                                <div class="col-sm-3"></div>
+                                                <div class="col-sm-9" th:if="${#fields.hasErrors('lastName')}">
+                                                    <ul class="text-danger">
+                                                        <li th:each="err : ${#fields.errors('lastName')}" th:text="${err}">Name Error</li>
+                                                    </ul> 
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="email" class="col-sm-3 col-form-label text-right">Email</label>
+                                                <div class="col-sm-9">
+                                                    <input class="form-control" id="email" placeholder="Email" th:field="*{email}" readonly="readonly"
+                                                        th:classappend="${(#fields.hasErrors('email')?'is-invalid':'') + (submited != null and !#fields.hasErrors('email')?'is-valid':'')}" required/>
+                                                </div>
+                                                <div class="col-sm-3"></div>
+                                                <div class="col-sm-9" th:if="${#fields.hasErrors('email')}">
+                                                    <ul class="text-danger">
+                                                        <li th:each="err : ${#fields.errors('email')}" th:text="${err}">Name Error</li>
+                                                    </ul> 
+                                                </div>
+                                            </div> 
+                                            <div class="form-group row">
+                                                <label for="password" class="col-sm-3 col-form-label text-right">Password</label>
+                                                <div class="col-sm-9">
+                                                    <input class="form-control" id="password" placeholder="Password" th:field="*{password}"
+                                                        type="password"
+                                                        th:classappend="${(#fields.hasErrors('password')?'is-invalid':'') + (submited != null and !#fields.hasErrors('password')?'is-valid':'')}"/>
+                                                </div>
+                                                <div class="col-sm-3"></div>
+                                                <div class="col-sm-9" th:if="${#fields.hasErrors('password')}">
+                                                    <ul class="text-danger">
+                                                        <li th:each="err : ${#fields.errors('password')}" th:text="${err}">Name Error</li>
+                                                    </ul> 
+                                                </div>
+                                            </div>                                           
+                                            <div class="form-group row">
+                                                <label for="phone" class="col-sm-3 col-form-label text-right">Phone</label>
+                                                <div class="col-sm-9">
+                                                    <input class="form-control" id="phone" placeholder="Phone" th:field="*{phone}"
+                                                        th:classappend="${(#fields.hasErrors('phone')?'is-invalid':'') + (submited != null and !#fields.hasErrors('phone')?'is-valid':'')}" required/>
+                                                </div>
+                                                <div class="col-sm-3"></div>
+                                                <div class="col-sm-9" th:if="${#fields.hasErrors('phone')}">
+                                                    <ul class="text-danger">
+                                                        <li th:each="err : ${#fields.errors('phone')}" th:text="${err}">Name Error</li>
+                                                    </ul> 
+                                                </div>
+                                            </div>                                            
+                                            <div class="form-group row">
+                                                <label for="address" class="col-sm-3 col-form-label text-right">Address</label>
+                                                <div class="col-sm-9">
+                                                    <input class="form-control" id="address" placeholder="Name" th:field="*{address}"
+                                                        th:classappend="${(#fields.hasErrors('address')?'is-invalid':'') + (submited != null and !#fields.hasErrors('address')?'is-valid':'')}" required/>
+                                                </div>
+                                                <div class="col-sm-3"></div>
+                                                <div class="col-sm-9" th:if="${#fields.hasErrors('address')}">
+                                                    <ul class="text-danger">
+                                                        <li th:each="err : ${#fields.errors('address')}" th:text="${err}">Name Error</li>
+                                                    </ul> 
+                                                </div>
+                                            </div>          
+                                            <div class="form-group row">
+                                                <label for="gender" class="col-sm-3 col-form-label text-right">Gender</label>
+                                                        <div class="col-sm-9">
+                                                            <div class="custom-control custom-radio">
+                                                                <input class="custom-control-input" type="radio" value="true" th:field="*{gender}"
+                                                                th:selected="${custom.gender==true}" id="gender1"/>
+                                                                <label for="gender1" class="custom-control-label">Male</label>
+                                                            </div>
+                                                            <div class="custom-control custom-radio">
+                                                                <input class="custom-control-input" type="radio" value="false" th:field="*{gender}"
+                                                                th:selected="${custom.gender==false}" id="gender2"/>
+                                                                <label for="gender2" class="custom-control-label">Female</label>
+                                                            </div>                                       
+                                                        </div>
+                                                <div class="col-sm-3"></div>
+                                                <div class="col-sm-9" th:if="${#fields.hasErrors('gender')}">
+                                                    <ul class="text-danger">
+                                                        <li th:each="err : ${#fields.errors('gender')}" th:text="${err}">Name Error</li>
+                                                    </ul> 
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="birthday" class="col-sm-3 col-form-label text-right">Birthday</label>
+                                                <div id="dateGroup" class="col-sm-9">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">
+                                                                <i class="far fa-calendar-alt"></i>
+                                                            </span>
+                                                        </div>
+                                                        <input type="hidden" th:field="${custom.birthday}" id="birthday">
+                                                        <input type="text" class="form-control float-right" id="date" name="date" >
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-3"></div>
+                                                <div class="col-sm-9" th:if="${#fields.hasErrors('birthday')}">
+                                                    <ul class="text-danger">
+                                                        <li th:each="err : ${#fields.errors('birthday')}" th:text="${err}">Name Error</li>
+                                                    </ul> 
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="phone" class="col-sm-3 col-form-label text-right">Point</label>
+                                                <div class="col-sm-9">
+                                                    <input class="form-control" id="point" placeholder="Point" th:field="*{point}" readonly="readonly"
+                                                        th:classappend="${(#fields.hasErrors('point')?'is-invalid':'') + (submited != null and !#fields.hasErrors('phone')?'is-valid':'')}" required/>
+                                                </div>
+                                                <div class="col-sm-3"></div>
+                                                <div class="col-sm-9" th:if="${#fields.hasErrors('point')}">
+                                                    <ul class="text-danger">
+                                                        <li th:each="err : ${#fields.errors('point')}" th:text="${err}">Name Error</li>
+                                                    </ul> 
+                                                </div>
+                                            </div>
+                                            <div class="button-box">
+                                                <button type="submit" class="default-btn floatright">Update
+                                                    Profile</button>                                                
+                                            </div>                                            
+                                        </div>
+                                    </form>
+                                    <div class="button-box">
+                                        <a th:href ="@{/profile/orderChecker}">
+                                            <button class="default-btn floatright">Order Checker</button>
+                                        </a>                                                                                              
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block layout:fragment="additionalScript">
+        <script th:src="@{/manager_resources/plugins/moment/moment.min.js}"></script> 
+        <script th:src="@{/manager_resources/plugins/daterangepicker/daterangepicker.js}"></script> 
+    </th:block>
+    <script th:src="@{/manager_resources/plugins/jquery/jquery.min.js}"></script>
+    <!-- Bootstrap 4 -->
+    <script th:src="@{/manager_resources/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <!-- AdminLTE App -->
+    <script th:src="@{/manager_resources/Scripts/adminlte.min.js}"></script>
+    
+    <script layout:fragment="script" th:inline="none">
+
+
+        $(document).ready(function () {
+            $('#date').daterangepicker({
+                "startDate": $("#birthday").val() == "" ? moment() : $("#birthday").val(),
+                singleDatePicker: true,
+                showDropdowns: true,
+                minYear: 1901,
+                maxYear: parseInt(moment().format('YYYY'), 10),
+                locale: {
+                    format: 'DD/MM/YYYY'
+                }
+            }, function (start, end, label) {
+                $("#birthday").val(start.format('DD/MM/YYYY'));
+                console.log($("#date").val());
+            });
+        });
+    </script>
+</body>
+
+</html>

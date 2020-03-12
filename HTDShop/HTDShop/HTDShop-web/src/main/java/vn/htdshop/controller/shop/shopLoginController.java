@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -45,31 +47,33 @@ public class shopLoginController {
     }
 
     @RequestMapping(value = "doLogin", method = RequestMethod.POST)
-    // Add @Valid before @ModelAttribute to validate base on entity annotation
-    // For example: public String postLogin(@Valid @ModelAttribute("staff") Staff
-    // staff...){}
-    // Here we just have to check username and password, not all so we check
-    // manually
     public String postLogin(@RequestParam(value = "email", required = false) String email,
             @RequestParam(value = "password", required = false) String password, RedirectAttributes redirect,
-            @RequestParam(value = "remember", required = false) String remember, HttpSession session,           
-            HttpServletResponse response) {
+            @RequestParam(value = "remember", required = false) String remember,
+            @RequestParam(value = "redirect", required = false) String redirectUrl,
+            HttpSession session, HttpServletResponse response) {
 
         // Check if error exists
         // If not, start to check login
+
         Customer result = customerFacade.checkLogin(email, password);
         if (result != null) {
             // If ok, save staff's session
             session.setAttribute("loggedInCustomer", result);
+            shopService.getLoggedInCart();
             if (remember != null) {
                 Cookie cookie = new Cookie("loggedInCustomer", result.getId().toString());
                 response.addCookie(cookie);
             }
             redirect.addFlashAttribute("goodAlert", "Successfully logged in as \"" + result.getFirstName() + "\".");
-            // Then redirect to index
-            return "redirect:/";
-
+            if (redirectUrl == null || redirectUrl.isEmpty()) {
+                return "redirect:/";
+            } else {
+                return "redirect:/cart/checkout";
+            }
         }
-        return "HTDShop/login";
+            
+        return "redirect:/login";
     }
+
 }

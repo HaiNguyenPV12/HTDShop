@@ -131,13 +131,7 @@ public class shopIndexController {
         Cookie cookie = new Cookie("loggedInCustomer", null);
         cookie.setMaxAge(0);
         response.addCookie(cookie);
-        String referer = request.getHeader("Referer");
-        System.out.println(referer);
-        if (referer == null || referer.isEmpty()) {
-            return "redirect:";
-        } else {
-            return "redirect:" + referer;
-        }
+        return "redirect:";        
     }
 
 }

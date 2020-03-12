@@ -17,7 +17,7 @@
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDManager/layout}">
 
 <head>
-    <title>HTD Manager - Product</title>
+    <title>HTD Manager - Comment</title>
     <!-- Hide default datatable's filter -->
     <style>
         .dataTables_filter {
@@ -63,7 +63,9 @@
                                 </tr>
 
                                 <tr th:each="com : ${comments}">
-                                    <td th:text="${com.id}">001</td>
+                                    <td>
+                                        <th:block th:text="${com.id}"></th:block>
+                                        <i class="fas fa-check" th:if="${com.productCommentReplyCollection.size() > 0 && com.productCommentReplyCollection.?[staff != null].size()>0}"></i></td>
                                     <td th:text="${com.product.name}">Intel Core i5 8400 3.0 GHz</td>
                                     <td th:text="${com.Customer.firstName}">CPU</td>
                                     <td th:text="${com.content}">Intel</td>

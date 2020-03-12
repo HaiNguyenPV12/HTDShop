@@ -64,6 +64,6 @@
         <input type="hidden" id="cartNum"
             th:value="${cart == null || cart.size() == 0? '0' : #aggregates.sum(cart.![quan])}" />
         <a class="cart-btn btn-hover" th:href="@{/cart}">view cart</a>
-        <a class="cart-btn btn-hover" th:href="@{/checkout}">checkout</a>
+        <a class="cart-btn btn-hover" th:href="@{/cart/checkout}">checkout</a>
     </li>
 </ul>
