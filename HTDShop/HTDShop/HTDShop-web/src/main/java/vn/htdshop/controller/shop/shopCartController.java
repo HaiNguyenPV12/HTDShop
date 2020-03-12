@@ -188,6 +188,13 @@ public class shopCartController {
                     orderDetail.setQuantity(item.getQuan());
                     orderDetail.setPrice(shopService.getcartItemPrice(item.getId(), item.getQuan()));
                     orderDetailFacade.create(orderDetail);
+                }else{
+                    orderDetail.setId(null);
+                    orderDetail.setOrder1(order1);
+                    orderDetail.setPreBuilt(preBuiltFacade.find(Integer.parseInt(item.getId().substring(1))));
+                    orderDetail.setQuantity(item.getQuan());
+                    orderDetail.setPrice(shopService.getcartItemPrice(item.getId(), item.getQuan()));
+                    orderDetailFacade.create(orderDetail);
                 }
             }
             shopService.saveUserCart(new ArrayList<CartItem>());

@@ -6,7 +6,7 @@
     <title>HTD Shop - Profile</title>
     <th:block layout:fragment="additionalCss">
         <link rel="stylesheet" th:href="@{/resources/Content/fontawesome-free/css/all.min.css}">
-        <link th:href="@{/manager_resources/plugins/icheck-bootstrap/icheck-bootstrap.min.css}" rel="stylesheet">
+        <link th:href="@{/manager_resources/plugins/ichek-bootstrap/icheck-bootstrap.min.css}" rel="stylesheet">
         <link th:href="@{/manager_resources/plugins/daterangepicker/daterangepicker.css}" rel="stylesheet">
     </th:block>
 
@@ -43,10 +43,12 @@
                                         <div class="card-body">
                                             <div class="form-group row">
                                                 <label for="firstName" class="col-sm-3 col-form-label text-right">First
-                                                    Name<i class="text-danger">*</i></label>
+                                                    Name</label>
                                                 <div class="col-sm-9">
                                                     <input class="form-control" id="firstName" placeholder="First Name"
                                                         th:field="*{firstName}"
+                                                        maxlength="255"
+                                                        autocomplete="off"
                                                         th:classappend="${(#fields.hasErrors('firstName')?'is-invalid':'') + (submited != null and !#fields.hasErrors('firstName')?'is-valid':'')}"
                                                         required />
                                                 </div>
@@ -58,8 +60,7 @@
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label for="lastName" class="col-sm-3 col-form-label text-right">Last Name<i
-                                                        class="text-danger">*</i></label>
+                                                <label for="lastName" class="col-sm-3 col-form-label text-right">Last Name</label>
                                                 <div class="col-sm-9">
                                                     <input class="form-control" id="lastName" placeholder="Last Name" th:field="*{lastName}"
                                                         th:classappend="${(#fields.hasErrors('lastName')?'is-invalid':'') + (submited != null and !#fields.hasErrors('lastName')?'is-valid':'')}" required/>
@@ -72,8 +73,7 @@
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label for="email" class="col-sm-3 col-form-label text-right">Email<i
-                                                        class="text-danger">*</i></label>
+                                                <label for="email" class="col-sm-3 col-form-label text-right">Email</label>
                                                 <div class="col-sm-9">
                                                     <input class="form-control" id="email" placeholder="Email" th:field="*{email}" readonly="readonly"
                                                         th:classappend="${(#fields.hasErrors('email')?'is-invalid':'') + (submited != null and !#fields.hasErrors('email')?'is-valid':'')}" required/>
@@ -86,11 +86,10 @@
                                                 </div>
                                             </div> 
                                             <div class="form-group row">
-                                                <label for="password" class="col-sm-3 col-form-label text-right">Password<i
-                                                        class="text-danger">*</i></label>
+                                                <label for="password" class="col-sm-3 col-form-label text-right">Password</label>
                                                 <div class="col-sm-9">
                                                     <input class="form-control" id="password" placeholder="Password" th:field="*{password}"
-                                                        
+                                                        type="password"
                                                         th:classappend="${(#fields.hasErrors('password')?'is-invalid':'') + (submited != null and !#fields.hasErrors('password')?'is-valid':'')}"/>
                                                 </div>
                                                 <div class="col-sm-3"></div>
@@ -101,8 +100,7 @@
                                                 </div>
                                             </div>                                           
                                             <div class="form-group row">
-                                                <label for="phone" class="col-sm-3 col-form-label text-right">Phone<i
-                                                        class="text-danger">*</i></label>
+                                                <label for="phone" class="col-sm-3 col-form-label text-right">Phone</label>
                                                 <div class="col-sm-9">
                                                     <input class="form-control" id="phone" placeholder="Phone" th:field="*{phone}"
                                                         th:classappend="${(#fields.hasErrors('phone')?'is-invalid':'') + (submited != null and !#fields.hasErrors('phone')?'is-valid':'')}" required/>
@@ -115,8 +113,7 @@
                                                 </div>
                                             </div>                                            
                                             <div class="form-group row">
-                                                <label for="address" class="col-sm-3 col-form-label text-right">Address<i
-                                                        class="text-danger">*</i></label>
+                                                <label for="address" class="col-sm-3 col-form-label text-right">Address</label>
                                                 <div class="col-sm-9">
                                                     <input class="form-control" id="address" placeholder="Name" th:field="*{address}"
                                                         th:classappend="${(#fields.hasErrors('address')?'is-invalid':'') + (submited != null and !#fields.hasErrors('address')?'is-valid':'')}" required/>
@@ -129,8 +126,7 @@
                                                 </div>
                                             </div>          
                                             <div class="form-group row">
-                                                <label for="gender" class="col-sm-3 col-form-label text-right">Gender<i
-                                                        class="text-danger">*</i></label>
+                                                <label for="gender" class="col-sm-3 col-form-label text-right">Gender</label>
                                                         <div class="col-sm-9">
                                                             <div class="custom-control custom-radio">
                                                                 <input class="custom-control-input" type="radio" value="true" th:field="*{gender}"
@@ -151,8 +147,7 @@
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label for="birthday" class="col-sm-3 col-form-label text-right">Birthday<i
-                                                        class="text-danger">*</i></label>
+                                                <label for="birthday" class="col-sm-3 col-form-label text-right">Birthday</label>
                                                 <div id="dateGroup" class="col-sm-9">
                                                     <div class="input-group">
                                                         <div class="input-group-prepend">
@@ -172,8 +167,7 @@
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label for="phone" class="col-sm-3 col-form-label text-right">Point<i
-                                                        class="text-danger">*</i></label>
+                                                <label for="phone" class="col-sm-3 col-form-label text-right">Point</label>
                                                 <div class="col-sm-9">
                                                     <input class="form-control" id="point" placeholder="Point" th:field="*{point}" readonly="readonly"
                                                         th:classappend="${(#fields.hasErrors('point')?'is-invalid':'') + (submited != null and !#fields.hasErrors('phone')?'is-valid':'')}" required/>
@@ -188,15 +182,14 @@
                                             <div class="button-box">
                                                 <button type="submit" class="default-btn floatright">Update
                                                     Profile</button>                                                
-                                            </div>
-                                            <div class="button-box">
-                                                <a th:href ="@{/orderChecker}">
-                                                    <button type="submit" class="default-btn floatright">Order Checker</button>
-                                                </a>                                                                                              
-                                            </div>
+                                            </div>                                            
                                         </div>
                                     </form>
-                                    
+                                    <div class="button-box">
+                                        <a th:href ="@{/profile/orderChecker}">
+                                            <button class="default-btn floatright">Order Checker</button>
+                                        </a>                                                                                              
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -43,12 +43,20 @@
                                 <tr th:each="o : ${custom.order1Collection}"
                                     th:classappend="${(o.orderStatus==3?'bg-gray':'') + (o.orderStatus==2?'bg-yellow':'')}">
 
-                                    <td th:text="${o.id}">001</td>
+                                    <td>
+                                        <th:block>
+                                            <a th:href="@{/profile/ordertracking(id=${o.id})}" th:if="${o.orderStatus != 5}" th:text="${o.id}">001</a>
+                                        </th:block>
+                                        <th:block>
+                                            <a th:if="${o.orderStatus == 5}" th:text="${o.id}">001</a>
+                                        </th:block>
+                                    </td>
                                     <td th:text="${o.orderDate}">CPU</td>
                                     <td>
                                         <ul>
                                             <li th:each="od : ${o.orderDetailCollection}">
-                                               <th:block th:text="${od.product.name}"></th:block>
+                                               <th:block  th:if="${od.product != null}" th:text="${od.product.name}"></th:block>
+                                               <th:block  th:if="${od.preBuilt != null}" th:text="${od.preBuilt.name}"></th:block>
                                             </li>
                                         </ul>
                                     </td>

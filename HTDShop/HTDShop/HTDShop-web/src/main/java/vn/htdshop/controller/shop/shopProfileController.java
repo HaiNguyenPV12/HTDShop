@@ -30,6 +30,9 @@ public class shopProfileController {
     @EJB(mappedName = "CustomerFacade")
     CustomerFacadeLocal customerFacade;
 
+    @EJB(mappedName = "Order1Facade")
+    Order1FacadeLocal order1Facade;
+
     @Autowired
     ShopService shopService;
 
@@ -46,8 +49,6 @@ public class shopProfileController {
     public String doEdit(@Valid @ModelAttribute("custom") Customer custom, BindingResult error, HttpSession session,
             Model model, RedirectAttributes redirect) {
 
-        model.addAttribute("error", error);
-
         Customer customerOld = shopService.getLoggedInCustomer();
         boolean updated = false;
         if (!customerOld.getFirstName().equals(custom.getFirstName())) {
@@ -63,7 +64,11 @@ public class shopProfileController {
             updated = true;
         }
         if (!customerOld.getPassword().equals(custom.getPassword())) {
-            customerOld.setPassword(custom.getPassword());
+            if (custom.getPassword() == null || custom.getPassword().isEmpty()) {
+                customerOld.setPassword(customerOld.getPassword());
+            }else{
+                customerOld.setPassword(custom.getPassword());
+            }            
             updated = true;
         }
         if (!customerOld.getGender().equals(custom.getGender())) {
@@ -75,7 +80,7 @@ public class shopProfileController {
             updated = true;
         }
         if (!customerOld.getPhone().equals(custom.getPhone())) {
-            customerOld.setPhone(custom.getPhone());
+            customerOld.setPhone(custom.getPhone().trim());
             updated = true;
         }
         if (updated) {
@@ -83,18 +88,33 @@ public class shopProfileController {
             session.setAttribute("loggedInCustomer", customerOld);
         }
         redirect.addFlashAttribute("goodAlert", "Successfully updated \"" + custom.getEmail() + "\"!");
-        return "HTDShop/profile";
+        return "redirect:/profile";
     }
 
     @RequestMapping(value = "orderChecker", method = RequestMethod.GET)
     public String viewOrder(Model model, ModelMap modelMap, HttpSession session) {
-        if (shopService.checkLogin() == true) {
-            Customer custom = shopService.getLoggedInCustomer();
-            model.addAttribute("custom", custom);
-            return "HTDShop/orderChecker";
-        }
-        ;
-        return "redirect:/";
+        shopService.checkLogin();
+        Customer custom = shopService.getLoggedInCustomer();
+        model.addAttribute("custom", custom);
+        return "HTDShop/orderChecker";
+
     }
+
+    @RequestMapping(value = "ordertracking", method = RequestMethod.GET)
+    public String viewEdit(HttpSession session, Model model, @RequestParam(required = true) Integer id) {
+        shopService.checkLogin();
+        Order1 o = null;
+        if (id != null) {
+            o = order1Facade.find(id);
+            if (o == null) {
+                return "HTDShop/profile";
+            }
+        } else {
+            return "HTDShop/profile";
+        }
+        model.addAttribute("order", o);
+        return "HTDShop/orderTracking";
+    }
+    
 
 }

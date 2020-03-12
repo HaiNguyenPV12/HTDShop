@@ -34,7 +34,7 @@
                                         <input type="email" name="email" placeholder="Email" id="email" required
                                             autofocus>
                                         <input type="password" name="password" placeholder="Password" id="password"
-                                            required pattern=".{6,}" title="Password have 6 or more character">
+                                            required >
                                         <div class="button-box">
                                             <div class="login-toggle-btn">
                                                 <input type="checkbox" id="remember" name="remember">
@@ -57,7 +57,16 @@
     <script th:src="@{/manager_resources/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
     <!-- AdminLTE App -->
     <script th:src="@{/manager_resources/Scripts/adminlte.min.js}"></script>
-    <script>
+    <script th:inline="javascript">
+        function validation(){
+            var password = $('#password');
+            password.val(password.val().trim());
+            if(password.val() == ""){
+                alert("Password is not blank");
+                password.focus();
+                return false;
+            }
+        }
     </script>
 </body>
 

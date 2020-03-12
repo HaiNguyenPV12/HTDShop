@@ -96,6 +96,46 @@ public class managerOrderController {
         order1Facade.edit(o);
         return redirectOrderHome;
     }
+    
+    //==Confirm Order==\\
+    @RequestMapping(value = "doConfirmed", method = RequestMethod.GET)
+    public String doConfirm(HttpSession session, Model model, @RequestParam(required = true) Integer id)
+    {
+        if (!managerService.checkLoginWithRole("order_edit")){
+            return redirectOrderHome;
+        }
+        Order1 o = order1Facade.find(id);
+        o.setOrderStatus(2);
+        order1Facade.edit(o);
+        return redirectOrderHome;
+    }
+
+    //==Shipping Order==\\
+    @RequestMapping(value = "doShipping", method = RequestMethod.GET)
+    public String doShip(HttpSession session, Model model, @RequestParam(required = true) Integer id)
+    {
+        if (!managerService.checkLoginWithRole("order_edit")){
+            return redirectOrderHome;
+        }
+        Order1 o = order1Facade.find(id);
+        o.setOrderStatus(3);
+        order1Facade.edit(o);
+        return redirectOrderHome;
+    }
+
+    //==Done Order==\\
+    @RequestMapping(value = "doDone", method = RequestMethod.GET)
+    public String doDone(HttpSession session, Model model, @RequestParam(required = true) Integer id)
+    {
+        if (!managerService.checkLoginWithRole("order_edit")){
+            return redirectOrderHome;
+        }
+        Order1 o = order1Facade.find(id);
+        o.setOrderStatus(4);
+        o.setPaidDate(Calendar.getInstance().getTime());
+        order1Facade.edit(o);
+        return redirectOrderHome;
+    }
 
     //==Order_Detail==\\
 
@@ -117,9 +157,4 @@ public class managerOrderController {
         model.asMap().put("menu", "order");
         return "HTDManager/order_detail";
     }
-
-    
-
-    
-    
 }
