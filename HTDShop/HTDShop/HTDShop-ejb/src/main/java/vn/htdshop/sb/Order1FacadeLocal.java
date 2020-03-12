@@ -29,5 +29,7 @@ public interface Order1FacadeLocal {
     List<Order1> findRange(int[] range);
 
     int count();
+
+    List<Order1> findByOrderStatus();
     
 }

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDShop/layout}">
+
+<head>
+    <title>HTD Shop - Login</title>
+    <th:block layout:fragment="additionalCss">
+        <link rel="stylesheet" th:href="@{/resources/Content/fontawesome-free/css/all.min.css}">
+        <link rel="stylesheet" th:href="@{/resources/Content/orderTracking.css}">
+    </th:block>
+
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="breadcrumb-area pt-10 pb-10"
+            style="background-image: linear-gradient(141deg, #7906d88c 0%, #fff 51%, #7906d88c 75%);">
+            <div class="container">
+                <div class="breadcrumb-content text-center">
+                    <ul>
+                        <li><a th:href="@{/}">HOME</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="content" th:object="${order}">
+            <div class="content1">
+                <h2>Order Tracking</h2>
+            </div>
+            <div class="content2">
+                <div class="content2-header1">
+                    <p>Order Status</p>
+                    <th:block th:if="${order.orderStatus==1}"><strong>Ordered</strong></th:block>
+                    <th:block th:if="${order.orderStatus==2}"><strong>Confirmed</strong></th:block>
+                    <th:block th:if="${order.orderStatus==3}"><strong>Shipping</strong></th:block>
+                    <th:block th:if="${order.orderStatus==4}"><strong>Done</strong></th:block>
+                    <th:block th:if="${order.orderStatus==5}"><strong>Cancelled</strong></th:block>
+                </div>
+                <div class="content2-header1">
+                    <p>Order Date : <span th:text="*{orderDate}">7-NOV-2015</span></p>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div class="content3">
+                <div class="shipment">
+                    <div class="confirm">
+                        <div class="imgcircle">
+                            <img th:src="@{/resources/img/orderChecker/confirm.png}" alt="confirm order">
+                        </div>
+                        <span class="line"></span>
+                        <p>Ordered</p>
+                    </div>
+                    <div class="process" th:if="${order.orderStatus==2 || order.orderStatus==3 ||  order.orderStatus==4}">
+                        <div class="imgcircle">
+                            <img th:src="@{/resources/img/orderChecker/process.png}" alt="process order">
+                        </div>
+                        <span class="line"></span>
+                        <p>Confirm Order</p>
+                    </div> 
+                    <div class="dispatch" th:if="${order.orderStatus==1}">
+                        <div class="imgcircle">
+                            <img th:src="@{/resources/img/orderChecker/process.png}" alt="process order">
+                        </div>
+                        <span class="line"></span>
+                        <p>Confirm Order</p>
+                    </div>
+                    <div class="process" th:if="${order.orderStatus==3 || order.orderStatus==4}">
+                        <div class="imgcircle">
+                            <img th:src="@{/resources/img/orderChecker/dispatch.png}" alt="dispatch product">
+                        </div>
+                        <span class="line"></span>
+                        <p>Shipping</p>
+                    </div>
+                    <div class="dispatch" th:if="${order.orderStatus==1 || order.orderStatus==2}">
+                        <div class="imgcircle">
+                            <img th:src="@{/resources/img/orderChecker/dispatch.png}" alt="process order">
+                        </div>
+                        <span class="line"></span>
+                        <p>Shipping</p>
+                    </div> 
+                    <div class="process" th:if="${order.orderStatus==4}">
+                        <div class="imgcircle">
+                            <img th:src="@{/resources/img/orderChecker/delivery.png}" alt="delivery"
+                                th:if="${order.orderStatus==4}">
+                        </div>
+                        <p>Done</p>
+                    </div>
+                    <div class="delivery" th:if="${order.orderStatus==1 || order.orderStatus==2 || order.orderStatus==3}">
+                        <div class="imgcircle">
+                            <img th:src="@{/resources/img/orderChecker/delivery.png}" alt="delivery">
+                        </div>
+                        <p>Done</p>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:src="@{/manager_resources/plugins/jquery/jquery.min.js}"></script>
+    <!-- Bootstrap 4 -->
+    <script th:src="@{/manager_resources/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <!-- AdminLTE App -->
+    <script th:src="@{/manager_resources/Scripts/adminlte.min.js}"></script>
+    <script>
+    </script>
+</body>
+
+</html>

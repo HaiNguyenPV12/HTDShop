@@ -17,7 +17,7 @@
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDManager/layout}">
 
 <head>
-    <title>HTD Manager - Product</title>
+    <title>HTD Manager - Revenue</title>
     <!-- Hide default datatable's filter -->
     <style>
         .dataTables_filter {
@@ -32,13 +32,32 @@
         
     -->
     <span layout:fragment="title">
-        <i class="nav-icon fas fa-users" style="font-size:20px"></i> User Detail        
+        <i class="nav-icon fas fa-users" style="font-size:20px"></i>Revenue Management
+        <div class="col-md-12">
+            <div class="year-select">
+                <span>Select Year</span>
+                <select>
+                    <option value="volvo">2020</option>
+                    <option value="saab">2021</option>
+                    <option value="mercedes">2022</option>
+                    <option value="audi">2023</option>
+                </select>
+            </div>
+        </div>
     </span>
+    <div class="year-select">
+        <label>Year</label>
+        <select>
+            <option value="volvo">2020</option>
+            <option value="saab">2021</option>
+            <option value="mercedes">2022</option>
+            <option value="audi">2023</option>
+        </select>
+    </div>
 
     <div layout:fragment="breadcrumb">
         <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a th:href="@{/manager/customer}">Customer</a></li>
-            <li class="breadcrumb-item active">User Detail</li>
+            <li class="breadcrumb-item"><a th:href="@{/manager}">Home</a></li>
         </ol>
     </div>
 
@@ -50,36 +69,23 @@
 
                         <table id="tblProduct" class="table table-bordered table-striped table-hover">
                             <thead class="bg-purple">
-                                <th>ID</th>
-                                <th>Password</th>
-                                <th>Gender</th>
-                                <th>Birthday</th>
-                                <th>Point</th>
-                                <th>Action</th>
+                                <th>Month</th>
+                                <th>Revenue</th>
                             </thead>
-                            <tbody>                             
+                            <tbody>
                                 <tr>
-                                    <td th:text="${customer.id}">001</td>
-                                    <td th:text="${customer.password}">Intel Core i5 8400 3.0 GHz</td>
-                                    <td th:text="${customer.gender==true?'Male':'Female'}">Intel</td>   
-                                    <td th:text="${#dates.format(customer.birthday,'dd-MM-yyyy')}">Intel</td>                   
-                                    <td th:text="${customer.point}">Intel</td>   
-                                    <td>     
-                                        <a class="btn btn-warning btn-sm" th:href="@{/manager/customer/edit(id=${customer.id})}"
-                                        data-toggle='tooltip' title="Edit">
-                                        <i class="fas fa-pencil-alt"></i>
-                                        </a>                                                        
-                                    </td>
+                                    <td>January</td>
+                                    <td><span th:text="${'$' + #numbers.formatDecimal(managerSv.getRevenue() , 0, 'COMMA', 2, 'POINT')}">$152.97‬</span></td>
+                                </tr>
+                                <tr>
+                                    <td>February</td>
+                                    <td>$567.89</td>
+                                </tr>
+                                <tr>
+                                    <td>March</td>
+                                    <td>$898.67</td>
                                 </tr>
                             </tbody>
-                            <tfoot class="bg-purple">
-                                <th>ID</th>
-                                <th>Password</th>
-                                <th>Gender</th>
-                                <th>Birthday</th>
-                                <th>Point</th>
-                                <th>Action</th>
-                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -91,13 +97,13 @@
 
     <!--In case using custom script at pages using layout, add th:inline="none" like below-->
     <script layout:fragment="script" th:inline="none">
-        
+
         function confirmCancel(title, url) {
             showModal('Confirm Cancelling',
-                    'Are you sure to cancel order "' + title + '" ?<br>',
-                    url,
-                    true,
-                    true);
+                'Are you sure to cancel order "' + title + '" ?<br>',
+                url,
+                true,
+                true);
         }
         // Add custom filter for datatable
         // $('#tblProduct tfoot th').each(function () {

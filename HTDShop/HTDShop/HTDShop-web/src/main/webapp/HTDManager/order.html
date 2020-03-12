@@ -17,7 +17,7 @@
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDManager/layout}">
 
 <head>
-    <title>HTD Manager - Product</title>
+    <title>HTD Manager - Order</title>
     <!-- Hide default datatable's filter -->
     <style>
         .dataTables_filter {
@@ -32,7 +32,7 @@
         
     -->
     <span layout:fragment="title">
-        <i class="fas fa-box-open" style="font-size:20px"></i> Order        
+        <i class="fas fa-box-open" style="font-size:20px"></i> Order
     </span>
 
     <div layout:fragment="breadcrumb">
@@ -47,7 +47,6 @@
             <div class="col-lg-12">
                 <div class="card card-purple card-outline">
                     <div class="card-body">
-
                         <table id="tblOrder" class="table table-bordered table-striped table-hover">
                             <thead class="bg-purple">
                                 <th>ID</th>
@@ -57,17 +56,17 @@
                                 <th>Status</th>
                                 <th>Action</th>
                             </thead>
-                            <tbody>                              
+                            <tbody>
                                 <tr th:if="${orders eq null or orders.empty}">
                                     <td colspan="9">No Orders</td>
                                 </tr>
-                               
+
                                 <tr th:each="o : ${orders}"
                                     th:classappend="${(o.orderStatus==3?'bg-gray':'') + (o.orderStatus==2?'bg-yellow':'')}">
                                     <td th:text="${o.id}">001</td>
                                     <td th:text="${o.customer.firstName}">Intel Core i5 8400 3.0 GHz</td>
                                     <td th:text="${o.orderDate}">CPU</td>
-                                    <td th:text="${o.paidDate}">Intel</td>                     
+                                    <td th:text="${o.paidDate}">Intel</td>
                                     <td>
                                         <th:block th:if="${o.orderStatus==1}">Ordered</th:block>
                                         <th:block th:if="${o.orderStatus==2}">Confirmed</th:block>
@@ -78,14 +77,31 @@
                                     </td>
                                     <td>
                                         <button class="btn btn-danger btn-sm" href="#" data-toggle="tooltip"
-                                            title="Cancelling"
+                                            th:if="${o.orderStatus != 4 && o.orderStatus != 5 && o.orderStatus != 2 && o.orderStatus != 3} "
+                                            title="Confirmed"
+                                            th:onclick='confirmOrder([[${o.id}]],[[@{/manager/order/doConfirmed(id=${o.id})}]])'>
+                                            <i class="fas fa-thumbs-up"></i>
+                                        </button>
+                                        <button class="btn btn-danger btn-sm" href="#" data-toggle="tooltip"
+                                            title="Shipping"
+                                            th:if="${o.orderStatus != 4 && o.orderStatus != 5 && o.orderStatus != 3}"
+                                            th:onclick='confirmShipping([[${o.id}]],[[@{/manager/order/doShipping(id=${o.id})}]])'>
+                                            <i class="fas fa-shipping-fast"></i>
+                                        </button>
+                                        <button class="btn btn-danger btn-sm" href="#" data-toggle="tooltip"
+                                            th:if="${o.orderStatus != 4 && o.orderStatus != 5 }" title="Done"
+                                            th:onclick='confirmDone([[${o.id}]],[[@{/manager/order/doDone(id=${o.id})}]])'>
+                                            <i class="fas fa-check-circle"></i>
+                                        </button>
+                                        <button class="btn btn-danger btn-sm" href="#" data-toggle="tooltip"
+                                            th:if="${o.orderStatus != 4 && o.orderStatus != 5}" title="Cancelling"
                                             th:onclick='confirmCancel([[${o.id}]],[[@{/manager/order/doCancel(id=${o.id})}]])'>
                                             <i class="far fa-stop-circle"></i>
                                         </button>
                                         <a class="btn btn-info btn-sm" th:href="@{/manager/order/details(id=${o.id})}"
                                             data-toggle='tooltip' title="Details">
                                             <i class="nav-icon fas fa-receipt"></i>
-                                        </a>                                    
+                                        </a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -108,18 +124,39 @@
 
     <!--In case using custom script at pages using layout, add th:inline="none" like below-->
     <script layout:fragment="script" th:inline="none">
-        
+
         function confirmCancel(title, url) {
             showModal('Confirm Cancelling',
-                    'Are you sure to cancel order "' + title + '" ?<br>',
-                    url,
-                    true,
-                    true);
+                'Are you sure to cancel order "' + title + '" ?<br>',
+                url,
+                true,
+                true);
+        }
+        function confirmOrder(title, url) {
+            showModal('Confirm Cancelling',
+                'Are you sure to confirm order "' + title + '" ?<br>',
+                url,
+                true,
+                true);
+        }
+        function confirmShipping(title, url) {
+            showModal('Confirm Cancelling',
+                'Are you sure to Shipping order "' + title + '" ?<br>',
+                url,
+                true,
+                true);
+        }
+        function confirmDone(title, url) {
+            showModal('Confirm Cancelling',
+                'Are you sure to done order "' + title + '" ?<br>',
+                url,
+                true,
+                true);
         }
         // Add custom filter for datatable
         $('#tblOrder tfoot th').each(function () {
             var title = $(this).text();
-            if (title == "Action" || title == "Order Date" || title == "Paid Date"  ) {
+            if (title == "Action" || title == "Order Date" || title == "Paid Date" || title == "ID") {
                 // Collum that not using filter
                 $(this).html('');
             } else if (title == "Status") {

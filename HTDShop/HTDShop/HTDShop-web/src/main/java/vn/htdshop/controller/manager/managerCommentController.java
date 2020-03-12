@@ -72,7 +72,7 @@ public class managerCommentController {
 
         // Pass order list to session
         model.asMap().put("comments", commentFacade.findAll().stream()
-                .sorted(Comparator.comparingInt(ProductComment::getId)).collect(Collectors.toList()));
+                .sorted(Comparator.comparingInt(ProductComment::getId).reversed()).collect(Collectors.toList()));
         // Add indicator attribute for sidemenu highlight
         model.asMap().put("menu", "comment");
 
