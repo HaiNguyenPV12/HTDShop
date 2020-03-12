@@ -33,23 +33,23 @@
                     <h4><a class="block-ellipsis" th:href="@{/product(id=${p.id})}" th:text="${p.name}"></a></h4>
                     <span th:if="${p.status == 1 && p.stock > 0}">
                         <del th:if="${shopSv.getDiscountPrice(p) lt p.price}"
-                            th:text="${'$'+#numbers.formatDecimal(p.price, 1, 'POINT', 2, 'COMMA')}"
+                            th:text="${'$'+#numbers.formatDecimal(p.price, 1, 'COMMA', 2, 'POINT')}"
                             class="text-muted"></del>
                         <th:block
-                            th:text="${'$'+#numbers.formatDecimal(shopSv.getDiscountPrice(p), 1, 'POINT', 2, 'COMMA')}">
+                            th:text="${'$'+#numbers.formatDecimal(shopSv.getDiscountPrice(p), 1, 'COMMA', 2, 'POINT')}">
                         </th:block>
                     </span>
                     <span th:if="${p.status == 1 && p.stock == 0}">
-                        <th:block th:text="${'$'+#numbers.formatDecimal(p.price, 1, 'POINT', 2, 'COMMA')}"
+                        <th:block th:text="${'$'+#numbers.formatDecimal(p.price, 1, 'COMMA', 2, 'POINT')}"
                             class="text-muted"></th:block>
                         - Out of stock
                     </span>
                     <span th:if="${p.status == 2}">
                         <del th:if="${shopSv.getDiscountPrice(p) lt p.price}"
-                            th:text="${'$'+#numbers.formatDecimal(p.price, 1, 'POINT', 2, 'COMMA')}"
+                            th:text="${'$'+#numbers.formatDecimal(p.price, 1, 'COMMA', 2, 'POINT')}"
                             class="text-muted"></del>
                         <th:block
-                            th:text="${'$'+#numbers.formatDecimal(shopSv.getDiscountPrice(p), 1, 'POINT', 2, 'COMMA')}">
+                            th:text="${'$'+#numbers.formatDecimal(shopSv.getDiscountPrice(p), 1, 'COMMA', 2, 'POINT')}">
                         </th:block>
                         - Upcoming
                     </span>

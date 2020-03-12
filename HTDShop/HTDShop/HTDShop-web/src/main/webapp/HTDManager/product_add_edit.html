@@ -119,7 +119,7 @@
                                         class="text-danger">*</i></label>
                                 <div class="col-sm-9">
                                     <input class="form-control" id="name" placeholder="Product name" th:field="*{name}"
-                                        required minlength="3" maxlength="255" autocomplete="off" />
+                                        required minlength="3" maxlength="150" autocomplete="off" />
                                 </div>
                                 <div class="col-sm-3"></div>
                                 <div class="col-sm-9">
@@ -262,7 +262,7 @@
                                     <i class="fas fa-plus-square"></i>
                                     <input type="file"
                                         style="position: absolute;font-size:50px;opacity: 0;right: 0;top: 0;cursor: pointer;"
-                                        id="btnUploadImage" multiple="multiple" accept="image/*">
+                                        id="btnUploadImage" multiple="multiple" accept="image/x-png,image/jpg,image/jpeg">
                                 </div>
                                 <a class="btn btn-danger" id="btnClearUploadImage" title="Clear all"
                                     style="cursor: pointer;"><i class="fas fa-trash"></i></a>
@@ -333,6 +333,7 @@
         var frmProduct = $("#frmProduct"), original = frmProduct.serialize();
 
         $("#btnUploadImage").on("change", function () {
+
             if (this.files && this.files[0]) {
                 var filesNum = this.files.length;
                 if ((filesNum + existImgSize) > 10) {
@@ -431,7 +432,7 @@
                 attr = "manu";
             }
             searchUrl += "?attr=" + attr + "&cate=" + cate;
-            if ((attr == "socket" && cate == "CpuCooler") || (attr == "chipset" && cate == "Cpu") || (attr == "formFactor" && cate == "Case") || (attr == "pSUFormFactor" && cate == "Case")) {
+            if ((attr == "socket" && cate == "CpuCooler") || (attr == "chipset" && cate == "Cpu")) {
                 function split(val) {
                     return val.split(/,\s*/);
                 }
