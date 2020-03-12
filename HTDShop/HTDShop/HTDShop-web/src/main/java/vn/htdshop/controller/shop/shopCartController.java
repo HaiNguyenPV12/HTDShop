@@ -123,12 +123,13 @@ public class shopCartController {
                     orderDetail.setId(null);
                     orderDetail.setOrder1(order1);
                     orderDetail.setProduct(productFacade.find(Integer.parseInt(item.getId().substring(1))));
-                    Product product = productFacade.find(Integer.parseInt(item.getId().substring(1)));
-                    product.setStock(product.getStock()-item.getQuan());
-                    productFacade.edit(product);
                     orderDetail.setQuantity(item.getQuan());
                     orderDetail.setPrice(shopService.getcartItemPrice(item.getId(), item.getQuan()));
                     orderDetailFacade.create(orderDetail);
+
+                    Product product = productFacade.find(Integer.parseInt(item.getId().substring(1)));
+                    product.setStock(product.getStock()-item.getQuan());
+                    productFacade.edit(product);
                 }else{
                     orderDetail.setId(null);
                     orderDetail.setOrder1(order1);
