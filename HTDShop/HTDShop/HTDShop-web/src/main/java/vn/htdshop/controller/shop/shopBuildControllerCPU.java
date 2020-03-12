@@ -21,6 +21,7 @@ import vn.htdshop.entity.PreBuilt;
 import vn.htdshop.entity.Product;
 import vn.htdshop.sb.ProductFacadeLocal;
 import vn.htdshop.utility.BuildService;
+import vn.htdshop.utility.ShopService;
 
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,6 +40,9 @@ public class shopBuildControllerCPU {
     BuildService buildService;
 
     @Autowired
+    ShopService shopService;
+
+    @Autowired
     HttpSession session;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
@@ -52,6 +56,7 @@ public class shopBuildControllerCPU {
         model.addAttribute("cpuSocketList", cpuSockets());
         model.addAttribute("cpuSeriesList", cpuSeries());
         // -----FILTER RESULT---
+        model.addAttribute("shopService", shopService);
         model.addAttribute("filteredCPU", filterCPU());
         return "HTDShop/pickCPU";
     }
@@ -274,7 +279,7 @@ public class shopBuildControllerCPU {
 
             // return only selling items
             for (int i = 0; i < cpus.size(); i++) {
-                if (cpus.get(i).getStatus() == 3) {
+                if (cpus.get(i).getStatus() != 1) {
                     cpus.remove(i);
                     i--;
                 }

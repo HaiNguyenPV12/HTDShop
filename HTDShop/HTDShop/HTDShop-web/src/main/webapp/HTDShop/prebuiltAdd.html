@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDShop/layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Build</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="container">
+            <div class="row">
+                <h2 class="mx-auto">Share your build</h2>
+            </div>
+            <div th:if="${errorMessage != null}" class="row alert alert-danger">
+                <h4 th:text=${errorMessage}></h4>
+            </div>
+            <form th:action="@{/build/add/doAdd}" th:object="${prebuilt}" method="post">
+                <div class="row py-2">
+                    <div class="col-md-4">
+                        <label for="name">Build Name<i class="text-danger">*</i>:</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input id="name" th:field=*{name} type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="row py-2">
+                    <div class="col-md-4">
+                        <label for="detail">Describe your build<i class="text-danger">*</i>:</label>
+                    </div>
+                    <div class="col-md-8">
+                        <textarea id="detail" th:field=*{detail} class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="row py-2">
+                    <div class="col-md-4">
+                        <label for="cpu">CPU</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input th:field=*{cpu.id} type="text" />
+                        <span th:text=*{cpu.name}></span>
+                    </div>
+                </div>
+                <div class="row py-2">
+                    <div class="col-md-4">
+                        <label for="cpucooler">CPU Cooler</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input th:field=*{cpucooler.id} type="text" />
+                        <span th:text=*{cpucooler.name}></span>
+                    </div>
+                </div>
+                <div class="row py-2">
+                    <div class="col-md-4">
+                        <label for="motherboard">Motherboard</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input th:field=*{motherboard.id} type="text" />
+                        <span th:text=*{motherboard.name}></span>
+                    </div>
+                </div>
+                <div class="row py-2">
+                    <div class="col-md-4">
+                        <label for="memory">Memory</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input th:field=*{memory.id} type="text" />
+                        <span th:text=*{memory.name}></span>
+                    </div>
+                </div>
+                <div class="row py-2">
+                    <div class="col-md-4">
+                        <label for="storage">Storage</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input th:field=*{storage.id} type="text" />
+                        <span th:text=*{storage.name}></span>
+                    </div>
+                </div>
+                <div class="row py-2">
+                    <div class="col-md-4">
+                        <label for="gpu">GPU</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input th:field=*{vga.id} type="text" />
+                        <span th:text=*{vga.name}></span>
+                    </div>
+                </div>
+                <div class="row py-2">
+                    <div class="col-md-4">
+                        <label for="case">Case</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input th:field=*{cases.id} type="text" />
+                        <span th:text=*{cases.name}></span>
+                    </div>
+                </div>
+                <div class="row py-2">
+                    <div class="col-md-4">
+                        <label for="psu">PSU</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input th:field=*{psu.id} type="text" />
+                        <span th:text=*{psu.name}></span>
+                    </div>
+                </div>
+                <div class="row py-2">
+                    <div class="col-md-4">
+                        <label for="monitor">Monitor</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input th:field=*{monitor.id} type="text" />
+                        <span th:text=*{monitor.name}></span>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <button type="submit" class="btn btn-success">Share</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -149,7 +149,12 @@
                             <th:block th:text="${m.memory/m.memoryModules}" />GB
                         </td>
                         <td>
-                            <th:block th:text="${m.price}" />
+                            <th:block th:if="${m.price !=shopService.getDiscountPrice(m.id)}">
+                                <del>
+                                    <th:block th:text="${m.price}" />
+                                </del>
+                            </th:block>
+                            <th:block th:text="${#numbers.formatDecimal(shopService.getDiscountPrice(m.id), 1, 'COMMA', 2, 'POINT')}" />
                         </td>
                         <td>
                             <form action="" th:action="@{/build/memory/pickMemory?id=__${m.id}__}" method="post">
@@ -190,6 +195,10 @@
                 "emptyTable": "<div style='text-align:center;'><a href='memory/reset' th:href='@{/build/memory/reset}'>No results. Reset your search values.</a>" +
                     "<br><a href='memory/reset' th:href='@{/build/memory/reset}' class='btn btn-success'>Reset</a></div>"
             },
+            "columnDefs": [{
+                "targets": 5,
+                "orderable": false
+            }],
             initComplete: function () {
                 $('div.dataTables_length').addClass('form-inline');
                 $('div.dataTables_length').addClass('mt-4');

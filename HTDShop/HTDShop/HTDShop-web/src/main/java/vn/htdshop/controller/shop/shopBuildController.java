@@ -23,6 +23,7 @@ import vn.htdshop.entity.PreBuilt;
 import vn.htdshop.entity.Product;
 import vn.htdshop.sb.ProductFacadeLocal;
 import vn.htdshop.utility.BuildService;
+import vn.htdshop.utility.ShopService;
 
 /**
  * shopBuildController
@@ -46,19 +47,23 @@ public class shopBuildController {
     BuildService buildService;
 
     @Autowired
+    ShopService shopService;
+
+    @Autowired
     HttpSession session;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String getBuild(Model model) {
         buildService.initBuildApp();
 
-        setSessionBuildCompatibility(checkCompatibility());
 
         // total price
         PreBuilt sessionPrebuilt = buildService.getSessionPrebuilt();
-        sessionPrebuilt.setPrice(buildPrice(sessionPrebuilt));
         buildService.setSessionPrebuilt(sessionPrebuilt);
+        setSessionBuildCompatibility(checkCompatibility());
+        sessionPrebuilt.setPrice(buildPrice(sessionPrebuilt));
 
+        model.addAttribute("shopService", shopService);
         return "HTDShop/build";
     }
 
@@ -208,31 +213,31 @@ public class shopBuildController {
     public Double buildPrice(PreBuilt currentBuild) {
         Double result = new Double(0);
         if (currentBuild.getCpu() != null) {
-            result = result + currentBuild.getCpu().getPrice();
+            result = result + shopService.getDiscountPrice(currentBuild.getCpu().getId());
         }
         if (currentBuild.getCpucooler() != null) {
-            result = result + currentBuild.getCpucooler().getPrice();
+            result = result + shopService.getDiscountPrice(currentBuild.getCpucooler().getId());
         }
         if (currentBuild.getMotherboard() != null) {
-            result = result + currentBuild.getMotherboard().getPrice();
+            result = result + shopService.getDiscountPrice(currentBuild.getMotherboard().getId());
         }
         if (currentBuild.getMemory() != null) {
-            result = result + currentBuild.getMemory().getPrice();
+            result = result + shopService.getDiscountPrice(currentBuild.getMemory().getId());
         }
         if (currentBuild.getStorage() != null) {
-            result = result + currentBuild.getStorage().getPrice();
+            result = result + shopService.getDiscountPrice(currentBuild.getStorage().getId());
         }
         if (currentBuild.getVga() != null) {
-            result = result + currentBuild.getVga().getPrice();
+            result = result + shopService.getDiscountPrice(currentBuild.getVga().getId());
         }
         if (currentBuild.getCases() != null) {
-            result = result + currentBuild.getCases().getPrice();
+            result = result + shopService.getDiscountPrice(currentBuild.getCases().getId());
         }
         if (currentBuild.getPsu() != null) {
-            result = result + currentBuild.getPsu().getPrice();
+            result = result + shopService.getDiscountPrice(currentBuild.getPsu().getId());
         }
         if (currentBuild.getMonitor() != null) {
-            result = result + currentBuild.getMonitor().getPrice();
+            result = result + shopService.getDiscountPrice(currentBuild.getMonitor().getId());
         }
         return result;
     }

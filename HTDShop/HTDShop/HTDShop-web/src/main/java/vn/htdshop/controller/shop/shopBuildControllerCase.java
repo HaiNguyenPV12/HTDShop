@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import vn.htdshop.utility.BuildService;
+import vn.htdshop.utility.ShopService;
 import vn.htdshop.entity.BuildValues;
 import vn.htdshop.entity.PreBuilt;
 import vn.htdshop.entity.Product;
@@ -42,6 +43,9 @@ public class shopBuildControllerCase {
     @Autowired
     HttpSession session;
 
+    @Autowired
+    ShopService shopService;
+
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String getCaseList(Model model) {
         buildService.initBuildApp();
@@ -53,6 +57,7 @@ public class shopBuildControllerCase {
         model.addAttribute("caseFormFactorList", caseFormFactors());
         model.addAttribute("casePSUFormFactorList", casePSUFormFactors());
         // -----FILTER RESULT---
+        model.addAttribute("shopService", shopService);
         model.addAttribute("filteredCase", filterCase());
         return "HTDShop/pickCase";
     }
@@ -183,7 +188,7 @@ public class shopBuildControllerCase {
 
             // return only selling items
             for (int i = 0; i < cases.size(); i++) {
-                if (cases.get(i).getStatus() == 3) {
+                if (cases.get(i).getStatus() != 1) {
                     cases.remove(i);
                     i--;
                 }

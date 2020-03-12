@@ -146,7 +146,12 @@
                             <th:block th:text="${s.interface1}" />
                         </td>
                         <td>
-                            <th:block th:text="${s.price}" />
+                            <th:block th:if="${s.price !=shopService.getDiscountPrice(s.id)}">
+                                <del>
+                                    <th:block th:text="${s.price}" />
+                                </del>
+                            </th:block>
+                            <th:block th:text="${#numbers.formatDecimal(shopService.getDiscountPrice(s.id), 1, 'COMMA', 2, 'POINT')}" />
                         </td>
                         <td>
                             <form action="" th:action="@{/build/storage/pickStorage?id=__${s.id}__}" method="post">
@@ -186,6 +191,10 @@
                 "emptyTable": "<div style='text-align:center;'><a href='storage/reset' th:href='@{/build/storage/reset}'>No results. Reset your search values.</a>" +
                     "<br><a href='storage/reset' th:href='@{/build/storage/reset}' class='btn btn-success'>Reset</a></div>"
             },
+            "columnDefs": [{
+                "targets": 4,
+                "orderable": false
+            }],
             initComplete: function () {
                 $('div.dataTables_length').addClass('form-inline');
                 $('div.dataTables_length').addClass('mt-4');
