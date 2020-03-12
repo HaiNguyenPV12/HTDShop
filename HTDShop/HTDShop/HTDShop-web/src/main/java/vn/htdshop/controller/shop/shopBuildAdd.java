@@ -74,10 +74,10 @@ public class shopBuildAdd {
     public String addBuild(@ModelAttribute("prebuilt") PreBuilt preBuilt, BindingResult error,
             RedirectAttributes redirect) {
 
-        if (!isBuildMatch(preBuilt)) {
-            redirect.addFlashAttribute("errorMessage", "Error processing request.");
-            return "redirect:/build/add";
-        }
+        // if (!isBuildMatch(preBuilt)) {
+        // redirect.addFlashAttribute("errorMessage", "Error processing request.");
+        // return "redirect:/build/add";
+        // }
 
         if (preBuilt.getName().trim().isEmpty()) {
             redirect.addFlashAttribute("errorMessage", "Name is required");
@@ -97,25 +97,34 @@ public class shopBuildAdd {
 
         try {
             preBuilt.setCustomer(shopService.getLoggedInCustomer());
-            preBuilt.setCpu(preBuilt.getCpu() != null ? new Product(preBuilt.getCpu().getId()) : null);
-            preBuilt.setCpucooler(
-                    preBuilt.getCpucooler() != null ? new Product(preBuilt.getCpucooler().getId()) : null);
-            preBuilt.setMotherboard(
-                    preBuilt.getMotherboard() != null ? new Product(preBuilt.getMotherboard().getId()) : null);
-            preBuilt.setMemory(preBuilt.getMemory() != null ? new Product(preBuilt.getMemory().getId()) : null);
-            preBuilt.setStorage(preBuilt.getStorage() != null ? new Product(preBuilt.getStorage().getId()) : null);
-            preBuilt.setVga(preBuilt.getVga() != null ? new Product(preBuilt.getVga().getId()) : null);
-            preBuilt.setPsu(preBuilt.getPsu() != null ? new Product(preBuilt.getPsu().getId()) : null);
-            preBuilt.setCases(preBuilt.getCases() != null ? new Product(preBuilt.getCases().getId()) : null);
-            preBuilt.setMonitor(preBuilt.getMonitor() != null ? new Product(preBuilt.getMonitor().getId()) : null);
+            // preBuilt.setCpu(preBuilt.getCpu() != null ? new
+            // Product(preBuilt.getCpu().getId()) : null);
+            // preBuilt.setCpucooler(
+            // preBuilt.getCpucooler() != null ? new
+            // Product(preBuilt.getCpucooler().getId()) : null);
+            // preBuilt.setMotherboard(
+            // preBuilt.getMotherboard() != null ? new
+            // Product(preBuilt.getMotherboard().getId()) : null);
+            // preBuilt.setMemory(preBuilt.getMemory() != null ? new
+            // Product(preBuilt.getMemory().getId()) : null);
+            // preBuilt.setStorage(preBuilt.getStorage() != null ? new
+            // Product(preBuilt.getStorage().getId()) : null);
+            // preBuilt.setVga(preBuilt.getVga() != null ? new
+            // Product(preBuilt.getVga().getId()) : null);
+            // preBuilt.setPsu(preBuilt.getPsu() != null ? new
+            // Product(preBuilt.getPsu().getId()) : null);
+            // preBuilt.setCases(preBuilt.getCases() != null ? new
+            // Product(preBuilt.getCases().getId()) : null);
+            // preBuilt.setMonitor(preBuilt.getMonitor() != null ? new
+            // Product(preBuilt.getMonitor().getId()) : null);
             preBuilt.setCreatedAt(new Date());
             preBuiltFacade.create(preBuilt);
             PreBuiltImage preBuiltImage = new PreBuiltImage();
             preBuiltImage.setPreBuilt(preBuilt);
-            preBuiltImage.setPath("/img/noimage.png"); // default image
+            preBuiltImage.setPath("noimage.png"); // default image
             prebuiltImageFacade.create(preBuiltImage);
-            if (preBuilt.getCases().getProductImageCollection() != null
-                    && preBuilt.getCases().getProductImageCollection().size() > 0) {
+            Product myCase = productFacade.find(preBuilt.getCases().getId());
+            if (myCase.getProductImageCollection() != null && myCase.getProductImageCollection().size() > 0) {
                 // Copy Image
                 String folderPath = System.getProperty("catalina.base") + "/img/prebuilt/" + preBuilt.getId();
                 File folderCheck = new File(folderPath);
@@ -123,10 +132,10 @@ public class shopBuildAdd {
                     folderCheck.mkdirs();
                 }
                 // get case img
-                PreBuiltImage caseImage = (PreBuiltImage) preBuilt.getCases().getProductImageCollection().toArray()[0];
-                String ext = FilenameUtils.getExtension(caseImage.getPath());
+                ProductImage caseImage = (ProductImage) myCase.getProductImageCollection().toArray()[0];
+                String ext = FilenameUtils.getExtension(caseImage.getImagePath());
                 String fileName = "0." + ext;
-                String originPath = System.getProperty("catalina.base") + "/img/" + caseImage.getPath();
+                String originPath = System.getProperty("catalina.base") + "/img/" + caseImage.getImagePath();
                 String filePath = folderPath + "/" + fileName;
                 Files.copy(Paths.get(originPath), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
                 preBuiltImage.setPath("prebuilt/" + preBuilt.getId() + "/" + fileName);
