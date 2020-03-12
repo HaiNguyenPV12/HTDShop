@@ -33,7 +33,9 @@
             enctype="multipart/form-data" id="frmCategory">
             <div class="row">
                 <div class="col-12">
-                    <i class="text-warning">* Please note that when you update product removing or changing attributes here will result in the lost of product's value of this attribute in this category. Adding more is okay.</i>
+                    <i class="text-warning">* Please note that when you update product removing or changing attributes
+                        here will result in the lost of product's value of this attribute in this category. Adding more
+                        is okay.</i>
                 </div>
             </div>
             <div class="row">
@@ -57,7 +59,7 @@
                                         class="text-danger">*</i></label>
                                 <div class="col-sm-9">
                                     <input class="form-control" id="name" placeholder="Name" th:field="*{name}"
-                                        th:classappend="${(#fields.hasErrors('name')?'is-invalid':'') + (submited != null and !#fields.hasErrors('name')?'is-valid':'')}" required/>
+                                        th:classappend="${(#fields.hasErrors('name')?'is-invalid':'') + (submited != null and !#fields.hasErrors('name')?'is-valid':'')}" required minlength="2" maxlength="80"/>
                                 </div>
                                 <div class="col-sm-3"></div>
                                 <div class="col-sm-9" >
@@ -71,7 +73,7 @@
                                         class="text-danger">*</i></label>
                                 <div class="col-sm-9">
                                     <textarea class="form-control" id="detail" placeholder="Detail" th:field="*{detail}"
-                                        th:classappend="${(#fields.hasErrors('detail')?'is-invalid':'') + (submited != null and !#fields.hasErrors('detail')?'is-valid':'')}" required></textarea>
+                                        th:classappend="${(#fields.hasErrors('detail')?'is-invalid':'') + (submited != null and !#fields.hasErrors('detail')?'is-valid':'')}" required style="resize: none;" rows="6"></textarea>
                                 </div>
                                 <div class="col-sm-3"></div>
                                 <div class="col-sm-9" >
@@ -90,6 +92,7 @@
                             <button type="button" class="btn btn-success" id="btnAddAttribute"><i class="fas fa-plus"></i></button>
                         </div>
                         <div class="card-body">
+                            <div class="container-fluid text-danger" id="attributesError"></div>
                             <div class="container-fluid" id="attributes">
                                 <th:block th:each="attr, itr : ${category.categoryOtherCollection}">
                                     <div class="form-group row">
@@ -121,11 +124,11 @@
         <script th:src="@{/manager_resources/plugins/jquery-validation/additional-methods.min.js}"></script>
         <script th:inline="javascript">
             /*<![CDATA[*/
-            var submited = /*[[${submited != null? true : false}]]*/false;
             var exists = +/*[[${category.categoryOtherCollection.size()}]]*/0;
+            var submited = /*[[${submited != null? true : false}]]*/false;
             var frmCategory = $("#frmCategory"), original = frmCategory.serialize();
             $(window).on("beforeunload", function () {
-                if (frmCategory.serialize() != original) {
+                if (frmCategory.serialize() != original || submited) {
                     var cf = confirm('There are data(s) not being saved! Are you sure to leave page?');
                     if (!cf) {
                         return false;
@@ -153,27 +156,40 @@
         }
 
         function checkCount() {
+            $("#attributesError").html("");
             var count = $("input[name='others']").length;
             if (count > 20) {
                 $("#btnAddAttribute").attr("disabled", true);
             } else {
+                if (count <= 0) {
+                    $("#attributesError").html("Please insert at least 1 attribute.");
+                    return false;
+                }
                 $("#btnAddAttribute").removeAttr("disabled");
             }
+            return true;
         }
 
-
-
-        function injectTrim(handler) {
-            return function (element, event) {
-                if (element.tagName === "TEXTAREA" || (element.tagName === "INPUT"
-                    && element.type !== "password")) {
-                    element.value = $.trim(element.value);
-                }
-                return handler.call(this, element, event);
-            };
-        }
+        checkCount();
 
         $(document).ready(function () {
+
+            function injectTrim(handler) {
+                return function (element, event) {
+                    if (element.tagName === "TEXTAREA" || (element.tagName === "INPUT"
+                        && element.type !== "password")) {
+                        element.value = $.trim(element.value);
+                    }
+                    return handler.call(this, element, event);
+                };
+            }
+
+            function trimAll() {
+                $("form").find("input, textarea").each(function (i, e) {
+                    $(e).val($(e).val().trim());
+                });
+            }
+
             $("#frmCategory").validate({
                 ignore: [],
                 errorClass: "is-invalid",
@@ -200,15 +216,25 @@
                     }
                 },
                 errorElement: "li",
-                callback: function () {
-                    // addRule();
-                    var form = $("#frmCategory");
-                    if (form.valid()) {
-                        form.submit();
-                    } else {
+                submitHandler: function (form) {
+                    trimAll();
+                    if (!checkCount()) {
                         return false;
                     }
+                    if ($("#frmCategory").valid()) {
+                        return true;
+                    }
+                    return false;
                 },
+                // callback: function () {
+
+                //     var form = $("#frmCategory");
+                //     if (form.valid()) {
+                //         form.submit();
+                //     } else {
+                //         return false;
+                //     }
+                // },
                 onfocusout: injectTrim($.validator.defaults.onfocusout)
             });
         });
@@ -217,7 +243,7 @@
             if (frmCategory.valid()) {
                 original = frmCategory.serialize();
             }
-        })
+        });
     </script>
 </body>
 

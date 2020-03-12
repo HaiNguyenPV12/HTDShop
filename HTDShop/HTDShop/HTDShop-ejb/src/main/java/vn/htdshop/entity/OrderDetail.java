@@ -34,6 +34,10 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "OrderDetail.findByPrice", query = "SELECT o FROM OrderDetail o WHERE o.price = :price")})
 public class OrderDetail implements Serializable {
 
+    @JoinColumn(name = "PreBuiltId", referencedColumnName = "Id")
+    @ManyToOne
+    private PreBuilt preBuilt;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -131,6 +135,14 @@ public class OrderDetail implements Serializable {
     @Override
     public String toString() {
         return "vn.htdshop.entity.OrderDetail[ id=" + id + " ]";
+    }
+
+    public PreBuilt getPreBuilt() {
+        return preBuilt;
+    }
+
+    public void setPreBuilt(PreBuilt preBuilt) {
+        this.preBuilt = preBuilt;
     }
     
 }

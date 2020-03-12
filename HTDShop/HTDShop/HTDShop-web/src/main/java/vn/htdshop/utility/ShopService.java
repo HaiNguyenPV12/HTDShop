@@ -506,6 +506,10 @@ public class ShopService {
         }
         return product.getPrice() - discount;
     }
+    
+    public Double getDiscountPrice(Integer id){
+        return getDiscountPrice(productFacade.find(id));
+    }
 
     public Double getPreBuiltPrice(PreBuilt prebuilt) {
         Double result = 0d;
@@ -624,6 +628,7 @@ public class ShopService {
         }
         return result;
     }
+
 
     public Long getAverageRating(PreBuilt prebuilt) {
         Long result = 0L;

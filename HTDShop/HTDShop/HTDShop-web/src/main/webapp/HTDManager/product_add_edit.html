@@ -53,6 +53,10 @@
                 border: 1px solid #dc3545;
                 border-radius: 4px;
             }
+
+            .note-group-select-from-files {
+                display: none;
+            }
         </style>
     </th:block>
 
@@ -500,9 +504,17 @@
 
         }
 
+        function trimAll() {
+            $("form").find("input, textarea").each(function (i, e) {
+                if (e.type !== "file") {
+                    $(e).val($(e).val().trim());
+                }
+            });
+        }
+
         function injectTrim(handler) {
             return function (element, event) {
-                if (element.tagName === "TEXTAREA" || (element.tagName === "INPUT"
+                if ((element.tagName === "TEXTAREA" && !element.hasClass('textarea')) || (element.tagName === "INPUT"
                     && element.type !== "password")) {
                     element.value = $.trim(element.value);
                 }
@@ -537,6 +549,10 @@
             },
             errorElement: "li",
             submitHandler: function (form) {
+                trimAll();
+                if (!$("#frmProduct").valid()) {
+                    return false;
+                }
                 var formData = new FormData($(form)[0]);
                 $.ajax({
                     url: $(form).attr("action"),
@@ -668,7 +684,10 @@
             theme: 'bootstrap4'
         });
 
-        $('.textarea').summernote({ height: 150 });
+        $('.textarea').summernote({
+            minHeight: 200,
+            maxHeight: 650
+        });
 
         // window.onbeforeunload = function () {
         //     if (form.serialize() != original)

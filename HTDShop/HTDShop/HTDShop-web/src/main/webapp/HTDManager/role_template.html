@@ -30,7 +30,7 @@
 
     <div layout:fragment="content">
         <form action="" th:action="@{/manager/role/__${formUrl}__}" th:object="${role}" method="POST"
-            enctype="multipart/form-data">
+            enctype="multipart/form-data" id="frmRole">
             <div class="row">
                 <div class="col-lg-12 mb-3" th:if="${#fields.hasErrors('global')}">
                     <p class="alert alert-danger">
@@ -55,9 +55,9 @@
                                         th:classappend="${(#fields.hasErrors('name')?'is-invalid':'') + (submited != null and !#fields.hasErrors('name')?'is-valid':'')}" required/>
                                 </div>
                                 <div class="col-sm-3"></div>
-                                <div class="col-sm-9" th:if="${#fields.hasErrors('name')}">
-                                    <ul class="text-danger">
-                                        <li th:each="err : ${#fields.errors('name')}" th:text="${err}">Name Error</li>
+                                <div class="col-sm-9">
+                                    <ul class="text-danger" id="nameError">
+                                        <li th:each="err : ${#fields.errors('name')}" th:text="${err}" th:if="${#fields.hasErrors('name')}">Name Error</li>
                                     </ul> 
                                 </div>
                             </div>
@@ -124,12 +124,70 @@
             </div>
         </form>
     </div>
-    
+    <th:block layout:fragment="additionalScript">
+
+        <script th:src="@{/manager_resources/plugins/jquery-validation/jquery.validate.js}"></script>
+        <script th:src="@{/manager_resources/plugins/jquery-validation/additional-methods.min.js}"></script>
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            var submited = /*[[${submited != null? true : false}]]*/false;
+
+            /*]]>*/
+        </script>
+    </th:block>
     <script layout:fragment="script" th:inline="none">
-
-
         $(document).ready(function () {
+            function injectTrim(handler) {
+                return function (element, event) {
+                    if (element.tagName === "TEXTAREA" || (element.tagName === "INPUT"
+                        && element.type !== "password")) {
+                        element.value = $.trim(element.value);
+                    }
+                    return handler.call(this, element, event);
+                };
+            }
 
+            function trimAll() {
+                $("form").find("input, textarea").each(function (i, e) {
+                    $(e).val($(e).val().trim());
+                });
+            }
+
+            $("#frmRole").validate({
+                ignore: [],
+                errorClass: "is-invalid",
+                validClass: "is-valid",
+                errorPlacement: function (error, element) {
+                    error.appendTo('#' + element.attr("id") + "Error");
+                },
+                highlight: function (element, errorClass, validClass) {
+                    var elem = $(element);
+                    if (elem.hasClass("select2")) {
+                        $(elem).next().addClass(errorClass);
+                        // $("#s2id_" + elem.attr("id") + " ul").addClass(errorClass);
+                    } else {
+                        elem.addClass(errorClass);
+                    }
+                },
+
+                unhighlight: function (element, errorClass, validClass) {
+                    var elem = $(element);
+                    if (elem.hasClass("select2")) {
+                        $(elem).next().removeClass(errorClass);
+                    } else {
+                        elem.removeClass(errorClass);
+                    }
+                },
+                errorElement: "li",
+                submitHandler: function (form) {
+                    trimAll();
+                    if ($("#frmRole").valid()) {
+                        return true;
+                    }
+                    return false;
+                },
+                onfocusout: injectTrim($.validator.defaults.onfocusout)
+            });
         });
     </script>
 </body>

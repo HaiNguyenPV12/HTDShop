@@ -139,7 +139,7 @@ public class managerCategoryController {
             error.reject("common", "Please add at least 1 attribute for this category.");
         }
 
-        if (others == null || others.length > 20) {
+        if (others != null && others.length > 20) {
             error.reject("common", "Category can only have maximum 20 attributes.");
         }
 
@@ -252,7 +252,7 @@ public class managerCategoryController {
             error.reject("common", "Please add at least 1 attribute for this category.");
         }
 
-        if (others == null || others.length > 20) {
+        if (others != null && others.length > 20) {
             error.reject("common", "Category can only have maximum 20 attributes.");
         }
 
