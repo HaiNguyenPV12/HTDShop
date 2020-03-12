@@ -49,7 +49,7 @@
                                 <label for="username" class="col-sm-3 col-form-label text-right">Username<i
                                         class="text-danger">*</i></label>
                                 <div class="col-sm-9">
-                                    <input class="form-control" id="username" placeholder="Username" th:field="*{username}" 
+                                    <input autocomplete="false" class="form-control" id="username" placeholder="Username" th:field="*{username}" 
                                         th:classappend="${(#fields.hasErrors('username')?'is-invalid':'') + (submited != null and !#fields.hasErrors('username')?'is-valid':'')}" required/>
                                 </div>
                                 <div class="col-sm-3"></div>
@@ -64,7 +64,7 @@
                                 <label for="password" class="col-sm-3 col-form-label text-right">Password<i
                                         class="text-danger">*</i></label>
                                 <div class="col-sm-9">
-                                    <input class="form-control" id="password" th:field="*{password}" type="password"
+                                    <input autocomplete="false" class="form-control" id="password" th:field="*{password}" type="password"
                                         th:classappend="${(#fields.hasErrors('password')?'is-invalid':'') + (submited != null and !#fields.hasErrors('password')?'is-valid':'')}" required/>
                                 </div>
                                 <div class="col-sm-3"></div>
