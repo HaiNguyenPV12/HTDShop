@@ -56,7 +56,6 @@ public class shopBuildController {
     public String getBuild(Model model) {
         buildService.initBuildApp();
 
-
         // total price
         PreBuilt sessionPrebuilt = buildService.getSessionPrebuilt();
         buildService.setSessionPrebuilt(sessionPrebuilt);
@@ -99,7 +98,7 @@ public class shopBuildController {
 
     // check socket
     private boolean checkCPUSocket(PreBuilt currentBuild) {
-        if (currentBuild.getCpu() != null && currentBuild.getMotherboard() != null) {
+        if (currentBuild.getCpu().getId() != null && currentBuild.getMotherboard().getId() != null) {
             Product cpu = currentBuild.getCpu();
             Product motherboard = currentBuild.getMotherboard();
             if (!cpu.getSocket().equals(motherboard.getSocket())) {
@@ -111,7 +110,7 @@ public class shopBuildController {
 
     // check cooler
     private boolean checkCoolerSocket(PreBuilt currentBuild) {
-        if (currentBuild.getCpu() != null && currentBuild.getCpucooler() != null) {
+        if (currentBuild.getCpu().getId() != null && currentBuild.getCpucooler().getId() != null) {
             Product cpu = currentBuild.getCpu();
             Product cooler = currentBuild.getCpucooler();
             if (!cooler.getSocket().contains(cpu.getSocket())) {
@@ -123,7 +122,7 @@ public class shopBuildController {
 
     // check memory slot
     private boolean checkMemorySlot(PreBuilt currentBuild) {
-        if (currentBuild.getMotherboard() != null && currentBuild.getMemory() != null) {
+        if (currentBuild.getMotherboard().getId() != null && currentBuild.getMemory().getId() != null) {
             Product motherboard = currentBuild.getMotherboard();
             Product memory = currentBuild.getMemory();
             if (motherboard.getMemorySlot() < memory.getMemoryModules()) {
@@ -135,7 +134,7 @@ public class shopBuildController {
 
     // check memory type
     private boolean checkMemoryType(PreBuilt currentBuild) {
-        if (currentBuild.getMotherboard() != null && currentBuild.getMemory() != null) {
+        if (currentBuild.getMotherboard().getId() != null && currentBuild.getMemory().getId() != null) {
             Product motherboard = currentBuild.getMotherboard();
             Product memory = currentBuild.getMemory();
             if (!motherboard.getMemoryType().equals(memory.getMemoryType())) {
@@ -147,7 +146,7 @@ public class shopBuildController {
 
     // check PSU vs Case
     private boolean checkPSUFormFactor(PreBuilt currentBuild) {
-        if (currentBuild.getCases() != null && currentBuild.getPsu() != null) {
+        if (currentBuild.getCases().getId() != null && currentBuild.getPsu().getId() != null) {
             Product cases = currentBuild.getCases();
             Product psu = currentBuild.getPsu();
             if (!cases.getPSUFormFactor().equals(psu.getPSUFormFactor())) {
@@ -163,7 +162,7 @@ public class shopBuildController {
 
     // check motherboard vs Case
     private boolean checkFormFactor(PreBuilt currentBuild) {
-        if (currentBuild.getCases() != null && currentBuild.getMotherboard() != null) {
+        if (currentBuild.getCases().getId() != null && currentBuild.getMotherboard().getId() != null) {
             Product cases = currentBuild.getCases();
             Product motherboard = currentBuild.getMotherboard();
             if (!cases.getFormFactor().equals(motherboard.getFormFactor())) {
@@ -180,7 +179,8 @@ public class shopBuildController {
 
     // check wattage
     private boolean checkWattage(PreBuilt currentBuild) {
-        if (currentBuild.getCpu() != null && currentBuild.getVga() != null && currentBuild.getPsu() != null) {
+        if (currentBuild.getCpu().getId() != null && currentBuild.getVga().getId() != null
+                && currentBuild.getPsu().getId() != null) {
             Product cpu = currentBuild.getCpu();
             Product gpu = currentBuild.getVga();
             Product psu = currentBuild.getPsu();
