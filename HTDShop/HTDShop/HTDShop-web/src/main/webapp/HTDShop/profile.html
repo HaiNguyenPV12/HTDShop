@@ -30,7 +30,7 @@
                     <div class="col-md-12 col-12 col-lg-6 col-xl-6 ml-auto mr-auto">
                         <div class="login">
                             <div class="login-form-container">
-                                <div class="login-form">                                    
+                                <div class="login-form">
                                     <h1 class="cart-heading">Edit Profile</h1>
                                     <form action="profile/doEdit" method="POST" th:object="${custom}">
                                         <div class="col-lg-12 mb-3" th:if="${#fields.hasErrors('global')}">
@@ -186,11 +186,13 @@
                                                 </div>
                                             </div>
                                             <div class="button-box">
-                                                <button type="submit" class="btn btn-success">Update
+                                                <button type="submit" class="default-btn floatright">Update
                                                     Profile</button>                                                
                                             </div>
                                             <div class="button-box">
-                                                <button type="submit" class="default-btn floatright">Order Checker</button>                                                
+                                                <a th:href ="@{/orderChecker}">
+                                                    <button type="submit" class="default-btn floatright">Order Checker</button>
+                                                </a>                                                                                              
                                             </div>
                                         </div>
                                     </form>
@@ -223,12 +225,12 @@
                 singleDatePicker: true,
                 showDropdowns: true,
                 minYear: 1901,
-                maxYear: parseInt(moment().format('YYYY'),10),
+                maxYear: parseInt(moment().format('YYYY'), 10),
                 locale: {
                     format: 'DD/MM/YYYY'
                 }
-            }, function (start, end, label) {                  
-                $("#birthday").val(start.format('DD/MM/YYYY'));             
+            }, function (start, end, label) {
+                $("#birthday").val(start.format('DD/MM/YYYY'));
                 console.log($("#date").val());
             });
         });
