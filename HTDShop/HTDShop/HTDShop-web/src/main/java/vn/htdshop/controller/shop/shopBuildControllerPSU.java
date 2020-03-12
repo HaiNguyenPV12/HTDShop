@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import vn.htdshop.utility.BuildService;
+import vn.htdshop.utility.ShopService;
 import vn.htdshop.entity.BuildValues;
 import vn.htdshop.entity.PreBuilt;
 import vn.htdshop.entity.Product;
@@ -39,6 +40,9 @@ public class shopBuildControllerPSU {
     @Autowired
     HttpSession session;
 
+    @Autowired
+    ShopService shopService;
+
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String getCPUList(Model model) {
         buildService.initBuildApp();
@@ -49,6 +53,7 @@ public class shopBuildControllerPSU {
         model.addAttribute("psuManufacturerList", psuManufacturers());
         model.addAttribute("psuFormFactorList", psuFormFactors());
         // -----FILTER RESULT---
+        model.addAttribute("shopService", shopService);
         model.addAttribute("filteredPSU", filterPSU());
         return "HTDShop/pickPSU";
     }
@@ -160,7 +165,7 @@ public class shopBuildControllerPSU {
 
             // return only selling items
             for (int i = 0; i < psus.size(); i++) {
-                if (psus.get(i).getStatus() == 3) {
+                if (psus.get(i).getStatus() != 1) {
                     psus.remove(i);
                     i--;
                 }

@@ -96,7 +96,12 @@
                             <th:block th:text="${c.socket}" />
                         </td>
                         <td>
-                            <th:block th:text="${c.price}" />
+                            <th:block th:if="${c.price !=shopService.getDiscountPrice(c.id)}">
+                                <del>
+                                    <th:block th:text="${c.price}" />
+                                </del>
+                            </th:block>
+                            <th:block th:text="${#numbers.formatDecimal(shopService.getDiscountPrice(c.id), 1, 'COMMA', 2, 'POINT')}" />
                         </td>
                         <td>
                             <form action="" th:action="@{/build/cpucooler/pickcooler?id=__${c.id}__}" method="post">
@@ -137,6 +142,10 @@
                 null,
                 null
             ],
+            "columnDefs": [{
+                "targets": 2,
+                "orderable": false
+            }],
             "language": {
                 "emptyTable": "<div style='text-align:center;'><a href='' th:href='@{/build/cpucooler/reset}'>No results. Reset your search values.</a>" +
                     "<br><a href='' th:href='@{/build/cpucooler/reset}' class='btn btn-success'>Reset</a></div>"

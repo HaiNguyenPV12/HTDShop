@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import vn.htdshop.utility.BuildService;
+import vn.htdshop.utility.ShopService;
 import vn.htdshop.entity.BuildValues;
 import vn.htdshop.entity.PreBuilt;
 import vn.htdshop.entity.Product;
@@ -40,6 +41,9 @@ public class shopBuildControllerStorage {
     @Autowired
     HttpSession session;
 
+    @Autowired
+    ShopService shopService;
+
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String getStorageList(Model model) {
         buildService.initBuildApp();
@@ -52,6 +56,7 @@ public class shopBuildControllerStorage {
         model.addAttribute("storageInterfaceList", storageInterfaces());
         model.addAttribute("storageTypeList", storageTypes());
         // -----FILTER RESULT---
+        model.addAttribute("shopService", shopService);
         model.addAttribute("filteredStorage", filterStorage());
         return "HTDShop/pickStorage";
     }
@@ -184,7 +189,7 @@ public class shopBuildControllerStorage {
 
             // return only selling items
             for (int i = 0; i < storages.size(); i++) {
-                if (storages.get(i).getStatus() == 3) {
+                if (storages.get(i).getStatus() != 1) {
                     storages.remove(i);
                     i--;
                 }

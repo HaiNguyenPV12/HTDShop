@@ -61,8 +61,10 @@
                                 <label for="un" class="col-sm-3 col-form-label text-right">Username<i
                                         class="text-danger">*</i></label>
                                 <div class="col-sm-9">
+
                                     <input type="text" autocomplete="off" class="form-control" id="un" name="un"
                                         th:classappend="${(#fields.hasErrors('username')?'is-invalid':'') + (submited != null and !#fields.hasErrors('username')?'is-valid':'')}" required th:value="${staff.username}"/>
+
                                 </div>
                                 <div class="col-sm-3"></div>
                                 <div class="col-sm-9" >
@@ -77,7 +79,9 @@
                                 <label for="password" class="col-sm-3 col-form-label text-right">Password<i
                                         class="text-danger">*</i></label>
                                 <div class="col-sm-9">
+
                                     <input autocomplete="off" class="form-control" id="pw" name="pw" type="password" th:required="${update==null}"/>
+
                                 </div>
                                 <div class="col-sm-3"></div>
                                 <div class="col-sm-9" th:if="${update!=null}">

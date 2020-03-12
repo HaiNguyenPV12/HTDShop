@@ -46,7 +46,7 @@ public class PreBuilt implements Serializable {
     private Collection<OrderDetail> orderDetailCollection;
 
     @JoinColumn(name = "CustomerId", referencedColumnName = "Id")
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Customer customer;
 
     private static final long serialVersionUID = 1L;
@@ -74,31 +74,31 @@ public class PreBuilt implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "preBuilt")
     private Collection<PreBuiltImage> preBuiltImageCollection;
     @JoinColumn(name = "VGAId", referencedColumnName = "Id")
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Product vga;
     @JoinColumn(name = "CaseId", referencedColumnName = "Id")
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Product cases;
     @JoinColumn(name = "MonitorId", referencedColumnName = "Id")
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Product monitor;
     @JoinColumn(name = "PSUId", referencedColumnName = "Id")
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Product psu;
     @JoinColumn(name = "StorageId", referencedColumnName = "Id")
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Product storage;
     @JoinColumn(name = "MemoryId", referencedColumnName = "Id")
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Product memory;
     @JoinColumn(name = "CPUCoolerId", referencedColumnName = "Id")
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Product cpucooler;
     @JoinColumn(name = "MotherBoardId", referencedColumnName = "Id")
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Product motherboard;
     @JoinColumn(name = "CPUId", referencedColumnName = "Id")
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Product cpu;
     @JoinColumn(name = "StaffUserName", referencedColumnName = "UserName")
     @ManyToOne(optional = false)

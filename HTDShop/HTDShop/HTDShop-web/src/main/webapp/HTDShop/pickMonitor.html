@@ -115,7 +115,12 @@
                             <th:block th:text="${m.resolution}" />
                         </td>
                         <td>
-                            <th:block th:text="${m.price}" />
+                            <th:block th:if="${m.price !=shopService.getDiscountPrice(m.id)}">
+                                <del>
+                                    <th:block th:text="${m.price}" />
+                                </del>
+                            </th:block>
+                            <th:block th:text="${#numbers.formatDecimal(shopService.getDiscountPrice(m.id), 1, 'COMMA', 2, 'POINT')}" />
                         </td>
                         <td>
                             <form action="" th:action="@{/build/monitor/pickMonitor?id=__${m.id}__}" method="post">
@@ -154,6 +159,10 @@
                 "emptyTable": "<div style='text-align:center;'><a href='monitor/reset' th:href='@{/build/monitor/reset}'>No results. Reset your search values.</a>" +
                     "<br><a href='monitor/reset' th:href='@{/build/monitor/reset}' class='btn btn-success'>Reset</a></div>"
             },
+            "columnDefs": [{
+                "targets": 3,
+                "orderable": false
+            }],
             initComplete: function () {
                 $('div.dataTables_length').addClass('form-inline');
                 $('div.dataTables_length').addClass('mt-4');

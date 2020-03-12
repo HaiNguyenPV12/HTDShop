@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import vn.htdshop.utility.BuildService;
+import vn.htdshop.utility.ShopService;
 import vn.htdshop.entity.BuildValues;
 import vn.htdshop.entity.PreBuilt;
 import vn.htdshop.entity.Product;
@@ -39,6 +40,9 @@ public class shopBuildControllerGPU {
     @Autowired
     HttpSession session;
 
+    @Autowired
+    ShopService shopService;
+
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String getGPUList(Model model) {
         buildService.initBuildApp();
@@ -50,6 +54,7 @@ public class shopBuildControllerGPU {
         model.addAttribute("gpuChipsetList", gpuChipsets());
         model.addAttribute("gpuMemoryTypeList", gpuMemoryTypes());
         // -----FILTER RESULT---
+        model.addAttribute("shopService", shopService);
         model.addAttribute("filteredGPU", filterGPU());
         return "HTDShop/pickGPU";
     }
@@ -190,7 +195,7 @@ public class shopBuildControllerGPU {
 
             // return only selling items
             for (int i = 0; i < gpus.size(); i++) {
-                if (gpus.get(i).getStatus() == 3) {
+                if (gpus.get(i).getStatus() != 1) {
                     gpus.remove(i);
                     i--;
                 }

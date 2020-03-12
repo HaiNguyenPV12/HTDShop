@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import vn.htdshop.utility.BuildService;
+import vn.htdshop.utility.ShopService;
 import vn.htdshop.entity.BuildValues;
 import vn.htdshop.entity.PreBuilt;
 import vn.htdshop.entity.Product;
@@ -37,6 +38,9 @@ public class shopBuildControllerMemory {
     BuildService buildService;
 
     @Autowired
+    ShopService shopService;
+
+    @Autowired
     HttpSession session;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
@@ -49,6 +53,7 @@ public class shopBuildControllerMemory {
         model.addAttribute("memoryManufacturerList", memoryManufacturers());
         model.addAttribute("memoryTypeList", memoryTypes());
         // -----FILTER RESULT---
+        model.addAttribute("shopService", shopService);
         model.addAttribute("filteredMemory", filterMemory());
         return "HTDShop/pickRAM";
     }
@@ -184,7 +189,7 @@ public class shopBuildControllerMemory {
 
             // return only selling items
             for (int i = 0; i < memories.size(); i++) {
-                if (memories.get(i).getStatus() == 3) {
+                if (memories.get(i).getStatus() != 1) {
                     memories.remove(i);
                     i--;
                 }
