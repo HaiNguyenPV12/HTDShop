@@ -89,10 +89,29 @@ public class managerPrebuiltController {
         PreBuilt preBuilt = new PreBuilt();
         model.addAttribute("prebuilt", preBuilt);
         model.addAttribute("formUrl", "doAdd");
+        model.addAttribute("check", "add");
         model.asMap().put("menu", "prebuilt");
+
+        if (model.asMap().containsKey("error")) {
+            model.addAttribute("org.springframework.validation.BindingResult.preBuilt", model.asMap().get("error"));
+            model.addAttribute("submited", "submited");
+        }
+
         // form values
-        model.addAttribute("caseList", sellingProducts(8));
+        model = sortedPartList(model);
         return "HTDManager/prebuilt_template";
+    }
+
+    @RequestMapping(value = "doAdd", method = RequestMethod.POST)
+    public String doAdd(@ModelAttribute("prebuilt") PreBuilt preBuilt, Model model, BindingResult error,
+            RedirectAttributes redirect) {
+        if (!managerService.checkLoginWithRole("prebuilt_add")) {
+            return redirectPrebuiltHome;
+        }
+        if (preBuilt.getName().trim().isEmpty()) {
+            error.rejectValue("name", "preBuilt", "Build name is invalid");
+        }
+        return "redirect:/manager/prebuilt/add";
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.GET)
@@ -109,7 +128,7 @@ public class managerPrebuiltController {
         model.asMap().put("menu", "prebuilt");
         model.asMap().put("update", "update");
         // form values
-        model.addAttribute("caseList", sellingProducts(8));
+        model = sortedPartList(model);
         return "HTDManager/prebuilt_template";
     }
 
@@ -131,4 +150,17 @@ public class managerPrebuiltController {
         return result;
     }
 
+    private Model sortedPartList(Model model) {
+        Model result = model;
+        result.addAttribute("cpuList", sellingProducts(1)); // CPUs
+        result.addAttribute("cpucoolerList", sellingProducts(7)); // Coolers
+        result.addAttribute("motherboardList", sellingProducts(2)); // Motherboards
+        result.addAttribute("memoryList", sellingProducts(4)); // RAMs
+        result.addAttribute("storageList", sellingProducts(6)); // Storage
+        result.addAttribute("gpuList", sellingProducts(3)); // GPUs
+        result.addAttribute("caseList", sellingProducts(8)); // cases
+        result.addAttribute("psuList", sellingProducts(5)); // PSUs
+        result.addAttribute("monitorList", sellingProducts(9)); // monitors
+        return result;
+    }
 }

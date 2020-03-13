@@ -75,16 +75,134 @@
                             </ul> 
                         </div>
                     </div>
+                    <!-- CPU ID -->
+                    <div class="form-group row">
+                        <label for="cpu" class="col-sm-3 col-form-label text-right">CPU<i
+                                class="text-danger">*</i></label>
+                        <div class="col-sm-9">
+                            <select class="form-control select2" id="cpu" th:field="*{cpu.id}" placeholder="First Name" type="text"
+                                th:classappend="${(#fields.hasErrors('cpu')?'is-invalid':'') + (submited != null and !#fields.hasErrors('cpu')?'is-valid':'')}" required>
+                                <option value="">-- Choose CPU --</option>
+                                <th:block th:each="c : ${cpuList}">
+                                    <option th:value="${c.id}" th:text="${c.name}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+                        <div class="col-sm-3"></div>
+                        <div class="col-sm-9" th:if="${#fields.hasErrors('cpu')}">
+                            <ul class="text-danger">
+                                <li th:each="err : ${#fields.errors('cpu')}" th:text="${err}">CPU Error</li>
+                            </ul> 
+                        </div>
+                    </div>
+                    <!-- CPU COOLER ID -->
+                    <div class="form-group row">
+                        <label for="cpucooler" class="col-sm-3 col-form-label text-right">CPU Cooler</label>
+                        <div class="col-sm-9">
+                            <select class="form-control select2" id="cpucooler" th:field="*{cpucooler.id}" placeholder="First Name" type="text"
+                                th:classappend="${(#fields.hasErrors('cpucooler')?'is-invalid':'') + (submited != null and !#fields.hasErrors('cpucooler')?'is-valid':'')}" required>
+                                <option value="-1">-- Choose Cooler --</option>
+                                <th:block th:each="c : ${cpucoolerList}">
+                                    <option th:value="${c.id}" th:text="${c.name}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+                        <div class="col-sm-3"></div>
+                        <div class="col-sm-9" th:if="${#fields.hasErrors('cpucooler')}">
+                            <ul class="text-danger">
+                                <li th:each="err : ${#fields.errors('cpucooler')}" th:text="${err}">Cooler Error</li>
+                            </ul> 
+                        </div>
+                    </div>
+                    <!-- MOTHERBOARD ID -->
+                    <div class="form-group row">
+                        <label for="motherboard" class="col-sm-3 col-form-label text-right">Motherboard<i
+                                class="text-danger">*</i></label>
+                        <div class="col-sm-9">
+                            <select class="form-control select2" id="motherboard" th:field="*{motherboard.id}" placeholder="First Name" type="text"
+                                th:classappend="${(#fields.hasErrors('motherboard')?'is-invalid':'') + (submited != null and !#fields.hasErrors('motherboard')?'is-valid':'')}" required>
+                                <option value="">-- Choose Cooler --</option>
+                                <th:block th:each="c : ${motherboardList}">
+                                    <option th:value="${c.id}" th:text="${c.name}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+                        <div class="col-sm-3"></div>
+                        <div class="col-sm-9" th:if="${#fields.hasErrors('motherboard')}">
+                            <ul class="text-danger">
+                                <li th:each="err : ${#fields.errors('motherboard')}" th:text="${err}">Motherboard Error</li>
+                            </ul> 
+                        </div>
+                    </div>
+                    <!-- MEMORY ID -->
+                    <div class="form-group row">
+                        <label for="memory" class="col-sm-3 col-form-label text-right">Memory<i
+                                class="text-danger">*</i></label>
+                        <div class="col-sm-9">
+                            <select class="form-control select2" id="memory" th:field="*{memory.id}" placeholder="First Name" type="text"
+                                th:classappend="${(#fields.hasErrors('memory')?'is-invalid':'') + (submited != null and !#fields.hasErrors('memory')?'is-valid':'')}" required>
+                                <option value="">-- Choose RAM --</option>
+                                <th:block th:each="c : ${memoryList}">
+                                    <option th:value="${c.id}" th:text="${c.name}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+                        <div class="col-sm-3"></div>
+                        <div class="col-sm-9" th:if="${#fields.hasErrors('memory')}">
+                            <ul class="text-danger">
+                                <li th:each="err : ${#fields.errors('memory')}" th:text="${err}">Memory Error</li>
+                            </ul> 
+                        </div>
+                    </div>
+                    <!-- STORAGE ID -->
+                    <div class="form-group row">
+                        <label for="storage" class="col-sm-3 col-form-label text-right">Storage<i
+                                class="text-danger">*</i></label>
+                        <div class="col-sm-9">
+                            <select class="form-control select2" id="storage" th:field="*{storage.id}" placeholder="First Name" type="text"
+                                th:classappend="${(#fields.hasErrors('storage')?'is-invalid':'') + (submited != null and !#fields.hasErrors('storage')?'is-valid':'')}" required>
+                                <option value="">-- Choose Storage --</option>
+                                <th:block th:each="c : ${storageList}">
+                                    <option th:value="${c.id}" th:text="${c.name}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+                        <div class="col-sm-3"></div>
+                        <div class="col-sm-9" th:if="${#fields.hasErrors('storage')}">
+                            <ul class="text-danger">
+                                <li th:each="err : ${#fields.errors('storage')}" th:text="${err}">Memory Error</li>
+                            </ul> 
+                        </div>
+                    </div>
+                    <!-- GPU ID -->
+                    <div class="form-group row">
+                        <label for="gpu" class="col-sm-3 col-form-label text-right">GPU</label>
+                        <div class="col-sm-9">
+                            <select class="form-control select2" id="gpu" th:field="*{vga.id}" placeholder="First Name" type="text"
+                                th:classappend="${(#fields.hasErrors('vga')?'is-invalid':'') + (submited != null and !#fields.hasErrors('vga')?'is-valid':'')}" required>
+                                <option value="">-- Choose GPU --</option>
+                                <th:block th:each="c : ${gpuList}">
+                                    <option th:value="${c.id}" th:text="${c.name}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+                        <div class="col-sm-3"></div>
+                        <div class="col-sm-9" th:if="${#fields.hasErrors('vga')}">
+                            <ul class="text-danger">
+                                <li th:each="err : ${#fields.errors('vga')}" th:text="${err}">GPU Error</li>
+                            </ul> 
+                        </div>
+                    </div>
                     <!-- CASE ID -->
                     <div class="form-group row">
                         <label for="cases" class="col-sm-3 col-form-label text-right">Case<i
                                 class="text-danger">*</i></label>
                         <div class="col-sm-9">
-                            <select class="form-control select2" id="cases" th:field="*{cases}" placeholder="First Name" type="text"
+                            <select class="form-control select2" id="cases" th:field="*{cases.id}" placeholder="First Name" type="text"
                                 th:classappend="${(#fields.hasErrors('cases')?'is-invalid':'') + (submited != null and !#fields.hasErrors('cases')?'is-valid':'')}" required>
-                                <option value="" disabled>-- Choose case --</option>
+                                <option value="">-- Choose case --</option>
                                 <th:block th:each="c : ${caseList}">
-                                    <option th:value="${c}" th:text="${c.name}"></option>
+                                    <option th:value="${c.id}" th:text="${c.name}"></option>
                                 </th:block>
                             </select>
                         </div>
@@ -92,6 +210,45 @@
                         <div class="col-sm-9" th:if="${#fields.hasErrors('cases')}">
                             <ul class="text-danger">
                                 <li th:each="err : ${#fields.errors('cases')}" th:text="${err}">Case Error</li>
+                            </ul> 
+                        </div>
+                    </div>
+                    <!-- PSU ID -->
+                    <div class="form-group row">
+                        <label for="psu" class="col-sm-3 col-form-label text-right">Power Supply<i
+                                class="text-danger">*</i></label>
+                        <div class="col-sm-9">
+                            <select class="form-control select2" id="psu" th:field="*{psu.id}" placeholder="First Name" type="text"
+                                th:classappend="${(#fields.hasErrors('psu')?'is-invalid':'') + (submited != null and !#fields.hasErrors('psu')?'is-valid':'')}" required>
+                                <option value="">-- Choose PSU --</option>
+                                <th:block th:each="c : ${psuList}">
+                                    <option th:value="${c.id}" th:text="${c.name}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+                        <div class="col-sm-3"></div>
+                        <div class="col-sm-9" th:if="${#fields.hasErrors('psu')}">
+                            <ul class="text-danger">
+                                <li th:each="err : ${#fields.errors('psu')}" th:text="${err}">PSU Error</li>
+                            </ul> 
+                        </div>
+                    </div>
+                    <!-- MONITOR ID -->
+                    <div class="form-group row">
+                        <label for="monitor" class="col-sm-3 col-form-label text-right">Monitor</label>
+                        <div class="col-sm-9">
+                            <select class="form-control select2" id="monitor" th:field="*{monitor.id}" placeholder="First Name" type="text"
+                                th:classappend="${(#fields.hasErrors('monitor')?'is-invalid':'') + (submited != null and !#fields.hasErrors('monitor')?'is-valid':'')}">
+                                <option value="-1" selected>-- Choose Monitor --</option>
+                                <th:block th:each="m : ${monitorList}">
+                                    <option th:value="${m.id}" th:text="${m.name}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+                        <div class="col-sm-3"></div>
+                        <div class="col-sm-9" th:if="${#fields.hasErrors('monitor')}">
+                            <ul class="text-danger">
+                                <li th:each="err : ${#fields.errors('monitor')}" th:text="${err}">Monitor Error</li>
                             </ul> 
                         </div>
                     </div>
@@ -126,6 +283,11 @@
                         </div>
                     </div>
                 </div>
+                <!-- Submit button -->
+                <div class="col-lg-12 text-right mb-3"> 
+                    <input type="submit" class="btn btn-success" value="Add Prebuilt" th:if="${update==null}"></input>
+                    <input type="submit" class="btn btn-success" value="Update Prebuilt" th:if="${update!=null}"></input>
+                </div>
             </div>
         </form>
     </div>
@@ -148,6 +310,8 @@
             minHeight: 200,
             maxHeight: 650
         });
+
+        $("#frmPrebuilt").on("change", function () { $(this).submit() });
     </script>
 </body>
 
