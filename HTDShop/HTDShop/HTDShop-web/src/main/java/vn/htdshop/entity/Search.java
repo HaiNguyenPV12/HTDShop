@@ -8,6 +8,7 @@ import java.util.Map;
 public class Search {
 
     private Integer category;
+    private Integer promo;
     private String keyword;
     private Integer page;
     private String style;
@@ -44,6 +45,18 @@ public class Search {
                 this.category = 0;
             }
         }
+
+        // Promo
+        if (params.get("promo") == null || params.get("promo").isEmpty()) {
+            this.promo = 0;
+        } else {
+            try {
+                this.promo = Integer.parseInt(params.get("promo"));
+            } catch (Exception e) {
+                this.promo = 0;
+            }
+        }
+
         // Page
         if (params.get("page") == null) {
             this.page = 1;
@@ -175,5 +188,19 @@ public class Search {
     public Search sort(String sort) {
         this.sort = sort;
         return this;
+    }
+
+    /**
+     * @return the promo
+     */
+    public Integer getPromo() {
+        return promo;
+    }
+
+    /**
+     * @param promo the promo to set
+     */
+    public void setPromo(Integer promo) {
+        this.promo = promo;
     }
 }

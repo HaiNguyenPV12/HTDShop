@@ -5,7 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -159,8 +158,19 @@ public class managerStaffController {
         if (!managerService.checkLoginWithRole("staff_edit")) {
             return redirectHome;
         }
+        Staff staff = null;
+        if (id == null) {
+            return redirectStaffHome;
+        }
+        staff = staffFacade.find(id);
+        if (staff == null) {
+            return redirectStaffHome;
+        }
+        if (!"Administrator".equals(managerService.getLoggedInStaff().getRole().getName())
+                && "Administrator".equals(staff.getRole().getName())) {
+            return redirectStaffHome;
+        }
         // prepare model
-        Staff staff = staffFacade.find(id);
         model.addAttribute("staff", staff);
         model.addAttribute("formUrl", "doEdit");
         if (model.asMap().containsKey("error")) {
