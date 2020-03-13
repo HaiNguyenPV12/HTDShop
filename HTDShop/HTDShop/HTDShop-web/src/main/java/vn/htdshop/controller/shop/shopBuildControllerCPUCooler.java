@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import vn.htdshop.utility.BuildService;
+import vn.htdshop.utility.ShopService;
 import vn.htdshop.entity.BuildValues;
 import vn.htdshop.entity.PreBuilt;
 import vn.htdshop.entity.Product;
@@ -38,6 +39,9 @@ public class shopBuildControllerCPUCooler {
     BuildService buildService;
 
     @Autowired
+    ShopService shopService;
+
+    @Autowired
     HttpSession session;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
@@ -50,6 +54,7 @@ public class shopBuildControllerCPUCooler {
         model.addAttribute("coolerManufacturerList", coolerManufacturers());
         model.addAttribute("coolerSocketList", coolerSockets());
         // -----FILTER RESULT---
+        model.addAttribute("shopService", shopService);
         model.addAttribute("filteredCooler", filterCooler());
         return "HTDShop/pickCPUCooler";
     }
@@ -194,7 +199,7 @@ public class shopBuildControllerCPUCooler {
 
             // return only selling items
             for (int i = 0; i < coolers.size(); i++) {
-                if (coolers.get(i).getStatus() == 3) {
+                if (coolers.get(i).getStatus() != 1) {
                     coolers.remove(i);
                     i--;
                 }

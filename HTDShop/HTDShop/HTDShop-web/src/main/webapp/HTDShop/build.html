@@ -171,14 +171,22 @@
                                 </th:block>
                                 <a href="" th:if="${session.prebuiltSession.cpu != null}"
                                     th:href="@{/product?id=__${session.prebuiltSession.cpu.id}__}"
-                                    th:text="${session.prebuiltSession.cpu.name}"></a>
+                                    th:text="${session.prebuiltSession.cpu.name}">
+                                </a>
+                                <div th:if="${session.prebuiltSession.cpu != null}" style="visibility: hidden;"
+                                    th:text="${session.prebuiltSession.cpu.id}" id="cpuId">
+                                </div>
                             </td>
                             <td>
                                 <!-- CPU PRICE -->
-                                <th:block th:if="${session.prebuiltSession.cpu != null}">
+                                <th:block th:if="${session.prebuiltSession.cpu != null}"
+                                    th:with="cpu = ${session.prebuiltSession.cpu}">
                                     <div class="row">
                                         <div class="col-md-5">
-                                            $ <span th:text="${session.prebuiltSession.cpu.price}"></span>
+                                            <th:block th:if="${cpu.price != shopService.getDiscountPrice(cpu.id)}">
+                                                $ <del th:text="${cpu.price}"></del>
+                                            </th:block>
+                                            <span th:text="${#numbers.formatDecimal(shopService.getDiscountPrice(cpu.id), 1, 'COMMA', 2, 'POINT')}"></span>
                                         </div>
                                         <div class="col-md-2">
                                             <a th:href="@{/build/cpu/discard}" class="btn btn-danger">X</a>
@@ -199,14 +207,23 @@
                                 </th:block>
                                 <a href="" th:if="${session.prebuiltSession.cpucooler != null}"
                                     th:href="@{/product?id=__${session.prebuiltSession.cpucooler.id}__}"
-                                    th:text="${session.prebuiltSession.cpucooler.name}"></a>
+                                    th:text="${session.prebuiltSession.cpucooler.name}">
+                                </a>
+                                <div th:if="${session.prebuiltSession.cpucooler != null}" 
+                                th:text="${session.prebuiltSession.cpucooler.id}"
+                                    id="cpuCoolerId" style="visibility: hidden;"></div>
                             </td>
                             <td>
                                 <!-- CPU COOLER PRICE -->
-                                <th:block th:if="${session.prebuiltSession.cpucooler != null}">
+                                <th:block th:if="${session.prebuiltSession.cpucooler != null}"
+                                th:with="cpucooler = ${session.prebuiltSession.cpucooler}">
                                     <div class="row">
                                         <div class="col-md-5">
-                                            $ <span th:text="${session.prebuiltSession.cpucooler.price}"></span>
+                                            <th:block
+                                                th:if="${cpucooler.price != shopService.getDiscountPrice(cpucooler.id)}">
+                                                $ <del th:text="${cpucooler.price}"></del>
+                                            </th:block>
+                                            <span th:text="${#numbers.formatDecimal(shopService.getDiscountPrice(cpucooler.id), 1, 'COMMA', 2, 'POINT')}"></span>
                                         </div>
                                         <div class="col-md-2">
                                             <a th:href="@{/build/cpucooler/discard}" class="btn btn-danger">X</a>
@@ -226,14 +243,24 @@
                                 </th:block>
                                 <a href="" th:if="${session.prebuiltSession.motherboard != null}"
                                     th:href="@{/product?id=__${session.prebuiltSession.motherboard.id}__}"
-                                    th:text="${session.prebuiltSession.motherboard.name}"></a>
+                                    th:text="${session.prebuiltSession.motherboard.name}">
+                                </a>
+                                <div th:if="${session.prebuiltSession.motherboard != null}" 
+                                th:text="${session.prebuiltSession.motherboard.id}"
+                                    id="motherboardId" style="visibility: hidden;"></div>
                             </td>
                             <td>
                                 <!-- MOTHERBOARD PRICE -->
-                                <th:block th:if="${session.prebuiltSession.motherboard != null}">
+                                <th:block th:if="${session.prebuiltSession.motherboard != null}"
+                                th:with="motherboard = ${session.prebuiltSession.motherboard}">
                                     <div class="row">
                                         <div class="col-md-5">
-                                            $ <span th:text="${session.prebuiltSession.motherboard.price}"></span>
+                                            <th:block
+                                            th:if="${motherboard.price != shopService.getDiscountPrice(motherboard.id)}">
+                                        $ <del th:text="${motherboard.price}"></del>
+                                        </th:block>
+                                        <span
+                                            th:text="${#numbers.formatDecimal(shopService.getDiscountPrice(motherboard.id), 1, 'COMMA', 2, 'POINT')}"></span>
                                         </div>
                                         <div class="col-md-2">
                                             <a th:href="@{/build/motherboard/discard}" class="btn btn-danger">X</a>
@@ -253,14 +280,23 @@
                                 </th:block>
                                 <a href="" th:if="${session.prebuiltSession.memory != null}"
                                     th:href="@{/product?id=__${session.prebuiltSession.memory.id}__}"
-                                    th:text="${session.prebuiltSession.memory.name}"></a>
+                                    th:text="${session.prebuiltSession.memory.name}">
+                                </a>
+                                <div th:text="${session.prebuiltSession.memory.id}" 
+                                th:if="${session.prebuiltSession.memory != null}"
+                                    id="memoryId" style="visibility: hidden;"></div>
                             </td>
                             <td>
                                 <!-- MEMORY PRICE -->
-                                <th:block th:if="${session.prebuiltSession.memory != null}">
+                                <th:block th:if="${session.prebuiltSession.memory != null}"
+                                th:with="memory = ${session.prebuiltSession.memory}">
                                     <div class="row">
                                         <div class="col-md-5">
-                                            $ <span th:text="${session.prebuiltSession.memory.price}"></span>
+                                            <th:block
+                                            th:if="${memory.price != shopService.getDiscountPrice(memory.id)}">
+                                            $ <del th:text="${memory.price}"></del>
+                                            </th:block>
+                                            <span th:text="${#numbers.formatDecimal(shopService.getDiscountPrice(memory.id), 1, 'COMMA', 2, 'POINT')}"></span>
                                         </div>
                                         <div class="col-md-2">
                                             <a th:href="@{/build/memory/discard}" class="btn btn-danger">X</a>
@@ -280,14 +316,23 @@
                                 </th:block>
                                 <a href="" th:if="${session.prebuiltSession.storage != null}"
                                     th:href="@{/product?id=__${session.prebuiltSession.storage.id}__}"
-                                    th:text="${session.prebuiltSession.storage.name}"></a>
+                                    th:text="${session.prebuiltSession.storage.name}">
+                                </a>
+                                <div th:text="${session.prebuiltSession.storage.id}" 
+                                th:if="${session.prebuiltSession.storage != null}"
+                                    id="storageId" style="visibility: hidden;"></div>
                             </td>
                             <td>
                                 <!-- STORAGE PRICE -->
-                                <th:block th:if="${session.prebuiltSession.storage != null}">
+                                <th:block th:if="${session.prebuiltSession.storage != null}"
+                                th:with="storage = ${session.prebuiltSession.storage}">
                                     <div class="row">
                                         <div class="col-md-5">
-                                            $ <span th:text="${session.prebuiltSession.storage.price}"></span>
+                                            <th:block
+                                            th:if="${storage.price != shopService.getDiscountPrice(storage.id)}">
+                                            $ <del th:text="${storage.price}"></del>
+                                            </th:block>
+                                            <span th:text="${#numbers.formatDecimal(shopService.getDiscountPrice(storage.id), 1, 'COMMA', 2, 'POINT')}"></span>
                                         </div>
                                         <div class="col-md-2">
                                             <a th:href="@{/build/storage/discard}" class="btn btn-danger">X</a>
@@ -307,14 +352,22 @@
                                 </th:block>
                                 <a href="" th:if="${session.prebuiltSession.vga != null}"
                                     th:href="@{/product?id=__${session.prebuiltSession.vga.id}__}"
-                                    th:text="${session.prebuiltSession.vga.name}"></a>
+                                    th:text="${session.prebuiltSession.vga.name}">
+                                </a>
+                                <div th:text="${session.prebuiltSession.vga.id}" 
+                                th:if="${session.prebuiltSession.vga != null}" id="gpuId" style="visibility: hidden;"></div>
                             </td>
                             <td>
                                 <!-- VIDEO CARD PRICE -->
-                                <th:block th:if="${session.prebuiltSession.vga != null}">
+                                <th:block th:if="${session.prebuiltSession.vga != null}"
+                                th:with="vga = ${session.prebuiltSession.vga}">
                                     <div class="row">
                                         <div class="col-md-5">
-                                            $ <span th:text="${session.prebuiltSession.vga.price}"></span>
+                                            <th:block
+                                            th:if="${vga.price != shopService.getDiscountPrice(vga.id)}">
+                                            $ <del th:text="${vga.price}"></del>
+                                            </th:block>
+                                            <span th:text="${#numbers.formatDecimal(shopService.getDiscountPrice(vga.id), 1, 'COMMA', 2, 'POINT')}"></span>
                                         </div>
                                         <div class="col-md-2">
                                             <a th:href="@{/build/gpu/discard}" class="btn btn-danger">X</a>
@@ -334,14 +387,23 @@
                                 </th:block>
                                 <a href="" th:if="${session.prebuiltSession.cases != null}"
                                     th:href="@{/product?id=__${session.prebuiltSession.cases.id}__}"
-                                    th:text="${session.prebuiltSession.cases.name}"></a>
+                                    th:text="${session.prebuiltSession.cases.name}">
+                                </a>
+                                <div th:text="${session.prebuiltSession.cases.id}" 
+                                th:if="${session.prebuiltSession.cases != null}"
+                                    id="caseId" style="visibility: hidden;"></div>
                             </td>
                             <td>
                                 <!-- CASE PRICE -->
-                                <th:block th:if="${session.prebuiltSession.cases != null}">
+                                <th:block th:if="${session.prebuiltSession.cases != null}"
+                                th:with="cases = ${session.prebuiltSession.cases}">
                                     <div class="row">
                                         <div class="col-md-5">
-                                            $ <span th:text="${session.prebuiltSession.cases.price}"></span>
+                                            <th:block
+                                            th:if="${cases.price != shopService.getDiscountPrice(cases.id)}">
+                                            $ <del th:text="${cases.price}"></del>
+                                            </th:block>
+                                            <span th:text="${#numbers.formatDecimal(shopService.getDiscountPrice(cases.id), 1, 'COMMA', 2, 'POINT')}"></span>
                                         </div>
                                         <div class="col-md-2">
                                             <a th:href="@{/build/case/discard}" class="btn btn-danger">X</a>
@@ -361,14 +423,23 @@
                                 </th:block>
                                 <a href="" th:if="${session.prebuiltSession.psu != null}"
                                     th:href="@{/product?id=__${session.prebuiltSession.psu.id}__}"
-                                    th:text="${session.prebuiltSession.psu.name}"></a>
+                                    th:text="${session.prebuiltSession.psu.name}">
+                                </a>
+                                <div th:if="${session.prebuiltSession.psu != null}" 
+                                th:text="${session.prebuiltSession.psu.id}"
+                                    id="psuId" style="visibility: hidden;"></div>
                             </td>
                             <td>
                                 <!-- PSU PRICE -->
-                                <th:block th:if="${session.prebuiltSession.psu != null}">
+                                <th:block th:if="${session.prebuiltSession.psu != null}"
+                                th:with="psu = ${session.prebuiltSession.psu}">
                                     <div class="row">
                                         <div class="col-md-5">
-                                            $ <span th:text="${session.prebuiltSession.psu.price}"></span>
+                                            <th:block
+                                            th:if="${psu.price != shopService.getDiscountPrice(psu.id)}">
+                                            $ <del th:text="${psu.price}"></del>
+                                            </th:block>
+                                            <span th:text="${#numbers.formatDecimal(shopService.getDiscountPrice(psu.id), 1, 'COMMA', 2, 'POINT')}"></span>
                                         </div>
                                         <div class="col-md-2">
                                             <a th:href="@{/build/psu/discard}" class="btn btn-danger">X</a>
@@ -388,14 +459,23 @@
                                 </th:block>
                                 <a href="" th:if="${session.prebuiltSession.monitor != null}"
                                     th:href="@{/product?id=__${session.prebuiltSession.monitor.id}__}"
-                                    th:text="${session.prebuiltSession.monitor.name}"></a>
+                                    th:text="${session.prebuiltSession.monitor.name}">
+                                </a>
+                                <div th:text="${session.prebuiltSession.monitor.id}" 
+                                th:if="${session.prebuiltSession.monitor != null}"
+                                    id="monitorId" style="visibility: hidden;"></div>
                             </td>
                             <td>
                                 <!-- MONITOR PRICE -->
-                                <th:block th:if="${session.prebuiltSession.monitor != null}">
+                                <th:block th:if="${session.prebuiltSession.monitor != null}"
+                                th:with="monitor = ${session.prebuiltSession.monitor}">
                                     <div class="row">
                                         <div class="col-md-5">
-                                            $ <span th:text="${session.prebuiltSession.monitor.price}"></span>
+                                            <th:block
+                                            th:if="${monitor.price != shopService.getDiscountPrice(monitor.id)}">
+                                            $ <del th:text="${monitor.price}"></del>
+                                            </th:block>
+                                            <span th:text="${#numbers.formatDecimal(shopService.getDiscountPrice(monitor.id), 1, 'COMMA', 2, 'POINT')}"></span>
                                         </div>
                                         <div class="col-md-2">
                                             <a th:href="@{/build/monitor/discard}" class="btn btn-danger">X</a>
@@ -409,7 +489,7 @@
                             <td></td>
                             <td>
                                 $
-                                <th:block th:text="${session.prebuiltSession.price}">
+                                <th:block th:text="${#numbers.formatDecimal(session.prebuiltSession.price, 1, 'COMMA', 2, 'POINT')}">
                                 </th:block>
                             </td>
                         </tr>
@@ -420,18 +500,62 @@
                 <a href="" th:href="@{/build/reset}" class="btn btn-danger mx-1">
                     Reset
                 </a>
-                <a href="" th:href="@{/}" class="btn btn-primary mx-1">
+                <a th:if=${!shopService.checkLogin()} th:href="@{/login}" class="btn btn-primary mx-1">
+                    Login To Share Build
+                </a>
+                <a th:if=${shopService.checkLogin()} th:href="@{/build/add}" class="btn btn-primary mx-1">
                     Share Build
                 </a>
-                <a href="" th:href="@{/}" class="btn btn-success mx-1">
+                <button href="" class="btn btn-success mx-1" onclick="addBuildToCart()">
                     Add build to cart
-                </a>
+                </button>
             </div>
             <div class="row justify-content-center py-3">
                 <a th:href="@{/}" class="button btn-hover-black py-1">Back to Home</a>
             </div>
         </div>
     </div>
+    <script th:inline="none" layout:fragment="script">
+        function addBuildToCart() {
+            var cpuId = $('#cpuId').length ? $('#cpuId').html() : null;
+            var cpuCoolerId = $('#cpuCoolerId').length ? $('#cpuCoolerId').html() : null;
+            var motherboardId = $('#motherboardId').length ? $('#motherboardId').html() : null;
+            var memoryId = $('#memoryId').length ? $('#memoryId').html() : null;
+            var storageId = $('#storageId').length ? $('#storageId').html() : null;
+            var gpuId = $('#gpuId').length ? $('#gpuId').html() : null;
+            var caseId = $('#caseId').length ? $('#caseId').html() : null;
+            var psuId = $('#psuId').length ? $('#psuId').html() : null;
+            var monitorId = $('#monitorId').length ? $('#monitorId').html() : null;
+
+            if (cpuId != null) {
+                doAddToCart(cpuId, 1);
+            }
+            if (cpuCoolerId != null) {
+                doAddToCart(cpuCoolerId, 1);
+            }
+            if (motherboardId != null) {
+                doAddToCart(motherboardId, 1);
+            }
+            if (memoryId != null) {
+                doAddToCart(memoryId, 1);
+            }
+            if (storageId != null) {
+                doAddToCart(storageId, 1);
+            }
+            if (gpuId != null) {
+                doAddToCart(gpuId, 1);
+            }
+            if (caseId != null) {
+                doAddToCart(caseId, 1);
+            }
+            if (psuId != null) {
+                doAddToCart(psuId, 1);
+            }
+            if (monitorId != null) {
+                doAddToCart(monitorId, 1);
+            }
+        }
+    </script>
 </body>
 
 </html>

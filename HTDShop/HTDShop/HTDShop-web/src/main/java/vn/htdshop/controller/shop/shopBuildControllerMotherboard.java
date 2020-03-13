@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import vn.htdshop.utility.BuildService;
+import vn.htdshop.utility.ShopService;
 import vn.htdshop.entity.BuildValues;
 import vn.htdshop.entity.PreBuilt;
 import vn.htdshop.entity.Product;
@@ -37,6 +38,9 @@ public class shopBuildControllerMotherboard {
     @Autowired
     HttpSession session;
 
+    @Autowired
+    ShopService shopSerivce;
+
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String getMotherboardList(Model model) {
         buildService.initBuildApp();
@@ -50,6 +54,7 @@ public class shopBuildControllerMotherboard {
         model.addAttribute("motherboardMemoryTypeList", motherboardMemoryTypes());
         model.addAttribute("motherboardFormFactorList", motherboardFormFactors());
         // -----FILTER RESULT---
+        model.addAttribute("shopService", shopSerivce);
         model.addAttribute("filteredMotherboard", filterMotherboard());
         return "HTDShop/pickMotherboard";
     }
@@ -268,7 +273,7 @@ public class shopBuildControllerMotherboard {
 
             // return only selling items
             for (int i = 0; i < motherboards.size(); i++) {
-                if (motherboards.get(i).getStatus() == 3) {
+                if (motherboards.get(i).getStatus() != 1) {
                     motherboards.remove(i);
                     i--;
                 }

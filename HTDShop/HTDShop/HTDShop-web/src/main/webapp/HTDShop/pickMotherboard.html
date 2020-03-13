@@ -163,7 +163,12 @@
                             <th:block th:text="${m.memorySlot}" />
                         </td>
                         <td>
-                            <th:block th:text="${m.price}" />
+                            <th:block th:if="${m.price !=shopService.getDiscountPrice(m.id)}">
+                                <del>
+                                    <th:block th:text="${m.price}" />
+                                </del>
+                            </th:block>
+                            <th:block th:text="${#numbers.formatDecimal(shopService.getDiscountPrice(m.id), 1, 'COMMA', 2, 'POINT')}" />
                         </td>
                         <td>
                             <form action="" th:action="@{/build/motherboard/pickMotherboard?id=__${m.id}__}"
@@ -203,9 +208,13 @@
 
         $('#filteredMotherboardTable').DataTable({
             "language": {
-                "emptyTable": "<div style='text-align:center;'><a href='' th:href='@{/build/motherboard/reset}'>No results. Reset your search values.</a>" +
-                    "<br><a href='' th:href='@{/build/motherboard/reset}' class='btn btn-success'>Reset</a></div>"
+                "emptyTable": "<div style='text-align:center;'><a href='motherboard/reset' th:href='@{/build/motherboard/reset}'>No results. Reset your search values.</a>" +
+                    "<br><a href='motherboard/reset' th:href='@{/build/motherboard/reset}' class='btn btn-success'>Reset</a></div>"
             },
+            "columnDefs": [{
+                "targets": 6,
+                "orderable": false
+            }],
             initComplete: function () {
                 $('div.dataTables_length').addClass('form-inline');
                 $('div.dataTables_length').addClass('mt-4');

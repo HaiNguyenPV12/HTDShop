@@ -147,7 +147,12 @@
                             <th:block th:text="${g.tdp}" />
                         </td>
                         <td>
-                            <th:block th:text="${g.price}" />
+                            <th:block th:if="${g.price !=shopService.getDiscountPrice(g.id)}">
+                                <del>
+                                    <th:block th:text="${g.price}" />
+                                </del>
+                            </th:block>
+                            <th:block th:text="${#numbers.formatDecimal(shopService.getDiscountPrice(g.id), 1, 'COMMA', 2, 'POINT')}" />
                         </td>
                         <td>
                             <form action="" th:action="@{/build/gpu/pickGpu?id=__${g.id}__}" method="post">
@@ -187,6 +192,10 @@
                 "emptyTable": "<div style='text-align:center;'><a href='gpu/reset' th:href='@{/build/gpu/reset}'>No results. Reset your search values.</a>" +
                     "<br><a href='gpu/reset' th:href='@{/build/gpu/reset}' class='btn btn-success'>Reset</a></div>"
             },
+            "columnDefs": [{
+                "targets": 4,
+                "orderable": false
+            }],
             initComplete: function () {
                 $('div.dataTables_length').addClass('form-inline');
                 $('div.dataTables_length').addClass('mt-4');
