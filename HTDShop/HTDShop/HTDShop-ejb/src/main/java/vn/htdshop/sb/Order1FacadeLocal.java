@@ -32,4 +32,5 @@ public interface Order1FacadeLocal {
 
     List<Order1> findByOrderStatus();
     
+    Order1 findByPhoneAndId(Integer id, String phone);
 }

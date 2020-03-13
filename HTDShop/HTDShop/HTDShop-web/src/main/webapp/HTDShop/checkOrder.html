@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDShop/layout}">
+
+<head>
+    <title>HTD Shop - CheckOrder</title>
+    <th:block layout:fragment="additionalCss">
+        <link rel="stylesheet" th:href="@{/resources/Content/fontawesome-free/css/all.min.css}">
+    </th:block>
+
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="breadcrumb-area pt-10 pb-10"
+            style="background-image: linear-gradient(141deg, #7906d88c 0%, #fff 51%, #7906d88c 75%);">
+            <div class="container">
+                <div class="breadcrumb-content text-center">
+                    <ul>
+                        <li><a th:href="@{/}">HOME</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="register-area ptb-100">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12 col-12 col-lg-6 col-xl-6 ml-auto mr-auto">
+                        <div class="login">
+                            <div class="login-form-container">
+                                <div class="login-form">
+                                    <form th:action="@{/doCheck}" method="POST">
+                                        <input type="number" placeholder="Your Order ID" id="id" name="id" required
+                                            autofocus>
+                                        <input th:if="${session.loggedInCustomer == null}" type="text" name="phone" placeholder="Your Phone Number" id="phone"
+                                            required autofocus>
+                                        <button type="submit" class="default-btn floatright">Order Detail</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:src="@{/manager_resources/plugins/jquery/jquery.min.js}"></script>
+    <!-- Bootstrap 4 -->
+    <script th:src="@{/manager_resources/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <!-- AdminLTE App -->
+
+    <script th:src="@{/manager_resources/plugins/jquery-validation/jquery.validate.js}"></script>
+    <script th:src="@{/manager_resources/plugins/jquery-validation/additional-methods.min.js}"></script>
+    <script th:src="@{/manager_resources/Scripts/adminlte.min.js}"></script>
+</body>
+
+</html>

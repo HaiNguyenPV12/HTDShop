@@ -8,6 +8,7 @@ package vn.htdshop.sb;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.management.Query;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -46,5 +47,13 @@ public class PreBuiltFacade extends AbstractFacade<PreBuilt> implements PreBuilt
         // TODO Auto-generated method stub
         return em.find(PreBuilt.class, id);
     }
+
+    @Override
+    public List<PreBuilt> findByCustomerID(Integer id) {
+        TypedQuery<PreBuilt> query = em.createQuery("SELECT p FROM PreBuilt p WHERE p.customer.id = :id",PreBuilt.class);
+        query.setParameter("id", id);
+        return query.getResultList();
+    }
+
 
 }

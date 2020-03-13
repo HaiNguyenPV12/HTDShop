@@ -182,14 +182,27 @@
                                             <div class="button-box">
                                                 <button type="submit" class="default-btn floatright">Update
                                                     Profile</button>                                                
-                                            </div>                                            
+                                            </div>                      
                                         </div>
                                     </form>
-                                    <div class="button-box">
-                                        <a th:href ="@{/profile/orderChecker}">
-                                            <button class="default-btn floatright">Order Checker</button>
-                                        </a>                                                                                              
-                                    </div>
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <div class="button-box">
+                                                    <a th:href ="@{/profile/orderChecker}">
+                                                        <button class="default-btn floatright">Order Detail</button>
+                                                    </a>                                                                                              
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="button-box">
+                                                    <a th:href ="@{/profile/preBuilt}">
+                                                        <button class="default-btn floatright">Prebuilt Detail</button>
+                                                    </a>                                                                                              
+                                                </div>     
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </div>
                             </div>
                         </div>

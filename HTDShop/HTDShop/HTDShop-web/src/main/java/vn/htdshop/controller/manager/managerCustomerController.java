@@ -5,7 +5,6 @@
  */
 package vn.htdshop.controller.manager;
 
-
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
@@ -138,18 +137,58 @@ public class managerCustomerController {
     // === CUSTOMER-EDIT PROCESS ===\\
     @RequestMapping(value = "doEdit", method = RequestMethod.POST)
     public String doEdit(@Valid @ModelAttribute("customer") Customer customer, BindingResult error, HttpSession session,
-            Model model, RedirectAttributes redirect) {
+            Integer id, Model model, RedirectAttributes redirect) {
         if (!managerService.checkLoginWithRole("customer_edit")) {
             return redirectCustomerHome;
         }
-        model.addAttribute("error", error);
-        
-        if (!error.hasErrors()) {
-            // Update in database
-            customerFacade.edit(customer); 
+        Customer custOld = customerFacade.find(id);
+
+        if (customer.getFirstName() == "" || customer.getFirstName().trim() == null) {
+            error.rejectValue("firstName", "customer", "FirstName is not blank");
         }
+        if (!error.hasErrors()) {
+            boolean updated = false;
+            if (!custOld.getFirstName().equals(customer.getFirstName())) {
+                custOld.setFirstName(customer.getFirstName());
+                updated = true;
+            }
+            if (!custOld.getLastName().equals(customer.getLastName())) {
+                custOld.setLastName(customer.getLastName());
+                updated = true;
+            }
+            if (!custOld.getAddress().equals(customer.getAddress())) {
+                custOld.setAddress(customer.getAddress());
+                updated = true;
+            }
+            if (!custOld.getPassword().equals(customer.getPassword())) {
+                if (customer.getPassword() == null || customer.getPassword().isEmpty()) {
+                    custOld.setPassword(custOld.getPassword());
+                } else {
+                    custOld.setPassword(customer.getPassword());
+                }
+                updated = true;
+            }
+            if (!custOld.getGender().equals(customer.getGender())) {
+                custOld.setGender(customer.getGender());
+                updated = true;
+            }
+            if (!custOld.getBirthday().equals(customer.getBirthday())) {
+                custOld.setBirthday(customer.getBirthday());
+                updated = true;
+            }
+            if (!custOld.getPhone().equals(customer.getPhone())) {
+                custOld.setPhone(customer.getPhone().trim());
+                updated = true;
+            }
+            if (updated) {
+                // Update in database
+                customerFacade.edit(custOld);
+            }
+
+        }
+        model.addAttribute("error", error);
         redirect.addFlashAttribute("goodAlert", "Successfully updated \"" + customer.getId() + "\"!");
         return redirectCustomerHome;
     }
-   
+
 }
