@@ -57,7 +57,11 @@ public class shopBuildAdd {
     ShopService shopService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public String getBuildForm(Model model) {
+    public String getBuildForm(Model model, RedirectAttributes redirect) {
+        if (!shopService.checkLogin()) {
+            return "redirect:/build";
+        }
+
         buildService.initBuildApp();
 
         if (model.asMap().containsKey("errorMessage")) {

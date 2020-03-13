@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDManager/layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTD Manager - Prebuilt</title>
+    <th:block layout:fragment="additionalCss">
+        <link th:href="@{/manager_resources/plugins/icheck-bootstrap/icheck-bootstrap.min.css}" rel="stylesheet">
+        <link th:href="@{/manager_resources/plugins/summernote/summernote-lite.css}" rel="stylesheet" />
+        <link th:href="@{/manager_resources/plugins/jquery-ui/jquery-ui.min.css}" rel="stylesheet" />
+        <link th:href="@{/manager_resources/plugins/jquery-ui/jquery-ui.theme.min.css}" rel="stylesheet" />
+    </th:block>
+</head>
+
+<body>
+    <span layout:fragment="title">
+        <a th:href="@{/manager/prebuilt}">
+            <i class="fas fa-balance-scale" style="font-size:20px"></i> Prebuilt
+        </a>
+        >
+        <th:block th:if="${update==null}">Add new Prebuilt</th:block>
+        <th:block th:if="${update!=null}">Edit Prebuilt: "<th:block th:text="${prebuilt.name}"></th:block>"</th:block>
+    </span>
+
+    <div layout:fragment="breadcrumb">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a th:href="@{/manager}">Home</a></li>
+            <li class="breadcrumb-item active"><a th:href="@{/manager/prebuilt}">Prebuilt</a></li>
+        </ol>
+    </div>
+    <div layout:fragment="content">
+        <form th:action="@{/manager/prebuilt/__${formUrl}__}" th:object="${prebuilt}" method="POST"
+            enctype="multipart/form-data" autocomplete="off" name="frmPrebuilt" id="frmPrebuilt">
+            <div class="row">
+                <div class="col-lg-12 mb-3" th:if="${#fields.hasErrors('global')}">
+                    <p class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i> 
+                        <span th:errors="*{global}">Name Error</span>
+                    </p>
+                </div>
+                <div class="col-lg-12">
+                    <div class="card-header">
+                        <h3 class="card-title">Prebuilt Information</h3>
+                    </div>
+                    <!-- NAME -->                    
+                    <div class="form-group row">
+                        <label for="name" class="col-sm-3 col-form-label text-right">Name<i
+                                class="text-danger">*</i></label>
+                        <div class="col-sm-9">
+                            <input type="text" autocomplete="off" class="form-control" id="name" name="name"
+                                th:classappend="${(#fields.hasErrors('name')?'is-invalid':'') + (submited != null and !#fields.hasErrors('name')?'is-valid':'')}" required th:field="*{name}"/>
+                        </div>
+                        <div class="col-sm-3"></div>
+                        <div class="col-sm-9" >
+                            <ul class="text-danger">
+                                <li th:each="err : ${#fields.errors('name')}" th:text="${err}" th:if="${#fields.hasErrors('name')}">Name Error</li>
+                            </ul> 
+                        </div>
+                    </div>
+                    <!-- DETAIL -->
+                    <div class="form-group row">
+                        <label for="detail" class="col-sm-3 col-form-label text-right">Detail<i
+                                class="text-danger">*</i></label>
+                        <div class="col-sm-9">
+                            <textarea class="form-control textarea" id="detail" th:field="*{detail}" placeholder="First Name" type="text"
+                                th:classappend="${(#fields.hasErrors('detail')?'is-invalid':'') + (submited != null and !#fields.hasErrors('detail')?'is-valid':'')}" required>
+                            </textarea>
+                        </div>
+                        <div class="col-sm-3"></div>
+                        <div class="col-sm-9" th:if="${#fields.hasErrors('detail')}">
+                            <ul class="text-danger">
+                                <li th:each="err : ${#fields.errors('detail')}" th:text="${err}">Name Error</li>
+                            </ul> 
+                        </div>
+                    </div>
+                    <!-- PRICE -->                    
+                    <div class="form-group row">
+                        <label for="price" class="col-sm-3 col-form-label text-right">Price<i
+                                class="text-danger">*</i></label>
+                        <div class="col-sm-9">
+                            <input type="number" autocomplete="off" class="form-control" id="price" name="price"
+                                th:classappend="${(#fields.hasErrors('price')?'is-invalid':'') + (submited != null and !#fields.hasErrors('price')?'is-valid':'')}" required th:field="*{price}"/>
+                        </div>
+                        <div class="col-sm-3"></div>
+                        <div class="col-sm-9" >
+                            <ul class="text-danger">
+                                <li th:each="err : ${#fields.errors('price')}" th:text="${err}" th:if="${#fields.hasErrors('price')}">Price Error</li>
+                            </ul> 
+                        </div>
+                    </div>
+                    <!-- STOCK -->                    
+                    <div class="form-group row">
+                        <label for="stock" class="col-sm-3 col-form-label text-right">Stock<i
+                                class="text-danger">*</i></label>
+                        <div class="col-sm-9">
+                            <input type="number" autocomplete="off" class="form-control" id="stock" name="stock"
+                                th:classappend="${(#fields.hasErrors('stock')?'is-invalid':'') + (submited != null and !#fields.hasErrors('stock')?'is-valid':'')}" required th:field="*{stock}"/>
+                        </div>
+                        <div class="col-sm-3"></div>
+                        <div class="col-sm-9" >
+                            <ul class="text-danger">
+                                <li th:each="err : ${#fields.errors('stock')}" th:text="${err}" th:if="${#fields.hasErrors('stock')}">Stock Error</li>
+                            </ul> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block layout:fragment="additionalScript">
+        <script th:src="@{/manager_resources/plugins/summernote/summernote-lite.min.js}"></script>
+        <script th:src="@{/manager_resources/plugins/jquery-ui/jquery-ui.min.js}"></script>
+        <script th:src="@{/manager_resources/plugins/jquery-validation/jquery.validate.js}"></script>
+        <script th:src="@{/manager_resources/plugins/jquery-validation/additional-methods.min.js}"></script>
+    </th:block>
+    <script layout:fragment="script" th:inline="none">
+        //Initialize Select2 Elements
+        $('.select2').select2();
+
+        //Initialize Select2 Elements
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        });
+
+        $('.textarea').summernote({
+            minHeight: 200,
+            maxHeight: 650
+        });
+    </script>
+</body>
+
+</html>

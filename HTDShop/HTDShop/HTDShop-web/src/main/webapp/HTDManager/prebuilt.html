@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDManager/layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTD Manager - Prebuilt</title>
+    <style>
+        .dataTables_filter {
+            float: right !important;
+        }
+    </style>
+</head>
+
+<body>
+    <span layout:fragment="title">
+        <i class="nav-icon fas fa-users" style="font-size:20px"></i> Prebuilt
+        <a class="btn btn-success" th:href="@{/manager/prebuilt/add}">
+            <i class="fas fa-plus-square fa-lg mr-2"></i> Add new
+        </a>
+    </span>
+
+    <div layout:fragment="breadcrumb">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a th:href="@{/manager}">Home</a></li>
+            <li class="breadcrumb-item active">Prebuilt</li>
+        </ol>
+    </div>
+
+    <div layout:fragment="content">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card card-purple card-outline">
+                    <div class="card-body">
+                        <table id="tblPrebuilt" class="table table-bordered table-striped table-hover">
+                            <thead class="bg-purple">
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Customer</th>
+                                <th>Staff</th>
+                                <th>Date added</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Action</th>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${prebuilts eq null or prebuilts.empty}">
+                                    <td colspan="9">No Prebuilts to list</td>
+                                </tr>
+                                <tr th:each="p : ${prebuilts}">
+                                    <td th:text="${p.id}">ID</td>
+                                    <td th:text="${p.name}">Name</td>
+                                    <th:block>
+                                        <td th:if="${p.customer != null}" th:text="${p.customer.email}">Email</td>
+                                        <td th:if="${p.customer == null}">N/A</td>
+                                    </th:block>
+                                    <th:block>
+                                        <td th:if="${p.staff != null}" th:text="${p.staff.username}">Phone No.</td>
+                                        <td th:if="${p.staff == null}">N/A</td>
+                                    </th:block>
+                                    <td th:text="${p.createdAt}">Date added</td>
+                                    <td th:text="${p.price}">Price</td>
+                                    <td th:text="${p.stock}">stock</td>
+                                    <td>
+                                        <a class="btn btn-warning btn-sm"
+                                            th:href="@{/manager/prebuilt/edit(id=${p.id})}" data-toggle='tooltip'
+                                            title="Edit">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </a>
+                                        <a class="btn btn-info btn-sm"
+                                            th:href="@{/manager/prebuilt/details(id=${p.id})}" data-toggle='tooltip'
+                                            title="Details">
+                                            <i class="nav-icon fas fa-receipt"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="bg-purple">
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Customer</th>
+                                <th>Staff Username</th>
+                                <th>Created At</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Action</th>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script layout:fragment="script" th:inline="none">
+        // Add custom filter for datatable
+        $('#tblPrebuilt tfoot th').each(function () {
+            var title = $(this).text();
+            if (title == "Action" || title == "ID") {
+                // Collum that not using filter
+                $(this).html('');
+            } else {
+                // Collum that using text filter
+                $(this).html('<input id="txtSearch' + title + '" type="text" placeholder="Search ' + title + '" class="form-control" style="width:100%" />');
+            }
+
+        });
+
+        // Setting up table here
+        var table = $('#tblPrebuilt').DataTable({
+            // Move filter from foot to head
+            initComplete: function () {
+                var r = $('#tblPrebuilt tfoot tr');
+                r.find('th').each(function () {
+                    $(this).css('padding', 8);
+                });
+                $('#tblPrebuilt thead').append(r);
+                $('div.dataTables_length').addClass('form-inline');
+            },
+            "paging": true,
+            "lengthChange": true,
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            "searching": true,
+            "ordering": false,
+            "info": true,
+            "autoWidth": false,
+            // custom collums's width
+            "columns": [
+                { "width": "5%" },
+                { "width": "25%" },
+                { "width": "15%" },
+                { "width": "15%" },
+                { "width": "10%" },
+                { "width": "10%" },
+                { "width": "10%" },
+                { "width": "10%" }
+            ]
+        });
+        // Set up filter action
+        table.columns().every(function () {
+            var thisCol = this;
+            // Set up action listener for text filter
+            $('input', this.footer()).on('keyup change clear', function () {
+                if (thisCol.search() !== this.value) {
+                    thisCol.search(this.value).draw();
+                }
+            });
+            // Set up data for select filter
+            $('select', this.footer()).each(function () {
+                var title = thisCol.header();
+                // Using unique data from table
+                var thisSelect = this;
+                thisCol.data().unique().sort().each(function (d, j) {
+                    $(thisSelect).append("<option value='" + d + "'>" + d + "</option>");
+                });
+                /* Or using customized data
+                if($(title).html()=="Status"){
+                    var thisSelect = this;
+                    $(thisSelect).append("<option value='1'>"+Is selling+"</option>");
+                }*/
+            });
+            // Set up action listener for select filter
+            $('select', this.footer()).on('change', function () {
+                var val = $.fn.dataTable.util.escapeRegex(
+                    $(this).val()
+                );
+                thisCol.search(val ? '^' + val + '$' : '', true, false).draw();
+            });
+
+        });
+    </script>
+</body>
+
+</html>
