@@ -23,6 +23,7 @@ public class PreBuiltSearch {
     private Double from;
     private Double to;
     private String sort;
+    private Integer promo;
 
     public PreBuiltSearch() {
 
@@ -38,6 +39,18 @@ public class PreBuiltSearch {
         this.style = params.get("style");
         // Sort
         this.sort = params.get("sort");
+
+        // Promo
+        if (params.get("promo") == null || params.get("promo").isEmpty()) {
+            this.promo = 0;
+        } else {
+            try {
+                this.promo = Integer.parseInt(params.get("promo"));
+            } catch (Exception e) {
+                this.promo = 0;
+            }
+        }
+
         // Author
         if (params.get("auth") == null) {
             this.author = 0;
@@ -388,6 +401,20 @@ public class PreBuiltSearch {
      */
     public void setSort(String sort) {
         this.sort = sort;
+    }
+
+    /**
+     * @return the promo
+     */
+    public Integer getPromo() {
+        return promo;
+    }
+
+    /**
+     * @param promo the promo to set
+     */
+    public void setPromo(Integer promo) {
+        this.promo = promo;
     }
 
 }

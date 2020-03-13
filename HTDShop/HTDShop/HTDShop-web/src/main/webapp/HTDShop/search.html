@@ -129,6 +129,24 @@
                                 </div>
                             </div>
 
+                            <div class="sidebar-widget mb-4">
+                                <h3 class="sidebar-title">Promotion</h3>
+                                <div class="sidebar-categories">
+                                    <select class="select2" data-dropdown-css-class="select2-purple" name="promo"
+                                        id="promo">
+                                        <option value="0" th:selected="${param.promo == null || param.promo[0] == '0'}">
+                                            Any Promotion
+                                        </option>
+                                        <option
+                                            th:each="promo : ${promolist.?[promotionCollection.?[preBuiltTarget == null].size() > 0]}"
+                                            th:value="${promo.id}" th:text="${promo.name}"
+                                            th:selected="${param.promo != null && T(Integer).parseInt(param.promo) == promo.id}">
+                                            Promotion...
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
                             <!-- <div class="sidebar-widget mb-4">
                                 <h3 class="sidebar-title">Promotions filter</h3>
                                 <div class="sidebar-categories">
@@ -363,6 +381,10 @@
             doSearch(1, null, true);
         });
 
+        $("#promo").on("change", function () {
+            doSearch(1, null, true);
+        });
+
         $("#searchKeyword").on("submit", function (e) {
             e.preventDefault();
             doSearch(1, null);
@@ -392,6 +414,7 @@
             $("#keyword").val("");
             $("#psort").val("default");
             $("#category").val(0).trigger("change");
+            $("#promo").val(0).trigger("change");
         });
 
 
@@ -404,6 +427,7 @@
             var href =  /*[[@{/search}]]*/'';
             var kParam = $("#keyword").val().trim();
             var cParam = /*[[${param.category!=null? param.category : 0 }]]*/'';
+            var promoParam = /*[[${param.promo!=null? param.promo : 0 }]]*/'';
             var styleParam = /*[[${param.style!=null? param.style : '' }]]*/"";
             var pageParam = /*[[${param.page!=null? param.page : 1 }]]*/1;
             var fromParam = $("#from").val();
@@ -415,6 +439,7 @@
                 oldCate = parseInt($("#category").val());
             }
             cParam = parseInt($("#category").val());
+            promoParam = parseInt($("#promo").val());
             sortParam = $("#psort").val();
             if (sort != null) {
                 sortParam = sort;
@@ -429,6 +454,9 @@
 
             if (cParam != "" && parseInt(cParam) != 0) {
                 urlparams += "category=" + encodeURIComponent(cParam);
+            }
+            if (promoParam != "" && parseInt(promoParam) > 0) {
+                urlparams += "&promo=" + encodeURIComponent(promoParam);
             }
             if (kParam != "") {
                 urlparams += "&keyword=" + encodeURIComponent(kParam);

@@ -32,6 +32,8 @@ public interface ProductFacadeLocal {
 
     List<Product> search(Integer cateId, String search);
 
+    List<Product> search(Integer cateId, String search, Integer promoId);
+
     List<String> getStringList(String attr);
 
     List<String> getManuOtherList(String cateId);
