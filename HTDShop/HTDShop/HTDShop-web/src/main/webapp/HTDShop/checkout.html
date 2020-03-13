@@ -57,25 +57,25 @@
                             <div class="checkbox-form">
                                 <h3>Billing Details</h3>
                                 <div class="row">
-                                    <input type="hidden" th:field="*{id}"/> 
+                                    <input type="hidden" th:field="*{id}" th:if="${session.loggedInCustomer != null}"/> 
                                     <div class="col-md-6">
                                         <div class="checkout-form-list">
                                             <label>First Name <span class="required">*</span></label>
-                                            <input type="text" placeholder="Enter your First Name"
+                                            <input type="text" placeholder="Enter your First Name" required
                                                 th:field="*{firstName}"/>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="checkout-form-list">
                                             <label>Last Name <span class="required">*</span></label>
-                                            <input type="text" placeholder="Enter your Last Name"
+                                            <input type="text" placeholder="Enter your Last Name" required
                                                 th:field="*{lastName}" />
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="checkout-form-list">
                                             <label>Address <span class="required">*</span></label>
-                                            <input type="text" placeholder="Enter your address"
+                                            <input type="text" placeholder="Enter your address" required
                                                 th:field="*{address}"/>
                                         </div>
                                     </div>
@@ -83,18 +83,18 @@
                                         <div class="checkout-form-list">
                                             <label>Email Address <span class="required">*</span></label>
                                             <input type="email" placeholder="Enter your email"
-                                                readonly="readonly"
-                                                th:field="*{email}" />
+                                                th:readonly="${session.loggedInCustomer != null}" required
+                                                th:field="*{email}"/>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="checkout-form-list">
                                             <label>Phone <span class="required">*</span></label>
-                                            <input type="text" placeholder="Enter your phone"
+                                            <input type="text" placeholder="Enter your phone" required
                                                 th:field="*{phone}">
                                         </div>
                                     </div>
-                                    <div class="col-md-12">
+                                    <div class="col-md-12" th:if="${session.loggedInCustomer == null}">
                                         <div class="checkout-form-list create-acc">
                                             <a th:href=@{/register}>Register?</a>
                                         </div>
