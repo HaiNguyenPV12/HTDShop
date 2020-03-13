@@ -30,21 +30,22 @@
     <!-- enctype="multipart/form-data" -->
     <div layout:fragment="content">
         <div class="row">
+
+            <div class="col-lg-12 mb-3">
+                <p class="text-danger" id="commonError">
+                </p>
+            </div>
+        </div>
+
+        <form th:action="@{/manager/staff/__${formUrl}__}" th:object="${staff}" method="POST" autocomplete="off"
+            name="frmStaff" id="frmStaff" enctype="multipart/form-data">
             <div class="col-lg-12 mb-3" th:if="${#fields.hasErrors('global')}">
                 <p class="alert alert-danger">
                     <i class="fas fa-exclamation-circle"></i> 
                     <span th:errors="*{global}">Name Error</span>
                 </p>
             </div>
-            <div class="col-lg-12 mb-3">
-                <p class="text-danger" id="commonError">
-                </p>
-            </div>
-        </div>
-    
-        <form th:action="@{/manager/staff/__${formUrl}__}" th:object="${staff}" method="POST" autocomplete="off"
-            name="frmStaff" id="frmStaff" enctype="multipart/form-data">
-            <div style="overflow: none; height: 0px;background: transparent;"
+            <div style="overflow: none; height: 0px;background: transparent; display: none;"
                 data-description="dummyPanel for Chrome auto-fill issue">
                 <input style="height:0;background: transparent; color: transparent;border: none;"
                     data-description="dummyUsername"></input>
