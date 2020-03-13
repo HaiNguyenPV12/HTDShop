@@ -74,7 +74,7 @@ public class managerCustomerController {
 
         // Pass order list to session
         model.asMap().put("customers", customerFacade.findAll().stream()
-                .sorted(Comparator.comparingInt(Customer::getId)).collect(Collectors.toList()));
+                .sorted(Comparator.comparingInt(Customer::getId).reversed()).collect(Collectors.toList()));
         // Add indicator attribute for sidemenu highlight
         model.asMap().put("menu", "customer");
 
