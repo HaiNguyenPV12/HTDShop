@@ -29,14 +29,16 @@
                         <div class="login">
                             <div class="login-form-container">
                                 <div class="login-form">
-                                    <form th:action="@{/register/__${formUrl}__}" enctype="multipart/form-data" method="POST" th:object="${customer}">
+                                    <form th:action="@{/register/__${formUrl}__}" enctype="multipart/form-data"
+                                        method="POST" th:object="${customer}" id="frmRegis">
                                         <div class="card-body">
                                             <div class="form-group row">
                                                 <label for="firstName" class="col-sm-3 col-form-label text-right">First
                                                     Name<i class="text-danger">*</i></label>
                                                 <div class="col-sm-9">
                                                     <input class="form-control" id="firstName" placeholder="First Name"
-                                                        th:field="*{firstName}" required />
+                                                        minlength="2" maxlength="255" th:field="*{firstName}"
+                                                        required />
                                                 </div>
                                                 <div class="col-sm-3"></div>
                                             </div>
@@ -45,7 +47,7 @@
                                                     Name<i class="text-danger">*</i></label>
                                                 <div class="col-sm-9">
                                                     <input class="form-control" id="lastName" placeholder="Last Name"
-                                                        th:field="*{lastName}" required />
+                                                        minlength="2" maxlength="255" th:field="*{lastName}" required />
                                                 </div>
                                                 <div class="col-sm-3"></div>
                                             </div>
@@ -53,26 +55,30 @@
                                                 <label for="email" class="col-sm-3 col-form-label text-right">Email<i
                                                         class="text-danger">*</i></label>
                                                 <div class="col-sm-9">
-                                                    <input class="form-control" id="email" placeholder="Email" type="email"
-                                                        th:field="*{email}" required />
+                                                    <input class="form-control" id="email" placeholder="Email"
+                                                        maxlength="255" type="email" th:field="*{email}" required />
                                                 </div>
                                                 <div class="col-sm-3"></div>
                                             </div>
                                             <div class="form-group row">
-                                                <label for="password" class="col-sm-3 col-form-label text-right">Password<i
+                                                <label for="password"
+                                                    class="col-sm-3 col-form-label text-right">Password<i
                                                         class="text-danger">*</i></label>
                                                 <div class="col-sm-9">
-                                                    <input class="form-control" id="password" type="password" placeholder="Password" th:field="*{password}" required/>
+                                                    <input class="form-control" id="password" type="password"
+                                                        pattern=".{6,}" title="Password have 6 or more character"
+                                                        placeholder="Password" th:field="*{password}" required />
                                                 </div>
                                                 <div class="col-sm-3"></div>
-                                                
+
                                             </div>
                                             <div class="form-group row">
                                                 <label for="phone" class="col-sm-3 col-form-label text-right">Phone<i
                                                         class="text-danger">*</i></label>
                                                 <div class="col-sm-9">
-                                                    <input class="form-control" id="phone" placeholder="Phone" type="number"
-                                                        th:field="*{phone}" required />
+                                                    <input class="form-control" id="phone" placeholder="Phone"
+                                                        pattern="^[0-9]{11,12}$" title="Phone number have 11-12 digits"
+                                                        type="number" th:field="*{phone}" required />
                                                 </div>
                                                 <div class="col-sm-3"></div>
                                             </div>
@@ -82,7 +88,7 @@
                                                         class="text-danger">*</i></label>
                                                 <div class="col-sm-9">
                                                     <input class="form-control" id="address" placeholder="Address"
-                                                        th:field="*{address}" required />
+                                                        maxlength="255" th:field="*{address}" required />
                                                 </div>
                                                 <div class="col-sm-3"></div>
                                             </div>
@@ -123,8 +129,35 @@
     <!-- Bootstrap 4 -->
     <script th:src="@{/manager_resources/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
     <!-- AdminLTE App -->
+    <script th:src="@{/manager_resources/plugins/jquery-ui/jquery-ui.min.js}"></script>
+    <script th:src="@{/manager_resources/plugins/jquery-validation/jquery.validate.js}"></script>
+    <script th:src="@{/manager_resources/plugins/jquery-validation/additional-methods.min.js}"></script>F
     <script th:src="@{/manager_resources/Scripts/adminlte.min.js}"></script>
-   
+    
+    <script th:inline="none" layout:fragment="script">
+        function trimAll() {
+            $("form").find("input, textarea").each(function (i, e) {
+                if (e.type !== "file") {
+                    $(e).val($(e).val().trim());
+                }
+            });
+        }
+
+        function injectTrim(handler) {
+            return function (element, event) {
+                if ((element.tagName === "TEXTAREA" && !element.hasClass('textarea')) || (element.tagName === "INPUT"
+                    && element.type !== "password")) {
+                    element.value = $.trim(element.value);
+                }
+                return handler.call(this, element, event);
+            };
+        }
+
+        $("#frmCustomer").validate({
+            onfocusout: injectTrim($.validator.defaults.onfocusout)
+        });
+    </script>
+
 </body>
 
 </html>

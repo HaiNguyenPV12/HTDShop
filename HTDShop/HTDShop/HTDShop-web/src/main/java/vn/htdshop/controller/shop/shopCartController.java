@@ -128,8 +128,10 @@ public class shopCartController {
                     orderDetailFacade.create(orderDetail);
 
                     Product product = productFacade.find(Integer.parseInt(item.getId().substring(1)));
-                    product.setStock(product.getStock()-item.getQuan());
+                    Integer result = product.getStock() - item.getQuan();
+                    product.setStock(result);
                     productFacade.edit(product);
+
                 }else{
                     orderDetail.setId(null);
                     orderDetail.setOrder1(order1);
