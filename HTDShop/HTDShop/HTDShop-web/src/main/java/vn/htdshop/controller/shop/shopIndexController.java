@@ -17,6 +17,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,10 +27,13 @@ import vn.htdshop.sb.CategoryFacadeLocal;
 import vn.htdshop.sb.PreBuiltFacadeLocal;
 import vn.htdshop.entity.Customer;
 import vn.htdshop.entity.ImageSlide;
+import vn.htdshop.entity.Order1;
 import vn.htdshop.sb.CategoryFacadeLocal;
 import vn.htdshop.sb.CustomerFacadeLocal;
 import vn.htdshop.sb.ImageSlideFacadeLocal;
 import vn.htdshop.utility.ShopService;
+
+import vn.htdshop.sb.*;
 
 /**
  *
@@ -47,7 +51,10 @@ public class shopIndexController {
 
     @EJB(mappedName = "CustomerFacade")
     CustomerFacadeLocal customerFacade;
-    
+
+    @EJB(mappedName = "Order1Facade")
+    Order1FacadeLocal order1Facade;
+
     @EJB(mappedName = "ImageSlideFacade")
     ImageSlideFacadeLocal imageSlideFacade;
 
@@ -64,10 +71,9 @@ public class shopIndexController {
     public String getHome(Model model) {
         shopService.checkLogin();
 
-        model.asMap().put("imageslides",
-                imageSlideFacade.findAll().stream().filter(img->img.getStatus())
-                        .sorted(Comparator.comparing(ImageSlide::getOrder, Comparator.nullsLast(Comparator.naturalOrder())))
-                        .collect(Collectors.toList()));
+        model.asMap().put("imageslides", imageSlideFacade.findAll().stream().filter(img -> img.getStatus())
+                .sorted(Comparator.comparing(ImageSlide::getOrder, Comparator.nullsLast(Comparator.naturalOrder())))
+                .collect(Collectors.toList()));
         // modelMap.addAttribute("categories", categoryFacade.findAll());
         return "HTDShop/index";
     }
@@ -131,7 +137,64 @@ public class shopIndexController {
         Cookie cookie = new Cookie("loggedInCustomer", null);
         cookie.setMaxAge(0);
         response.addCookie(cookie);
-        return "redirect:";        
+        return "redirect:";
+    }
+
+    @RequestMapping(value = "checkOrder", method = RequestMethod.GET)
+    public String viewCheckOrder(Model model, ModelMap modelMap, HttpSession session) {
+        shopService.checkLogin();
+        return "HTDShop/checkOrder";
+    }
+
+    @RequestMapping(value = "doCheck", method = RequestMethod.GET)
+    public String viewOrderTracking(Model model, ModelMap modelMap, HttpSession session,
+            @RequestParam(value = "id", required = false) Integer id,
+            @RequestParam(value = "phone", required = false) String phone) {
+        shopService.checkLogin();
+        Order1 order = order1Facade.findByPhoneAndId(id, phone);
+        if (order == null) {
+            return "redirect:/checkOrder";
+        } else {
+            if (order.getOrderStatus() == 5) {
+                return "redirect:/checkOrder";
+            } else {
+                model.addAttribute("order", order);
+            }
+        }
+
+
+        // if (shopService.getLoggedInCustomer() == null) {
+        //     Order1 order = order1Facade.findByPhoneAndId(id, phone);
+        //     if (order == null) {
+        //         return "redirect:/checkOrder";
+        //     } else {
+        //         if (order.getOrderStatus() == 5) {
+        //             return "redirect:/checkOrder";
+        //         } else {
+        //             model.addAttribute("order", order);
+        //         }
+        //     }
+        // } else {
+        //     Customer customer = shopService.getLoggedInCustomer();
+        //     Order1 order = order1Facade.find(id);
+        //     if (order.getOrderStatus() == 5) {
+        //         return "redirect:/checkOrder";
+        //     } else {
+        //         if (order.getCustomer().getId() != customer.getId()) {
+        //             return "redirect:/checkOrder";
+        //         }
+        //     }
+        //     model.addAttribute("order", order);
+        //     // if (customer.getOrder1Collection().size() <= 0) {
+        //     // for (Order1 order : customer.getOrder1Collection()) {
+        //     // if (order.getOrderStatus()!= 5 && order.getId()==id) {
+        //     // model.addAttribute("order", order);
+        //     // }
+        //     // return "redirect:/checkOrder";
+        //     // }
+        //     // }
+        // }
+        return "HTDShop/orderTracking";
     }
 
 }

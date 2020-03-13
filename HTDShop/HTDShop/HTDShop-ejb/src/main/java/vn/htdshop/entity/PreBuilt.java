@@ -42,6 +42,11 @@ import javax.xml.bind.annotation.XmlTransient;
         @NamedQuery(name = "PreBuilt.findByCreatedAt", query = "SELECT p FROM PreBuilt p WHERE p.createdAt = :createdAt") })
 public class PreBuilt implements Serializable {
 
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "Status")
+    private int status;
+
     @OneToMany(mappedBy = "preBuilt")
     private Collection<OrderDetail> orderDetailCollection;
 
@@ -366,6 +371,14 @@ public class PreBuilt implements Serializable {
 
     public void setOrderDetailCollection(Collection<OrderDetail> orderDetailCollection) {
         this.orderDetailCollection = orderDetailCollection;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
 }

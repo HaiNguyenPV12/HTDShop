@@ -126,6 +126,19 @@ public class shopCartController {
                     orderDetail.setQuantity(item.getQuan());
                     orderDetail.setPrice(shopService.getcartItemPrice(item.getId(), item.getQuan()));
                     orderDetailFacade.create(orderDetail);
+
+                    Product product = productFacade.find(Integer.parseInt(item.getId().substring(1)));
+                    Integer result = product.getStock() - item.getQuan();
+                    product.setStock(result);
+                    productFacade.edit(product);
+
+                }else{
+                    orderDetail.setId(null);
+                    orderDetail.setOrder1(order1);
+                    orderDetail.setPreBuilt(preBuiltFacade.find(Integer.parseInt(item.getId().substring(1))));
+                    orderDetail.setQuantity(item.getQuan());
+                    orderDetail.setPrice(shopService.getcartItemPrice(item.getId(), item.getQuan()));
+                    orderDetailFacade.create(orderDetail);
                 }
             }
             shopService.saveNonUserCart(new ArrayList<CartItem>());
@@ -153,19 +166,6 @@ public class shopCartController {
                 customerFacade.edit(customerOld);
                 session.setAttribute("loggedInCustomer", customerOld);
             }
-
-            // if (!custom.getFirstName().equals(customerOld.getFirstName())
-            // || !custom.getLastName().equals(customerOld.getLastName())
-            // || !custom.getAddress().equals(customerOld.getAddress())
-            // || !custom.getPhone().equals(customerOld.getPhone())
-            // ) {
-            // customerOld.setFirstName(custom.getFirstName());
-            // customerOld.setLastName(custom.getLastName());
-            // customerOld.setAddress(custom.getAddress());
-            // customerOld.setPhone(custom.getPhone());
-            // customerFacade.edit(customerOld);
-            // session.setAttribute("loggedInCustomer",customerOld);
-            // }
 
             order1 = new Order1();
             order1.setId(null);

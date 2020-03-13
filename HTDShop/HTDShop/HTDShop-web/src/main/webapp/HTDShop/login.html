@@ -29,12 +29,12 @@
                         <div class="login">
                             <div class="login-form-container">
                                 <div class="login-form">
-                                    <form action="login/doLogin" method="post" onsubmit="return validation()"
-                                        name="frmLogin">
+                                    <form action="login/doLogin" method="post"  id="frmLogin">
                                         <input type="email" name="email" placeholder="Email" id="email" required
                                             autofocus>
                                         <input type="password" name="password" placeholder="Password" id="password"
-                                            required >
+                                            pattern=".{6,}" title="Password have 6 or more character"
+                                            required>
                                         <div class="button-box">
                                             <div class="login-toggle-btn">
                                                 <input type="checkbox" id="remember" name="remember">
@@ -56,17 +56,58 @@
     <!-- Bootstrap 4 -->
     <script th:src="@{/manager_resources/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
     <!-- AdminLTE App -->
+    
+    <script th:src="@{/manager_resources/plugins/jquery-validation/jquery.validate.js}"></script>
+    <script th:src="@{/manager_resources/plugins/jquery-validation/additional-methods.min.js}"></script>
     <script th:src="@{/manager_resources/Scripts/adminlte.min.js}"></script>
-    <script th:inline="javascript">
-        function validation(){
-            var password = $('#password');
-            password.val(password.val().trim());
-            if(password.val() == ""){
-                alert("Password is not blank");
-                password.focus();
-                return false;
-            }
+    <script th:inline="none">
+        function injectTrim(handler) {
+            return function (element, event) {
+                if (element.tagName === "TEXTAREA" || (element.tagName === "INPUT"
+                    && element.type !== "password")) {
+                    element.value = $.trim(element.value);
+                }
+                return handler.call(this, element, event);
+            };
         }
+
+        $("#frmLogin").validate({
+            ignore: [],
+            errorClass: "is-invalid",
+            validClass: "is-valid",
+            errorPlacement: function (error, element) {
+                error.appendTo('#' + element.attr("id") + "Error");
+            },
+            highlight: function (element, errorClass, validClass) {
+                var elem = $(element);
+                if (elem.hasClass("select2")) {
+                    $(elem).next().addClass(errorClass);
+                    // $("#s2id_" + elem.attr("id") + " ul").addClass(errorClass);
+                } else {
+                    elem.addClass(errorClass);
+                }
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                var elem = $(element);
+                if (elem.hasClass("select2")) {
+                    $(elem).next().removeClass(errorClass);
+                } else {
+                    elem.removeClass(errorClass);
+                }
+            },
+            errorElement: "li",
+            callback: function () {
+                $("#email").val($("#email").val().trim());
+                // addRule();
+                var form = $("#frmLogin");
+                if (form.valid()) {
+                    form.submit();
+                } else {
+                    return false;
+                }
+            },
+            onfocusout: injectTrim($.validator.defaults.onfocusout)
+        });
     </script>
 </body>
 

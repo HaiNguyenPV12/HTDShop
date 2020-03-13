@@ -22,8 +22,8 @@ import javax.persistence.criteria.Root;
 import vn.htdshop.entity.Promotion;
 
 import vn.htdshop.entity.PromotionDetail;
-import vn.htdshop.entity.PromotionDetail_;
-import vn.htdshop.entity.Promotion_;
+import vn.htdshop.entity.PromotionDetail;
+import vn.htdshop.entity.Promotion;
 
 /**
  *

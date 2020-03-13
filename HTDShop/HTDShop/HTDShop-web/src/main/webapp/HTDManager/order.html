@@ -62,7 +62,7 @@
                                 </tr>
 
                                 <tr th:each="o : ${orders}"
-                                    th:classappend="${(o.orderStatus==3?'bg-gray':'') + (o.orderStatus==2?'bg-yellow':'')}">
+                                    th:classappend="${(o.orderStatus==2?'bg-yellow':'') + (o.orderStatus==4?'bg-green':'')  + (o.orderStatus==3?'bg-blue':'') + (o.orderStatus==5?'bg-red':'')}">
                                     <td th:text="${o.id}">001</td>
                                     <td th:text="${o.customer.firstName}">Intel Core i5 8400 3.0 GHz</td>
                                     <td th:text="${o.orderDate}">CPU</td>
@@ -77,19 +77,19 @@
                                     </td>
                                     <td>
                                         <button class="btn btn-danger btn-sm" href="#" data-toggle="tooltip"
-                                            th:if="${o.orderStatus != 4 && o.orderStatus != 5 && o.orderStatus != 2 && o.orderStatus != 3} "
+                                            th:if="${o.orderStatus == 1} "
                                             title="Confirmed"
                                             th:onclick='confirmOrder([[${o.id}]],[[@{/manager/order/doConfirmed(id=${o.id})}]])'>
                                             <i class="fas fa-thumbs-up"></i>
                                         </button>
                                         <button class="btn btn-danger btn-sm" href="#" data-toggle="tooltip"
                                             title="Shipping"
-                                            th:if="${o.orderStatus != 4 && o.orderStatus != 5 && o.orderStatus != 3}"
+                                            th:if="${o.orderStatus == 2}"
                                             th:onclick='confirmShipping([[${o.id}]],[[@{/manager/order/doShipping(id=${o.id})}]])'>
                                             <i class="fas fa-shipping-fast"></i>
                                         </button>
                                         <button class="btn btn-danger btn-sm" href="#" data-toggle="tooltip"
-                                            th:if="${o.orderStatus != 4 && o.orderStatus != 5 }" title="Done"
+                                            th:if="${o.orderStatus == 3}" title="Done"
                                             th:onclick='confirmDone([[${o.id}]],[[@{/manager/order/doDone(id=${o.id})}]])'>
                                             <i class="fas fa-check-circle"></i>
                                         </button>
