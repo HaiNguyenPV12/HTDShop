@@ -392,11 +392,12 @@
                         </div>
                         <div class="tab-pane fade overflow-auto text-left border border-secondary" id="pro-review"
                             role="tabpanel">
+                            
                             <div class="card border-bottom border-secondary" th:if="${session.loggedInCustomer != null}"
-                                style="background-color: lightyellow;">
-                                <div class="card-body border-bottom border-warning">
+                                style="background-color: lightyellow;" th:with="customerId = ${session.loggedInCustomer.id}">
+                                <div class="card-body border-bottom border-warning" th:if="${(prebuilt.customer == null || (prebuilt.customer!=null && prebuilt.customer.id != session.loggedInCustomer.id) ) && ( prebuilt.preBuiltRatingCollection == null || prebuilt.preBuiltRatingCollection.size()==0 || (!#arrays.contains(prebuilt.preBuiltRatingCollection.![customer.id] , session.loggedInCustomer.id) ) )}">
                                     <form class="rating" action="prebuilt/doRating" method="post"
-                                        enctype="application/x-www-form-urlencoded">
+                                        enctype="application/x-www-form-urlencoded" >
                                         <div class="d-flex">
                                             <input type="hidden" name="prebuiltid" th:value="${prebuilt.id}" />
                                             <select class="form-control form-control-sm" name="rating" id="" style="width: 5rem;height: auto;" required>
