@@ -48,6 +48,9 @@ public class managerPrebuiltController {
     @EJB(mappedName = "PreBuiltFacade")
     PreBuiltFacadeLocal preBuiltFacade;
 
+    @EJB(mappedName = "ProductFacade")
+    ProductFacadeLocal productFacade;
+
     @Autowired
     ServletContext context;
 
@@ -87,6 +90,8 @@ public class managerPrebuiltController {
         model.addAttribute("prebuilt", preBuilt);
         model.addAttribute("formUrl", "doAdd");
         model.asMap().put("menu", "prebuilt");
+        // form values
+        model.addAttribute("caseList", sellingProducts(8));
         return "HTDManager/prebuilt_template";
     }
 
@@ -103,7 +108,27 @@ public class managerPrebuiltController {
         model.addAttribute("formUrl", "doEdit");
         model.asMap().put("menu", "prebuilt");
         model.asMap().put("update", "update");
+        // form values
+        model.addAttribute("caseList", sellingProducts(8));
         return "HTDManager/prebuilt_template";
+    }
+
+    private List<Product> sellingProducts(Integer category) {
+        List<Product> result = new ArrayList<>();
+        try {
+            result = productFacade.findAll();
+            result = result.stream().filter(p -> p.getCategory().getId() == category).collect(Collectors.toList());
+            // return only selling items
+            for (int i = 0; i < result.size(); i++) {
+                if (result.get(i).getStatus() != 1) {
+                    result.remove(i);
+                    i--;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
 }

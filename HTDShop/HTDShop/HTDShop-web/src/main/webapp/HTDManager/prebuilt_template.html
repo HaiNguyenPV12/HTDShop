@@ -75,6 +75,26 @@
                             </ul> 
                         </div>
                     </div>
+                    <!-- CASE ID -->
+                    <div class="form-group row">
+                        <label for="cases" class="col-sm-3 col-form-label text-right">Case<i
+                                class="text-danger">*</i></label>
+                        <div class="col-sm-9">
+                            <select class="form-control select2" id="cases" th:field="*{cases}" placeholder="First Name" type="text"
+                                th:classappend="${(#fields.hasErrors('cases')?'is-invalid':'') + (submited != null and !#fields.hasErrors('cases')?'is-valid':'')}" required>
+                                <option value="" disabled>-- Choose case --</option>
+                                <th:block th:each="c : ${caseList}">
+                                    <option th:value="${c}" th:text="${c.name}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+                        <div class="col-sm-3"></div>
+                        <div class="col-sm-9" th:if="${#fields.hasErrors('cases')}">
+                            <ul class="text-danger">
+                                <li th:each="err : ${#fields.errors('cases')}" th:text="${err}">Case Error</li>
+                            </ul> 
+                        </div>
+                    </div>
                     <!-- PRICE -->                    
                     <div class="form-group row">
                         <label for="price" class="col-sm-3 col-form-label text-right">Price<i
