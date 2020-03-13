@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDManager/layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTD Manager - Prebuilt</title>
+    <th:block layout:fragment="additionalCss">
+        <link th:href="@{/manager_resources/plugins/icheck-bootstrap/icheck-bootstrap.min.css}" rel="stylesheet">
+        <link th:href="@{/manager_resources/plugins/summernote/summernote-lite.css}" rel="stylesheet" />
+        <link th:href="@{/manager_resources/plugins/jquery-ui/jquery-ui.min.css}" rel="stylesheet" />
+        <link th:href="@{/manager_resources/plugins/jquery-ui/jquery-ui.theme.min.css}" rel="stylesheet" />
+    </th:block>
+</head>
+
+<body>
+    <span layout:fragment="title">
+        <a th:href="@{/manager/prebuilt}">
+            <i class="fas fa-balance-scale" style="font-size:20px"></i> Prebuilt
+        </a>
+        >
+        <span>Details</span>
+    </span>
+    <div layout:fragment="breadcrumb">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a th:href="@{/manager}">Home</a></li>
+            <li class="breadcrumb-item active"><a th:href="@{/manager/prebuilt}">Prebuilt</a></li>
+        </ol>
+    </div>
+    <div layout:fragment="content">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card-header">
+                    <h3 class="card-title">Prebuilt Information</h3>
+                </div>
+                <!-- CREATOR -->
+                <div class="row">
+                    <strong for="author" class="col-sm-3 text-right">
+                        Author
+                    </strong>
+                    <div class="col-sm-9">
+                        <th:block th:if="${prebuilt.staff != null}" th:text="${prebuilt.staff.username}"></th:block>
+                        <th:block th:if="${prebuilt.customer != null}" th:text="${prebuilt.customer.id}"></th:block>
+                    </div>
+                </div>
+                <!-- NAME -->
+                <div class="row">
+                    <strong for="name" class="col-sm-3 text-right">
+                        Name
+                    </strong>
+                    <div class="col-sm-9">
+                        <th:block th:text="${prebuilt.name}"></th:block>
+                    </div>
+                </div>
+                <!-- DETAIL -->
+                <div class="row">
+                    <strong for="detail" class="col-sm-3 text-right">
+                        Details
+                    </strong>
+                    <div class="col-sm-9">
+                        <th:block th:text="${prebuilt.detail}"></th:block>
+                    </div>
+                </div>
+                <!-- CPU ID -->
+                <div class="row">
+                    <strong for="cpu" class="col-sm-3 text-right">
+                        CPU
+                    </strong>
+                    <div class="col-sm-9">
+                        <th:block th:text="${prebuilt.cpu.name}"></th:block>
+                    </div>
+                </div>
+                <!-- CPU COOLER ID -->
+                <div class="row">
+                    <strong for="cpucooler" class="col-sm-3 text-right">
+                        CPU Cooler
+                    </strong>
+                    <div class="col-sm-9">
+                        <th:block th:if="${prebuilt.cpucooler != null}" th:text="${prebuilt.cpucooler.name}"></th:block>
+                    </div>
+                </div>
+                <!-- MOTHERBOARD ID -->
+                <div class="row">
+                    <strong for="motherboard" class="col-sm-3 text-right">
+                        Motherboard
+                    </strong>
+                    <div class="col-sm-9">
+                        <th:block th:text="${prebuilt.motherboard.name}"></th:block>
+                    </div>
+                </div>
+                <!-- MEMORY ID -->
+                <div class="row">
+                    <strong for="memory" class="col-sm-3 text-right">
+                        Memory
+                    </strong>
+                    <div class="col-sm-9">
+                        <th:block th:text="${prebuilt.memory.name}"></th:block>
+                    </div>
+                </div>
+                <!-- STORAGE ID -->
+                <div class="row">
+                    <strong for="storage" class="col-sm-3  text-right">
+                        Storage
+                    </strong>
+                    <div class="col-sm-9">
+                        <th:block th:text="${prebuilt.storage.name}"></th:block>
+                    </div>
+                </div>
+                <!-- GPU ID -->
+                <div class="row">
+                    <strong for="gpu" class="col-sm-3 text-right">
+                        GPU
+                    </strong>
+                    <div class="col-sm-9">
+                        <th:block th:if="${prebuilt.vga != null}" th:text="${prebuilt.vga.name}"></th:block>
+                    </div>
+                </div>
+                <!-- CASE ID -->
+                <div class="row">
+                    <strong for="case" class="col-sm-3 text-right">
+                        Case
+                    </strong>
+                    <div class="col-sm-9">
+                        <th:block th:text="${prebuilt.cases.name}"></th:block>
+                    </div>
+                </div>
+                <!-- PSU ID -->
+                <div class="row">
+                    <strong for="psu" class="col-sm-3 text-right">
+                        PSU
+                    </strong>
+                    <div class="col-sm-9">
+                        <th:block th:text="${prebuilt.psu.name}"></th:block>
+                    </div>
+                </div>
+                <!-- MONITOR ID -->
+                <div class="row">
+                    <strong for="monitor" class="col-sm-3 text-right">
+                        Monitor
+                    </strong>
+                    <div class="col-sm-9">
+                        <th:block th:if="${prebuilt.monitor != null}" th:text="${prebuilt.monitor.name}"></th:block>
+                    </div>
+                </div>
+                <!-- PRICE -->
+                <div class="row">
+                    <strong for="price" class="col-sm-3 text-right">
+                        Price
+                    </strong>
+                    <div class="col-sm-9">
+                        <th:block th:if="${prebuilt.price != null}" th:text="${#numbers.formatDecimal(prebuilt.price, 1, 'COMMA', 2, 'POINT')}"></th:block>
+                    </div>
+                </div>
+                <!-- STOCK -->
+                <div class="row">
+                    <strong for="stock" class="col-sm-3 text-right">
+                        Stock
+                    </strong>
+                    <div class="col-sm-9">
+                        <th:block th:if="${prebuilt.stock != null}" th:text="${prebuilt.stock}"></th:block>
+                    </div>
+                </div>
+                <!-- IMAGE -->
+                <div class="row">
+                    <strong for="image" class="col-sm-3 text-right">
+                        Images
+                    </strong>
+                    <div class="col-sm-9">
+                        <img style="max-height: 10rem;" class="img-thumbnail"
+                            th:each="img:${prebuilt.preBuiltImageCollection}"
+                            th:src="@{/images/__${img.path+'?'+#strings.randomAlphanumeric(5)}__}" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center py-3">
+            <a th:href="@{/manager/prebuilt}" class="btn btn-primary">Back to List</a>
+            <a th:href="@{/manager/prebuilt/edit?id=__${prebuilt.id}__}" class="btn btn-warning">Edit</a>
+        </div>
+    </div>
+</body>
+
+</html>
