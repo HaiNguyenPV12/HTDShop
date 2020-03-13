@@ -42,6 +42,7 @@
                                 <th>Date added</th>
                                 <th>Price</th>
                                 <th>Stock</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </thead>
                             <tbody>
@@ -63,6 +64,14 @@
                                     <td th:text="${p.price}">Price</td>
                                     <td th:text="${p.stock}">stock</td>
                                     <td>
+                                        <th:block th:if="${p.status == 1}">
+                                            Selling
+                                        </th:block>
+                                        <th:block th:if="${p.status == 2}">
+                                            Not Selling
+                                        </th:block>
+                                    </td>
+                                    <td>
                                         <a class="btn btn-warning btn-sm"
                                             th:href="@{/manager/prebuilt/edit(id=${p.id})}" data-toggle='tooltip'
                                             title="Edit">
@@ -73,6 +82,11 @@
                                             title="Details">
                                             <i class="nav-icon fas fa-receipt"></i>
                                         </a>
+                                        <!-- <a class="btn btn-danger btn-sm" onclick="return confirm('Delist this build?')"
+                                            th:href="@{/manager/prebuilt/disable(id=${p.id})}" data-toggle='tooltip'
+                                            title="Details">
+                                            <i class="nav-icon fas fa-trash"></i>
+                                        </a> -->
                                     </td>
                                 </tr>
                             </tbody>
@@ -84,6 +98,7 @@
                                 <th>Created At</th>
                                 <th>Price</th>
                                 <th>Stock</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tfoot>
                         </table>
@@ -124,15 +139,17 @@
             "ordering": false,
             "info": true,
             "autoWidth": false,
+            "order": [[7, "desc"]],
             // custom collums's width
             "columns": [
-                { "width": "5%" },
+                { "width": "2%" },
                 { "width": "25%" },
                 { "width": "15%" },
                 { "width": "15%" },
-                { "width": "10%" },
-                { "width": "10%" },
-                { "width": "10%" },
+                null,
+                null,
+                null,
+                null,
                 { "width": "10%" }
             ]
         });
