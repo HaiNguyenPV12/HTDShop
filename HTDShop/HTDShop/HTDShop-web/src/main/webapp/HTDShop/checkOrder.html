@@ -29,10 +29,10 @@
                         <div class="login">
                             <div class="login-form-container">
                                 <div class="login-form">
-                                    <form th:action="@{/doCheck}" method="POST">
+                                    <form th:action="@{/doCheck}" method="GET">
                                         <input type="number" placeholder="Your Order ID" id="id" name="id" required
                                             autofocus>
-                                        <input th:if="${session.loggedInCustomer == null}" type="text" name="phone" placeholder="Your Phone Number" id="phone"
+                                        <input  type="text" name="phone" placeholder="Your Phone Number" id="phone"
                                             required autofocus>
                                         <button type="submit" class="default-btn floatright">Order Detail</button>
                                     </form>

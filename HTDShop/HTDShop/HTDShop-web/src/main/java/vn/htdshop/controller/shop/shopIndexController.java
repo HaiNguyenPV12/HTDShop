@@ -146,43 +146,54 @@ public class shopIndexController {
         return "HTDShop/checkOrder";
     }
 
-    @RequestMapping(value = "doCheck", method = RequestMethod.POST)
+    @RequestMapping(value = "doCheck", method = RequestMethod.GET)
     public String viewOrderTracking(Model model, ModelMap modelMap, HttpSession session,
             @RequestParam(value = "id", required = false) Integer id,
             @RequestParam(value = "phone", required = false) String phone) {
         shopService.checkLogin();
-        if (shopService.getLoggedInCustomer() == null) {
-            Order1 order = order1Facade.findByPhoneAndId(id, phone);
-            if (order == null) {
-                return "redirect:/checkOrder";
-            } else {
-                if (order.getOrderStatus() == 5) {
-                    return "redirect:/checkOrder";
-                } else {
-                    model.addAttribute("order", order);
-                }
-            }
+        Order1 order = order1Facade.findByPhoneAndId(id, phone);
+        if (order == null) {
+            return "redirect:/checkOrder";
         } else {
-            Customer customer = shopService.getLoggedInCustomer();
-            Order1 order = order1Facade.find(id);
             if (order.getOrderStatus() == 5) {
                 return "redirect:/checkOrder";
             } else {
-                if (order.getCustomer().getId() != customer.getId()) {
-                    
-                    return "redirect:/checkOrder";
-                }
+                model.addAttribute("order", order);
             }
-            model.addAttribute("order", order);
-            // if (customer.getOrder1Collection().size() <= 0) {
-            // for (Order1 order : customer.getOrder1Collection()) {
-            // if (order.getOrderStatus()!= 5 && order.getId()==id) {
-            // model.addAttribute("order", order);
-            // }
-            // return "redirect:/checkOrder";
-            // }
-            // }
         }
+
+
+        // if (shopService.getLoggedInCustomer() == null) {
+        //     Order1 order = order1Facade.findByPhoneAndId(id, phone);
+        //     if (order == null) {
+        //         return "redirect:/checkOrder";
+        //     } else {
+        //         if (order.getOrderStatus() == 5) {
+        //             return "redirect:/checkOrder";
+        //         } else {
+        //             model.addAttribute("order", order);
+        //         }
+        //     }
+        // } else {
+        //     Customer customer = shopService.getLoggedInCustomer();
+        //     Order1 order = order1Facade.find(id);
+        //     if (order.getOrderStatus() == 5) {
+        //         return "redirect:/checkOrder";
+        //     } else {
+        //         if (order.getCustomer().getId() != customer.getId()) {
+        //             return "redirect:/checkOrder";
+        //         }
+        //     }
+        //     model.addAttribute("order", order);
+        //     // if (customer.getOrder1Collection().size() <= 0) {
+        //     // for (Order1 order : customer.getOrder1Collection()) {
+        //     // if (order.getOrderStatus()!= 5 && order.getId()==id) {
+        //     // model.addAttribute("order", order);
+        //     // }
+        //     // return "redirect:/checkOrder";
+        //     // }
+        //     // }
+        // }
         return "HTDShop/orderTracking";
     }
 

@@ -43,9 +43,12 @@ public class Order1Facade extends AbstractFacade<Order1> implements Order1Facade
     @Override
     public Order1 findByPhoneAndId(Integer id, String phone) {
         TypedQuery<Order1> query = em.createQuery(
-                "SELECT o FROM Order1 o WHERE o.id = :id AND o.customer.phone = :phone",Order1.class);
+                "SELECT o FROM Order1 o WHERE o.id = :id AND o.customer.phone = :phone", Order1.class);
         query.setParameter("id", id);
         query.setParameter("phone", phone);
+        if (query.getResultList().size()<=0) {
+            return null;
+        }
         return query.getSingleResult();
     }
 }
