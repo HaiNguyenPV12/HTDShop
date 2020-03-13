@@ -51,6 +51,28 @@ public class ProductFacade extends AbstractFacade<Product> implements ProductFac
     }
 
     @Override
+    public List<Product> search(Integer cateId, String search, Integer promoId) {
+        TypedQuery<Product> query = null;
+        String qStr = "SELECT p FROM Product p WHERE p.name LIKE :search";
+        if (cateId != null && cateId > 0) {
+            qStr += " AND p.category.id = :cateId";
+        }
+        if (promoId != null && promoId > 0) {
+            qStr += " AND (p.promotionCollection.promotionDetail.id = :promoId OR p.category.promotionCollection.promotionDetail.id = :promoId)";
+        }
+        query = em.createQuery(qStr, Product.class);
+
+        query.setParameter("search", "%" + search + "%");
+        if (cateId != null && cateId > 0) {
+            query.setParameter("cateId", cateId);
+        }
+        if (promoId != null && promoId > 0) {
+            query.setParameter("promoId", promoId);
+        }
+        return query.getResultList();
+    }
+
+    @Override
     public List<String> getStringList(String attr) {
         Query q = null;
         if (attr == null) {

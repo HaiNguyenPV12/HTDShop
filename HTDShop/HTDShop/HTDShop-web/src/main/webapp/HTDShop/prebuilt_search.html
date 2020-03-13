@@ -14,23 +14,34 @@
             height: auto;
         }
 
-        @media (max-width:1200px) {
+        @media (min-width:1200px) {
             .product-list {
-                height: 114rem;
+                height: 73rem;
             }
 
             .product-list2 {
-                height: 112rem;
+                height: 71rem;
             }
         }
 
-        @media (min-width:1200px) {
+
+        @media (max-width:1200px) {
             .product-list {
-                height: 65rem;
+                height: 122rem;
             }
 
             .product-list2 {
-                height: 63rem;
+                height: 120rem;
+            }
+        }
+
+        @media (max-width:768px) {
+            .product-list {
+                height: 212rem;
+            }
+
+            .product-list2 {
+                height: 210rem;
             }
         }
 
@@ -114,6 +125,24 @@
                                         </select>
                                     </div>
                                 </form>
+                            </div>
+
+                            <div class="sidebar-widget mb-4">
+                                <h3 class="sidebar-title">Promotion</h3>
+                                <div class="sidebar-categories">
+                                    <select class="select2" data-dropdown-css-class="select2-purple" name="promo"
+                                        id="promo">
+                                        <option value="0" th:selected="${param.promo == null || param.promo[0] == '0'}">
+                                            Any Promotion
+                                        </option>
+                                        <option
+                                            th:each="promo : ${promolist.?[promotionCollection.?[preBuiltTarget != null].size() > 0]}"
+                                            th:value="${promo.id}" th:text="${promo.name}"
+                                            th:selected="${param.promo != null && T(Integer).parseInt(param.promo) == promo.id}">
+                                            Promotion...
+                                        </option>
+                                    </select>
+                                </div>
                             </div>
 
                             <div class="sidebar-widget mb-4"
@@ -253,12 +282,17 @@
             doSearch(1);
         });
 
+        $("#promo").on("change", function () {
+            doSearch(1, null);
+        });
+
         $("#resetFilter").on("click", function () {
             $("#from").val(0);
             $("#to").val(10000);
             priceSlider.slider("option", "values", [0, 10000]);
             $("#keyword").val("");
             $("#psort").val("default");
+            $("#promo").val(0).trigger("change");
             if ($("#cpu").val() != 0) {
                 $("#cpu").val(0).trigger('change');
             }
@@ -333,6 +367,7 @@
             var toParam = $("#to").val();
             var sortParam = /*[[${param.sort!=null?param.sort:'default'}]]*/"";
             var authParam = +/*[[${param.auth != null ? param.auth[0] : 0}]]*/"";
+            var promoParam = /*[[${param.promo!=null? param.promo : 0 }]]*/'';
 
             if (searched > 0) {
                 sortParam = $("#psort").val();
@@ -346,6 +381,7 @@
                 caseParam = $("#case").val();
                 monitorParam = $("#monitor").val();
                 authParam = $("#auth").val();
+                promoParam = parseInt($("#promo").val());
             }
 
             if (sort != null) {
@@ -359,6 +395,12 @@
             var urlparams = "";
             if (kParam != "") {
                 urlparams += "&keyword=" + encodeURIComponent(kParam);
+            }
+            if (promoParam != "" && parseInt(promoParam) > 0) {
+                urlparams += "&promo=" + encodeURIComponent(promoParam);
+            }
+            if (pageParam != "" && parseInt(pageParam) > 1) {
+                urlparams += "&page=" + encodeURIComponent(pageParam);
             }
             if (fromParam > 0) {
                 urlparams += "&from=" + encodeURIComponent(fromParam);

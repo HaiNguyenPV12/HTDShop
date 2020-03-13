@@ -69,9 +69,14 @@
                 <div th:if="${itr.index % 2 == 0}" class="col-lg-4 promo-container">
                     <div class="promo-detail">
                         <h3 class="promo-name" th:text="${promo.name}" th:onclick="goTo([[${promo.id}]])"></h3>
+                        <a class="button bg-dark"
+                            th:if="${promo.promotionCollection.?[preBuiltTarget == null].size() > 0}"
+                            th:href="@{/search?promo=__${promo.id}__}">Show promotion's products</a>
+                        <a class="button bg-dark"
+                            th:if="${promo.promotionCollection.?[preBuiltTarget != null].size() > 0}"
+                            th:href="@{/prebuilt/search?promo=__${promo.id}__}">Show promotion's pre-builts</a>
                         <p class="promo-detail" th:text="${promo.detail}"></p>
                     </div>
-
                 </div>
                 <div th:if="${itr.index % 2 == 0}" class="col-lg-8">
                     <img th:src="@{/images/__${promo.image}__}" class="promo-img" th:onclick="goTo([[${promo.id}]])">
@@ -82,6 +87,12 @@
                 <div th:if="${itr.index % 2 != 0}" class="col-lg-4 promo-container">
                     <div class="promo-detail">
                         <h3 class="promo-name" th:text="${promo.name}" th:onclick="goTo([[${promo.id}]])"></h3>
+                        <a class="button bg-dark"
+                            th:if="${promo.promotionCollection.?[preBuiltTarget == null].size() > 0}"
+                            th:href="@{/search?promo=__${promo.id}__}">Show promotion's products</a>
+                        <a class="button bg-dark"
+                            th:if="${promo.promotionCollection.?[preBuiltTarget != null].size() > 0}"
+                            th:href="@{/prebuilt/search?promo=__${promo.id}__}">Show promotion's pre-builts</a>
                         <p class="promo-detail" th:text="${promo.detail}"></p>
                     </div>
                 </div>
