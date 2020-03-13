@@ -27,11 +27,25 @@
             <li class="breadcrumb-item active"><a th:href="@{/manager/staff}">Staff</a></li>
         </ol>
     </div>
-
+    <!-- enctype="multipart/form-data" -->
     <div layout:fragment="content">
-        <form th:action="@{/manager/staff/__${formUrl}__}" th:object="${staff}" method="POST"
-            enctype="multipart/form-data" autocomplete="off" name="frmStaff" id="frmStaff">
-            <div style="overflow: none; height: 0px;background: transparent;"
+        <div class="row">
+
+            <div class="col-lg-12 mb-3">
+                <p class="text-danger" id="commonError">
+                </p>
+            </div>
+        </div>
+
+        <form th:action="@{/manager/staff/__${formUrl}__}" th:object="${staff}" method="POST" autocomplete="off"
+            name="frmStaff" id="frmStaff" enctype="multipart/form-data">
+            <div class="col-lg-12 mb-3" th:if="${#fields.hasErrors('global')}">
+                <p class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle"></i> 
+                    <span th:errors="*{global}">Name Error</span>
+                </p>
+            </div>
+            <div style="overflow: none; height: 0px;background: transparent; display: none;"
                 data-description="dummyPanel for Chrome auto-fill issue">
                 <input style="height:0;background: transparent; color: transparent;border: none;"
                     data-description="dummyUsername"></input>
@@ -41,12 +55,7 @@
                     data-description="dummyPassword"></input>
             </div>
             <div class="row">
-                <div class="col-lg-12 mb-3" th:if="${#fields.hasErrors('global')}">
-                    <p class="alert alert-danger">
-                        <i class="fas fa-exclamation-circle"></i> 
-                        <span th:errors="*{global}">Name Error</span>
-                    </p>
-                </div>
+                
                 <div class="col-lg-12">
                     <div class="card card-purple">
                         <div class="card-header">
@@ -143,6 +152,7 @@
                                         class="text-danger">*</i></label>
                                 <div class="col-sm-9">
                                     <input class="form-control" id="birthday" th:field="*{birthday}" placeholder="Birthday" required/>
+                                    <!-- <input class="form-control" id="bd" placeholder="Birthday" required/> -->
                                 </div>
                                 <div class="col-sm-3"></div>
                                 <div class="col-sm-9" th:if="${#fields.hasErrors('birthday')}">
@@ -171,7 +181,7 @@
                                 <label for="address" class="col-sm-3 col-form-label text-right">Address<i
                                         class="text-danger">*</i></label>
                                 <div class="col-sm-9">
-                                    <input class="form-control" id="address" th:field="*{address}" placeholder="Address"
+                                    <input type="text" class="form-control" id="address" th:field="*{address}" placeholder="Address"
                                         th:classappend="${(#fields.hasErrors('address')?'is-invalid':'') + (submited != null and !#fields.hasErrors('address')?'is-valid':'')}" required/>
                                 </div>
                                 <div class="col-sm-3"></div>
@@ -186,7 +196,7 @@
                                 <label for="phone" class="col-sm-3 col-form-label text-right">Phone<i
                                         class="text-danger">*</i></label>
                                 <div class="col-sm-9">
-                                    <input class="form-control" id="phone" th:field="*{phone}" placeholder="Phone number"
+                                    <input type="text" class="form-control" id="phone" th:field="*{phone}" placeholder="Phone number"
                                         th:classappend="${(#fields.hasErrors('phone')?'is-invalid':'') + (submited != null and !#fields.hasErrors('phone')?'is-valid':'')}" required minlength="9" maxlength="25"/>
                                 </div>
                                 <div class="col-sm-3"></div>
@@ -201,8 +211,7 @@
                                 <label for="img" class="col-sm-3 col-form-label text-right">Image<i
                                         class="text-danger">*</i></label>
                                 <div class="col-sm-9">
-                                    <input class="form-control" id="img" name="img" type="file"
-                                        th:classappend="${(#fields.hasErrors('image')?'is-invalid':'') + (submited != null and !#fields.hasErrors('image')?'is-valid':'')}" th:required="${update==null}"/>
+                                    <input class="form-control" id="img" name="img" type="file" th:required="${update==null}"/>
                                 </div>
                                 <div class="col-sm-3"></div>
                                 <div class="col-sm-9" th:if="${update!=null}">
@@ -249,16 +258,53 @@
         <script th:src="@{/manager_resources/plugins/daterangepicker/daterangepicker.js}"></script> 
     </th:block>
     <script layout:fragment="script" th:inline="none">
+        function trimAll() {
+            $("form").find("input, textarea").each(function (i, e) {
+                if (e.type !== "file" && e.type !== "password") {
+                    $(e).val($(e).val().trim());
+                }
+            });
+        }
+        $("input").each(function (i, element) {
+            if (element.type !== "file" && element.type !== "password") {
+                $(element).focusout(function () {
+                    $(this).val($(this).val().trim());
+                })
+            }
+        });
+        $("#frmStaff").on("submit", function (e) {
+            $("#commonError").html("");
+            trimAll();
+            var valid = true;
+            $("input:required").each(function (i, element) {
+                if (element.type !== "file") {
+                    if ($(element).val() == "") {
+                        valid = false;
+                    }
+                }
+            });
+            if (!valid) {
+                e.preventDefault();
+                $("#commonError").html("Please check all field again");
+            }
+        });
+
+
         $(document).ready(function () {
             $("input").each(function (i, e) {
                 $(e).attr("autocomplete", "off");
             });
+
             $('#birthday').daterangepicker({
                 "singleDatePicker": true,
                 "showDropdowns": true,
                 "minDate": "01/01/1800",
-                "maxDate": moment().format("DD/MM/YYYY")
+                "maxDate": moment().format("DD/MM/YYYY"),
+                locale: {
+                    format: 'DD/MM/YYYY'
+                }
             }, function (start, end, label) {
+                // $("#birthday").val(start.format('DD/MM/YYYY'));
                 console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
             });
         });

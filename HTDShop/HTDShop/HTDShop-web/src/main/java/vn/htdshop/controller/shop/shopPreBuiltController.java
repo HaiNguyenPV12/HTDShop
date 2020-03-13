@@ -5,11 +5,14 @@
  */
 package vn.htdshop.controller.shop;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ejb.EJB;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +31,7 @@ import vn.htdshop.sb.CategoryFacadeLocal;
 import vn.htdshop.sb.PreBuiltFacadeLocal;
 import vn.htdshop.sb.PreBuiltRatingFacadeLocal;
 import vn.htdshop.sb.ProductFacadeLocal;
+import vn.htdshop.sb.PromotionDetailFacadeLocal;
 import vn.htdshop.sb.PromotionFacadeLocal;
 import vn.htdshop.utility.ShopService;
 
@@ -54,6 +58,9 @@ public class shopPreBuiltController {
 
     @EJB(mappedName = "PromotionFacade")
     PromotionFacadeLocal promotionFacade;
+
+    @EJB(mappedName = "PromotionDetailFacade")
+    PromotionDetailFacadeLocal promotionDetailFacade;
 
     @Autowired
     ShopService shopService;
@@ -123,8 +130,8 @@ public class shopPreBuiltController {
 
         model.asMap().put("products", productFacade.findAll().stream()
                 .filter(p -> p.getStatus() != 3 && p.getStock() > 0).collect(Collectors.toList()));
+        model.addAttribute("promolist", promotionDetailFacade.findAllValidPromotion());
         return "HTDShop/prebuilt_search";
-
     }
 
     @RequestMapping(value = "result", method = RequestMethod.POST)
@@ -143,57 +150,110 @@ public class shopPreBuiltController {
         }
 
         // Create list
-        List<PreBuilt> result = preBuiltFacade.search(search.getKeyword());
+        // List<PreBuilt> result2 = new ArrayList<>();
+        // for (PreBuilt preBuilt : preBuiltFacade.search(search.getKeyword())) {
+        // result2.add(preBuilt);
+        // result2.add(preBuilt);
+        // result2.add(preBuilt);
+        // }
+        List<PreBuilt> result = new ArrayList<>();
+        if (search.getPromo() != null && search.getPromo() > 0) {
+            boolean allAvail = true;
+            Collection<Promotion> promolist = promotionDetailFacade.find(search.getPromo()).getPromotionCollection();
+            for (Promotion promotion : promolist) {
+                if (promotion.getPreBuiltTarget() != null && promotion.getPreBuiltTarget() == 1) {
+                    allAvail = false;
+                    break;
+                }
+            }
+            if (allAvail) {
+                // result = result2;
+                result = preBuiltFacade.search(search.getKeyword());
+            } else {
+                // result = result2.stream().filter(p -> p.getStaff() !=
+                // null).collect(Collectors.toList());
+                result = preBuiltFacade.search(search.getKeyword()).stream().filter(p -> p.getStaff() != null)
+                        .collect(Collectors.toList());
+            }
+        } else {
+            // result = result2;
+            result = preBuiltFacade.search(search.getKeyword());
+        }
+
+        Stream<PreBuilt> resultStream = result.stream();
+
         if (search.getAuthor() == 1) {
-            result = result.stream().filter(p -> p.getStaff() != null).collect(Collectors.toList());
+            resultStream = resultStream.filter(p -> p.getStaff() != null);
+            // result = result.stream().filter(p -> p.getStaff() !=
+            // null).collect(Collectors.toList());
         }
         if (search.getAuthor() == 2) {
-            result = result.stream().filter(p -> p.getCustomer() != null).collect(Collectors.toList());
+            resultStream = resultStream.filter(p -> p.getCustomer() != null);
+            // result = result.stream().filter(p -> p.getCustomer() !=
+            // null).collect(Collectors.toList());
         }
         // Filter parts
         if (search.getCpu() > 0) {
-            result = result.stream().filter(p -> p.getCpu().getId() == search.getCpu()).collect(Collectors.toList());
+            resultStream = resultStream.filter(p -> p.getCpu().getId() == search.getCpu());
+            // result = result.stream().filter(p -> p.getCpu().getId() ==
+            // search.getCpu()).collect(Collectors.toList());
         }
         if (search.getMotherboard() > 0) {
-            result = result.stream().filter(p -> p.getMotherboard().getId() == search.getMotherboard())
-                    .collect(Collectors.toList());
+            resultStream = resultStream.filter(p -> p.getMotherboard().getId() == search.getMotherboard());
+            // result = result.stream().filter(p -> p.getMotherboard().getId() ==
+            // search.getMotherboard())
+            // .collect(Collectors.toList());
         }
         if (search.getGpu() > 0) {
-            result = result.stream().filter(p -> p.getVga().getId() == search.getGpu()).collect(Collectors.toList());
+            resultStream = resultStream.filter(p -> p.getVga().getId() == search.getGpu());
+            // result = result.stream().filter(p -> p.getVga().getId() ==
+            // search.getGpu()).collect(Collectors.toList());
         }
         if (search.getMemory() > 0) {
-            result = result.stream().filter(p -> p.getMemory().getId() == search.getMemory())
-                    .collect(Collectors.toList());
+            resultStream = resultStream.filter(p -> p.getMemory().getId() == search.getMemory());
+            // result = result.stream().filter(p -> p.getMemory().getId() ==
+            // search.getMemory())
+            // .collect(Collectors.toList());
         }
         if (search.getPsu() > 0) {
-            result = result.stream().filter(p -> p.getPsu().getId() == search.getPsu()).collect(Collectors.toList());
+            resultStream = resultStream.filter(p -> p.getPsu().getId() == search.getPsu());
+            // result = result.stream().filter(p -> p.getPsu().getId() ==
+            // search.getPsu()).collect(Collectors.toList());
         }
         if (search.getStorage() > 0) {
-            result = result.stream().filter(p -> p.getStorage().getId() == search.getStorage())
-                    .collect(Collectors.toList());
+            resultStream = resultStream.filter(p -> p.getStorage().getId() == search.getStorage());
+            // result = result.stream().filter(p -> p.getStorage().getId() ==
+            // search.getStorage())
+            // .collect(Collectors.toList());
         }
         if (search.getCpucooler() > 0) {
-            result = result.stream().filter(p -> p.getCpucooler().getId() == search.getCpucooler())
-                    .collect(Collectors.toList());
+            resultStream = resultStream.filter(p -> p.getCpucooler().getId() == search.getCpucooler());
+            // result = result.stream().filter(p -> p.getCpucooler().getId() ==
+            // search.getCpucooler())
+            // .collect(Collectors.toList());
         }
         if (search.getCase1() > 0) {
-            result = result.stream().filter(p -> p.getCases().getId() == search.getCase1())
-                    .collect(Collectors.toList());
+            resultStream = resultStream.filter(p -> p.getCases().getId() == search.getCase1());
+            // result = result.stream().filter(p -> p.getCases().getId() ==
+            // search.getCase1())
+            // .collect(Collectors.toList());
         }
         if (search.getMonitor() > 0) {
-            result = result.stream().filter(p -> p.getMonitor().getId() == search.getMonitor())
-                    .collect(Collectors.toList());
+            resultStream = resultStream.filter(p -> p.getMonitor().getId() == search.getMonitor());
+            // result = result.stream().filter(p -> p.getMonitor().getId() ==
+            // search.getMonitor())
+            // .collect(Collectors.toList());
         }
         // Price
         if (search.getFrom() != null && search.getTo() != null) {
-            result = result.stream().filter(p -> shopService.getPreBuiltPrice(p) >= search.getFrom()
-                    && shopService.getPreBuiltPrice(p) <= search.getTo()).collect(Collectors.toList());
+            resultStream = resultStream.filter(p -> shopService.getPreBuiltPrice(p) >= search.getFrom()
+                    && shopService.getPreBuiltPrice(p) <= search.getTo());
+            // result = result.stream().filter(p -> shopService.getPreBuiltPrice(p) >=
+            // search.getFrom()
+            // && shopService.getPreBuiltPrice(p) <=
+            // search.getTo()).collect(Collectors.toList());
         }
-
-        totalResult = result.size();
-
-        // Paging
-        result = result.stream().skip(pageDivide * (pageNumber - 1)).limit(pageDivide).collect(Collectors.toList());
+        
         // Sort
         if (search.getSort() != null && search.getSort().equals("priceasc")) {
             sortString = search.getSort();
@@ -209,6 +269,11 @@ public class shopPreBuiltController {
             result = result.stream().sorted(Comparator.comparing(PreBuilt::getId, Comparator.reverseOrder()))
                     .collect(Collectors.toList());
         }
+        
+        result = resultStream.collect(Collectors.toList());
+        totalResult = result.size();
+        // Paging
+        result = result.stream().skip(pageDivide * (pageNumber - 1)).limit(pageDivide).collect(Collectors.toList());
         // Calculate page's related data
         totalPage = Math.floorDiv(totalResult, pageDivide);
         if (Double.parseDouble(totalResult.toString()) % Double.parseDouble(pageDivide.toString()) > 0) {

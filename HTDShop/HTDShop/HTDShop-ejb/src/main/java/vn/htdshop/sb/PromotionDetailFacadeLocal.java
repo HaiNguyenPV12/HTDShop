@@ -26,6 +26,10 @@ public interface PromotionDetailFacadeLocal {
 
     List<PromotionDetail> findAll();
 
+    List<PromotionDetail> findAllValidPromotion();
+    
+    List<PromotionDetail> findAllValidPromotion(String type);
+
     List<PromotionDetail> findRange(int[] range);
 
     int count();
