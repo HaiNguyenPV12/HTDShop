@@ -3,7 +3,7 @@
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDShop/layout}">
 
 <head>
-    <title>HTD Shop - Login</title>
+    <title>HTD Shop - CheckOrder</title>
     <th:block layout:fragment="additionalCss">
         <link rel="stylesheet" th:href="@{/resources/Content/fontawesome-free/css/all.min.css}">
     </th:block>
@@ -29,20 +29,12 @@
                         <div class="login">
                             <div class="login-form-container">
                                 <div class="login-form">
-                                    <form action="login/doLogin" method="post"  id="frmLogin">
-                                        <input type="email" name="email" placeholder="Email" id="email" required
+                                    <form th:action="@{/doCheck}" method="POST">
+                                        <input type="number" placeholder="Your Order ID" id="id" name="id" required
                                             autofocus>
-                                        <input type="password" name="password" placeholder="Password" id="password"
-                                            pattern=".{6,}" title="Password have 6 or more character"
-                                            required>
-                                        <div class="button-box">
-                                            <div class="login-toggle-btn">
-                                                <input type="checkbox" id="remember" name="remember">
-                                                <label for="remember">Remember me</label>
-                                                <a th:href="@{/register}">REGISTER?</a>
-                                            </div>
-                                            <button type="submit" class="default-btn floatright">Login</button>
-                                        </div>
+                                        <input th:if="${session.loggedInCustomer == null}" type="text" name="phone" placeholder="Your Phone Number" id="phone"
+                                            required autofocus>
+                                        <button type="submit" class="default-btn floatright">Order Detail</button>
                                     </form>
                                 </div>
                             </div>
@@ -56,7 +48,7 @@
     <!-- Bootstrap 4 -->
     <script th:src="@{/manager_resources/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
     <!-- AdminLTE App -->
-    
+
     <script th:src="@{/manager_resources/plugins/jquery-validation/jquery.validate.js}"></script>
     <script th:src="@{/manager_resources/plugins/jquery-validation/additional-methods.min.js}"></script>
     <script th:src="@{/manager_resources/Scripts/adminlte.min.js}"></script>

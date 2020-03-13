@@ -71,7 +71,6 @@ public class shopLoginController {
             } else {
                 return "redirect:/cart/checkout";
             }
-            
         }
         return "redirect:/login";
     }
