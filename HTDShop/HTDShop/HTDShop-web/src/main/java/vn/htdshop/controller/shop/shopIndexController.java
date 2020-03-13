@@ -161,8 +161,6 @@ public class shopIndexController {
                 model.addAttribute("order", order);
             }
         }
-
-
         // if (shopService.getLoggedInCustomer() == null) {
         //     Order1 order = order1Facade.findByPhoneAndId(id, phone);
         //     if (order == null) {

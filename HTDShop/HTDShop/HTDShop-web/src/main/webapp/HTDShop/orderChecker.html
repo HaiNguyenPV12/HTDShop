@@ -39,7 +39,6 @@
                                 <tr th:if="${custom.order1Collection eq null or custom.order1Collection.empty}">
                                     <td colspan="9">You have No Orders</td>
                                 </tr>
-
                                 <tr th:each="o : ${custom.order1Collection}"
                                     th:classappend="${(o.orderStatus==3?'bg-gray':'') + (o.orderStatus==2?'bg-yellow':'')}">
 
