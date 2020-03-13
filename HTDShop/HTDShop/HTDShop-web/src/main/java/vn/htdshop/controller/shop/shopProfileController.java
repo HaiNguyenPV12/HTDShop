@@ -1,5 +1,9 @@
 package vn.htdshop.controller.shop;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.ejb.EJB;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -33,6 +37,9 @@ public class shopProfileController {
     @EJB(mappedName = "Order1Facade")
     Order1FacadeLocal order1Facade;
 
+    @EJB(mappedName = "PreBuiltFacade")
+    PreBuiltFacadeLocal preBuiltFacade;
+
     @Autowired
     ShopService shopService;
 
@@ -47,7 +54,7 @@ public class shopProfileController {
 
     @RequestMapping(value = "doEdit", method = RequestMethod.POST)
     public String doEdit(@Valid @ModelAttribute("custom") Customer custom, BindingResult error, HttpSession session,
-            Model model, RedirectAttributes redirect) {
+            Model model, RedirectAttributes redirect) { 
 
         Customer customerOld = shopService.getLoggedInCustomer();
         boolean updated = false;
@@ -100,6 +107,7 @@ public class shopProfileController {
 
     }
 
+    
     @RequestMapping(value = "ordertracking", method = RequestMethod.GET)
     public String viewEdit(HttpSession session, Model model, @RequestParam(required = true) Integer id) {
         shopService.checkLogin();
@@ -116,5 +124,14 @@ public class shopProfileController {
         return "HTDShop/orderTracking";
     }
     
+    @RequestMapping(value = "preBuilt", method = RequestMethod.GET)
+    public String viewPreBuilt(Model model, ModelMap modelMap, HttpSession session) {
+        shopService.checkLogin();
+        Customer custom = shopService.getLoggedInCustomer();
+        model.asMap().put("preBuilt", preBuiltFacade.findByCustomerID(custom.getId()));
+        model.addAttribute("custom", custom);
+        return "HTDShop/customer_prebuilt_detail";
+
+    }
 
 }
