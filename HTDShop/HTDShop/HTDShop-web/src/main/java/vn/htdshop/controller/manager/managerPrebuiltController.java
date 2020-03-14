@@ -206,7 +206,7 @@ public class managerPrebuiltController {
     }
 
     // TODO handle delisting
-    @RequestMapping(value = "disable", method = RequestMethod.POST)
+    @RequestMapping(value = "disable", method = RequestMethod.GET)
     public String delistPrebuilt(@RequestParam(value = "id") Integer id, RedirectAttributes redirect) {
         if (!managerService.checkLoginWithRole("prebuilt_edit")) {
             return redirectPrebuiltHome;
@@ -217,7 +217,7 @@ public class managerPrebuiltController {
         return redirectPrebuiltHome;
     }
 
-    @RequestMapping(value = "enable", method = RequestMethod.POST)
+    @RequestMapping(value = "enable", method = RequestMethod.GET)
     public String enablePrebuilt(@RequestParam(value = "id") Integer id, RedirectAttributes redirect) {
         if (!managerService.checkLoginWithRole("prebuilt_edit")) {
             return redirectPrebuiltHome;
