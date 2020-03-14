@@ -5,7 +5,11 @@
  */
 package vn.htdshop.controller.shop;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
@@ -23,12 +27,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import vn.htdshop.entity.PreBuilt;
+import vn.htdshop.entity.Product;
 import vn.htdshop.sb.CategoryFacadeLocal;
 import vn.htdshop.sb.PreBuiltFacadeLocal;
 import vn.htdshop.entity.Customer;
 import vn.htdshop.entity.ImageSlide;
 import vn.htdshop.entity.Order1;
-import vn.htdshop.sb.CategoryFacadeLocal;
 import vn.htdshop.sb.CustomerFacadeLocal;
 import vn.htdshop.sb.ImageSlideFacadeLocal;
 import vn.htdshop.utility.ShopService;
@@ -55,6 +59,12 @@ public class shopIndexController {
     @EJB(mappedName = "Order1Facade")
     Order1FacadeLocal order1Facade;
 
+    @EJB(mappedName = "OrderDetailFacade")
+    OrderDetailFacadeLocal orderDetailFacade;
+
+    @EJB(mappedName = "ProductFacade")
+    ProductFacadeLocal productFacade;
+
     @EJB(mappedName = "ImageSlideFacade")
     ImageSlideFacadeLocal imageSlideFacade;
 
@@ -74,7 +84,29 @@ public class shopIndexController {
         model.asMap().put("imageslides", imageSlideFacade.findAll().stream().filter(img -> img.getStatus())
                 .sorted(Comparator.comparing(ImageSlide::getOrder, Comparator.nullsLast(Comparator.naturalOrder())))
                 .collect(Collectors.toList()));
-        // modelMap.addAttribute("categories", categoryFacade.findAll());
+        Map<Integer, Integer> top8Year = orderDetailFacade.getTopProduct("year", 8); // Best selling
+        Map<Integer, Integer> top8Month = orderDetailFacade.getTopProduct("month", 8); // Hot product
+        List<Product> bestsellings = new ArrayList<Product>();
+        List<Integer> exists = new ArrayList<>();
+        for (Map.Entry<Integer, Integer> pid : top8Year.entrySet()) {
+            if (!exists.contains(pid.getKey())) {
+                Product p = productFacade.find(pid.getKey());
+                bestsellings.add(p);
+                exists.add(pid.getKey());
+            }
+        }
+        List<Product> hotproducts = new ArrayList<Product>();
+        exists = new ArrayList<>();
+        for (Map.Entry<Integer, Integer> pid : top8Month.entrySet()) {
+            if (!exists.contains(pid.getKey())) {
+                Product p = productFacade.find(pid.getKey());
+                bestsellings.add(p);
+                exists.add(pid.getKey());
+            }
+        }
+        model.asMap().put("bestsellings", bestsellings);
+        model.asMap().put("hotproducts", hotproducts);
+        model.addAttribute("shopSv", shopService);
         return "HTDShop/index";
     }
 
@@ -162,35 +194,35 @@ public class shopIndexController {
             }
         }
         // if (shopService.getLoggedInCustomer() == null) {
-        //     Order1 order = order1Facade.findByPhoneAndId(id, phone);
-        //     if (order == null) {
-        //         return "redirect:/checkOrder";
-        //     } else {
-        //         if (order.getOrderStatus() == 5) {
-        //             return "redirect:/checkOrder";
-        //         } else {
-        //             model.addAttribute("order", order);
-        //         }
-        //     }
+        // Order1 order = order1Facade.findByPhoneAndId(id, phone);
+        // if (order == null) {
+        // return "redirect:/checkOrder";
         // } else {
-        //     Customer customer = shopService.getLoggedInCustomer();
-        //     Order1 order = order1Facade.find(id);
-        //     if (order.getOrderStatus() == 5) {
-        //         return "redirect:/checkOrder";
-        //     } else {
-        //         if (order.getCustomer().getId() != customer.getId()) {
-        //             return "redirect:/checkOrder";
-        //         }
-        //     }
-        //     model.addAttribute("order", order);
-        //     // if (customer.getOrder1Collection().size() <= 0) {
-        //     // for (Order1 order : customer.getOrder1Collection()) {
-        //     // if (order.getOrderStatus()!= 5 && order.getId()==id) {
-        //     // model.addAttribute("order", order);
-        //     // }
-        //     // return "redirect:/checkOrder";
-        //     // }
-        //     // }
+        // if (order.getOrderStatus() == 5) {
+        // return "redirect:/checkOrder";
+        // } else {
+        // model.addAttribute("order", order);
+        // }
+        // }
+        // } else {
+        // Customer customer = shopService.getLoggedInCustomer();
+        // Order1 order = order1Facade.find(id);
+        // if (order.getOrderStatus() == 5) {
+        // return "redirect:/checkOrder";
+        // } else {
+        // if (order.getCustomer().getId() != customer.getId()) {
+        // return "redirect:/checkOrder";
+        // }
+        // }
+        // model.addAttribute("order", order);
+        // // if (customer.getOrder1Collection().size() <= 0) {
+        // // for (Order1 order : customer.getOrder1Collection()) {
+        // // if (order.getOrderStatus()!= 5 && order.getId()==id) {
+        // // model.addAttribute("order", order);
+        // // }
+        // // return "redirect:/checkOrder";
+        // // }
+        // // }
         // }
         return "HTDShop/orderTracking";
     }

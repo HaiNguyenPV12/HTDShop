@@ -41,7 +41,7 @@ public class OrderDetailFacade extends AbstractFacade<OrderDetail> implements Or
     @Override
     public Map<Integer, Integer> getTopProduct(String datepart, Integer top) {
         Map<Integer, Integer> result = new LinkedHashMap<Integer, Integer>();
-        String str = "SELECT";
+        String str = "SELECT distinct";
         if (top > 0) {
             str += " TOP " + top;
         }

@@ -215,7 +215,7 @@
     </th:block>
     
     <script layout:fragment="script" th:inline="none">
-
+        var isSubmiting = false;
         $("#btnUploadImage").on("change", function () {
             if (this.files && this.files[0]) {
                 if (this.files.length > 1) {
@@ -260,12 +260,15 @@
         $(document).ready(function () {
             var frmImageSlide = $("#frmImageSlide"), original = frmImageSlide.serialize();
             $(window).on("beforeunload", function () {
-                if (frmImageSlide.serialize() != original || submited) {
-                    var cf = confirm('There are data(s) not being saved! Are you sure to leave page?');
-                    if (!cf) {
-                        return false;
+                if (!isSubmiting) {
+                    if (frmImageSlide.serialize() != original) {
+                        var cf = confirm('There are data(s) not being saved! Are you sure to leave page?');
+                        if (!cf) {
+                            return false;
+                        }
                     }
                 }
+
             });
 
 
@@ -309,6 +312,7 @@
                 submitHandler: function (form) {
                     trimAll();
                     if ($("#frmImageSlide").valid()) {
+                        isSubmiting = true;
                         return true;
                     }
                     return false;
