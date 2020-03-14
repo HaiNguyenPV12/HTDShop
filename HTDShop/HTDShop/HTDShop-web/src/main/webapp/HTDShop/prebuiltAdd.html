@@ -12,6 +12,12 @@
             margin-left: 2rem;
         }
     </style>
+    <th:block layout:fragment="additionalCss">
+        <link th:href="@{/manager_resources/plugins/icheck-bootstrap/icheck-bootstrap.min.css}" rel="stylesheet">
+        <link th:href="@{/manager_resources/plugins/summernote/summernote-lite.css}" rel="stylesheet" />
+        <link th:href="@{/manager_resources/plugins/jquery-ui/jquery-ui.min.css}" rel="stylesheet" />
+        <link th:href="@{/manager_resources/plugins/jquery-ui/jquery-ui.theme.min.css}" rel="stylesheet" />
+    </th:block>
 </head>
 
 <body>
@@ -48,7 +54,7 @@
                         <label for="detail">Describe your build<i class="text-danger">*</i>:</label>
                     </div>
                     <div class="col-md-8">
-                        <textarea id="detail" th:field=*{detail} class="form-control"></textarea>
+                        <textarea id="detail" th:field=*{detail} class="form-control textarea"></textarea>
                     </div>
                 </div>
                 <div class="row py-2" th:if="${prebuilt.cpu!=null}">
@@ -133,11 +139,24 @@
                     </div>
                 </div>
                 <div class="row justify-content-center">
+                    <a class="btn btn-primary" th:href="@{/build}" href="">Back to Build</a>
                     <button type="submit" class="btn btn-success">Share</button>
                 </div>
             </form>
         </div>
     </div>
+    <th:block layout:fragment="additionalScript">
+        <script th:src="@{/manager_resources/plugins/summernote/summernote-lite.min.js}"></script>
+        <script th:src="@{/manager_resources/plugins/jquery-ui/jquery-ui.min.js}"></script>
+        <script th:src="@{/manager_resources/plugins/jquery-validation/jquery.validate.js}"></script>
+        <script th:src="@{/manager_resources/plugins/jquery-validation/additional-methods.min.js}"></script>
+    </th:block>
+    <script layout:fragment="script" th:inline="none">
+        $('.textarea').summernote({
+            minHeight: 200,
+            maxHeight: 900
+        });
+    </script>
 </body>
 
 </html>

@@ -128,10 +128,12 @@
             var submited = /*[[${submited != null? true : false}]]*/false;
             var frmCategory = $("#frmCategory"), original = frmCategory.serialize();
             $(window).on("beforeunload", function () {
-                if (frmCategory.serialize() != original || submited) {
-                    var cf = confirm('There are data(s) not being saved! Are you sure to leave page?');
-                    if (!cf) {
-                        return false;
+                if (!isSubmiting) {
+                    if (frmCategory.serialize() != original) {
+                        var cf = confirm('There are data(s) not being saved! Are you sure to leave page?');
+                        if (!cf) {
+                            return false;
+                        }
                     }
                 }
             });
@@ -139,7 +141,7 @@
         </script>
     </th:block>
     <script layout:fragment="script" th:inline="none">
-
+        var isSubmiting = false;
         $("#btnAddAttribute").on("click", function () {
             exists++;
             var attr = '<div class="form-group row"><div class="col-sm-10">'
@@ -222,6 +224,7 @@
                         return false;
                     }
                     if ($("#frmCategory").valid()) {
+                        isSubmiting = true;
                         return true;
                     }
                     return false;
