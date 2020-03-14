@@ -206,13 +206,24 @@ public class managerPrebuiltController {
     }
 
     // TODO handle delisting
-    @RequestMapping(value = "disable", method = RequestMethod.GET)
-    public String delistPrebuilt(@RequestParam(value = "id") int id, RedirectAttributes redirect) {
+    @RequestMapping(value = "disable", method = RequestMethod.POST)
+    public String delistPrebuilt(@RequestParam(value = "id") Integer id, RedirectAttributes redirect) {
         if (!managerService.checkLoginWithRole("prebuilt_edit")) {
             return redirectPrebuiltHome;
         }
         PreBuilt prebuilt = preBuiltFacade.find(id);
-        prebuilt.setStatus(2);
+        prebuilt.setStatus(3);
+        preBuiltFacade.edit(prebuilt);
+        return redirectPrebuiltHome;
+    }
+
+    @RequestMapping(value = "enable", method = RequestMethod.POST)
+    public String enablePrebuilt(@RequestParam(value = "id") Integer id, RedirectAttributes redirect) {
+        if (!managerService.checkLoginWithRole("prebuilt_edit")) {
+            return redirectPrebuiltHome;
+        }
+        PreBuilt prebuilt = preBuiltFacade.find(id);
+        prebuilt.setStatus(1);
         preBuiltFacade.edit(prebuilt);
         return redirectPrebuiltHome;
     }
