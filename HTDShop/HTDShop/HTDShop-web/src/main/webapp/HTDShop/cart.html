@@ -37,7 +37,7 @@
                                             <th>Product</th>
                                             <th>Price</th>
                                             <th>Quantity</th>
-                                            <th>Total</th>
+                                            <th>SubTotal</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -77,8 +77,8 @@
                                                 th:text="${'$' + #numbers.formatDecimal(shopSv.getPreBuiltDiscountPrice(product) , 1, 'POINT', 2, 'COMMA')}"></span>
                                             </td>
                                             <td class="product-quantity">
-                                                <th:block th:text="${c.quan}">
-                                                </th:block>
+                                                <input th:field="${c.quan}" type="number">
+                                            </input>
                                             </td>
 
                                             <td class="product-subtotal"><span th:text="${'$' + #numbers.formatDecimal(shopSv.getcartItemPrice(c.id,c.quan) , 1, 'POINT', 2, 'COMMA')}">$152.97‬</span></td>
@@ -91,7 +91,7 @@
                                     <div class="cart-page-total">
                                         <h2>Cart totals</h2>
                                         <ul>
-                                            <li>Total<span th:text="${'$' + #numbers.formatDecimal(shopSv.getCartTotal() , 1, 'POINT', 2, 'COMMA')}">$152.97‬</span></li>
+                                            <li>Total Price<span th:text="${'$' + #numbers.formatDecimal(shopSv.getCartTotal() , 1, 'POINT', 2, 'COMMA')}">$152.97‬</span></li>
                                         </ul>
                                         <a th:href="@{/cart/checkout}">Proceed to checkout</a>
                                     </div>
