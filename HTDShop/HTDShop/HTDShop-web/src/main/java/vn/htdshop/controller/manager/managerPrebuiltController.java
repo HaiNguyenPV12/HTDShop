@@ -502,8 +502,9 @@ public class managerPrebuiltController {
 
     // check wattage
     private boolean checkWattage(PreBuilt currentBuild) {
-        if (currentBuild.getCpu() != null && currentBuild.getVga() != null && currentBuild.getCpu().getId() != null
-                && currentBuild.getVga().getId() != null && currentBuild.getPsu().getId() != null) {
+        if (currentBuild.getCpu() != null && currentBuild.getVga() != null && currentBuild.getPsu() != null
+                && currentBuild.getCpu().getId() != null && currentBuild.getVga().getId() != null
+                && currentBuild.getPsu().getId() != null) {
             Product cpu = currentBuild.getCpu();
             Product gpu = currentBuild.getVga();
             Product psu = currentBuild.getPsu();
