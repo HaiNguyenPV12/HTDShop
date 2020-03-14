@@ -99,7 +99,7 @@ public class shopBuildAdd {
         try {
             preBuilt.setCustomer(shopService.getLoggedInCustomer());
             preBuilt.setCreatedAt(new Date());
-            preBuilt.setStatus(3);
+            preBuilt.setStatus(2);
             preBuiltFacade.create(preBuilt);
             PreBuiltImage preBuiltImage = new PreBuiltImage();
             preBuiltImage.setPreBuilt(preBuilt);
