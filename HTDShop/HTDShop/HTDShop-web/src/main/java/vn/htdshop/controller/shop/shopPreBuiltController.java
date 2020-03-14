@@ -78,7 +78,18 @@ public class shopPreBuiltController {
                 return redirectPreBuiltSearch;
             }
         }
+        if (prebuilt.getCustomer() != null) {
+            if (prebuilt.getStatus() == 2) {
+                if (shopService.getLoggedInCustomer() != null
+                        && Integer.parseInt(shopService.getLoggedInCustomer().getId().toString()) != Integer
+                                .parseInt(prebuilt.getCustomer().getId().toString())) {
+                    System.out.println(shopService.getLoggedInCustomer().getId());
+                    System.out.println(prebuilt.getCustomer().getId());
+                    return redirectPreBuiltSearch;
+                }
 
+            }
+        }
         Double discount = shopService.getPreBuiltDiscountPrice(prebuilt);
         if (discount < shopService.getPreBuiltPrice(prebuilt)) {
             model.asMap().put("discountPrice", discount);
@@ -253,7 +264,7 @@ public class shopPreBuiltController {
             // && shopService.getPreBuiltPrice(p) <=
             // search.getTo()).collect(Collectors.toList());
         }
-        
+
         // Sort
         if (search.getSort() != null && search.getSort().equals("priceasc")) {
             sortString = search.getSort();
@@ -269,7 +280,7 @@ public class shopPreBuiltController {
             result = result.stream().sorted(Comparator.comparing(PreBuilt::getId, Comparator.reverseOrder()))
                     .collect(Collectors.toList());
         }
-        
+
         result = resultStream.collect(Collectors.toList());
         totalResult = result.size();
         // Paging

@@ -260,8 +260,11 @@
                                         th:text="${'$'+#numbers.formatDecimal(prebuiltPrice , 1, 'COMMA', 2, 'POINT')}"></span>
                                 </th:block>
                             </div>
+                            <h3 class="text-warning" th:if="${prebuilt.status == 2}">
+                                Waiting for approval...
+                            </h3>
 
-                            <div class="quickview-plus-minus">
+                            <div class="quickview-plus-minus" th:if="${prebuilt.status == 1}">
                                 <div class="cart-plus-minus">
                                     <input type="text" value="1" name="qtybutton" class="cart-plus-minus-box"
                                         th:max="${prebuilt.stock != null ? prebuilt.stock : 100}" min="1" id="quan">
