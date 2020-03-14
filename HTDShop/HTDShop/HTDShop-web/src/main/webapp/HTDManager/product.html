@@ -451,7 +451,13 @@
                         table.ajax.reload(null, false);
                     }
                 },
-                'print'
+                {
+                    extend: 'print',
+                    autoPrint: false,
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6]
+                    }
+                }
             ],
             language: {
                 buttons: {
