@@ -29,10 +29,10 @@
                         <div class="login">
                             <div class="login-form-container">
                                 <div class="login-form">
-                                    <form action="login/doLogin" method="post"  id="frmLogin">
-                                        <input type="email" name="email" placeholder="Email" id="email" required
+                                    <form action="login/doLogin" method="post" th:object="${customer}" id="frmLogin">
+                                        <input type="email" name="email" placeholder="Email" id="email" required th:field="*{email}"
                                             autofocus>
-                                        <input type="password" name="password" placeholder="Password" id="password"
+                                        <input type="password" name="password" placeholder="Password" id="password" th:field="*{password}"
                                             pattern=".{6,}" title="Password have 6 or more character"
                                             required>
                                         <div class="button-box">
@@ -42,6 +42,11 @@
                                                 <a th:href="@{/register}">REGISTER?</a>
                                             </div>
                                             <button type="submit" class="default-btn floatright">Login</button>
+                                        </div>
+                                        <div class="col-12 mt-2" th:if="${#fields.hasErrors('all')}">
+                                            <p class="alert alert-danger">
+                                                <i class="fas fa-exclamation-circle"></i> <span th:errors="*{all}">Name Error</span>
+                                            </p>
                                         </div>
                                     </form>
                                 </div>

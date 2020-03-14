@@ -19,6 +19,7 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -96,8 +97,23 @@ public class shopCartController {
         return "HTDShop/checkout";
     }
 
+    // @RequestMapping(value = "doUpdateCart", method = RequestMethod.POST)
+    // public String postUpdateCart(Model model, @RequestParam(value = "quan") Integer quan) {
+    //     shopService.checkLogin();
+    //     for (CartItem item : shopService.getCart()) {
+    //         if (item.getQuan() != quan) {
+    //             item.setQuan(quan);
+                
+    //         }
+    //     }
+    //     return "redirect:/checkout";
+    // }
+
+
+
     @RequestMapping(value = "doCheckout", method = RequestMethod.POST)
     public String doCheckout(@Valid @ModelAttribute("custom") Customer custom, HttpServletResponse response,
+            BindingResult error,
             RedirectAttributes redirect, Model model) {
         Order1 order1 = null;
         OrderDetail orderDetail = null;
@@ -113,7 +129,7 @@ public class shopCartController {
             order1.setPaymentStatus(true);
             order1.setPaidDate(null);
             order1.setOrderStatus(1);
-            order1.setOrderDate(DateTime.now().toDate());
+            order1.setOrderDate(new Date());
             order1.setCancelledDate(null);
             orderFacade.create(order1);
 
@@ -199,7 +215,7 @@ public class shopCartController {
             }
             shopService.saveUserCart(new ArrayList<CartItem>());
         }
-
+        redirect.addFlashAttribute("error",error);
         return "redirect:/";
     }
 

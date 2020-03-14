@@ -95,6 +95,7 @@ public class shopProfileController {
             session.setAttribute("loggedInCustomer", customerOld);
         }
         redirect.addFlashAttribute("goodAlert", "Successfully updated \"" + custom.getEmail() + "\"!");
+        redirect.addFlashAttribute("error",error);
         return "redirect:/profile";
     }
 

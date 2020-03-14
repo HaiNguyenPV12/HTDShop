@@ -34,44 +34,54 @@ public class shopLoginController {
     ShopService shopService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public String viewLogin(Model model, ModelMap modelMap, HttpSession session) {
+    public String viewLogin(@ModelAttribute("customer") Customer customer, Model model, ModelMap modelMap,
+            HttpSession session) {
         if (shopService.checkLogin()) {
             return "redirect:/";
         }
-        // model.addAttribute("customer", new Customer());
-        // if (model.asMap().containsKey("error")) {
-        // model.addAttribute("org.springframework.validation.BindingResult.customer",
-        // model.asMap().get("error"));
-        // }
+        model.addAttribute("customer", new Customer());
+        if (model.asMap().containsKey("error")) {
+            model.addAttribute("org.springframework.validation.BindingResult.customer", model.asMap().get("error"));
+        }
         return "HTDShop/login";
     }
 
     @RequestMapping(value = "doLogin", method = RequestMethod.POST)
-    public String postLogin(@RequestParam(value = "email", required = false) String email,
-            @RequestParam(value = "password", required = false) String password, RedirectAttributes redirect,
+    public String postLogin(@ModelAttribute("customer") Customer customer, RedirectAttributes redirect,
             @RequestParam(value = "remember", required = false) String remember,
-            @RequestParam(value = "redirect", required = false) String redirectUrl,
+            @RequestParam(value = "redirect", required = false) String redirectUrl, BindingResult error,
             HttpSession session, HttpServletResponse response) {
 
-        // Check if error exists
-        // If not, start to check login
-
-        Customer result = customerFacade.checkLogin(email, password);
-        if (result != null) {
-            // If ok, save staff's session
-            session.setAttribute("loggedInCustomer", result);
-            shopService.getLoggedInCart();
-            if (remember != null) {
-                Cookie cookie = new Cookie("loggedInCustomer", result.getId().toString());
-                response.addCookie(cookie);
-            }
-            redirect.addFlashAttribute("goodAlert", "Successfully logged in as \"" + result.getFirstName() + "\".");
-            if (redirectUrl == null || redirectUrl.isEmpty()) {
-                return "redirect:/";
-            } else {
-                return "redirect:/cart/checkout";
-            }
+        if (customer.getEmail() == null || customer.getEmail().isEmpty()) {
+            error.rejectValue("email", "customer", "Username cannot be blank.");
         }
+        // Mannually check blank password
+        if (customer.getPassword() == null || customer.getPassword().trim().isEmpty()) {
+            error.rejectValue("password", "customer", "Password cannot be blank.");
+        }
+
+        if (!error.hasErrors()) {
+            Customer result = customerFacade.checkLogin(customer.getEmail(), customer.getPassword());
+            if (result != null) {
+                // If ok, save staff's session
+                session.setAttribute("loggedInCustomer", result);
+                shopService.getLoggedInCart();
+                if (remember != null) {
+                    Cookie cookie = new Cookie("loggedInCustomer", result.getId().toString());
+                    response.addCookie(cookie);
+                }
+                redirect.addFlashAttribute("goodAlert", "Successfully logged in as \"" + result.getFirstName() + "\".");
+                if (redirectUrl == null || redirectUrl.isEmpty()) {
+                    return "redirect:/";
+                } else {
+                    return "redirect:/cart/checkout";
+                }
+            }
+            error.rejectValue("email", "customer", "Invalid Login");
+        }
+
+        redirect.addFlashAttribute("error", error);
+        redirect.addFlashAttribute("customer", customer);
         return "redirect:/login";
     }
 
