@@ -52,15 +52,15 @@
                             <i class="fas fa-coins"></i> INCOME
                         </strong></h4>
                         <div class="col-sm-4">
-                            <h3><th:block th:text="${statistic.incomeToday}"></th:block><sup style="font-size: 20px">$</sup></h3>
+                            <h3><th:block th:text="${#numbers.formatDecimal(statistic.incomeToday, 1, 'COMMA', 2, 'POINT')}"></th:block><sup style="font-size: 20px">$</sup></h3>
                             <p>today</p>
                         </div>
                         <div class="col-sm-4">
-                            <h3><th:block th:text="${statistic.incomeThisMonth}"></th:block><sup style="font-size: 20px">$</sup></h3>
+                            <h3><th:block th:text="${#numbers.formatDecimal(statistic.incomeThisMonth, 1, 'COMMA', 2, 'POINT')}"></th:block><sup style="font-size: 20px">$</sup></h3>
                             <p>this month</p>
                         </div>
                         <div class="col-sm-4">
-                            <h3><th:block th:text="${statistic.incomeThisYear}"></th:block><sup style="font-size: 20px">$</sup></h3>
+                            <h3><th:block th:text="${#numbers.formatDecimal(statistic.incomeThisYear, 1, 'COMMA', 2, 'POINT')}"></th:block><sup style="font-size: 20px">$</sup></h3>
                             <p>this year</p>
                         </div>
                     </div>
