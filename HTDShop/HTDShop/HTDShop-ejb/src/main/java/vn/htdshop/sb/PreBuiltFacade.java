@@ -37,7 +37,7 @@ public class PreBuiltFacade extends AbstractFacade<PreBuilt> implements PreBuilt
     @Override
     public List<PreBuilt> search(String keyword) {
         TypedQuery<PreBuilt> query = null;
-        query = em.createQuery("SELECT p FROM PreBuilt p WHERE p.name LIKE :keyword", PreBuilt.class);
+        query = em.createQuery("SELECT p FROM PreBuilt p WHERE p.status = 1 AND p.name LIKE :keyword", PreBuilt.class);
         query.setParameter("keyword", "%" + keyword + "%");
         return query.getResultList();
     }
@@ -50,10 +50,10 @@ public class PreBuiltFacade extends AbstractFacade<PreBuilt> implements PreBuilt
 
     @Override
     public List<PreBuilt> findByCustomerID(Integer id) {
-        TypedQuery<PreBuilt> query = em.createQuery("SELECT p FROM PreBuilt p WHERE p.customer.id = :id",PreBuilt.class);
+        TypedQuery<PreBuilt> query = em.createQuery("SELECT p FROM PreBuilt p WHERE p.customer.id = :id",
+                PreBuilt.class);
         query.setParameter("id", id);
         return query.getResultList();
     }
-
 
 }
