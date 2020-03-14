@@ -58,89 +58,89 @@
                     </div>
                 </div>
                 <div class="row py-2" th:if="${prebuilt.cpu!=null}">
-                    <div class="col-md-4">
+                    <div class="col-md-4 text-right">
                         <label for="cpu">CPU</label>
                     </div>
-                    <div class="col-md-8">
-                        <input th:field=*{cpu.id} type="text" />
+                    <div class="col-md-8 text-left">
                         <span th:text=*{cpu.name}></span>
+                        <input th:field=*{cpu.id} type="text" style="visibility: hidden;" />
                     </div>
                 </div>
                 <div class="row py-2" th:if="${prebuilt.cpucooler!=null}">
-                    <div class="col-md-4">
+                    <div class="col-md-4 text-right">
                         <label for="cpucooler">CPU Cooler</label>
                     </div>
-                    <div class="col-md-8">
-                        <input th:field=*{cpucooler.id} type="text" />
+                    <div class="col-md-8 text-left">
                         <span th:text=*{cpucooler.name}></span>
+                        <input th:field=*{cpucooler.id} type="text" style="visibility: hidden;" />
                     </div>
                 </div>
                 <div class="row py-2" th:if="${prebuilt.motherboard!=null}">
-                    <div class="col-md-4">
+                    <div class="col-md-4 text-right">
                         <label for="motherboard">Motherboard</label>
                     </div>
-                    <div class="col-md-8">
-                        <input th:field=*{motherboard.id} type="text" />
+                    <div class="col-md-8 text-left">
                         <span th:text=*{motherboard.name}></span>
+                        <input th:field=*{motherboard.id} type="text" style="visibility: hidden;" />
                     </div>
                 </div>
                 <div class="row py-2" th:if="${prebuilt.memory!=null}">
-                    <div class="col-md-4">
+                    <div class="col-md-4 text-right">
                         <label for="memory">Memory</label>
                     </div>
-                    <div class="col-md-8">
-                        <input th:field=*{memory.id} type="text" />
+                    <div class="col-md-8 text-left">
                         <span th:text=*{memory.name}></span>
+                        <input th:field=*{memory.id} type="text" style="visibility: hidden;" />
                     </div>
                 </div>
                 <div class="row py-2" th:if="${prebuilt.storage!=null}">
-                    <div class="col-md-4">
+                    <div class="col-md-4 text-right">
                         <label for="storage">Storage</label>
                     </div>
-                    <div class="col-md-8">
-                        <input th:field=*{storage.id} type="text" />
+                    <div class="col-md-8 text-left">
                         <span th:text=*{storage.name}></span>
+                        <input th:field=*{storage.id} type="text" style="visibility: hidden;" />
                     </div>
                 </div>
                 <div class="row py-2" th:if="${prebuilt.vga!=null}">
-                    <div class="col-md-4">
+                    <div class="col-md-4 text-right">
                         <label for="gpu">GPU</label>
                     </div>
-                    <div class="col-md-8">
-                        <input th:field=*{vga.id} type="text" />
+                    <div class="col-md-8 text-left">
                         <span th:text=*{vga.name}></span>
+                        <input th:field=*{vga.id} type="text" style="visibility: hidden;" />
                     </div>
                 </div>
                 <div class="row py-2" th:if="${prebuilt.cases!=null}">
-                    <div class="col-md-4">
+                    <div class="col-md-4 text-right">
                         <label for="case">Case</label>
                     </div>
-                    <div class="col-md-8">
-                        <input th:field=*{cases.id} type="text" />
+                    <div class="col-md-8 text-left">
                         <span th:text=*{cases.name}></span>
+                        <input th:field=*{cases.id} type="text" style="visibility: hidden;" />
                     </div>
                 </div>
                 <div class="row py-2" th:if="${prebuilt.psu!=null}">
-                    <div class="col-md-4">
+                    <div class="col-md-4 text-right">
                         <label for="psu">PSU</label>
                     </div>
-                    <div class="col-md-8">
-                        <input th:field=*{psu.id} type="text" />
+                    <div class="col-md-8 text-left">
                         <span th:text=*{psu.name}></span>
+                        <input th:field=*{psu.id} type="text" style="visibility: hidden;" />
                     </div>
                 </div>
                 <div class="row py-2" th:if="${prebuilt.monitor!=null}">
-                    <div class="col-md-4">
+                    <div class="col-md-4 text-right">
                         <label for="monitor">Monitor</label>
                     </div>
-                    <div class="col-md-8">
-                        <input th:field=*{monitor.id} type="text" />
+                    <div class="col-md-8 text-left">
                         <span th:text=*{monitor.name}></span>
+                        <input th:field=*{monitor.id} type="text" style="visibility: hidden;" />
                     </div>
                 </div>
                 <div class="row justify-content-center">
-                    <a class="btn btn-primary" th:href="@{/build}" href="">Back to Build</a>
-                    <button type="submit" class="btn btn-success">Share</button>
+                    <a class="btn btn-primary mx-1" th:href="@{/build}" href="">Back to Build</a>
+                    <button type="submit" class="btn btn-success mx-1">Submit</button>
                 </div>
             </form>
         </div>
@@ -153,6 +153,15 @@
     </th:block>
     <script layout:fragment="script" th:inline="none">
         $('.textarea').summernote({
+            toolbar: [
+                // [groupName, [list of button]]
+                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['font', ['strikethrough', 'superscript', 'subscript']],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['height', ['height']]
+            ],
             minHeight: 200,
             maxHeight: 900
         });

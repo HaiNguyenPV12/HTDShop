@@ -41,7 +41,7 @@
                     </strong>
                     <div class="col-sm-9">
                         <th:block th:if="${prebuilt.staff != null}" th:text="${prebuilt.staff.username}"></th:block>
-                        <th:block th:if="${prebuilt.customer != null}" th:text="${prebuilt.customer.id}"></th:block>
+                        <th:block th:if="${prebuilt.customer != null}" th:text="${prebuilt.customer.email}"></th:block>
                     </div>
                 </div>
                 <!-- NAME -->
@@ -161,6 +161,25 @@
                         <th:block th:if="${prebuilt.stock != null}" th:text="${prebuilt.stock}"></th:block>
                     </div>
                 </div>
+                <!-- STOCK -->
+                <div class="row">
+                    <strong for="status" class="col-sm-3 text-right">
+                        Status
+                    </strong>
+                    <div class="col-sm-9">
+                        <th:block th:if="${prebuilt.status != null}">
+                            <th:block th:if="${prebuilt.status == 1}">
+                                Is Selling
+                            </th:block>
+                            <th:block th:if="${prebuilt.status == 2}">
+                                Pending
+                            </th:block>
+                            <th:block th:if="${prebuilt.status == 3}">
+                                Not Selling
+                            </th:block>
+                        </th:block>
+                    </div>
+                </div>
                 <!-- IMAGE -->
                 <div class="row">
                     <strong for="image" class="col-sm-3 text-right">
@@ -176,7 +195,9 @@
         </div>
         <div class="row justify-content-center py-3">
             <a th:href="@{/manager/prebuilt}" class="btn btn-primary mx-1">Back to List</a>
-            <a th:href="@{/manager/prebuilt/edit?id=__${prebuilt.id}__}" class="btn btn-warning mx-1">Edit</a>
+            <!-- <a th:href="@{/manager/prebuilt/edit?id=__${prebuilt.id}__}" class="btn btn-warning mx-1">Edit</a> -->
+            <a th:if="${prebuilt.status == 2}" th:href="@{/manager/prebuilt/enable(id=${prebuilt.id})}" class="btn btn-success mx-1">Enable</a>
+            <a th:if="${prebuilt.status == 1}" th:href="@{/manager/prebuilt/disable(id=${prebuilt.id})}" class="btn btn-danger mx-1">Disable</a>
         </div>
     </div>
 </body>

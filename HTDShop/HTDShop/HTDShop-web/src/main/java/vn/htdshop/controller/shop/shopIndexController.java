@@ -102,7 +102,7 @@ public class shopIndexController {
         for (Map.Entry<Integer, Integer> pid : top8Month.entrySet()) {
             if (!exists.contains(pid.getKey())) {
                 Product p = productFacade.find(pid.getKey());
-                bestsellings.add(p);
+                hotproducts.add(p);
                 exists.add(pid.getKey());
             }
         }

@@ -161,7 +161,8 @@
                                 <i class="fas fa-plus-square fa-lg mr-2"></i> Add new Image
                                 <input type="file"
                                     style="position: absolute;font-size:50px;opacity: 0;right: 0;top: 0;cursor: pointer;"
-                                    id="btnUploadImage" multiple="multiple" name="uploadimg" accept="image/x-png,image/jpg,image/jpeg">
+                                    id="btnUploadImage" multiple="multiple" name="uploadimg"
+                                    accept="image/x-png,image/jpg,image/jpeg">
                             </div>
                         </h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -448,6 +449,13 @@
                     text: "Reload table",
                     action: function () {
                         table.ajax.reload(null, false);
+                    }
+                },
+                {
+                    extend: 'print',
+                    autoPrint: false,
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6]
                     }
                 }
             ],

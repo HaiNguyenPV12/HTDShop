@@ -270,7 +270,20 @@
                         doReorder(curId, $(this).val());
                     });
                 });
-            }
+            },
+            dom: "<'row'<'#events.col-sm-12 col-md-3'><'col-sm-12 col-md-9 text-right'B>>" +
+                "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+            buttons: [
+                {
+                    extend: 'print',
+                    autoPrint: false,
+                    exportOptions: {
+                        columns: [2, 3]
+                    }
+                }
+            ]
         });
 
         // Setting up table here
@@ -326,7 +339,20 @@
             },
             "drawCallback": function (settings) {
                 $('[data-toggle="tooltip"]').tooltip();
-            }
+            },
+            dom: "<'row'<'#events.col-sm-12 col-md-3'><'col-sm-12 col-md-9 text-right'B>>" +
+                "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+            buttons: [
+                {
+                    extend: 'print',
+                    autoPrint: false,
+                    exportOptions: {
+                        columns: [2, 3]
+                    }
+                }
+            ]
         });
 
         /*]]>*/

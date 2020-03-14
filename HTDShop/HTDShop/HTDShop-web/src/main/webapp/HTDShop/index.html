@@ -148,7 +148,7 @@
                                         <div class="product-action-right">
                                             <!-- TODO add to current cart on click -->
                                             <a class="animate-top" title="Add To Cart"
-                                                th:onclick="doAddToCart([[${bs1.id}]])" style="cursor: pointer;">
+                                                th:onclick="doAddToCart([[${bs1.id}]], 1)" style="cursor: pointer;">
                                                 <i class="pe-7s-cart"></i>
                                             </a>
                                         </div>
@@ -178,7 +178,7 @@
                                     <div class="coustom-row-3">
                                         <!-- FOREACH STARTS HERE -->
                                         <div class="custom-col-style-3 custom-col-3" th:each="bs, itr : ${bestsellings}"
-                                            th:if="${itr.index >= 1 && itr.index le 6}">
+                                            th:if="${itr.index >= 1}">
                                             <div class="product-wrapper product-wrapper-small mb-6">
                                                 <div class="product-img-4 product-img-small"
                                                     th:with="bsmainimg = ${bs.productImageCollection.?[mainImage==true]}, bsimg = ${bs.productImageCollection}">
@@ -193,7 +193,7 @@
                                                             th:if="${bsmainimg.size() == 0 && bsimg.size() == 0}"></a>
                                                     <div class="product-action-right">
                                                         <a class="animate-top" title="Add To Cart"
-                                                            th:onclick="doAddToCart([[${bs.id}]])"
+                                                            th:onclick="doAddToCart([[${bs.id}]], 1)"
                                                             style="cursor: pointer;">
                                                             <i class="pe-7s-cart"></i>
                                                         </a>
