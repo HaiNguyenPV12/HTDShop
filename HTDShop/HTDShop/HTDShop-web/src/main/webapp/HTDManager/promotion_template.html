@@ -502,6 +502,7 @@
     </th:block>
     <script layout:fragment="script" th:inline="javascript">
         /*<![CDATA[*/
+        var isSubmiting = false;
         // Condition proccess
         $("#btnAddCondition").on("click", function () {
             checkCount();
@@ -845,15 +846,18 @@
 
             var frmPromotion = $("#frmPromotion"), original = frmPromotion.serialize();
             $(window).on("beforeunload", function () {
-                if (frmPromotion.serialize() != original || submited) {
-                    var cf = confirm('There are data(s) not being saved! Are you sure to leave page?');
-                    if (!cf) {
-                        return false;
+                if (!isSubmiting) {
+                    if (frmPromotion.serialize() != original) {
+                        var cf = confirm('There are data(s) not being saved! Are you sure to leave page?');
+                        if (!cf) {
+                            return false;
+                        }
                     }
                 }
             });
             frmPromotion.on("submit", function () {
                 if (frmPromotion.valid()) {
+                    isSubmiting = true;
                     original = frmPromotion.serialize();
                 }
             });

@@ -132,14 +132,23 @@
                     <div class="row no-gutters">
                         <!-- TOP SELLER  (OF TOP 7) -->
                         <!-- TODO : add: onclick = "doAddToCart(id of product, 1)" -->
-                        <div class="col-lg-5" style="border: solid mediumpurple;">
+                        <div class="col-lg-5" style="border: solid mediumpurple;" th:with="bs1 = ${bestsellings[0]}">
                             <div class="best-selling-left">
                                 <div class="product-wrapper product-wrapper-big">
-                                    <div class="product-img-4 product-img-big">
-                                        <a href="#"><img th:src="@{/images/product/1/0.jpg}" alt=""></a>
+                                    <div class="product-img-4 product-img-big"
+                                        th:with="bs1mainimg = ${bs1.productImageCollection.?[mainImage==true]}, bs1img = ${bs1.productImageCollection}">
+                                        <a th:href="@{/product(id=${bs1.id})}"><img
+                                                th:src="@{/images/__${bs1mainimg[0].imagePath}__}" alt=""
+                                                th:if="${bs1mainimg.size() > 0}"></a>
+                                        <a th:href="@{/product(id=${bs1.id})}"><img
+                                                th:src="@{/images/__${bs1img[0].imagePath}__}" alt=""
+                                                th:if="${bs1mainimg.size() == 0 && bs1img.size() > 0}"></a>
+                                        <a th:href="@{/product(id=${bs1.id})}"><img th:src="@{/images/noimage.png}"
+                                                alt="" th:if="${bs1mainimg.size() == 0 && bs1img.size() == 0}"></a>
                                         <div class="product-action-right">
                                             <!-- TODO add to current cart on click -->
-                                            <a class="animate-top" title="Add To Cart" href="#">
+                                            <a class="animate-top" title="Add To Cart"
+                                                th:onclick="doAddToCart([[${bs1.id}]], 1)" style="cursor: pointer;">
                                                 <i class="pe-7s-cart"></i>
                                             </a>
                                         </div>
@@ -152,9 +161,12 @@
                                             <i class="icofont icofont-star yellow"></i>
                                             <i class="icofont icofont-star yellow"></i>
                                         </div>
-                                        <h4><a href="product-details.html">desktop C27F551</a></h4>
-                                        <span>Headphone</span>
-                                        <h5>$133.00</h5>
+                                        <h4><a th:href="@{/product(id=${bs1.id})}" th:text="${bs1.name}">desktop
+                                                C27F551</a></h4>
+                                        <span class="text-light" th:text=${bs1.category.name}>Headphone</span>
+                                        <h5
+                                            th:text="${'$' + #numbers.formatDecimal(shopSv.getDiscountPrice(bs1), 1, 'COMMA', 2, 'POINT')}">
+                                            $133.00</h5>
                                     </div>
                                 </div>
                             </div>
@@ -165,14 +177,24 @@
                                 <div class="custom-container">
                                     <div class="coustom-row-3">
                                         <!-- FOREACH STARTS HERE -->
-                                        <div class="custom-col-style-3 custom-col-3">
+                                        <div class="custom-col-style-3 custom-col-3" th:each="bs, itr : ${bestsellings}"
+                                            th:if="${itr.index >= 1}">
                                             <div class="product-wrapper product-wrapper-small mb-6">
-                                                <div class="product-img-4 product-img-small">
-                                                    <a href="#">
-                                                        <img th:src="@{/images/product/6/0.jpg}" alt="">
-                                                    </a>
+                                                <div class="product-img-4 product-img-small"
+                                                    th:with="bsmainimg = ${bs.productImageCollection.?[mainImage==true]}, bsimg = ${bs.productImageCollection}">
+                                                    <a th:href="@{/product(id=${bs.id})}"><img
+                                                            th:src="@{/images/__${bsmainimg[0].imagePath}__}" alt=""
+                                                            th:if="${bsmainimg.size() > 0}"></a>
+                                                    <a th:href="@{/product(id=${bs.id})}"><img
+                                                            th:src="@{/images/__${bsimg[0].imagePath}__}" alt=""
+                                                            th:if="${bsmainimg.size() == 0 && bsimg.size() > 0}"></a>
+                                                    <a th:href="@{/product(id=${bs.id})}"><img
+                                                            th:src="@{/images/noimage.png}" alt=""
+                                                            th:if="${bsmainimg.size() == 0 && bsimg.size() == 0}"></a>
                                                     <div class="product-action-right">
-                                                        <a class="animate-top" title="Add To Cart" href="#">
+                                                        <a class="animate-top" title="Add To Cart"
+                                                            th:onclick="doAddToCart([[${bs.id}]], 1)"
+                                                            style="cursor: pointer;">
                                                             <i class="pe-7s-cart"></i>
                                                         </a>
                                                     </div>
@@ -185,13 +207,14 @@
                                                         <i class="icofont icofont-star yellow"></i>
                                                         <i class="icofont icofont-star yellow"></i>
                                                     </div>
-                                                    <h4><a href="product-details.html">Play Station</a></h4>
-                                                    <h5>$145.00</h5>
+                                                    <h4><a th:href="@{/product(id=${bs.id})}"
+                                                            th:text="${bs.name}">Play Station</a></h4>
+                                                    <h5 th:text="${'$' + #numbers.formatDecimal(shopSv.getDiscountPrice(bs), 1, 'COMMA', 2, 'POINT')}">$145.00</h5>
                                                 </div>
                                             </div>
                                         </div>
                                         <!-- FOREACH ENDS HERE -->
-                                        <div class="custom-col-style-3 custom-col-3">
+                                        <!-- <div class="custom-col-style-3 custom-col-3">
                                             <div class="product-wrapper product-wrapper-small mb-6">
                                                 <div class="product-img-4 product-img-small">
                                                     <a href="#">
@@ -315,7 +338,7 @@
                                                     <h5>$145.00</h5>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> -->
                                     </div>
                                 </div>
                             </div>

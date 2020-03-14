@@ -326,6 +326,7 @@
     </th:block>
     <script layout:fragment="script" th:inline="javascript">
         /*<![CDATA[*/
+        
         var existImgSize = +/*[[${update == null? 0 : product.productImageCollection.size()}]]*/0;
         var cache = {};
         var update = /*[[${update == null ? false : true}]]*/false;
