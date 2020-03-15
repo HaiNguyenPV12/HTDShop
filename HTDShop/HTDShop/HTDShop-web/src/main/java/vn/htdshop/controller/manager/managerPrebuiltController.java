@@ -42,6 +42,7 @@ import vn.htdshop.utility.ManagerService;
 @Controller
 @RequestMapping("manager/prebuilt")
 public class managerPrebuiltController {
+
     private final String redirectPrebuiltHome = "redirect:/manager/prebuilt";
     private final String redirectHome = "redirect:/manager";
 
@@ -59,6 +60,9 @@ public class managerPrebuiltController {
 
     @EJB(mappedName = "ProductFacade")
     ProductFacadeLocal productFacade;
+
+    @EJB(mappedName = "PreBuiltRatingFacade")
+    PreBuiltRatingFacadeLocal preBuiltRatingFacade;
 
     @Autowired
     ServletContext context;
@@ -203,6 +207,36 @@ public class managerPrebuiltController {
         prebuilt = getPrebuiltValues(prebuilt);
         model.addAttribute("prebuilt", prebuilt);
         return "HTDManager/prebuilt_detail";
+    }
+
+    @RequestMapping(value = "rating", method = RequestMethod.GET)
+    public String viewRating(@RequestParam(value = "id") Integer id, Model model) {
+        if (!managerService.checkLoginWithRole("prebuilt_read")) {
+            return redirectPrebuiltHome;
+        }
+
+        model.asMap().put("menu", "prebuilt");
+        PreBuilt prebuilt = preBuiltFacade.find(id);
+
+        List<PreBuiltRating> ratings = preBuiltRatingFacade.findAll();
+        ratings = ratings.stream().filter(p -> p.getPreBuilt().getId() == id).collect(Collectors.toList());
+
+        prebuilt = getPrebuiltValues(prebuilt);
+
+        model.addAttribute("prebuilt", prebuilt);
+        model.addAttribute("ratings", ratings);
+        return "HTDManager/prebuilt_rating";
+    }
+
+    @RequestMapping(value = "rating/delete", method = RequestMethod.GET)
+    public String deleteRating(@RequestParam(value = "id") Integer id, RedirectAttributes redirect) {
+        if (!managerService.checkLoginWithRole("prebuilt_edit")) {
+            return redirectPrebuiltHome;
+        }
+        PreBuiltRating rating = preBuiltRatingFacade.find(id);
+        Integer prebuiltId = rating.getPreBuilt().getId();
+        preBuiltRatingFacade.remove(rating);
+        return "redirect:/manager/prebuilt/rating?id=" + prebuiltId;
     }
 
     // TODO handle delisting
