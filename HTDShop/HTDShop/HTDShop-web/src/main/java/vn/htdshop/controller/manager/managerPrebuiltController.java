@@ -236,7 +236,7 @@ public class managerPrebuiltController {
         PreBuiltRating rating = preBuiltRatingFacade.find(id);
         Integer prebuiltId = rating.getPreBuilt().getId();
         preBuiltRatingFacade.remove(rating);
-        return "redirect:rating?id=" + prebuiltId;
+        return "redirect:/manager/prebuilt/rating?id=" + prebuiltId;
     }
 
     // TODO handle delisting

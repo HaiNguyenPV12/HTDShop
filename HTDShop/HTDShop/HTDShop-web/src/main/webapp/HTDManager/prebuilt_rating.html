@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDManager/layout}">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTD Manager - Prebuilt Ratings</title>
-    <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{HTDManager/layout}">
+
     <style>
         .dataTables_filter {
             float: right !important;
@@ -53,9 +53,11 @@
                                     <td th:text="${r.comment}"></td>
                                     <td th:text="${r.createdAt}"></td>
                                     <td th:text="${r.rating}"></td>
-                                    <td class="btn btn-danger btn-sm" th:href="@{/manager/rating/delete(id=${p.id})}"
-                                        title="Delete">
-                                        <i class="nav-icon fas fa-trash"></i>
+                                    <td>
+                                        <a class="btn btn-danger btn-sm" th:href="@{rating/delete(id=${r.id})}"
+                                            title="Delete">
+                                            <i class="nav-icon fas fa-trash"></i>
+                                        </a>
                                     </td>
                                 </tr>
                             </tbody>
