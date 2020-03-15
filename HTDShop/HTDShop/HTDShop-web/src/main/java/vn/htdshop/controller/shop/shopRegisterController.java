@@ -59,6 +59,7 @@ public class shopRegisterController {
 
         if (customer.getPassword()== null || customer.getPassword().trim().isEmpty()) {
             error.rejectValue("password", "customer", "Please enter valid password.");
+            return "redirect:/register";
         }
         if (!error.hasErrors()) {
             customer.setPoint(0);

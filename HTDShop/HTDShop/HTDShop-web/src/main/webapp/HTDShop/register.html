@@ -83,7 +83,7 @@
                                                         class="text-danger">*</i></label>
                                                 <div class="col-sm-9">
                                                     <input class="form-control" id="password" placeholder="Password" th:field="*{password}" type="password" required
-                                                        pattern=".{6,}}" title="Password have 6 or more character"
+                                                        pattern=".{6,}" title="Password have 6 or more character"
                                                         th:classappend="${(#fields.hasErrors('password')?'is-invalid':'') + (submited != null and !#fields.hasErrors('password')?'is-valid':'')}"/>
                                                 </div>
                                                 <div class="col-sm-3"></div>
@@ -145,7 +145,7 @@
                                                         <li th:each="err : ${#fields.errors('gender')}" th:text="${err}">Name Error</li>
                                                     </ul> 
                                                 </div>
-                                            </div>          
+                                            </div>
                                         </div>
                                         <div class="button-box">
                                             <button type="submit" class="default-btn floatright">Register</button>
@@ -160,16 +160,40 @@
         </div>
         <!-- register-area end -->
     </div>
+    <th:block layout:fragment="additionalScript">
+        <script th:src="@{/manager_resources/plugins/moment/moment.min.js}"></script> 
+        <script th:src="@{/manager_resources/plugins/daterangepicker/daterangepicker.js}"></script> 
+    </th:block>
     <script th:src="@{/manager_resources/plugins/jquery/jquery.min.js}"></script>
     <!-- Bootstrap 4 -->
     <script th:src="@{/manager_resources/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
     <!-- AdminLTE App -->
+    
     <script th:src="@{/manager_resources/plugins/jquery-ui/jquery-ui.min.js}"></script>
     <script th:src="@{/manager_resources/plugins/jquery-validation/jquery.validate.js}"></script>
     <script th:src="@{/manager_resources/plugins/jquery-validation/additional-methods.min.js}"></script>F
     <script th:src="@{/manager_resources/Scripts/adminlte.min.js}"></script>
     
     <script th:inline="none" layout:fragment="script">
+        $(document).ready(function () {
+            $("input").each(function (i, e) {
+                $(e).attr("autocomplete", "off");
+            });
+
+            $('#birthday').daterangepicker({
+                "singleDatePicker": true,
+                "showDropdowns": true,
+                "minDate": "01/01/1800",
+                "maxDate": moment().format("DD/MM/YYYY"),
+                locale: {
+                    format: 'DD/MM/YYYY'
+                }
+            }, function (start, end, label) {
+                // $("#birthday").val(start.format('DD/MM/YYYY'));
+                console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+            });
+        });
+
        function trimAll() {
             $("form").find("input, textarea").each(function (i, e) {
                 if (e.type !== "file" && e.type !== "password") {
@@ -188,6 +212,8 @@
         $("#frmCustomer").validate({
             onfocusout: injectTrim($.validator.defaults.onfocusout)
         });
+
+        
     </script>
 
 </body>

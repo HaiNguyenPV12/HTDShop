@@ -54,7 +54,6 @@
                                 <th>Password</th>
                                 <th>Gender</th>
                                 <th>Birthday</th>
-                                <th>Point</th>
                                 <th>Action</th>
                             </thead>
                             <tbody>                             
@@ -62,8 +61,7 @@
                                     <td th:text="${customer.id}">001</td>
                                     <td th:text="${customer.password}">Intel Core i5 8400 3.0 GHz</td>
                                     <td th:text="${customer.gender==true?'Male':'Female'}">Intel</td>   
-                                    <td th:text="${#dates.format(customer.birthday,'dd-MM-yyyy')}">Intel</td>                   
-                                    <td th:text="${customer.point}">Intel</td>   
+                                    <td th:text="${#dates.format(customer.birthday,'dd-MM-yyyy')}">Intel</td>
                                     <td>     
                                         <a class="btn btn-warning btn-sm" th:href="@{/manager/customer/edit(id=${customer.id})}"
                                         data-toggle='tooltip' title="Edit">
@@ -77,7 +75,6 @@
                                 <th>Password</th>
                                 <th>Gender</th>
                                 <th>Birthday</th>
-                                <th>Point</th>
                                 <th>Action</th>
                             </tfoot>
                         </table>

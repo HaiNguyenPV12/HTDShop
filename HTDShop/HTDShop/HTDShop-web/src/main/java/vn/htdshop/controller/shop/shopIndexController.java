@@ -180,7 +180,7 @@ public class shopIndexController {
         shopService.checkLogin();
         model.addAttribute("order", new Order1());
         if (model.asMap().containsKey("error")) {
-            model.addAttribute("org.springframework.validation.BindingResult.customer", model.asMap().get("error"));
+            model.addAttribute("org.springframework.validation.BindingResult.order", model.asMap().get("error"));
         }
         return "HTDShop/checkOrder";
     }
@@ -225,7 +225,7 @@ public class shopIndexController {
                 model.addAttribute("order", result);
                 return "HTDShop/orderTracking";
             }
-            error.rejectValue("id", "order", "Not Found Order");
+            error.rejectValue("customer.phone", "order", "Not Found Order");
         }
 
         redirect.addFlashAttribute("error", error);

@@ -156,7 +156,7 @@ public class managerCustomerController {
                 custOld.setAddress(customer.getAddress());
                 updated = true;
             }
-            if (customer.getPassword() != null) {
+            if (custOld.getPassword() != null) {
                 if (!custOld.getPassword().equals(customer.getPassword())) {
                     if (customer.getPassword() == null || customer.getPassword().isEmpty()) {
                         custOld.setPassword(custOld.getPassword());
@@ -165,16 +165,19 @@ public class managerCustomerController {
                     }
                     updated = true;
                 }
+                if (!custOld.getBirthday().equals(customer.getBirthday())){
+                    custOld.setBirthday(customer.getBirthday());
+                    updated = true;
+                }
+
                 if (!custOld.getGender().equals(customer.getGender())) {
                     custOld.setGender(customer.getGender());
                     updated = true;
                 }
-                if (!custOld.getBirthday().equals(customer.getBirthday())) {
-                    custOld.setBirthday(customer.getBirthday());
-                    updated = true;
-                }
             }
-           
+
+            
+            
             if (!custOld.getPhone().equals(customer.getPhone())) {
                 custOld.setPhone(customer.getPhone());
                 updated = true;

@@ -97,6 +97,20 @@ public class shopCartController {
         return "HTDShop/checkout";
     }
 
+    @RequestMapping(value = "viewSuccess", method = RequestMethod.GET)
+    public String viewSuccess(Model model) {
+        shopService.checkLogin();
+        Customer customer = shopService.getLoggedInCustomer();
+        if (customer == null) {
+            customer = new Customer();
+        }
+        model.addAttribute("custom", customer);
+        model.addAttribute("ord", new Order1());
+        model.asMap().put("cart", shopService.getCart());
+        model.asMap().put("shopSv", shopService);
+        return "HTDShop/viewSuccess";
+    }
+
     @RequestMapping(value = "doUpdateCart", method = RequestMethod.POST)
     public String postUpdateCart(Model model, @RequestParam(value = "quan", required = true) Integer quan,
             @RequestParam(value = "id", required = false) Integer id, HttpServletResponse response) {
@@ -233,9 +247,6 @@ public class shopCartController {
             shopService.saveUserCart(new ArrayList<CartItem>());
         }
         redirect.addFlashAttribute("error", error);
-        model.addAttribute("custom", custom);
-        model.asMap().put("cart", shopService.getCart());
-        model.addAttribute("order", order1);
         return "HTDShop/viewSuccess";
     }
 

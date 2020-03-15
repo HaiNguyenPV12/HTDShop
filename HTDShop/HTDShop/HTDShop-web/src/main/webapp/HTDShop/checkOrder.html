@@ -32,7 +32,7 @@
                                     <form th:action="@{/doCheck}" method="GET" th:object="${order}">
                                         <input type="number" placeholder="Your Order ID" id="id" name="id" required th:field="*{id}"
                                             autofocus>
-                                        <input  type="text" name="phone" placeholder="Your Phone Number" id="phone" th:field="${order.customer.phone}"
+                                        <input  type="text" name="phone" placeholder="Your Phone Number" id="phone" th:field="*{customer.phone}"
                                             required autofocus>
                                         <button type="submit" class="default-btn floatright">Order Detail</button>
                                         <div class="col-12 mt-2" th:if="${#fields.hasErrors('all')}">
