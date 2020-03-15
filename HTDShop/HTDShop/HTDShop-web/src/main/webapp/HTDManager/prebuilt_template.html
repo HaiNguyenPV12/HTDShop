@@ -127,7 +127,7 @@
                         <div class="col-sm-9">
                             <select class="form-control select2" id="motherboard" th:field="*{motherboard.id}" placeholder="First Name" type="text"
                                 th:classappend="${(#fields.hasErrors('motherboard')?'is-invalid':'') + (submited != null and !#fields.hasErrors('motherboard')?'is-valid':'')}" required>
-                                <option value="">-- Choose Cooler --</option>
+                                <option value="">-- Choose Motherboard --</option>
                                 <th:block th:each="c : ${motherboardList}">
                                     <option th:value="${c.id}" th:text="${c.name}"></option>
                                 </th:block>
@@ -404,6 +404,8 @@
                         });
                         // redirect hoặc xóa form
                         $('form').trigger("reset");
+                        $('.textarea').summernote('reset');
+                        $("select").trigger("change")
                     }
 
                 }
