@@ -545,7 +545,7 @@
 
         <!-- Top product in category -->
         <div class="container">
-            <h3 class="text-dark mb-0">Top product in <th:block th:text="${product.category.name}"></th:block></h3>
+            <h3 class="text-dark mb-5">Top product in <th:block th:text="${product.category.name}"></th:block></h3>
             <div class="text-center mb-5" th:if="${topProducts.size() le 0}" >(There is no products of this category sold yet)</div>
             <div class="d-flex mb-5" style="overflow-x: scroll; overflow-y: hidden;" th:if="${topProducts.size() > 0}">
                 <div class="col-lg-6 col-md-6 col-xl-3" th:each="p : ${topProducts}">
