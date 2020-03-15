@@ -384,8 +384,8 @@
                 items: 'row',
                 info: false
             },
-            dom: "<'row'<'#events.col-sm-12 col-md-3'><'col-sm-12 col-md-9 text-right'B>>" +
-                "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+            dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+                "<'row'<'#events.col-sm-12 col-md-3 mt-auto mb-auto'><'col-sm-12 col-md-9 text-right'B>>" +
                 "<'row'<'col-sm-12'tr>>" +
                 "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
             buttons: [
@@ -540,7 +540,7 @@
         var tableImage = $('#tblProductImage').DataTable({
             // Move filter from foot to head
             initComplete: function () {
-                $('div.dataTables_length').addClass('form-inline mt-3');
+                $('div.dataTables_length').addClass('form-inline');
             },
             "paging": true,
             "lengthChange": false,
