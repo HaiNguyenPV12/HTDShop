@@ -226,9 +226,19 @@ public class shopIndexController {
         return "HTDShop/orderTracking";
     }
 
-    @RequestMapping(value = "services", method = RequestMethod.GET)
-    public String viewServicePage() {
+    @RequestMapping(value = "contact", method = RequestMethod.GET)
+    public String viewContactPage() {
         // return "HTDShop/about";
+        return "HTDShop/contact";
+    }
+
+    @RequestMapping(value = "services", method = RequestMethod.GET)
+    public String viewServicePageType(@RequestParam(value = "type", required = false) String type,
+            RedirectAttributes redirect) {
+        // return "HTDShop/about";
+        if (type != null && !type.trim().isEmpty()) {
+            return "redirect:/services#" + type + "Service";
+        }
         return "HTDShop/services";
     }
 
