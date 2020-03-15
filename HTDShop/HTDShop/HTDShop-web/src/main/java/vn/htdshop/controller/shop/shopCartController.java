@@ -19,6 +19,7 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -96,9 +97,30 @@ public class shopCartController {
         return "HTDShop/checkout";
     }
 
+    @RequestMapping(value = "viewSuccess", method = RequestMethod.GET)
+    public String viewSuccess(Model model) {
+        shopService.checkLogin();
+        Customer customer = shopService.getLoggedInCustomer();
+        if (customer == null) {
+            customer = new Customer();
+        }
+        model.addAttribute("custom", customer);
+        model.addAttribute("ord", new Order1());
+        model.asMap().put("cart", shopService.getCart());
+        model.asMap().put("shopSv", shopService);
+        return "HTDShop/viewSuccess";
+    }
+
+    // @RequestMapping(value = "doUpdateCart", method = RequestMethod.POST)
+    // public String postUpdateCart(Model model, @RequestParam(value = "quan", required = true) Integer quan,
+    //         @RequestParam(value = "id", required = false) Integer id, HttpServletResponse response) {
+        
+    //     return "redirect:/checkout";
+    // }
+
     @RequestMapping(value = "doCheckout", method = RequestMethod.POST)
     public String doCheckout(@Valid @ModelAttribute("custom") Customer custom, HttpServletResponse response,
-            RedirectAttributes redirect, Model model) {
+            BindingResult error, RedirectAttributes redirect, Model model) {
         Order1 order1 = null;
         OrderDetail orderDetail = null;
 
@@ -113,7 +135,7 @@ public class shopCartController {
             order1.setPaymentStatus(true);
             order1.setPaidDate(null);
             order1.setOrderStatus(1);
-            order1.setOrderDate(DateTime.now().toDate());
+            order1.setOrderDate(new Date());
             order1.setCancelledDate(null);
             orderFacade.create(order1);
 
@@ -132,7 +154,7 @@ public class shopCartController {
                     product.setStock(result);
                     productFacade.edit(product);
 
-                }else{
+                } else {
                     orderDetail.setId(null);
                     orderDetail.setOrder1(order1);
                     orderDetail.setPreBuilt(preBuiltFacade.find(Integer.parseInt(item.getId().substring(1))));
@@ -188,7 +210,7 @@ public class shopCartController {
                     orderDetail.setQuantity(item.getQuan());
                     orderDetail.setPrice(shopService.getcartItemPrice(item.getId(), item.getQuan()));
                     orderDetailFacade.create(orderDetail);
-                }else{
+                } else {
                     orderDetail.setId(null);
                     orderDetail.setOrder1(order1);
                     orderDetail.setPreBuilt(preBuiltFacade.find(Integer.parseInt(item.getId().substring(1))));
@@ -199,8 +221,8 @@ public class shopCartController {
             }
             shopService.saveUserCart(new ArrayList<CartItem>());
         }
-
-        return "redirect:/";
+        redirect.addFlashAttribute("error", error);
+        return "HTDShop/viewSuccess";
     }
 
     @RequestMapping(value = "add", method = RequestMethod.POST)

@@ -57,14 +57,20 @@ public class shopRegisterController {
             error.rejectValue("email", "customer", "This email is exists.");
         }
 
+        if (customer.getPassword()== null || customer.getPassword().trim().isEmpty()) {
+            error.rejectValue("password", "customer", "Please enter valid password.");
+            return "redirect:/register";
+        }
         if (!error.hasErrors()) {
             customer.setPoint(0);
             // Insert into database
             customerFacade.create(customer);
-            return "HTDShop/login";
+            redirect.addFlashAttribute("goodAlert", "Successfully Created \"" + customer.getEmail() + "\"!");
+            return "redirect:/login";
         }        
         // Pass alert attribute to notify successful process
-        redirect.addFlashAttribute("goodAlert", "Successfully Created \"" + customer.getEmail() + "\"!");
+        model.addAttribute("error", error);
+        redirect.addFlashAttribute("customer", customer);
         return "HTDShop/register";
     }
 

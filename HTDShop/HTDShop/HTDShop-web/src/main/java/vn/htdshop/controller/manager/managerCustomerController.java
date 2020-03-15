@@ -142,10 +142,6 @@ public class managerCustomerController {
             return redirectCustomerHome;
         }
         Customer custOld = customerFacade.find(id);
-
-        if (customer.getFirstName() == "" || customer.getFirstName().trim() == null) {
-            error.rejectValue("firstName", "customer", "FirstName is not blank");
-        }
         if (!error.hasErrors()) {
             boolean updated = false;
             if (!custOld.getFirstName().equals(customer.getFirstName())) {
@@ -160,24 +156,34 @@ public class managerCustomerController {
                 custOld.setAddress(customer.getAddress());
                 updated = true;
             }
-            if (!custOld.getPassword().equals(customer.getPassword())) {
-                if (customer.getPassword() == null || customer.getPassword().isEmpty()) {
-                    custOld.setPassword(custOld.getPassword());
-                } else {
-                    custOld.setPassword(customer.getPassword());
+            if (custOld.getPassword() != null) {
+                if (!custOld.getPassword().equals(customer.getPassword())) {
+                    if (customer.getPassword() == null || customer.getPassword().isEmpty()) {
+                        custOld.setPassword(custOld.getPassword());
+                    } else {
+                        custOld.setPassword(customer.getPassword());
+                    }
+                    updated = true;
                 }
-                updated = true;
+                if (custOld.getBirthday()==null) {
+                    custOld.setBirthday(customer.getBirthday());
+                }else{
+                    if (!custOld.getBirthday().equals(customer.getBirthday())) {
+                        custOld.setBirthday(customer.getBirthday());
+                        updated = true;
+                    }
+                }
+
+                if (!custOld.getGender().equals(customer.getGender())) {
+                    custOld.setGender(customer.getGender());
+                    updated = true;
+                }
             }
-            if (!custOld.getGender().equals(customer.getGender())) {
-                custOld.setGender(customer.getGender());
-                updated = true;
-            }
-            if (!custOld.getBirthday().equals(customer.getBirthday())) {
-                custOld.setBirthday(customer.getBirthday());
-                updated = true;
-            }
+
+            
+            
             if (!custOld.getPhone().equals(customer.getPhone())) {
-                custOld.setPhone(customer.getPhone().trim());
+                custOld.setPhone(customer.getPhone());
                 updated = true;
             }
             if (updated) {
