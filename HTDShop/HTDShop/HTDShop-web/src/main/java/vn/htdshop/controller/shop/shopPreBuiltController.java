@@ -78,6 +78,9 @@ public class shopPreBuiltController {
                 return redirectPreBuiltSearch;
             }
         }
+        if (prebuilt.getStatus() != 1) {
+            return redirectPreBuiltSearch;
+        }
         if (prebuilt.getCustomer() != null) {
             if (prebuilt.getStatus() == 2) {
                 if (shopService.getLoggedInCustomer() != null

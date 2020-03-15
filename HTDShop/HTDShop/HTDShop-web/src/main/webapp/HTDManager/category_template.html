@@ -59,7 +59,7 @@
                                         class="text-danger">*</i></label>
                                 <div class="col-sm-9">
                                     <input class="form-control" id="name" placeholder="Name" th:field="*{name}"
-                                        th:classappend="${(#fields.hasErrors('name')?'is-invalid':'') + (submited != null and !#fields.hasErrors('name')?'is-valid':'')}" required minlength="2" maxlength="80"/>
+                                        th:classappend="${(#fields.hasErrors('name')?'is-invalid':'') + (submited != null and !#fields.hasErrors('name')?'is-valid':'')}" required minlength="2" maxlength="60" pattern="^[^\\.,\\/#!?£$%\\^&\\*;:{}=\\_`~|']+$"/>
                                 </div>
                                 <div class="col-sm-3"></div>
                                 <div class="col-sm-9" >
@@ -145,7 +145,7 @@
         $("#btnAddAttribute").on("click", function () {
             exists++;
             var attr = '<div class="form-group row"><div class="col-sm-10">'
-                + '<input type="text" class="form-control" id="other_' + (exists) + '" name="others" required autocomplete="off" minlength="1" maxlength="100" pattern="^[^\\\\.,\\\\/#!?£$%\\\\^&\\\\*;:{}=\\\\_`~|]+$"/>'
+                + '<input type="text" class="form-control" id="other_' + (exists) + '" name="others" required autocomplete="off" minlength="2" maxlength="100" pattern="^[^\\\\.,\\\\/#!?£$%\\\\^&\\\\*;:{}=\\\\_`~|]+$"/>'
                 + '</div><div class="col-sm-2">'
                 + '<button type="button" class="btn btn-danger delete" onclick="remove(\'other_' + exists + '\')"><i class="fas fa-trash"></i></button>'
                 + '</div><div class="col-sm-12"><ul class="text-danger" id="other_' + exists + 'Error"></ul></div></div>';
