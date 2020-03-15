@@ -830,6 +830,10 @@
                 "endDate": $("#endDate").val() == "" ? moment() : $("#endDate").val(),
                 locale: {
                     format: 'DD/MM/YYYY'
+                },
+                dateLimit: {
+                    'months': 6,
+                    'days': -1
                 }
             }, function (start, end, label) {
                 $("#startDate").val(start.format('DD/MM/YYYY'));
