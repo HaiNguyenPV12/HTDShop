@@ -239,13 +239,17 @@ public class managerPrebuiltController {
         return "redirect:/manager/prebuilt/rating?id=" + prebuiltId;
     }
 
-    // TODO handle delisting
     @RequestMapping(value = "disable", method = RequestMethod.GET)
     public String delistPrebuilt(@RequestParam(value = "id") Integer id, RedirectAttributes redirect) {
         if (!managerService.checkLoginWithRole("prebuilt_edit")) {
             return redirectPrebuiltHome;
         }
         PreBuilt prebuilt = preBuiltFacade.find(id);
+
+        if (prebuilt.getDetail() == null || prebuilt.getDetail().trim().isEmpty()) {
+            prebuilt.setDetail("&nbsp;");
+        }
+
         prebuilt.setStatus(3);
         preBuiltFacade.edit(prebuilt);
         return redirectPrebuiltHome;
@@ -257,6 +261,11 @@ public class managerPrebuiltController {
             return redirectPrebuiltHome;
         }
         PreBuilt prebuilt = preBuiltFacade.find(id);
+
+        if (prebuilt.getDetail() == null || prebuilt.getDetail().trim().isEmpty()) {
+            prebuilt.setDetail("&nbsp;");
+        }
+
         prebuilt.setStatus(1);
         preBuiltFacade.edit(prebuilt);
         return redirectPrebuiltHome;

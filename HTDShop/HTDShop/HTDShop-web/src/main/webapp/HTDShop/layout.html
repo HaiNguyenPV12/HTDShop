@@ -198,7 +198,7 @@
                         </li>
                         <li><a>&nbsp;</a>
                         </li>
-                        <li><a href="#">contact</a></li>
+                        <li><a th:href="@{/contact}">contact</a></li>
                     </ul>
                 </nav>
             </div>
@@ -270,9 +270,9 @@
                             <h3 class="footer-widget-title-3">Service</h3>
                             <div class="footer-widget-content-3">
                                 <ul>
-                                    <li><a th:href="@{/services}">Product Service</a></li>
-                                    <li><a th:href="@{/services}">Payment Service</a></li>
-                                    <li><a th:href="@{/services}"> Discount Service</a></li>
+                                    <li><a th:href="@{/services?type=product}">Product Service</a></li>
+                                    <li><a th:href="@{/services?type=payment}">Payment Service</a></li>
+                                    <li><a th:href="@{/services?type=discount}">Discount Service</a></li>
                                 </ul>
                             </div>
                         </div>

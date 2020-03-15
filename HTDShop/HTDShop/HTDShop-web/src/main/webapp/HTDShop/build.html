@@ -162,7 +162,7 @@
                     <tbody>
                         <!-- CPU ROW -->
                         <tr>
-                            <td>CPU</td>
+                            <td>CPU<i class="text-danger">*</i></td>
                             <td>
                                 <th:block th:if="${session.prebuiltSession.cpu == null}">
                                     <a href="" th:href="@{/build/cpu}" class="btn btn-primary">
@@ -236,7 +236,7 @@
                         </tr>
                         <!-- MOTHERBOARD ROW -->
                         <tr>
-                            <td>Motherboard</td>
+                            <td>Motherboard<i class="text-danger">*</i></td>
                             <td>
                                 <th:block th:if="${session.prebuiltSession.motherboard == null}">
                                     <a href="" th:href="@{/build/motherboard}" class="btn btn-primary">
@@ -274,7 +274,7 @@
                         </tr>
                         <!-- MEMORY ROW -->
                         <tr>
-                            <td>Memory</td>
+                            <td>Memory<i class="text-danger">*</i></td>
                             <td>
                                 <th:block th:if="${session.prebuiltSession.memory == null}">
                                     <a href="" th:href="@{/build/memory}" class="btn btn-primary">
@@ -311,7 +311,7 @@
                         </tr>
                         <!-- STORAGE ROW -->
                         <tr>
-                            <td>Storage</td>
+                            <td>Storage<i class="text-danger">*</i></td>
                             <td>
                                 <th:block th:if="${session.prebuiltSession.storage == null}">
                                     <a href="" th:href="@{/build/storage}" class="btn btn-primary">
@@ -384,7 +384,7 @@
                         </tr>
                         <!-- CASE ROW -->
                         <tr>
-                            <td>Case</td>
+                            <td>Case<i class="text-danger">*</i></td>
                             <td>
                                 <th:block th:if="${session.prebuiltSession.cases == null}">
                                     <a href="" th:href="@{/build/case}" class="btn btn-primary">
@@ -421,7 +421,7 @@
                         </tr>
                         <!-- PSU ROW -->
                         <tr>
-                            <td>Power Supply</td>
+                            <td>Power Supply<i class="text-danger">*</i></td>
                             <td>
                                 <th:block th:if="${session.prebuiltSession.psu == null}">
                                     <a href="" th:href="@{/build/psu}" class="btn btn-primary">
@@ -516,7 +516,7 @@
                     Share Build
                 </a>
                 <button href="" class="btn btn-success mx-1" onclick="addBuildToCart()">
-                    Add build to cart
+                    Add parts to cart
                 </button>
             </div>
             <div class="row justify-content-center py-3">
