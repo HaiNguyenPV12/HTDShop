@@ -28,19 +28,11 @@
                     <div class="col-md-12 col-12 col-lg-6 col-xl-6 ml-auto mr-auto">
                         <div class="login">
                             <div class="login-form-container">
-                                <div class="login-form">
-                                    <form th:action="@{/doCheck}" method="GET" th:object="${order}">
-                                        <input type="number" placeholder="Your Order ID" id="id" name="id" required th:field="*{id}"
-                                            autofocus>
-                                        <input  type="text" name="phone" placeholder="Your Phone Number" id="phone" th:field="*{customer.phone}"
-                                            required autofocus>
-                                        <button type="submit" class="default-btn floatright">Order Detail</button>
-                                        <div class="col-12 mt-2" th:if="${#fields.hasErrors('all')}">
-                                            <p class="alert alert-danger">
-                                                <i class="fas fa-exclamation-circle"></i> <span th:errors="*{all}">Name Error</span>
-                                            </p>
-                                        </div>
-                                    </form>
+                                <h1 class="cart-heading">ORDER SUCCESSFUL</h1>
+                                <div class="button-box">
+                                    <a th:href ="@{/}">
+                                        <button class="default-btn floatright">Back to Home</button>
+                                    </a>                                                                                              
                                 </div>
                             </div>
                         </div>
@@ -57,22 +49,6 @@
     <script th:src="@{/manager_resources/plugins/jquery-validation/jquery.validate.js}"></script>
     <script th:src="@{/manager_resources/plugins/jquery-validation/additional-methods.min.js}"></script>
     <script th:src="@{/manager_resources/Scripts/adminlte.min.js}"></script>
-    <script  th:inline="none" layout:fragment="script">
-        function trimAll() {
-            $("form").find("input, textarea").each(function (i, e) {
-                if (e.type !== "file" && e.type !== "password") {
-                    $(e).val($(e).val().trim());
-                }
-            });
-        }
-        $("input").each(function (i, element) {
-            if (element.type !== "file" && element.type !== "password") {
-                $(element).focusout(function () {
-                    $(this).val($(this).val().trim());
-                })
-            }
-        });
-    </script>
 </body>
 
 </html>

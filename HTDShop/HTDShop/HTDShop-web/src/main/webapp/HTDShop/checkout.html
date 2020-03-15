@@ -26,22 +26,24 @@
             <div class="container">
                 <div class="row" th:if="${session.loggedInCustomer == null}">
                     <div class="col-md-12">
-                        <div class="coupon-accordion" >
+                        <div class="coupon-accordion">
                             <!-- ACCORDION START -->
-                            <h3><span id="showlogin" >Click here to login</span></h3>
+                            <h3><span id="showlogin">Click here to login</span></h3>
                             <div id="checkout-login" class="coupon-content">
                                 <div class="coupon-info">
                                     <form th:action="@{/login/doLogin?redirect=checkout}" method="POST">
                                         <p class="form-row-first">
                                             <label>Email <span class="required">*</span></label>
-                                            <input type="email" name="email" placeholder="Email" id="email" required autofocus />
+                                            <input type="email" name="email" placeholder="Email" id="email" required
+                                                autofocus />
                                         </p>
                                         <p class="form-row-last">
                                             <label>Password <span class="required">*</span></label>
-                                            <input type="password" name="password" placeholder="Password" id="password" required />
+                                            <input type="password" name="password" placeholder="Password" id="password"
+                                                required />
                                         </p>
                                         <p class="form-row">
-                                            <button type="submit" class="default-btn floatright">Login</button>  
+                                            <button type="submit" class="default-btn floatright">Login</button>
                                         </p>
                                     </form>
                                 </div>
@@ -53,45 +55,81 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-6 col-md-12 col-12">
-                        <form th:action="@{/cart/doCheckout}" th:object="${custom}" method="POST" >
+                        <form th:action="@{/cart/doCheckout}" th:object="${custom}" method="POST" id="frmCustomer">
                             <div class="checkbox-form">
                                 <h3>Billing Details</h3>
                                 <div class="row">
-                                    <input type="hidden" th:field="*{id}" th:if="${session.loggedInCustomer != null}"/> 
+                                    <input type="hidden" th:field="*{id}" th:if="${session.loggedInCustomer != null}" />
                                     <div class="col-md-6">
                                         <div class="checkout-form-list">
-                                            <label>First Name <span class="required">*</span></label>
-                                            <input type="text" placeholder="Enter your First Name" required
-                                                th:field="*{firstName}"/>
+                                            <label for="firstName">First Name <span class="required">*</span></label>
+                                            <input type="text" placeholder="Enter your First Name"
+                                                th:classappend="${(#fields.hasErrors('firstName')?'is-invalid':'') + (submited != null and !#fields.hasErrors('firstName')?'is-valid':'')}"
+                                                required th:field="*{firstName}" />
+                                        </div>
+                                        <div class="col-sm-3"></div>
+                                        <div class="col-sm-9" th:if="${#fields.hasErrors('firstName')}">
+                                                    <ul class="text-danger">
+                                                        <li th:each="err : ${#fields.errors('firstName')}" th:text="${err}">Name Error</li>
+                                                    </ul> 
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="checkout-form-list">
-                                            <label>Last Name <span class="required">*</span></label>
+                                            <label for="lastName">Last Name <span class="required">*</span></label>
                                             <input type="text" placeholder="Enter your Last Name" required
+                                                th:classappend="${(#fields.hasErrors('lastName')?'is-invalid':'') + (submited != null and !#fields.hasErrors('lastName')?'is-valid':'')}"
                                                 th:field="*{lastName}" />
                                         </div>
+                                        <div class="col-sm-3"></div>
+                                                <div class="col-sm-9" th:if="${#fields.hasErrors('lastName')}">
+                                                    <ul class="text-danger">
+                                                        <li th:each="err : ${#fields.errors('lastName')}" th:text="${err}">Name Error</li>
+                                                    </ul> 
+                                                </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="checkout-form-list">
-                                            <label>Address <span class="required">*</span></label>
+                                            <label for="address">Address <span class="required">*</span></label>
                                             <input type="text" placeholder="Enter your address" required
-                                                th:field="*{address}"/>
+                                                th:classappend="${(#fields.hasErrors('address')?'is-invalid':'') + (submited != null and !#fields.hasErrors('address')?'is-valid':'')}"
+                                                th:field="*{address}" />
                                         </div>
+                                        <div class="col-sm-3"></div>
+                                                <div class="col-sm-9" th:if="${#fields.hasErrors('address')}">
+                                                    <ul class="text-danger">
+                                                        <li th:each="err : ${#fields.errors('address')}" th:text="${err}">Name Error</li>
+                                                    </ul> 
+                                                </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="checkout-form-list">
-                                            <label>Email Address <span class="required">*</span></label>
+                                            <label for="email">Email Address <span class="required">*</span></label>
                                             <input type="email" placeholder="Enter your email"
                                                 th:readonly="${session.loggedInCustomer != null}" required
-                                                th:field="*{email}"/>
+                                                th:classappend="${(#fields.hasErrors('email')?'is-invalid':'') + (submited != null and !#fields.hasErrors('email')?'is-valid':'')}"
+                                                th:field="*{email}" />
                                         </div>
+                                        <div class="col-sm-3"></div>
+                                                <div class="col-sm-9" th:if="${#fields.hasErrors('email')}">
+                                                    <ul class="text-danger">
+                                                        <li th:each="err : ${#fields.errors('email')}" th:text="${err}">Name Error</li>
+                                                    </ul> 
+                                                </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="checkout-form-list">
-                                            <label>Phone <span class="required">*</span></label>
+                                            <label for="phone">Phone <span class="required">*</span></label>
                                             <input type="text" placeholder="Enter your phone" required
+                                                pattern="^[0-9]{11,12}$" title="Phone number have 11-12 digits"
+                                                th:classappend="${(#fields.hasErrors('phone')?'is-invalid':'') + (submited != null and !#fields.hasErrors('phone')?'is-valid':'')}"
                                                 th:field="*{phone}">
+                                        </div>
+                                        <div class="col-sm-3"></div>
+                                        <div class="col-sm-9" th:if="${#fields.hasErrors('phone')}">
+                                                    <ul class="text-danger">
+                                                        <li th:each="err : ${#fields.errors('phone')}" th:text="${err}">Name Error</li>
+                                                    </ul> 
                                         </div>
                                     </div>
                                     <div class="col-md-12" th:if="${session.loggedInCustomer == null}">
@@ -101,10 +139,10 @@
                                     </div>
                                 </div>
                                 <div class="payment-method">
-                                    <div class="payment-accordion">                                        
+                                    <div class="payment-accordion">
                                         <div class="order-button-payment">
                                             <input type="submit" value="Place order" />
-                                        </div>								
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -134,7 +172,7 @@
                                                 <span class="amount" th:text="${'$' + #numbers.formatDecimal(shopSv.getcartItemPrice(c.id,c.quan) , 1, 'POINT', 2, 'COMMA')}">£79.84</span>
                                             </td>                                            	
                                         </tr>
-                                                                           	                                        
+                                                                           	                                         
                                     </tbody>
                                     <tfoot>
                                         <tr class="order-total">
@@ -158,31 +196,22 @@
     <!-- AdminLTE App -->
     <script th:src="@{/manager_resources/Scripts/adminlte.min.js}"></script>
 
-    <script>
-        // function doRemoveFromCart(id) {
-        //     var removeFromCartUrl = /*[[@{/cart/remove}]]*/'';
-        //     removeFromCartUrl += "?id=" + id;
-        //     $.ajax({
-        //         url: removeFromCartUrl,
-        //         method: 'POST',
-        //         cache: false,
-        //         success: function (data) {
-        //             if (data == "ok") {
-        //                 getCart();
-        //                 Toast.fire({
-        //                     type: 'success',
-        //                     title: 'Removed from cart.'
-        //                 });
-        //             } else {
-        //                 Toast.fire({
-        //                     type: 'error',
-        //                     title: data,
-        //                     timer: 5000
-        //                 });
-        //             }
-        //         }
-        //     });
-        // }
+    <script th:inline="none" layout:fragment="script">
+        function trimAll() {
+            $("form").find("input, textarea").each(function (i, e) {
+                if (e.type !== "file" && e.type !== "password") {
+                    $(e).val($(e).val().trim());
+                }
+            });
+        }
+        $("input").each(function (i, element) {
+            if (element.type !== "file" && element.type !== "password") {
+                $(element).focusout(function () {
+                    $(this).val($(this).val().trim());
+                })
+            }
+        });
+
     </script>
 </body>
 

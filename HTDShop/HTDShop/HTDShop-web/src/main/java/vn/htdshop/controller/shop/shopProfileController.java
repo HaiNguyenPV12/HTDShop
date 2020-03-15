@@ -82,9 +82,13 @@ public class shopProfileController {
             customerOld.setGender(custom.getGender());
             updated = true;
         }
-        if (!customerOld.getBirthday().equals(custom.getBirthday())) {
+        if (customerOld.getBirthday()==null) {
             customerOld.setBirthday(custom.getBirthday());
-            updated = true;
+        }else{
+            if (!customerOld.getBirthday().equals(custom.getBirthday())) {
+                customerOld.setBirthday(custom.getBirthday());
+                updated = true;
+            }
         }
         if (!customerOld.getPhone().equals(custom.getPhone())) {
             customerOld.setPhone(custom.getPhone().trim());
@@ -95,6 +99,7 @@ public class shopProfileController {
             session.setAttribute("loggedInCustomer", customerOld);
         }
         redirect.addFlashAttribute("goodAlert", "Successfully updated \"" + custom.getEmail() + "\"!");
+        redirect.addFlashAttribute("error",error);
         return "redirect:/profile";
     }
 
