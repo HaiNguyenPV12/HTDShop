@@ -38,8 +38,11 @@
                                 </tr>
                                 <tr th:each="p : ${preBuilt}">
                                     <td th:text="${p.id}"></td>
-                                    <td th:text="${p.name}">CPU</td>
-                                    <td th:text="${p.createdAt}"></td>
+                                    <td>
+                                        <a th:href="@{/prebuilt(id=${p.id})}" th:text="${p.name}"></a>
+                                    </td>
+                                    <td th:text="${#dates.format(p.createdAt, 'dd-MM-yyyy')}"></td>
+                                    <!-- <td th:text="${p.createdAt}"></td> -->
                                 </tr>
                                 </th:block>
                             </tbody>

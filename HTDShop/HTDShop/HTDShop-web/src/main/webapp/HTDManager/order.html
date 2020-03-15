@@ -65,8 +65,8 @@
                                     th:classappend="${(o.orderStatus==2?'bg-yellow':'') + (o.orderStatus==4?'bg-green':'')  + (o.orderStatus==3?'bg-blue':'') + (o.orderStatus==5?'bg-red':'')}">
                                     <td th:text="${o.id}">001</td>
                                     <td th:text="${o.customer.firstName}">Intel Core i5 8400 3.0 GHz</td>
-                                    <td th:text="${#dates.format(o.orderDate, 'yyyy-MM-dd::hh-mm-ss')}">CPU</td>
-                                    <td th:text="${#dates.format(o.paidDate, 'yyyy-MM-dd::hh-mm-ss')}">Intel</td>
+                                    <td th:text="${#dates.format(o.orderDate, 'dd-MM-yyyy')}">CPU</td>
+                                    <td th:text="${#dates.format(o.paidDate, 'dd-MM-yyyy')}">Intel</td>
                                     <td>
                                         <th:block th:if="${o.orderStatus==1}">Ordered</th:block>
                                         <th:block th:if="${o.orderStatus==2}">Confirmed</th:block>
@@ -94,7 +94,7 @@
                                             <i class="fas fa-check-circle"></i>
                                         </button>
                                         <button class="btn btn-danger btn-sm" href="#" data-toggle="tooltip"
-                                            th:if="${o.orderStatus != 4 && o.orderStatus != 5}" title="Cancelling"
+                                            th:if="${o.orderStatus != 4 && o.orderStatus != 5}" title="Cancel"
                                             th:onclick='confirmCancel([[${o.id}]],[[@{/manager/order/doCancel(id=${o.id})}]])'>
                                             <i class="far fa-stop-circle"></i>
                                         </button>
@@ -133,21 +133,21 @@
                 true);
         }
         function confirmOrder(title, url) {
-            showModal('Confirm Cancelling',
+            showModal('Confirm Confirm',
                 'Are you sure to confirm order "' + title + '" ?<br>',
                 url,
                 true,
                 true);
         }
         function confirmShipping(title, url) {
-            showModal('Confirm Cancelling',
+            showModal('Confirm Shipping',
                 'Are you sure to Shipping order "' + title + '" ?<br>',
                 url,
                 true,
                 true);
         }
         function confirmDone(title, url) {
-            showModal('Confirm Cancelling',
+            showModal('Confirm Done',
                 'Are you sure to done order "' + title + '" ?<br>',
                 url,
                 true,

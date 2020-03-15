@@ -97,24 +97,41 @@ public class shopCartController {
         return "HTDShop/checkout";
     }
 
-    // @RequestMapping(value = "doUpdateCart", method = RequestMethod.POST)
-    // public String postUpdateCart(Model model, @RequestParam(value = "quan") Integer quan) {
-    //     shopService.checkLogin();
-    //     for (CartItem item : shopService.getCart()) {
-    //         if (item.getQuan() != quan) {
-    //             item.setQuan(quan);
-                
-    //         }
-    //     }
-    //     return "redirect:/checkout";
-    // }
-
-
+    @RequestMapping(value = "doUpdateCart", method = RequestMethod.POST)
+    public String postUpdateCart(Model model, @RequestParam(value = "quan", required = true) Integer quan,
+            @RequestParam(value = "id", required = false) Integer id, HttpServletResponse response) {
+        Product p = productFacade.find(id);
+        PreBuilt pre = preBuiltFacade.find(id);
+        List<CartItem> cart = shopService.getCart();
+        if (p == null) {
+            return "Cannot find this product!";
+        }
+        if (pre == null) {
+            return "Cannot find this preBuilt!";
+        }
+        for (CartItem cartItem : cart) {
+            if (("a" + id).equals(cartItem.getId())) {
+                if (quan<0|| quan > p.getStock()) {
+                    return "Cannot update cart.";
+                }
+                cartItem.setQuan(quan);
+                cart.set(quan, cartItem);
+                break;
+            }
+            if (("b" + id).equals(cartItem.getId())) {
+                if ((quan<0|| quan > pre.getStock())) {
+                    return "Cannot update cart.";
+                }
+                cartItem.setQuan(quan);
+                break;
+            }
+        }
+        return "redirect:/checkout";
+    }
 
     @RequestMapping(value = "doCheckout", method = RequestMethod.POST)
     public String doCheckout(@Valid @ModelAttribute("custom") Customer custom, HttpServletResponse response,
-            BindingResult error,
-            RedirectAttributes redirect, Model model) {
+            BindingResult error, RedirectAttributes redirect, Model model) {
         Order1 order1 = null;
         OrderDetail orderDetail = null;
 
@@ -148,7 +165,7 @@ public class shopCartController {
                     product.setStock(result);
                     productFacade.edit(product);
 
-                }else{
+                } else {
                     orderDetail.setId(null);
                     orderDetail.setOrder1(order1);
                     orderDetail.setPreBuilt(preBuiltFacade.find(Integer.parseInt(item.getId().substring(1))));
@@ -204,7 +221,7 @@ public class shopCartController {
                     orderDetail.setQuantity(item.getQuan());
                     orderDetail.setPrice(shopService.getcartItemPrice(item.getId(), item.getQuan()));
                     orderDetailFacade.create(orderDetail);
-                }else{
+                } else {
                     orderDetail.setId(null);
                     orderDetail.setOrder1(order1);
                     orderDetail.setPreBuilt(preBuiltFacade.find(Integer.parseInt(item.getId().substring(1))));
@@ -215,8 +232,11 @@ public class shopCartController {
             }
             shopService.saveUserCart(new ArrayList<CartItem>());
         }
-        redirect.addFlashAttribute("error",error);
-        return "redirect:/";
+        redirect.addFlashAttribute("error", error);
+        model.addAttribute("custom", custom);
+        model.asMap().put("cart", shopService.getCart());
+        model.addAttribute("order", order1);
+        return "HTDShop/viewSuccess";
     }
 
     @RequestMapping(value = "add", method = RequestMethod.POST)

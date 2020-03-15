@@ -41,14 +41,17 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr th:if="${cart eq null or cart.empty}">
-                                            <td colspan="9">No Item in Cart</td>
-                                        </tr>
-                                        <tr th:each="c ,ite : ${cart}" th:with="product = ${shopSv.getCartInfo(c.id)}">
-                                            <td class="product-remove"><a th:onclick="doRemoveFromCart([[${c.id}]])"><i
-                                                        class="pe-7s-close"></i></a></td>
-                                            <td class="product-thumbnail">
-                                                <a th:href="@{/prebuilt(id=${#strings.substring(c.id, 1)})}" th:if="${#strings.substring(c.id, 0, 1).equals('b')}">
+                                        <form th:action="@{/cart/doUpdateCart}">
+                                            <tr th:if="${cart == null || cart.size() == 0}">
+                                                <td colspan="9">No Item in Cart</td>
+                                            </tr>
+                                            <tr th:each="c ,ite : ${cart}"
+                                                th:with="product = ${shopSv.getCartInfo(c.id)}">
+                                                <td class="product-remove"><a
+                                                        th:onclick="doRemoveFromCart([[${c.id}]])"><i
+                                                            class="pe-7s-close"></i></a></td>
+                                                <td class="product-thumbnail">
+                                                    <a th:href="@{/prebuilt(id=${#strings.substring(c.id, 1)})}" th:if="${#strings.substring(c.id, 0, 1).equals('b')}">
                                                     <img style="width:85px;height:101px;" th:if="${product.preBuiltImageCollection.size() > 0}"
                                                         th:src="@{/images/__${product.preBuiltImageCollection[0].path}__}" alt=""
                                                         class="cart-item">
@@ -86,7 +89,6 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <form th:action="@{/cart/doUpdateCart}">
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                         <div class="coupon-all">

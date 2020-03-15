@@ -37,7 +37,7 @@
                     <th:block th:if="${order.orderStatus==5}"><strong>Cancelled</strong></th:block>
                 </div>
                 <div class="content2-header1">
-                    <p>Order Date : <span th:text="*{orderDate}">7-NOV-2015</span></p>
+                    <p>Order Date : <span th:text="${#dates.format(order.orderDate, 'dd-MM-yyyy')}">7-NOV-2015</span></p>
                 </div>
                 <div class="clear"></div>
             </div>

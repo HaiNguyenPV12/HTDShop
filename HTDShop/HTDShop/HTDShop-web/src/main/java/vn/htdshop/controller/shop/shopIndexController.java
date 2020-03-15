@@ -23,6 +23,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -175,31 +176,60 @@ public class shopIndexController {
     }
 
     @RequestMapping(value = "checkOrder", method = RequestMethod.GET)
-    public String viewCheckOrder(Model model, ModelMap modelMap, HttpSession session) {
+    public String viewCheckOrder(@ModelAttribute("order") Order1 order, Model model, ModelMap modelMap, HttpSession session) {
         shopService.checkLogin();
+        model.addAttribute("order", new Order1());
+        if (model.asMap().containsKey("error")) {
+            model.addAttribute("org.springframework.validation.BindingResult.customer", model.asMap().get("error"));
+        }
         return "HTDShop/checkOrder";
     }
 
+    // @RequestMapping(value = "doCheck", method = RequestMethod.GET)
+    // public String viewOrderTracking(Model model, ModelMap modelMap, HttpSession session,
+    //         @RequestParam(value = "id", required = false) Integer id,
+    //         @RequestParam(value = "phone", required = false) String phone,
+    //         RedirectAttributes redirect
+    //         ) {
+    //     shopService.checkLogin();
+    //     Order1 order = order1Facade.findByPhoneAndId(id, phone);
+    //     if (order == null) {
+    //         // error.reject("error","Order not found");
+    //         return "redirect:/checkOrder";
+    //     } else {
+    //         if (order.getOrderStatus() == 5) {
+    //             return "redirect:/checkOrder";
+    //         } else {
+    //             model.addAttribute("order", order);
+    //         }
+    //     }
+    //     // redirect.addFlashAttribute("error", error);
+    //     return "HTDShop/orderTracking";
+    // }
+
     @RequestMapping(value = "doCheck", method = RequestMethod.GET)
-    public String viewOrderTracking(Model model, ModelMap modelMap, HttpSession session,
-            @RequestParam(value = "id", required = false) Integer id,
-            @RequestParam(value = "phone", required = false) String phone,
-            RedirectAttributes redirect,
-            BindingResult error) {
-        shopService.checkLogin();
-        Order1 order = order1Facade.findByPhoneAndId(id, phone);
-        if (order == null) {
-            error.reject("error","Order not found");
-            return "redirect:/checkOrder";
-        } else {
-            if (order.getOrderStatus() == 5) {
-                return "redirect:/checkOrder";
-            } else {
-                model.addAttribute("order", order);
-            }
+    public String postLogin(@ModelAttribute("order") Order1 order, Model model, RedirectAttributes redirect, BindingResult error,
+            HttpSession session, HttpServletResponse response) {
+
+        if (order.getId() == null ) {
+            error.rejectValue("id", "order", "ID cannot be blank.");
         }
+        // Mannually check blank password
+        if (order.getCustomer().getPhone() == null ||order.getCustomer().getPhone().isEmpty()) {
+            error.rejectValue("phone", "order", "Phone cannot be blank.");
+        }
+
+        if (!error.hasErrors()) {
+            Order1 result = order1Facade.findByPhoneAndId(order.getId(), order.getCustomer().getPhone());
+            if (result != null && result.getOrderStatus() != 5) {
+                model.addAttribute("order", result);
+                return "HTDShop/orderTracking";
+            }
+            error.rejectValue("id", "order", "Not Found Order");
+        }
+
         redirect.addFlashAttribute("error", error);
-        return "HTDShop/orderTracking";
+        return "redirect:/checkOrder";
     }
 
 }
