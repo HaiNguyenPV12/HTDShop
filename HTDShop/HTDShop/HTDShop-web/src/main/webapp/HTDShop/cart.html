@@ -47,10 +47,11 @@
                                             </tr>
                                             <tr th:each="c ,ite : ${cart}"
                                                 th:with="product = ${shopSv.getCartInfo(c.id)}">
-                                                <input type="hidden" th:value="${c.id}" name="id"/>
+                                                <input type="hidden" th:value="${c.id}" name="id" />
                                                 <td class="product-remove"><a
                                                         th:onclick="doRemoveFromCart([[${c.id}]])"><i
-                                                            class="pe-7s-close"></i></a></td>
+                                                            class="pe-7s-close"></i></a>
+                                                </td>
                                                 <td class="product-thumbnail">
                                                     <a th:href="@{/prebuilt(id=${#strings.substring(c.id, 1)})}" th:if="${#strings.substring(c.id, 0, 1).equals('b')}">
                                                     <img style="width:85px;height:101px;" th:if="${product.preBuiltImageCollection.size() > 0}"
@@ -58,8 +59,8 @@
                                                         class="cart-item">
                                                     <img style="width:85px;height:101px;" th:if="${product.preBuiltImageCollection.size() == 0}" th:src="@{/images/noimage.png}" alt=""
                                                         class="cart-item">
-                                                </a>
-                                                <a th:href="@{/product(id=${#strings.substring(c.id, 1)})}" th:if="${#strings.substring(c.id, 0, 1).equals('a')}">
+                                                    </a>
+                                                    <a th:href="@{/product(id=${#strings.substring(c.id, 1)})}" th:if="${#strings.substring(c.id, 0, 1).equals('a')}">
                                                     <img style="width:85px;height:101px;" th:if="${product.productImageCollection.?[mainImage==true].size() > 0}"
                                                         th:src="@{/images/__${product.productImageCollection.?[mainImage==true][0].imagePath}__}" alt=""
                                                         class="cart-item">
@@ -68,8 +69,8 @@
                                                         class="cart-item">
                                                     <img style="width:85px;height:101px;" th:if="${product.productImageCollection.size() == 0}" th:src="@{/images/noimage.png}" alt=""
                                                         class="cart-item">
-                                                </a>
-                                            </td>
+                                                    </a>
+                                                </td>
                                             <td class="product-name">
                                                 <a th:href="@{/product(id=${#strings.substring(c.id, 1)})}" th:text="${product.name}" th:if="${#strings.substring(c.id, 0, 1).equals('a')}">Bits Headphone</a>
                                                 <a th:href="@{/prebuilt(id=${#strings.substring(c.id, 1)})}" th:text="${product.name}" th:if="${#strings.substring(c.id, 0, 1).equals('b')}">Bits Headphone</a>
@@ -83,7 +84,7 @@
                                             <td class="product-quantity">
                                                 <input type="number" th:value="${c.quan}">
                                                 </input>
-                                                <input type="hidden" th:value="${c.quan}" name="quan"/>
+                                                <!-- <input type="hidden" th:value="${c.quan}" name="quan"/> -->
                                             </td>
 
                                             <td class="product-subtotal"><span th:text="${'$' + #numbers.formatDecimal(shopSv.getcartItemPrice(c.id,c.quan) , 1, 'POINT', 2, 'COMMA')}">$152.97‬</span></td>
@@ -91,7 +92,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                                <div class="row">
+                                <!-- <div class="row">
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                         <div class="coupon-all">
                                             <div class="coupon2">
@@ -99,7 +100,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div> 
+                                </div>  -->
                             </form>
                             <div class="row">
                                 <div class="col-md-5 ml-auto">
