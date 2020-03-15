@@ -183,8 +183,9 @@
                                     th:with="cpu = ${session.prebuiltSession.cpu}">
                                     <div class="row">
                                         <div class="col-md-5">
+                                            $
                                             <th:block th:if="${cpu.price != shopService.getDiscountPrice(cpu.id)}">
-                                                $ <del th:text="${cpu.price}"></del>
+                                                <del th:text="${cpu.price}"></del>
                                             </th:block>
                                             <span th:text="${#numbers.formatDecimal(shopService.getDiscountPrice(cpu.id), 1, 'COMMA', 2, 'POINT')}"></span>
                                         </div>
@@ -219,9 +220,10 @@
                                 th:with="cpucooler = ${session.prebuiltSession.cpucooler}">
                                     <div class="row">
                                         <div class="col-md-5">
+                                            $
                                             <th:block
                                                 th:if="${cpucooler.price != shopService.getDiscountPrice(cpucooler.id)}">
-                                                $ <del th:text="${cpucooler.price}"></del>
+                                                <del th:text="${cpucooler.price}"></del>
                                             </th:block>
                                             <span th:text="${#numbers.formatDecimal(shopService.getDiscountPrice(cpucooler.id), 1, 'COMMA', 2, 'POINT')}"></span>
                                         </div>
@@ -255,12 +257,13 @@
                                 th:with="motherboard = ${session.prebuiltSession.motherboard}">
                                     <div class="row">
                                         <div class="col-md-5">
+                                            $
                                             <th:block
-                                            th:if="${motherboard.price != shopService.getDiscountPrice(motherboard.id)}">
-                                        $ <del th:text="${motherboard.price}"></del>
-                                        </th:block>
-                                        <span
-                                            th:text="${#numbers.formatDecimal(shopService.getDiscountPrice(motherboard.id), 1, 'COMMA', 2, 'POINT')}"></span>
+                                                th:if="${motherboard.price != shopService.getDiscountPrice(motherboard.id)}">
+                                            <del th:text="${motherboard.price}"></del>
+                                            </th:block>
+                                            <span
+                                                th:text="${#numbers.formatDecimal(shopService.getDiscountPrice(motherboard.id), 1, 'COMMA', 2, 'POINT')}"></span>
                                         </div>
                                         <div class="col-md-2">
                                             <a th:href="@{/build/motherboard/discard}" class="btn btn-danger">X</a>
@@ -292,9 +295,10 @@
                                 th:with="memory = ${session.prebuiltSession.memory}">
                                     <div class="row">
                                         <div class="col-md-5">
+                                            $
                                             <th:block
                                             th:if="${memory.price != shopService.getDiscountPrice(memory.id)}">
-                                            $ <del th:text="${memory.price}"></del>
+                                            <del th:text="${memory.price}"></del>
                                             </th:block>
                                             <span th:text="${#numbers.formatDecimal(shopService.getDiscountPrice(memory.id), 1, 'COMMA', 2, 'POINT')}"></span>
                                         </div>
@@ -328,9 +332,10 @@
                                 th:with="storage = ${session.prebuiltSession.storage}">
                                     <div class="row">
                                         <div class="col-md-5">
+                                            $
                                             <th:block
                                             th:if="${storage.price != shopService.getDiscountPrice(storage.id)}">
-                                            $ <del th:text="${storage.price}"></del>
+                                            <del th:text="${storage.price}"></del>
                                             </th:block>
                                             <span th:text="${#numbers.formatDecimal(shopService.getDiscountPrice(storage.id), 1, 'COMMA', 2, 'POINT')}"></span>
                                         </div>
@@ -363,9 +368,10 @@
                                 th:with="vga = ${session.prebuiltSession.vga}">
                                     <div class="row">
                                         <div class="col-md-5">
+                                            $
                                             <th:block
                                             th:if="${vga.price != shopService.getDiscountPrice(vga.id)}">
-                                            $ <del th:text="${vga.price}"></del>
+                                            <del th:text="${vga.price}"></del>
                                             </th:block>
                                             <span th:text="${#numbers.formatDecimal(shopService.getDiscountPrice(vga.id), 1, 'COMMA', 2, 'POINT')}"></span>
                                         </div>
@@ -399,9 +405,10 @@
                                 th:with="cases = ${session.prebuiltSession.cases}">
                                     <div class="row">
                                         <div class="col-md-5">
+                                            $
                                             <th:block
                                             th:if="${cases.price != shopService.getDiscountPrice(cases.id)}">
-                                            $ <del th:text="${cases.price}"></del>
+                                            <del th:text="${cases.price}"></del>
                                             </th:block>
                                             <span th:text="${#numbers.formatDecimal(shopService.getDiscountPrice(cases.id), 1, 'COMMA', 2, 'POINT')}"></span>
                                         </div>
@@ -435,9 +442,10 @@
                                 th:with="psu = ${session.prebuiltSession.psu}">
                                     <div class="row">
                                         <div class="col-md-5">
+                                            $
                                             <th:block
                                             th:if="${psu.price != shopService.getDiscountPrice(psu.id)}">
-                                            $ <del th:text="${psu.price}"></del>
+                                            <del th:text="${psu.price}"></del>
                                             </th:block>
                                             <span th:text="${#numbers.formatDecimal(shopService.getDiscountPrice(psu.id), 1, 'COMMA', 2, 'POINT')}"></span>
                                         </div>
@@ -471,9 +479,10 @@
                                 th:with="monitor = ${session.prebuiltSession.monitor}">
                                     <div class="row">
                                         <div class="col-md-5">
+                                            $
                                             <th:block
                                             th:if="${monitor.price != shopService.getDiscountPrice(monitor.id)}">
-                                            $ <del th:text="${monitor.price}"></del>
+                                            <del th:text="${monitor.price}"></del>
                                             </th:block>
                                             <span th:text="${#numbers.formatDecimal(shopService.getDiscountPrice(monitor.id), 1, 'COMMA', 2, 'POINT')}"></span>
                                         </div>
