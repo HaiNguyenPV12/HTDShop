@@ -165,9 +165,13 @@ public class managerCustomerController {
                     }
                     updated = true;
                 }
-                if (!custOld.getBirthday().equals(customer.getBirthday())){
+                if (custOld.getBirthday()==null) {
                     custOld.setBirthday(customer.getBirthday());
-                    updated = true;
+                }else{
+                    if (!custOld.getBirthday().equals(customer.getBirthday())) {
+                        custOld.setBirthday(customer.getBirthday());
+                        updated = true;
+                    }
                 }
 
                 if (!custOld.getGender().equals(customer.getGender())) {

@@ -47,6 +47,7 @@
                                             </tr>
                                             <tr th:each="c ,ite : ${cart}"
                                                 th:with="product = ${shopSv.getCartInfo(c.id)}">
+                                                <input type="hidden" th:value="${c.id}" name="id"/>
                                                 <td class="product-remove"><a
                                                         th:onclick="doRemoveFromCart([[${c.id}]])"><i
                                                             class="pe-7s-close"></i></a></td>
@@ -80,8 +81,9 @@
                                                 th:text="${'$' + #numbers.formatDecimal(shopSv.getPreBuiltDiscountPrice(product) , 1, 'POINT', 2, 'COMMA')}"></span>
                                             </td>
                                             <td class="product-quantity">
-                                                <input type="number" th:value="${c.quan}" id="quan" name="quan">
+                                                <input type="number" th:value="${c.quan}">
                                                 </input>
+                                                <input type="hidden" th:value="${c.quan}" name="quan"/>
                                             </td>
 
                                             <td class="product-subtotal"><span th:text="${'$' + #numbers.formatDecimal(shopSv.getcartItemPrice(c.id,c.quan) , 1, 'POINT', 2, 'COMMA')}">$152.97‬</span></td>

@@ -57,6 +57,22 @@
     <script th:src="@{/manager_resources/plugins/jquery-validation/jquery.validate.js}"></script>
     <script th:src="@{/manager_resources/plugins/jquery-validation/additional-methods.min.js}"></script>
     <script th:src="@{/manager_resources/Scripts/adminlte.min.js}"></script>
+    <script  th:inline="none" layout:fragment="script">
+        function trimAll() {
+            $("form").find("input, textarea").each(function (i, e) {
+                if (e.type !== "file" && e.type !== "password") {
+                    $(e).val($(e).val().trim());
+                }
+            });
+        }
+        $("input").each(function (i, element) {
+            if (element.type !== "file" && element.type !== "password") {
+                $(element).focusout(function () {
+                    $(this).val($(this).val().trim());
+                })
+            }
+        });
+    </script>
 </body>
 
 </html>

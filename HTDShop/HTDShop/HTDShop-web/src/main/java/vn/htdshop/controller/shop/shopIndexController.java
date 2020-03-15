@@ -225,7 +225,7 @@ public class shopIndexController {
                 model.addAttribute("order", result);
                 return "HTDShop/orderTracking";
             }
-            error.rejectValue("customer.phone", "order", "Not Found Order");
+            error.rejectValue("customer.phone", "order", "Not Found Order or Order cancelled");
         }
 
         redirect.addFlashAttribute("error", error);
