@@ -111,13 +111,18 @@ public class managerIndexController {
                         incomeThisMonth += income;
                     }
                 }
-
-                if (comparator.compare(order.getOrderDate(), today) == 0) {
+                if (DateTimeComparator.getDateOnlyInstance().compare(order.getOrderDate(), today) == 0) {
                     oToday++;
                     if (order.getOrderStatus() == 4) {
-                        incomeThisMonth += income;
+                        incomeToday += income;
                     }
                 }
+                // if (comparator.compare(order.getOrderDate(), today) == 0) {
+                // oToday++;
+                // if (order.getOrderStatus() == 4) {
+                // incomeThisMonth += income;
+                // }
+                // }
             }
             statistic.setIncomeToday(incomeToday);
             statistic.setIncomeThisMonth(incomeThisMonth);
@@ -169,7 +174,6 @@ public class managerIndexController {
                 statistic.setManuThisMonth("No data");
             }
 
-            
         }
 
         model.asMap().put("statistic", statistic);
