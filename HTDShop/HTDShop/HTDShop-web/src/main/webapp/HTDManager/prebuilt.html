@@ -85,6 +85,11 @@
                                             title="Details">
                                             <i class="nav-icon fas fa-receipt"></i>
                                         </a>
+                                        <a class="btn btn-warning btn-sm" th:if="${p.status == 1}"
+                                            th:href="@{/manager/prebuilt/rating(id=${p.id})}" data-toggle='tooltip'
+                                            title="Ratings">
+                                            <i class="nav-icon fas fa-thumbs-up"></i>
+                                        </a>
                                         <a class="btn btn-success btn-sm" th:if="${p.status == 2}"
                                             th:href="@{/manager/prebuilt/enable(id=${p.id})}" data-toggle='tooltip'
                                             title="Enable">

@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
@@ -29,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import vn.htdshop.entity.PreBuilt;
 import vn.htdshop.entity.Product;
 import vn.htdshop.sb.CategoryFacadeLocal;
 import vn.htdshop.sb.PreBuiltFacadeLocal;
@@ -230,6 +228,12 @@ public class shopIndexController {
 
         redirect.addFlashAttribute("error", error);
         return "redirect:/checkOrder";
+    }
+
+    @RequestMapping(value = "services", method = RequestMethod.GET)
+    public String viewServicePage() {
+        // return "HTDShop/about";
+        return "HTDShop/services";
     }
 
 }

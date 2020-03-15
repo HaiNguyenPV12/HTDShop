@@ -83,10 +83,17 @@ public class shopBuildAdd {
         if (preBuilt.getName().trim().isEmpty()) {
             redirect.addFlashAttribute("errorMessage", "Name is required");
             return "redirect:/build/add";
+        } else if (preBuilt.getName().trim().length() <= 10) {
+            redirect.addFlashAttribute("errorMessage", "Name must be at least 10 characters long");
+            return "redirect:/build/add";
         }
 
         if (preBuilt.getDetail().trim().isEmpty()) {
             redirect.addFlashAttribute("errorMessage", "Please describe your build.");
+            return "redirect:/build/add";
+        } else if (preBuilt.getDetail().length() < 15) {
+            redirect.addFlashAttribute("errorMessage",
+                    "Build description is too short. Must be at least 15 characters.");
             return "redirect:/build/add";
         }
 
