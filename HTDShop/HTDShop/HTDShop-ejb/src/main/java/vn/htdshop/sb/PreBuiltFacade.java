@@ -8,9 +8,10 @@ package vn.htdshop.sb;
 import java.util.List;
 
 import javax.ejb.Stateless;
-import javax.management.Query;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import vn.htdshop.entity.PreBuilt;
@@ -39,6 +40,10 @@ public class PreBuiltFacade extends AbstractFacade<PreBuilt> implements PreBuilt
         TypedQuery<PreBuilt> query = null;
         query = em.createQuery("SELECT p FROM PreBuilt p WHERE p.status = 1 AND p.name LIKE :keyword", PreBuilt.class);
         query.setParameter("keyword", "%" + keyword + "%");
+        // Query query = em.createNativeQuery("SELECT * FROM PreBuilt WHERE [Status] = 1
+        // AND Name LIKE '%" + keyword
+        // + "%' ORDER BY case when StaffUsername is null then 1 else 0 end, Id DESC",
+        // PreBuilt.class);
         return query.getResultList();
     }
 

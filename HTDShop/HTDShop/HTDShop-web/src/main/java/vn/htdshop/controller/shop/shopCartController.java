@@ -112,10 +112,12 @@ public class shopCartController {
     }
 
     // @RequestMapping(value = "doUpdateCart", method = RequestMethod.POST)
-    // public String postUpdateCart(Model model, @RequestParam(value = "quan", required = true) Integer quan,
-    //         @RequestParam(value = "id", required = false) Integer id, HttpServletResponse response) {
-        
-    //     return "redirect:/checkout";
+    // public String postUpdateCart(Model model, @RequestParam(value = "quan",
+    // required = true) Integer quan,
+    // @RequestParam(value = "id", required = false) Integer id, HttpServletResponse
+    // response) {
+
+    // return "redirect:/checkout";
     // }
 
     @RequestMapping(value = "doCheckout", method = RequestMethod.POST)
@@ -337,14 +339,18 @@ public class shopCartController {
         }
 
         // Check part's stock with current quan
-        if (p.getStaff() != null && p.getStock() < quan) {
+        if (p.getStaff() != null && Integer.parseInt(p.getStock().toString()) < quan) {
             return "Stock is not enough! Please try lowering quantity.";
-        } else if (p.getCpu().getStock() < quan || p.getMotherboard().getStock() < quan
-                || (p.getVga() != null && p.getVga().getStock() < quan) || p.getCases().getStock() < quan
-                || p.getMemory().getStock() < quan || p.getPsu().getStock() < quan || p.getStorage().getStock() < quan
-                || (p.getCpucooler() != null && p.getCpucooler().getStock() < quan)
-                || (p.getMonitor() != null && p.getMonitor().getStock() < quan)) {
-            return "Some part's stock is not enough! Please try lowering quantity.";
+        } else if (p.getCustomer() != null) {
+            if (p.getCpu().getStock() < quan || p.getMotherboard().getStock() < quan
+                    || (p.getVga() != null && p.getVga().getStock() < quan) || p.getCases().getStock() < quan
+                    || p.getMemory().getStock() < quan || p.getPsu().getStock() < quan
+                    || p.getStorage().getStock() < quan
+                    || (p.getCpucooler() != null && p.getCpucooler().getStock() < quan)
+                    || (p.getMonitor() != null && p.getMonitor().getStock() < quan)) {
+                return "Some part's stock is not enough! Please try lowering quantity.";
+            }
+
         }
 
         List<CartItem> cart = shopService.getCart();

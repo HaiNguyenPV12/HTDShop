@@ -130,8 +130,11 @@ public class managerProductImageController {
         for (ProductImage productImage : productImages) {
             result.add(new ProductImageView(productImage));
         }
-        result = result.stream().sorted(Comparator.comparing(ProductImageView::getMainImage, Comparator.reverseOrder()))
-                .collect(Collectors.toList());
+        result.sort(Comparator.comparing(ProductImageView::getMainImage, Comparator.reverseOrder()));
+        // result =
+        // result.stream().sorted(Comparator.comparing(ProductImageView::getMainImage,
+        // Comparator.reverseOrder()))
+        // .collect(Collectors.toList());
 
         return result;
     }
