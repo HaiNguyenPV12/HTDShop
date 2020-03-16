@@ -38,7 +38,7 @@
     <div layout:fragment="breadcrumb">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a th:href="@{/manager}">Home</a></li>
-            <li class="breadcrumb-item active">Order Details</li>
+            <li class="breadcrumb-item active"><a th:href="@{/manager/order}">Orders</a></li>
         </ol>
     </div>
 
@@ -58,9 +58,9 @@
                             <tbody>
                                 <tr th:each="o : ${order.orderDetailCollection}">
                                     <td th:text="${o.id}">001</td>
-                                    <td th:text="${o.product.name}" th:if="${o.product!=null}">Intel Core i5 8400 3.0
+                                    <td th:text="${o.product.name}" th:if="${o.product != null}">Intel Core i5 8400 3.0
                                         GHz</td>
-                                    <td th:text="${o.preBuilt.name}" th:if="${o.preBuilt!=null}">Intel Core i5 8400 3.0
+                                    <td th:text="${o.preBuilt.name}" th:if="${o.preBuilt != null}">Intel Core i5 8400 3.0
                                         GHz</td>
                                     <td th:text="${o.quantity}">CPU</td>
                                     <td th:text="'$'+${o.price}">Intel</td>
