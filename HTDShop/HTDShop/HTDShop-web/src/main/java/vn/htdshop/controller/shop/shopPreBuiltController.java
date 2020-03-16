@@ -271,17 +271,23 @@ public class shopPreBuiltController {
         // Sort
         if (search.getSort() != null && search.getSort().equals("priceasc")) {
             sortString = search.getSort();
-            result = result.stream().sorted(
-                    Comparator.comparing(p -> shopService.getPreBuiltDiscountPrice(p), Comparator.naturalOrder()))
-                    .collect(Collectors.toList());
+            result.sort(Comparator.comparing(p -> shopService.getPreBuiltDiscountPrice(p), Comparator.naturalOrder()));
+            // result = result.stream().sorted(
+            // Comparator.comparing(p -> shopService.getPreBuiltDiscountPrice(p),
+            // Comparator.naturalOrder()))
+            // .collect(Collectors.toList());
         } else if (search.getSort() != null && search.getSort().equals("pricedesc")) {
             sortString = search.getSort();
-            result = result.stream().sorted(
-                    Comparator.comparing(p -> shopService.getPreBuiltDiscountPrice(p), Comparator.reverseOrder()))
-                    .collect(Collectors.toList());
+            result.sort(Comparator.comparing(p -> shopService.getPreBuiltDiscountPrice(p), Comparator.reverseOrder()));
+            // result = result.stream().sorted(
+            // Comparator.comparing(p -> shopService.getPreBuiltDiscountPrice(p),
+            // Comparator.reverseOrder()))
+            // .collect(Collectors.toList());
         } else {
-            result = result.stream().sorted(Comparator.comparing(PreBuilt::getId, Comparator.reverseOrder()))
-                    .collect(Collectors.toList());
+            // result = result.stream().sorted(Comparator.comparing(PreBuilt::getId,
+            // Comparator.reverseOrder()))
+            // .collect(Collectors.toList());
+            result.sort(Comparator.comparing(PreBuilt::getId, Comparator.reverseOrder()));
         }
 
         result = resultStream.collect(Collectors.toList());
