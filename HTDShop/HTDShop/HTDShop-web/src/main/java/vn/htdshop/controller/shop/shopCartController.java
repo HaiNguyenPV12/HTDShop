@@ -147,6 +147,7 @@ public class shopCartController {
                     orderDetail.setId(null);
                     orderDetail.setOrder1(order1);
                     orderDetail.setProduct(productFacade.find(Integer.parseInt(item.getId().substring(1))));
+                    orderDetail.setPreBuilt(null);
                     orderDetail.setQuantity(item.getQuan());
                     orderDetail.setPrice(shopService.getcartItemPrice(item.getId(), item.getQuan()));
                     orderDetailFacade.create(orderDetail);
@@ -155,14 +156,17 @@ public class shopCartController {
                     Integer result = product.getStock() - item.getQuan();
                     product.setStock(result);
                     productFacade.edit(product);
-
-                } else {
+                    
+                } 
+                else {
                     orderDetail.setId(null);
                     orderDetail.setOrder1(order1);
+                    orderDetail.setProduct(null);
                     orderDetail.setPreBuilt(preBuiltFacade.find(Integer.parseInt(item.getId().substring(1))));
                     orderDetail.setQuantity(item.getQuan());
                     orderDetail.setPrice(shopService.getcartItemPrice(item.getId(), item.getQuan()));
                     orderDetailFacade.create(orderDetail);
+                    
                 }
             }
             shopService.saveNonUserCart(new ArrayList<CartItem>());
@@ -209,12 +213,14 @@ public class shopCartController {
                     orderDetail.setId(null);
                     orderDetail.setOrder1(order1);
                     orderDetail.setProduct(productFacade.find(Integer.parseInt(item.getId().substring(1))));
+                    orderDetail.setPreBuilt(null);
                     orderDetail.setQuantity(item.getQuan());
                     orderDetail.setPrice(shopService.getcartItemPrice(item.getId(), item.getQuan()));
                     orderDetailFacade.create(orderDetail);
                 } else {
                     orderDetail.setId(null);
                     orderDetail.setOrder1(order1);
+                    orderDetail.setProduct(null);
                     orderDetail.setPreBuilt(preBuiltFacade.find(Integer.parseInt(item.getId().substring(1))));
                     orderDetail.setQuantity(item.getQuan());
                     orderDetail.setPrice(shopService.getcartItemPrice(item.getId(), item.getQuan()));
@@ -224,6 +230,7 @@ public class shopCartController {
             shopService.saveUserCart(new ArrayList<CartItem>());
         }
         redirect.addFlashAttribute("error", error);
+        model.addAttribute("order", order1);
         return "HTDShop/viewSuccess";
     }
 

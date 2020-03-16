@@ -33,7 +33,7 @@
                                         <input type="number" placeholder="Your Order ID" id="id" name="id" required th:field="*{id}"
                                             autofocus>
                                         <input  type="text" name="phone" placeholder="Your Phone Number" id="phone" th:field="*{customer.phone}"
-                                            required autofocus>
+                                            required autofocus pattern="^[0-9]{10,11}$" title="Phone number have 10-11 digits">
                                         <button type="submit" class="default-btn floatright">Order Detail</button>
                                         <div class="col-12 mt-2" th:if="${#fields.hasErrors('all')}">
                                             <p class="alert alert-danger">
