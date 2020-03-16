@@ -100,7 +100,7 @@
                                 <div class="col-sm-9">
                                     <input class="form-control" id="phone" placeholder="Phone" th:field="*{phone}" 
                                         type="number" 
-                                        pattern="^[0-9]{11,12}$" title="Phone number have 11-12 digits"
+                                        pattern="^[0-9]{10,11}$" title="Phone number have 10-11 digits"
                                         th:classappend="${(#fields.hasErrors('phone')?'is-invalid':'') + (submited != null and !#fields.hasErrors('phone')?'is-valid':'')}" required/>
                                 </div>
                                 <div class="col-sm-3"></div>
