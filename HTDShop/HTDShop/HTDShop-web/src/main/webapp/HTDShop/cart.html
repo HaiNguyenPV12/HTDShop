@@ -109,7 +109,8 @@
                                         <ul>
                                             <li>Total Price<span th:text="${'$' + #numbers.formatDecimal(shopSv.getCartTotal() , 1, 'POINT', 2, 'COMMA')}">$152.97‬</span></li>
                                         </ul>
-                                        <a th:href="@{/cart/checkout}">Proceed to checkout</a>
+                                        <a th:href="@{/cart/checkout}" th:if="${cart != null && cart.size() > 0}">Proceed to checkout</a>
+                                        <a th:href="@{/}">Back to Home</a>
                                     </div>
                                 </div>
                             </div>
