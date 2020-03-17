@@ -78,8 +78,14 @@ public class shopPreBuiltController {
                 return redirectPreBuiltSearch;
             }
         }
-        if (prebuilt.getStatus() != 1) {
+        if (prebuilt.getStatus() != 1 && prebuilt.getStatus() != 2) {
             return redirectPreBuiltSearch;
+        }
+        if (prebuilt.getStatus() == 2) {
+            if (shopService.getLoggedInCustomer() == null || prebuilt.getCustomer() == null
+                    || shopService.getLoggedInCustomer().getId() != prebuilt.getCustomer().getId()) {
+                return redirectPreBuiltSearch;
+            }
         }
         if (prebuilt.getCustomer() != null) {
             if (prebuilt.getStatus() == 2) {
