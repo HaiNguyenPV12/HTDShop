@@ -62,6 +62,7 @@
                             <h3 class="card-title">Information</h3>
                         </div>
                         <div class="card-body">
+                            <input type="hidden" id="update" th:if="${update!=null}">
                             <!-- USERNAME -->
                             <input type="hidden" autocomplete="off" id="username" placeholder="Username" name="username" value="dummyUsername" th:if="${update==null}"/>
                             <input type="hidden" autocomplete="off" id="username" placeholder="Username" name="username" th:value="${staff.username}" th:if="${update!=null}"/>
@@ -71,6 +72,9 @@
                                         class="text-danger">*</i></label>
                                 <div class="col-sm-9">
                                     <input type="text" autocomplete="off" class="form-control" id="un" name="un"
+                                        pattern="^[^\s\\.,\\/#!?£$%\\^&\\*;:{}=\\_`~|]+$" minlength="5"
+                                        oninvalid="this.setCustomValidity('Cannot contain spaces or special characters')"
+                                        oninput="this.setCustomValidity('')"
                                         th:classappend="${(#fields.hasErrors('username')?'is-invalid':'') + (submited != null and !#fields.hasErrors('username')?'is-valid':'')}" required th:value="${staff.username}"/>
                                 </div>
                                 <div class="col-sm-3"></div>
@@ -86,7 +90,11 @@
                                 <label for="password" class="col-sm-3 col-form-label text-right">Password<i
                                         class="text-danger">*</i></label>
                                 <div class="col-sm-9">
-                                    <input autocomplete="off" class="form-control" id="pw" name="pw" type="password" th:required="${update==null}"/>
+                                    <input autocomplete="off" class="form-control" id="pw" name="pw" type="password"
+                                        oninvalid="this.setCustomValidity('Cannot contain spaces')"
+                                        oninput="this.setCustomValidity('')"
+                                        minlength="5"
+                                        th:required="${update==null}" pattern="[^\s]+"/>
                                 </div>
                                 <div class="col-sm-3"></div>
                                 <div class="col-sm-9" th:if="${update!=null}">
@@ -196,8 +204,10 @@
                                 <label for="phone" class="col-sm-3 col-form-label text-right">Phone<i
                                         class="text-danger">*</i></label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="phone" th:field="*{phone}" placeholder="Phone number"
-                                        th:classappend="${(#fields.hasErrors('phone')?'is-invalid':'') + (submited != null and !#fields.hasErrors('phone')?'is-valid':'')}" required minlength="9" maxlength="25"/>
+                                    <input type="text" class="form-control" id="phone" th:field="*{phone}" placeholder="Phone number" pattern="[0-9]{10,11}"
+                                        oninvalid="this.setCustomValidity('Phone number must be 10 to 11 characters')"
+                                        oninput="this.setCustomValidity('')"
+                                        th:classappend="${(#fields.hasErrors('phone')?'is-invalid':'') + (submited != null and !#fields.hasErrors('phone')?'is-valid':'')}" required minlength="10" maxlength="11"/>
                                 </div>
                                 <div class="col-sm-3"></div>
                                 <div class="col-sm-9" th:if="${#fields.hasErrors('phone')}">
@@ -289,17 +299,18 @@
             }
         });
 
-
+        var update = $("#update").length;
         $(document).ready(function () {
             $("input").each(function (i, e) {
                 $(e).attr("autocomplete", "off");
             });
 
             $('#birthday').daterangepicker({
+                "startDate": update ? $('#birthday').val() : moment().subtract(16, 'years').format("DD/MM/YYYY"),
                 "singleDatePicker": true,
                 "showDropdowns": true,
                 "minDate": "01/01/1800",
-                "maxDate": moment().format("DD/MM/YYYY"),
+                "maxDate": moment().subtract(16, 'years').format("DD/MM/YYYY"),
                 locale: {
                     format: 'DD/MM/YYYY'
                 }
