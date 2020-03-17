@@ -49,7 +49,7 @@
                                                 th:with="product = ${shopSv.getCartInfo(c.id)}">
                                                 <input type="hidden" th:value="${c.id}" name="id" />
                                                 <td class="product-remove"><a
-                                                        th:onclick="doRemoveFromCart([[${c.id}]])"><i
+                                                        th:onclick="doRemoveFromCart2([[${c.id}]])"><i
                                                             class="pe-7s-close"></i></a>
                                                 </td>
                                                 <td class="product-thumbnail">
@@ -125,8 +125,8 @@
     <!-- AdminLTE App -->
     <script th:src="@{/manager_resources/Scripts/adminlte.min.js}"></script>
 
-    <script>
-        function doRemoveFromCart(id) {
+    <script layout:fragment="script" th:inline="javascript">
+        function doRemoveFromCart2(id) {
             var removeFromCartUrl = /*[[@{/cart/remove}]]*/'';
             removeFromCartUrl += "?id=" + id;
             $.ajax({
@@ -140,7 +140,7 @@
                             type: 'success',
                             title: 'Removed from cart.'
                         });
-                        window.location = window.location;
+                        window.location.reload();
                     } else {
                         Toast.fire({
                             type: 'error',
