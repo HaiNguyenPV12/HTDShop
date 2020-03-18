@@ -54,7 +54,7 @@
                         <label for="detail">Describe your build<i class="text-danger">*</i>:</label>
                     </div>
                     <div class="col-md-8">
-                        <textarea id="detail" th:field=*{detail} class="form-control textarea"></textarea>
+                        <textarea id="detail" th:field=*{detail} class="form-control textarea" maxlength="500"></textarea>
                     </div>
                 </div>
                 <div class="row py-2" th:if="${prebuilt.cpu!=null}">

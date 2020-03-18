@@ -70,7 +70,7 @@
                         <label for="detail" class="col-sm-3 col-form-label text-right">Detail<i
                                 class="text-danger">*</i></label>
                         <div class="col-sm-9">
-                            <textarea class="form-control textarea" id="detail" th:field="*{detail}" placeholder="First Name" type="text"
+                            <textarea class="form-control textarea" id="detail" th:field="*{detail}" placeholder="First Name" type="text" maxlength="500"
                                 th:classappend="${(#fields.hasErrors('detail')?'is-invalid':'') + (submited != null and !#fields.hasErrors('detail')?'is-valid':'')}">
                             </textarea>
                         </div>

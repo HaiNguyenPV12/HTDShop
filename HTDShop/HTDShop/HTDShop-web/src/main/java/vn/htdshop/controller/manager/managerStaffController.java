@@ -238,8 +238,12 @@ public class managerStaffController {
 
     private List<Role> getRoles() {
         List<Role> roles = new ArrayList<>();
-        roles = roleFacade.findAll().stream().filter(p -> !"Administrator".equals(p.getName()))
-                .collect(Collectors.toList());
+        if (managerService.getLoggedInStaff().getRole().getId() == 1) {
+            roles = roleFacade.findAll();
+        } else {
+            roles = roleFacade.findAll().stream().filter(p -> !"Administrator".equals(p.getName()))
+                    .collect(Collectors.toList());
+        }
         return roles;
     }
 
