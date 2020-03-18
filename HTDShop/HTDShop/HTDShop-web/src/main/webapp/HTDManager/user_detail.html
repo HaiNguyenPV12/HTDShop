@@ -51,7 +51,7 @@
                         <table id="tblProduct" class="table table-bordered table-striped table-hover">
                             <thead class="bg-purple">
                                 <th>ID</th>
-                                <th>Password</th>
+                                <!-- <th>Password</th> -->
                                 <th>Gender</th>
                                 <th>Birthday</th>
                                 <th>Action</th>
@@ -59,7 +59,7 @@
                             <tbody>                             
                                 <tr>
                                     <td th:text="${customer.id}">001</td>
-                                    <td th:text="${customer.password}">Intel Core i5 8400 3.0 GHz</td>
+                                    <!-- <td th:text="${customer.password}" >Intel Core i5 8400 3.0 GHz</td> -->
                                     <td th:text="${customer.gender==true?'Male':'Female'}">Intel</td>   
                                     <td th:text="${#dates.format(customer.birthday,'dd-MM-yyyy')}">Intel</td>
                                     <td>     
@@ -72,7 +72,7 @@
                             </tbody>
                             <tfoot class="bg-purple">
                                 <th>ID</th>
-                                <th>Password</th>
+                                <!-- <th>Password</th> -->
                                 <th>Gender</th>
                                 <th>Birthday</th>
                                 <th>Action</th>

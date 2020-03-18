@@ -55,11 +55,12 @@ public class shopRegisterController {
         // Check email exists
         if (customerFacade.findByEmail(customer.getEmail()) != null) {
             error.rejectValue("email", "customer", "This email is exists.");
+            
         }
 
         if (customer.getPassword()== null || customer.getPassword().trim().isEmpty()) {
             error.rejectValue("password", "customer", "Please enter valid password.");
-            return "redirect:/register";
+            
         }
         if (!error.hasErrors()) {
             customer.setPoint(0);
@@ -70,6 +71,7 @@ public class shopRegisterController {
         }        
         // Pass alert attribute to notify successful process
         model.addAttribute("error", error);
+        model.addAttribute("formUrl","doAdd");
         redirect.addFlashAttribute("customer", customer);
         return "HTDShop/register";
     }
